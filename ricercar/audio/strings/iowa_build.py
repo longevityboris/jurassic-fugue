@@ -343,30 +343,51 @@ def process_one(job):
     loop_start, loop_end = find_loop(y.mean(axis=1), fs, f0)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     sf.write(str(out_path), y, fs, subtype="PCM_24")
-    # rise times of the recorded attack (10 ms RMS frames, re the steady level)
-    t6, t3 = rise_times(y, fs, s0, s1)
-    normal_off = max(0.0, t3 - NORMAL_RISE)
-    short_off = max(0.0, t3 - SHORT_RISE) if t3 > 0.1 else 0.3 * t3
-    legato_off = float(np.clip(max(t3 + 0.05, 0.12), 0.12, max(0.12, s1 / fs - 0.2)))
-    return dict(inst=inst, dyn=dyn, midi=midi, file=c["file"], string=c["string"], cents=c["cents"],
-                path=str(out_path.relative_to(QUARTET_DIR)), level_db=level, klevel_db=klevel,
-                norm_gain_db=20 * np.log10(gain), attack_s=att, rise6_s=t6, rise3_s=t3,
-                normal_offset=int(normal_off * fs), legato_offset=int(legato_off * fs),
-                short_offset=int(short_off * fs), loop_start=int(loop_start), loop_end=int(loop_end),
-                s0=s0, s1=s1, frames=len(y))
+    m = dict(inst=inst, dyn=dyn, midi=midi, file=c["file"], string=c["string"], cents=c["cents"],
+             path=str(out_path.relative_to(QUARTET_DIR)), level_db=level, klevel_db=klevel,
+             norm_gain_db=20 * np.log10(gain), attack_s=att, loop_start=int(loop_start), loop_end=int(loop_end),
+             s0=s0, s1=s1, frames=len(y))
+    m.update(rise_times(y, fs, s0, s1))
+    return m
 
 
-def rise_times(y: np.ndarray, fs: int, s0: int, s1: int) -> tuple[float, float]:
-    mono = y.mean(axis=1).astype(np.float64)
-    hop = int(0.01 * fs)
-    n = min(len(mono), int(2.0 * fs)) // hop
-    db = 10 * np.log10(np.mean(mono[: n * hop].reshape(n, hop) ** 2, axis=1) + 1e-20)
-    st = 10 * np.log10(np.mean(mono[s0:s1] ** 2) + 1e-20)
+def rise_times(y: np.ndarray, fs: int, s0: int, s1: int) -> dict:
+    """When the recorded tone reaches steady-20 / -6 / -3 dB (10 ms sliding RMS,
+    5 ms steps).  t20 is where the tone really starts: before it there is up to
+    0.2 s (viola, cello) of near-silence, sometimes with a bow-contact tick."""
+    mono = y.mean(axis=1).astype(np.float64)[: int(2.5 * fs)]
+    hop, w = int(0.005 * fs), int(0.01 * fs)
+    db = 10 * np.log10(np.convolve(mono ** 2, np.ones(w) / w, mode="same")[::hop] + 1e-20)
+    st = 10 * np.log10(np.mean(y.mean(axis=1)[s0:s1].astype(np.float64) ** 2) + 1e-20)
 
     def first(th):
         i = np.flatnonzero(db > st + th)
-        return float(i[0] * hop / fs) if len(i) else s0 / fs
-    return first(-6.0), first(-3.0)
+        return float(max(0, i[0] * hop - w // 2) / fs) if len(i) else s0 / fs
+    return dict(rise20_s=first(-20.0), rise6_s=first(-6.0), rise3_s=first(-3.0))
+
+
+def add_rise_times(meta: list[dict]) -> bool:
+    changed = False
+    for m in meta:
+        if "rise20_s" in m:
+            continue
+        y, fs = sf.read(str(QUARTET_DIR / m["path"]), dtype="float64", always_2d=True)
+        m.update(rise_times(y, fs, m["s0"], m["s1"]))
+        changed = True
+    return changed
+
+
+def articulation_offsets(m: dict, fs: int = SR) -> dict:
+    """Sample start per articulation (frames).  Every stroke starts no earlier than
+    5 ms before the tone does (t20), so all instruments speak on the note-on;
+    normal strokes keep at most NORMAL_RISE of a slow swell, short strokes
+    SHORT_RISE; slurred notes enter in the sustain."""
+    t20, t3 = m["rise20_s"], m["rise3_s"]
+    start = max(0.0, t20 - 0.005)
+    normal = max(start, t3 - NORMAL_RISE)
+    short = max(start, t3 - SHORT_RISE) if t3 - t20 > 0.1 else max(start, start + 0.3 * (t3 - start))
+    legato = float(np.clip(max(t3 + 0.05, 0.12), 0.12, max(0.12, m["s1"] / fs - 0.2)))
+    return dict(normal_offset=int(normal * fs), short_offset=int(short * fs), legato_offset=int(legato * fs))
 
 
 # ------------------------------------------------------------------- SFZ
@@ -527,7 +548,7 @@ def write_sfz(inst: str, meta: list[dict]):
                 reg = (f"<region> sample={m['path']} lokey={lo} hikey={hi} pitch_keycenter={k} "
                        f"tune={tune:.1f} volume={vol:.2f} loop_start={m['loop_start']} loop_end={m['loop_end']}")
                 if offk:
-                    reg += f" offset={m[offk]}"
+                    reg += f" offset={articulation_offsets(m)[offk]}"
                 reg += f"  // {midi_name(k)} {m['string']} {m['file']}"
                 lines.append(reg)
     out = QUARTET_DIR / f"{inst}.sfz"
@@ -571,7 +592,7 @@ def main():
             meta_path.parent.mkdir(parents=True, exist_ok=True)
             meta_path.write_text(json.dumps(all_meta, indent=1))
         meta = all_meta[inst]
-        if add_k_levels(meta):
+        if add_k_levels(meta) | add_rise_times(meta):
             meta_path.write_text(json.dumps(all_meta, indent=1))
         path = write_sfz(inst, meta)
         cov = {d: len([m for m in meta if m["dyn"] == d]) for d in DYNAMICS}

@@ -206,9 +206,7 @@ if [[ "$MODE" == "install" && "$FAILED" == 0 ]]; then
     (cd "$HERE" && python3 iowa_analyze.py --jobs "$(ncpu)" >/dev/null)
   fi
   need_build=0
-  for i in violin violin2 viola cello bass; do [[ -f "$Q/$i.sfz" ]] || need_build=1; done
-  grep -q "hint_ram_based=1" "$Q/violin.sfz" 2>/dev/null || need_build=1
-  python3 -c "import json,sys; m=json.load(open(sys.argv[1])); sys.exit(0 if all('normal_offset' in x for v in m.values() for x in v) else 1)" \
+  python3 -c "import json,sys; m=json.load(open(sys.argv[1])); sys.exit(0 if all(i in m for i in ('violin','violin2','viola','cello','bass')) else 1)" \
     "$Q/samples/meta.json" 2>/dev/null || need_build=1
   if [[ "$FORCE" == 1 || "$need_build" == 1 ]]; then
     doing "iowa_build.py (trims, extends and calibrates about 540 samples, about 1 min)"
@@ -219,6 +217,18 @@ if [[ "$MODE" == "install" && "$FAILED" == 0 ]]; then
     doing "closed-loop tuning: measure every key and layer through sfizz, fold the errors into the SFZ"
     (cd "$HERE" && python3 verify_tuning.py violin violin2 viola cello bass --json "$Q/tuning_pass1.json" >/dev/null || true)
     (cd "$HERE" && python3 iowa_build.py --retune "$Q/tuning_pass1.json" >/dev/null)
+  fi
+  # SFZ files are cheap to regenerate from samples/meta.json: do it whenever the
+  # builder or the tuning corrections are newer than any of them
+  stale=0
+  for i in violin violin2 viola cello bass; do
+    if [[ ! -f "$Q/$i.sfz" || "$HERE/iowa_build.py" -nt "$Q/$i.sfz" || "$Q/tuning_corrections.json" -nt "$Q/$i.sfz" ]]; then
+      stale=1
+    fi
+  done
+  if [[ "$stale" == 1 ]]; then
+    doing "iowa_build.py --sfz-only (SFZ older than the builder or the tuning corrections)"
+    (cd "$HERE" && python3 iowa_build.py --sfz-only >/dev/null)
   fi
 fi
 for i in violin violin2 viola cello bass; do
