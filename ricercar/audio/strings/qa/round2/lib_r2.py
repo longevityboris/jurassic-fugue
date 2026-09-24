@@ -340,3 +340,23 @@ def pitch_switch(x, on, k_old, k_new, span=(-0.1, 0.15)):
                 return None                     # already the new pitch at the start: no switch seen
             return float(ts[i] - on)
     return None
+
+
+def interharmonic_db(x, key, frame=0.1, fmax=8000.0, rel=0.04):
+    """Per 100 ms frame: energy between the partials of `key` (outside +-4 % of k*f0, f0/2..fmax) re the
+    energy in the partials, dB.  Zipper noise or clicks from stepped gain raise it; a clean gain ramp does not."""
+    f0 = hz(key)
+    W = int(frame * SR)
+    f = np.fft.rfftfreq(W, 1 / SR)
+    harm = np.zeros(len(f), bool)
+    k = 1
+    while k * f0 < fmax:
+        harm |= np.abs(f - k * f0) <= max(rel * k * f0, 12.0)
+        k += 1
+    band = (f >= f0 / 2) & (f <= fmax)
+    win = np.hanning(W)
+    out = []
+    for s in range(0, len(x) - W + 1, W // 2):
+        X = np.abs(np.fft.rfft(x[s: s + W] * win)) ** 2
+        out.append(float(db(X[band & ~harm].sum() / max(X[band & harm].sum(), 1e-30))))
+    return np.array(out)
