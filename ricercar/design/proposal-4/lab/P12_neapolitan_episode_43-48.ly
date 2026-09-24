@@ -1,4 +1,4 @@
-% P12 episode bars 43-48: the chain's D-flat-major entry (tenor) ends; NEAPOLITAN (C-flat, 44) over the fourth statement of the lament (bass des -> f); soprano echoes the subject head (ges''2. ges''8 f''8); vii(o)7, Italian sixth (46) -> dominant pedal (47-48)
+% P12 episode bars 43-48: the chain's D-flat-major entry (tenor) ends and the alto's a-flat entry lands on its elision bes'; NEAPOLITAN (C-flat, 44) over the fourth statement of the lament (bass des -> f); soprano echoes the subject head (ges''2. ges''8 f''8); vii(o)7, Italian sixth (46) -> dominant pedal (47-48)
 % 47-48 = first two bars of Part IV (S2, lament on the tenor's held bes, augmented answer f,)
 \version "2.24.0"
 soprano = \absolute {
@@ -11,7 +11,7 @@ soprano = \absolute {
   ees''2 r2 |   % 7
 }
 alto = \absolute {
-  aes'1 |   % 1
+  bes'2 aes'2 |   % 1
   ces''2 des''2 |   % 2
   c''2 aes'2 |   % 3
   f'2 e'2 |   % 4
