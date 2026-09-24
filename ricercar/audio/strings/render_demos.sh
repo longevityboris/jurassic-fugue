@@ -10,6 +10,7 @@
 #   out/demo/fugue_quartet_iowa_bassdouble.*   --bass-double auto (contrabass 8vb in the ff climax)
 #   out/demo/fugue_quartet_vpo3.*              the same MIDI on VPO3 solo strings (comparison)
 #   out/demo/qa_*.json                         qa_render.py: balance, clicks, onsets, legato dips
+#   out/verify/dynamics_{iowa,vpo3}.json       verify_dynamics.py: CC1 ladder, timbre ratio (library choice)
 #   out/test/dyn_quartet.*                     pp / mf / ff phrase + held-note swell per instrument
 #   out/test/dynamics_report.json              measure_dynamics.py per instrument (dry stems)
 set -euo pipefail
@@ -22,12 +23,15 @@ python3 ../../tools/perform.py "$ROOT/fugue.ly" demo/fugue_plan.json out/demo/fu
 python3 render_quartet.py out/demo/fugue_strings.mid -o out/demo/fugue_quartet_iowa --stems \
   --report out/demo/fugue_quartet_iowa.json
 python3 qa_render.py out/demo/fugue_quartet_iowa --json out/demo/qa_iowa.json
+mkdir -p out/verify
+python3 verify_dynamics.py violin violin2 viola cello --json out/verify/dynamics_iowa.json
 python3 render_quartet.py out/demo/fugue_strings.mid -o out/demo/fugue_quartet_iowa_bassdouble --bass-double auto \
   --stems --report out/demo/fugue_quartet_iowa_bassdouble.json
 if python3 -c "import vpo3, sys; sys.exit(0 if vpo3.available() else 1)" 2>/dev/null; then
   python3 render_quartet.py out/demo/fugue_strings.mid -o out/demo/fugue_quartet_vpo3 --lib vpo3 --stems \
     --report out/demo/fugue_quartet_vpo3.json
   python3 qa_render.py out/demo/fugue_quartet_vpo3 --json out/demo/qa_vpo3.json
+  python3 verify_dynamics.py violin viola cello --lib vpo3 --json out/verify/dynamics_vpo3.json
 fi
 
 python3 make_test_midi.py out/test >/dev/null

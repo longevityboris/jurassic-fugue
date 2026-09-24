@@ -124,7 +124,8 @@ rates fitted to the measured response (63 Hz 2.1 s, 125 Hz 1.9 s, 250 Hz-2 kHz
 ## Library choice (measured)
 
 Both candidates were rendered from the same dynamics test and the same fugue MIDI
-(`out/verify/dynamics_{iowa,vpo3}.json`, `out/demo/qa_{iowa,vpo3}.json`):
+(`verify_dynamics.py` -> `out/verify/dynamics_{iowa,vpo3}.json`, `qa_render.py` ->
+`out/demo/qa_{iowa,vpo3}.json`; `render_demos.sh` regenerates both):
 
 | | Iowa MIS (chosen) | VPO3 solo strings |
 |---|---|---|
@@ -157,10 +158,12 @@ stuck or transposed; renderer timing = mido within 0.05 ms.
 
 Pitch of long notes, median |c| / p95: vn1 1.2/3.8, vn2 1.2/4.9, va 0.7/2.5, vc
 1.1/3.3; no note more than 50 c off (the three quarter-tone-flat alto A4s are gone).
-Attack pitch (median 40-200 ms after the note-on, every key x layer x stroke,
-1680 notes through sfizz): median 1.1-1.6 c per instrument; over 15 c only
-violin D#7 pp (+26 c) and the second violin's ff C#6 (+22..26 c, a wide ff
-vibrato) and F5 (+16 c, normal stroke); YIN (setup's gate) finds none over 15 c.
+Attack pitch (median 40-200 ms after the note-on, every key x layer x stroke
+including the two stretched keys below each compass: 1416 notes through sfizz,
+spectral estimator): median 1.1-1.6 c per instrument; over 15 c only violin D#7
+pp (+26 c) and the second violin's ff C#6 (+22..26 c, a wide ff vibrato) and F5
+(+16 c, normal stroke). Setup's YIN gate (1356 notes, the compass only) finds
+none over 15 c.
 
 **Dynamics** (perform.py hairpins, dry stems, K-weighted, pp -> mf -> ff):
 vn1 -44.3/-32.0/-22.6 dB, vn2 -41.9/-29.5/-21.1, va -43.4/-30.5/-21.9, vc
@@ -204,9 +207,10 @@ down, auto silent until the ff section; CC20/CC21 input, "Violin II" before
 built file byte-identical.
 
 Known residuals: a few E-string violin notes (91/97/99) swell and fade 5-9 dB at
-about 3 Hz within one recording (their own amplitude vibrato); about 18 % of the
-samples step 2-3 dB within 50 ms somewhere in the grain-spliced sustain (a 22 s
-violin A4 at mp: 3.0 dB); a layer switch inside a held note wiggles 1-2 dB over
+about 3 Hz within one recording (their own amplitude vibrato); 29 % of the
+samples step more than 2 dB and 18 % more than 3 dB within 50 ms somewhere in the
+sustain (partly the recordings' own amplitude vibrato, partly grain splices; a
+22 s violin A4 at mp: 3.0 dB); a layer switch inside a held note wiggles 1-2 dB over
 0.3 s; slurs dip 1-3.5 dB at the change; in fast runs the articulation left in
 the mix (4.3 dB) is set by the other voices, not the hall (4.6 dB fully dry).
 
