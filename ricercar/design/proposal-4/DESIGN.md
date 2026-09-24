@@ -1,6 +1,6 @@
 # Proposal 4: "Ricercar sopra il canto fermo" (melodic-beauty / cantus-firmus design)
 
-Status: design complete; 11 proof labs (P01-P11) all checker-clean. Everything in the proof table
+Status: design complete; 12 proof labs (P01-P12) all checker-clean. Everything in the proof table
 has a lab file in `lab/` that was run through `tools/ck.sh` (= project checker with the four voice
 ranges S 60-84, A 53-77, T 48-72, B 36-62). What is NOT proven is listed in section D.
 
@@ -105,6 +105,7 @@ Checker = `tools/ck.sh` (project check.py with the four ranges). "0/0/0" = 0 PAR
 | P08_mirror_pair_Eflat.ly | S1 (alto, ees') and its diatonic mirror (bass, ees) simultaneously, two voices alone | errors 0, parallels 0, beat-par 0, unjustified 0 | 4:1 aes'/bes, = V7 of e-flat (7th held from 3:4.5, resolves) |
 | P09_dominant_pedal_augmentation_climax.ly | answer in 2x augmentation (bass, 8 bars) under S2 (S), the lament (T) and the answer at the top (S, f'' -> bes''); climax It6 - V (4-3) - VI; general pause | errors 0, parallels 0, beat-par 0, unjustified 0 | pedal dissonances (sus4 at 1:1, V7 at 3:1, lament passing tones over f,); 9:1 augmented sixth ges,/e'; 10:1 bes''/f, 4-3 suspension |
 | P11_exposition_bars1-18.ly | the complete 4-voice exposition 1-18 as it should be written: S1, answer+CSb, codetta, S1 in bass + CSb (alto) + soprano descant, answer in tenor + lament + CSb + free alto, Phrygian half cadence | errors 0, parallels 0, beat-par 0, unjustified 0 | as P01-P03, plus 11:1-13:1 soprano 5-4 suspensions over the alto's eighths; 15:4.5 German sixth; 16:4.5 dim7; 17:1 Eb-minor 7th over the lament's passing ees, |
+| P12_neapolitan_episode_43-48.ly | episode 43-46 into Part IV: lament bass des -> f, Neapolitan in root position (44), vii(o)7, G half-dim7, Italian sixth -> V pedal; bars 47-48 = Part IV's first two bars in 4 voices | errors 0, parallels 0, beat-par 0, unjustified 0 | 43:3 A-flat7/C 7th; 45:1 vii(o)7; 46:1 half-dim 7th; 46:3 aug-6th e'/ges,; 47:1 sus4 over the pedal; 49:1 V7 |
 | P10_S2_stretto_4th.ly | S2 (alto, g') and S2 at the lower 4th (tenor, d') 2 bars later | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:3 aes'/g 9-8 suspension; 4:1 g'/d' 4th needs the bass below it (form table note) |
 
 Search evidence (not proofs, kept for the composer): `tools/stretto_ck.py s1` lists every S1 stretto
@@ -149,7 +150,7 @@ unless Part V is taken below quarter = 60.
 | 29-32 | | episode: CSb head in sequence down by fifths, lament fragments in bass -> e-flat minor | -> e-flat | mf > p |
 | 33-36 | III Inversio | = P08: S1 (alto, ees') with its diatonic MIRROR (bass, ees -> bes,) simultaneously, the two voices ALONE (CSb was tested above this pair and does not fit: PAR! + DIS!) | e-flat | p subito, misterioso |
 | 37-42 | | STRETTO CHAIN at the lower fifth, 2 bars apart = P07 (P04 in b-flat is the same device): S ees'' (e-flat), A aes' (a-flat), T des' (D-FLAT MAJOR: the tune's first, false, glimpse of major) | e-flat -> a-flat -> D-flat | p < f |
-| 43-46 | | episode (not lab-proven): bass lament in half notes on the flat side: G-flat -> C-flat (NEAPOLITAN region) -> German sixth ges-bes-des-e -> V at 47 | G-flat -> C-flat -> (b-flat: Ger6) | f > mp < |
+| 43-46 | | = P12: the D-flat-major entry (tenor) finishes over the LAMENT's fourth statement, now a bass descent des-c-ces-bes-a-aes-g-ges (-> f at 47); 44 NEAPOLITAN C-flat in root position (bass ces); soprano echoes the subject head (ges''2. ges''8 f''8); 45 vii(o)7; 46 G half-dim 7 -> ITALIAN sixth (ges, bes e' bes') -> V pedal at 47 | D-flat -> C-flat (N) -> b-flat: It6 | f > mp < |
 | 47-54 | IV Pedale | = P09: ANSWER IN 2x AUGMENTATION in the bass: F pedal 47-50 (f... f-e ...), rising f-g-bes 51-53, bes-aes-f 54. Above: S2 (soprano, c'') 47-50 with a breath (c''2. r4) before 51; lament CSa over the pedal (tenor 47-50: bes-a-aes-g-ges-f = sus4-3, then chromatic prolongation of V); the ANSWER at the top (soprano f'' 51-54, peak bes'' at 53-54); alto to be composed | b-flat: V | mf < ff |
 | 55-57 | | CLIMAX (= P09 bars 9-11): 55 ITALIAN sixth fff (ges, e' bes' bes''); 56 V (f, f' c'' bes''->a'': the subject's head as the 4-3 suspension of the dominant); 57 DECEPTIVE cadence to G-flat (ges, des' bes' bes''). An Italian, not German, sixth here because Ger6 -> V puts parallel fifths between bass and the fifth of the chord | | fff, allargando |
 | 58 | | general pause (fermata), then the lament's first two notes alone, pp | | pp |
@@ -195,7 +196,7 @@ piece balances sharp-side tension (II) against flat-side darkness (III) around t
 - 10-13 (bass S1, alto CSb, soprano descant): i (pedal) ... | VI6/4 - vii(o)7 | i - ii(o)6/5 - iv | iv - VI | V
 - 14-17 (= P03 + alto): i V6 | v6 vi(o)7 - Ger6 | V(=f: I) V6/5 of f | iv of f (Eb/D) | f: Phrygian HC (des -> c) at 18
 - 25-28 (= P05): V | V6 vii(o)7/V | V7 vii(o)7/V | v with 4-3 | (f: V) 
-- 43-46: G-flat (VI) | C-flat (N, root position) | N6 (ees bass) | Ger6 (ges bass)
+- 43-46 (= P12): D-flat - A-flat7/C (V6/5 of D-flat) | C-flat (N, root) - G-flat/B-flat -> i | vii(o)7/A - A-flat (VII) | G half-dim7 - It6 (ges bass) | -> V pedal
 - 47-50 (= P09): V pedal: Vsus4 -> V (47) | v6-ish (aes over f) - vii(o)7/V - It6 colour over the pedal (48) | V V(maj7 passing e) (49) | V7 (ees) - V(b9: des) (50)
 - 51-54 (= P09): V (f'' over f,) - vi(o)7 (g,) | i (bes,) | i - IV6/4 (g'' over bes,) - i | i - VII (aes,) - V (f,)
 - 55-58: It6 | V (4-3 = bes''-a'') | VI (deceptive) | general pause
@@ -205,11 +206,13 @@ piece balances sharp-side tension (II) against flat-side darkness (III) around t
 
 - AUGMENTED SIXTHS built into the countersubject: every CSa cell ends with the lament's chromatic
   eighth forming an augmented sixth with the subject's leading-tone neighbour (2:4.5 of every entry
-  that has CSa); the German sixth returns structurally at 46 (episode into the pedal) and as an
-  ITALIAN sixth at the climax, 55 (P09).
-- NEAPOLITAN: implicit in CSa (ces, bar 2 of the lament) and structural at 44-45 (C-flat region).
+  that has CSa); German sixths are completed by the free voices at 15:4.5 (P11); ITALIAN sixths
+  lead into the dominant pedal (46, P12) and form the climax (55, P09).
+- NEAPOLITAN: implicit in CSa (ces, bar 2 of the lament) and structural at 44 (C-flat major in root
+  position over the bass lament, P12).
 - DIMINISHED SEVENTHS: vii(o)7 of F under CSb's des'' (exposition bars 5-8 and 14-17: e-g-bes-des).
-- LAMENT BASS: 14-17 (full chromatic descent bes, -> c,), 43-46, and over the dominant pedal 47-50.
+- LAMENT BASS: 14-17 (full chromatic descent bes, -> c,, P11), 43-46 (des -> f, P12), and in the tenor
+  over the dominant pedal 47-50 (P09).
 - PEDAL POINTS: dominant pedal 47-50 that IS the subject (answer in 2x augmentation, P09); tonic pedal
   59-60 that is the subject's mirror (at tempo, P06).
 - DECEPTIVE CADENCE: 57 (V -> VI, G-flat), the last flat-side sonority before the major.
@@ -233,8 +236,7 @@ piece balances sharp-side tension (II) against flat-side darkness (III) around t
    the lament's bes, (P03 1:1 shows it only as an appoggiatura).
 4. Free voices not lab-proven (to be composed and checked by the composer): the motor bass 19-24
    (no motor countersubject survived: the solver's candidates were stepwise but harmonically aimless
-   and cross-related with S2's a-natural, and CSb does not fit against S2); the episodes 29-32 and
-   43-46; the upper voice(s) over the mirror pair 33-36 (CSb tested there: fails); the alto 47-54 in
+   and cross-related with S2's a-natural, and CSb does not fit against S2); the episode 29-32; the upper voice(s) over the mirror pair 33-36 (CSb tested there: fails); the alto 47-54 in
    P09 (it must avoid e/f octaves with the augmented bass's e,-f, neighbour notes). In P06 the tenor
    is thematic only in 63-66 (the answer's mirror) and the alto is free throughout; the lament tried
    as the tenor there gave 2 BEAT against the mirror bass, so the lament does not return in the
