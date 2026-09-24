@@ -21,8 +21,8 @@ soprano = \absolute {
   aes'4 r4 r2 |
   r2 c''2~ |
   c''4 bes'4 ees''2~ |
-  ees''2 des''4 f''4~ |
-  f''2 r2 |
+  ees''2 des''4 f''4 |
+  r2 r2 |
 }
 
 alto = \absolute {
@@ -43,8 +43,8 @@ alto = \absolute {
   r4 c''4 bes'4 aes'8 g'8 |
   f'4 g'4 aes'4 bes'4 |
   aes'4 g'4 bes'4. aes'8 |
-  g'2 f'4. ees'8 |
-  d'2 r2 |
+  g'2 f'4. ees'8~ |
+  ees'2 r2 |
 }
 
 tenor = \absolute {
@@ -65,8 +65,8 @@ tenor = \absolute {
   c'2 des'2 |
   d'4. ees'8 f'4. g'8 |
   f'2. ees'4~ |
-  ees'4 d'4 des'4 c'4 |
-  b2 r2 |
+  ees'4 d'4 des'4 c'4~ |
+  c'2 r2 |
 }
 
 bass = \absolute {
