@@ -9,7 +9,7 @@ cands = {
 }
 first = base['soprano'][:12]
 for k, (d, a17) in cands.items():
-    sc = {v: list(base[v]) for v in fl.VOICES}; sc['soprano'] = first + [b.strip() for b in d.split('|')]
+    sc = {v: list(base[v]) for v in fl.VOICES}; sc['soprano'] = first + [b.strip() for b in d.split('|')] + base['soprano'][17:]
     sc['alto'][16] = a17
     fl.write(f'/tmp/ds_{k}.ly', sc)
     lines, sl = fl.check(f'/tmp/ds_{k}.ly', bars='12-17')
