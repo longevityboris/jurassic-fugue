@@ -1,0 +1,401 @@
+{
+ "demo": {
+  "alto": [],
+  "soprano": [
+   {
+    "t_stem": 41.92,
+    "drop_db": -36.3,
+    "level_re_stem_max_db": -18.9,
+    "cut_note": {
+     "key": 75,
+     "after_on_ms": 171.1,
+     "before_off_ms": 21.1
+    }
+   }
+  ],
+  "tenor": [
+   {
+    "t_stem": 55.093,
+    "drop_db": -55.7,
+    "level_re_stem_max_db": -24.5,
+    "cut_note": {
+     "key": 55,
+     "after_on_ms": 161.4,
+     "before_off_ms": 1146.4
+    }
+   },
+   {
+    "t_stem": 66.223,
+    "drop_db": -26.4,
+    "level_re_stem_max_db": -22.5,
+    "cut_note": {
+     "key": 44,
+     "after_on_ms": 379.5,
+     "before_off_ms": 518.2
+    }
+   },
+   {
+    "t_stem": 100.16,
+    "drop_db": -25.8,
+    "level_re_stem_max_db": -16.8,
+    "cut_note": {
+     "key": 51,
+     "after_on_ms": 534.5,
+     "before_off_ms": 1721.2
+    }
+   }
+  ],
+  "pedal": [
+   {
+    "t_stem": 38.461,
+    "drop_db": -25.2,
+    "level_re_stem_max_db": -26.5,
+    "cut_note": {
+     "key": 29,
+     "after_on_ms": 1793.6,
+     "before_off_ms": 8.5
+    }
+   },
+   {
+    "t_stem": 62.509,
+    "drop_db": -28.1,
+    "level_re_stem_max_db": -48.0,
+    "cut_note": null
+   },
+   {
+    "t_stem": 122.449,
+    "drop_db": -25.4,
+    "level_re_stem_max_db": -15.4,
+    "cut_note": null
+   },
+   {
+    "t_stem": 129.99,
+    "drop_db": -34.8,
+    "level_re_stem_max_db": -14.5,
+    "cut_note": {
+     "key": 29,
+     "after_on_ms": 181.5,
+     "before_off_ms": 1898.3
+    }
+   }
+  ]
+ },
+ "qa": {
+  "alto": [],
+  "soprano": [],
+  "tenor": [
+   {
+    "t_stem": 25.134,
+    "drop_db": -26.3,
+    "level_re_stem_max_db": -32.5,
+    "cut_note": {
+     "key": 58,
+     "after_on_ms": 36.3,
+     "before_off_ms": 126.1
+    }
+   },
+   {
+    "t_stem": 60.649,
+    "drop_db": -27.5,
+    "level_re_stem_max_db": -22.4,
+    "cut_note": {
+     "key": 44,
+     "after_on_ms": 349.9,
+     "before_off_ms": 472.1
+    }
+   },
+   {
+    "t_stem": 66.692,
+    "drop_db": -25.1,
+    "level_re_stem_max_db": -27.0,
+    "cut_note": {
+     "key": 50,
+     "after_on_ms": 559.6,
+     "before_off_ms": 262.5
+    }
+   },
+   {
+    "t_stem": 90.856,
+    "drop_db": -27.5,
+    "level_re_stem_max_db": -13.7,
+    "cut_note": {
+     "key": 50,
+     "after_on_ms": 559.5,
+     "before_off_ms": 265.1
+    }
+   },
+   {
+    "t_stem": 91.673,
+    "drop_db": -25.8,
+    "level_re_stem_max_db": -13.5,
+    "cut_note": {
+     "key": 51,
+     "after_on_ms": 534.5,
+     "before_off_ms": 1531.5
+    }
+   },
+   {
+    "t_stem": 94.203,
+    "drop_db": -26.5,
+    "level_re_stem_max_db": -13.0,
+    "cut_note": {
+     "key": 50,
+     "after_on_ms": 566.2,
+     "before_off_ms": 251.5
+    }
+   },
+   {
+    "t_stem": 100.942,
+    "drop_db": -27.1,
+    "level_re_stem_max_db": -36.5,
+    "cut_note": {
+     "key": 58,
+     "after_on_ms": 3971.0,
+     "before_off_ms": 179.1
+    }
+   },
+   {
+    "t_stem": 101.015,
+    "drop_db": -28.3,
+    "level_re_stem_max_db": -36.5,
+    "cut_note": {
+     "key": 58,
+     "after_on_ms": 4044.0,
+     "before_off_ms": 106.1
+    }
+   }
+  ],
+  "pedal": [
+   {
+    "t_stem": 24.917,
+    "drop_db": -25.1,
+    "level_re_stem_max_db": -28.0,
+    "cut_note": {
+     "key": 29,
+     "after_on_ms": 39.8,
+     "before_off_ms": 134.7
+    }
+   }
+  ]
+ },
+ "rerun_stream": [
+  {
+   "seconds": 5.0,
+   "truncations": {
+    "alto": 0,
+    "soprano": 0,
+    "tenor": 2,
+    "pedal": 3
+   },
+   "cut": [
+    [
+     "tenor",
+     66.223,
+     44
+    ],
+    [
+     "tenor",
+     100.16,
+     51
+    ],
+    [
+     "pedal",
+     38.461,
+     29
+    ],
+    [
+     "pedal",
+     62.509,
+     null
+    ],
+    [
+     "pedal",
+     122.449,
+     null
+    ]
+   ]
+  },
+  {
+   "seconds": 6.1,
+   "truncations": {
+    "alto": 0,
+    "soprano": 0,
+    "tenor": 2,
+    "pedal": 3
+   },
+   "cut": [
+    [
+     "tenor",
+     66.223,
+     44
+    ],
+    [
+     "tenor",
+     100.16,
+     51
+    ],
+    [
+     "pedal",
+     38.461,
+     29
+    ],
+    [
+     "pedal",
+     62.509,
+     null
+    ],
+    [
+     "pedal",
+     122.449,
+     null
+    ]
+   ]
+  },
+  {
+   "seconds": 5.4,
+   "truncations": {
+    "alto": 0,
+    "soprano": 0,
+    "tenor": 2,
+    "pedal": 3
+   },
+   "cut": [
+    [
+     "tenor",
+     66.223,
+     44
+    ],
+    [
+     "tenor",
+     100.16,
+     51
+    ],
+    [
+     "pedal",
+     38.461,
+     29
+    ],
+    [
+     "pedal",
+     62.509,
+     null
+    ],
+    [
+     "pedal",
+     122.449,
+     null
+    ]
+   ]
+  }
+ ],
+ "rerun_ram": [
+  {
+   "seconds": 12.3,
+   "truncations": {
+    "alto": 0,
+    "soprano": 0,
+    "tenor": 2,
+    "pedal": 3
+   },
+   "cut": [
+    [
+     "tenor",
+     66.223,
+     44
+    ],
+    [
+     "tenor",
+     100.16,
+     51
+    ],
+    [
+     "pedal",
+     38.461,
+     29
+    ],
+    [
+     "pedal",
+     62.509,
+     null
+    ],
+    [
+     "pedal",
+     122.449,
+     null
+    ]
+   ]
+  },
+  {
+   "seconds": 13.5,
+   "truncations": {
+    "alto": 0,
+    "soprano": 0,
+    "tenor": 2,
+    "pedal": 3
+   },
+   "cut": [
+    [
+     "tenor",
+     66.223,
+     44
+    ],
+    [
+     "tenor",
+     100.16,
+     51
+    ],
+    [
+     "pedal",
+     38.461,
+     29
+    ],
+    [
+     "pedal",
+     62.509,
+     null
+    ],
+    [
+     "pedal",
+     122.449,
+     null
+    ]
+   ]
+  },
+  {
+   "seconds": 22.9,
+   "truncations": {
+    "alto": 0,
+    "soprano": 0,
+    "tenor": 2,
+    "pedal": 3
+   },
+   "cut": [
+    [
+     "tenor",
+     66.223,
+     44
+    ],
+    [
+     "tenor",
+     100.16,
+     51
+    ],
+    [
+     "pedal",
+     38.461,
+     29
+    ],
+    [
+     "pedal",
+     62.509,
+     null
+    ],
+    [
+     "pedal",
+     122.449,
+     null
+    ]
+   ]
+  }
+ ]
+}
