@@ -149,7 +149,7 @@ unless Part V is taken below quarter = 60.
 | 25-28 | | FIRST COMBINATION CB1 = P05: S2 (soprano, c'') over the answer (alto, f'); both halves of the tune at once | b-flat (on V) | mf |
 | 29-32 | | episode: CSb head in sequence down by fifths, lament fragments in bass -> e-flat minor | -> e-flat | mf > p |
 | 33-36 | III Inversio | = P08: S1 (alto, ees') with its diatonic MIRROR (bass, ees -> bes,) simultaneously, the two voices ALONE (CSb was tested above this pair and does not fit: PAR! + DIS!) | e-flat | p subito, misterioso |
-| 37-42 | | STRETTO CHAIN at the lower fifth, 2 bars apart = P07 (P04 in b-flat is the same device): S ees'' (e-flat), A aes' (a-flat), T des' (D-FLAT MAJOR: the tune's first, false, glimpse of major) | e-flat -> a-flat -> D-flat | p < f |
+| 37-42 | | (37:1 the mirror's elision d in the bass resolves up to ees under the new entry) STRETTO CHAIN at the lower fifth, 2 bars apart = P07 (P04 in b-flat is the same device): S ees'' (e-flat), A aes' (a-flat), T des' (D-FLAT MAJOR: the tune's first, false, glimpse of major) | e-flat -> a-flat -> D-flat | p < f |
 | 43-46 | | = P12: the D-flat-major entry (tenor) finishes over the LAMENT's fourth statement, now a bass descent des-c-ces-bes-a-aes-g-ges (-> f at 47); 44 NEAPOLITAN C-flat in root position (bass ces); soprano echoes the subject head (ges''2. ges''8 f''8); 45 vii(o)7; 46 G half-dim 7 -> ITALIAN sixth (ges, bes e' bes') -> V pedal at 47 | D-flat -> C-flat (N) -> b-flat: It6 | f > mp < |
 | 47-54 | IV Pedale | = P09: ANSWER IN 2x AUGMENTATION in the bass: F pedal 47-50 (f... f-e ...), rising f-g-bes 51-53, bes-aes-f 54. Above: S2 (soprano, c'') 47-50 with a breath (c''2. r4) before 51; lament CSa over the pedal (tenor 47-50: bes-a-aes-g-ges-f = sus4-3, then chromatic prolongation of V); the ANSWER at the top (soprano f'' 51-54, peak bes'' at 53-54); alto to be composed | b-flat: V | mf < ff |
 | 55-57 | | CLIMAX (= P09 bars 9-11): 55 ITALIAN sixth fff (ges, e' bes' bes''); 56 V (f, f' c'' bes''->a'': the subject's head as the 4-3 suspension of the dominant); 57 DECEPTIVE cadence to G-flat (ges, des' bes' bes''). An Italian, not German, sixth here because Ger6 -> V puts parallel fifths between bass and the fifth of the chord | | fff, allargando |
@@ -216,6 +216,9 @@ piece balances sharp-side tension (II) against flat-side darkness (III) around t
 - PEDAL POINTS: dominant pedal 47-50 that IS the subject (answer in 2x augmentation, P09); tonic pedal
   59-60 that is the subject's mirror (at tempo, P06).
 - DECEPTIVE CADENCE: 57 (V -> VI, G-flat), the last flat-side sonority before the major.
+- CHROMATIC-MEDIANT DAWN: the climax ends on G-flat major (57), silence (58), then B-flat MAJOR (59):
+  a major-third shift whose common tone bes (the soprano's held bes'' becomes the cantus firmus's
+  first note bes') carries the listener from the last flat-side chord into the light.
 - MODAL MIXTURE at the very end: minor iv (ges) in the plagal close, 68.
 - THE LAST NOTE: the tune's open ending c'' rises to d'' (67): the one scale degree that the whole
   piece has been withholding (des in minor, d in major).
