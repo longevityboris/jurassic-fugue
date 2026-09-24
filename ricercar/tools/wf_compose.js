@@ -26,6 +26,8 @@ Voices are \\absolute variables soprano, alto, tenor, bass (notes, rests, ties, 
 TOOLS: checker \`python3 ${R}/tools/check.py FILE --voices soprano,alto,tenor,bass --measure ${MEASURE} [--bars A-B] [--grid] [--quiet]\` (0 PAR!, 0 BEAT, 0 DIS! required; justify every D4?/DIR by ear in a comment); harmony x-ray \`python3 ${R}/tools/harmony.py FILE --key ... --stats --measure ${MEASURE}\`; assembler \`cd ${R} && python3 tools/assemble.py --measure ${MEASURE}\` (reads score/sections/secNN*.ly, first line '% bars A-B').
 QUALITY BAR, every bar: every voice is a real melody (no padding, no static held chord tones without purpose); dissonance prepared and resolved Bach-style; subjects enter exactly as the blueprint says at the stated pitch; harmonic rhythm alive; chromaticism and suspensions where the blueprint places them; each episode derives from subject cells.`
 
+// listenable checkpoint for the user after each integration step
+const PREVIEW = tag => `\nCHECKPOINT PREVIEW: after the piece is clean, render a listening preview so the user can check progress: \`cd ${R} && python3 tools/perform.py score/music-voices.ly design/final-lab/plan.json /tmp/${tag}_piano.mid --target piano && (cd audio/piano && python3 render_piano.py /tmp/${tag}_piano.mid -o ${R}/preview/${tag}_piano)\` and the same with --target strings through audio/strings/render_quartet.py to ${R}/preview/${tag}_quartet. Also engrave ${R}/preview/${tag}_score.pdf (piano layout). Report the three paths in your notes.`
 const secFile = (i, s) => `${R}/score/sections/sec${String(i + 1).padStart(2, '0')}_${s.id.replace(/[^A-Za-z0-9]+/g, '_')}.ly`
 
 const SEC_SCHEMA = {
@@ -82,7 +84,7 @@ const JOIN_SCHEMA = {
   required: ['total_bars', 'checker_summary', 'seam_fixes', 'remaining'],
 }
 let join = await agent(`${CONTEXT}
-ROLE: INTEGRATOR. ${missing.length ? `Sections ${missing.join(', ')} are MISSING: compose them first from the blueprint spec. ` : ''}Run the assembler (cd ${R} && python3 tools/assemble.py --measure ${MEASURE}), which writes score/music-voices.ly; fix any length/header errors. Run the checker on the assembled file for the whole piece and specifically across every seam (2 bars either side of each section boundary): fix parallels, bad leaps, unresolved dissonances, broken ties and unmet boundary conditions by editing the section files minimally near the seam. Re-assemble and re-check until the whole piece is clean. Also create ${R}/score/music-global.ly defining \\global (key, time, tempo marks per the blueprint), \\marks (rehearsal marks at section starts) and \\dynamicsLine (dynamics and hairpins per the blueprint's dynamic arc, as spacer rests with dynamics) so that ${R}/score/piano.ly and quartet.ly compile; compile both with lilypond (output into ${R}/score/out/) and fix errors. Commit.`,
+ROLE: INTEGRATOR. ${missing.length ? `Sections ${missing.join(', ')} are MISSING: compose them first from the blueprint spec. ` : ''}Run the assembler (cd ${R} && python3 tools/assemble.py --measure ${MEASURE}), which writes score/music-voices.ly; fix any length/header errors. Run the checker on the assembled file for the whole piece and specifically across every seam (2 bars either side of each section boundary): fix parallels, bad leaps, unresolved dissonances, broken ties and unmet boundary conditions by editing the section files minimally near the seam. Re-assemble and re-check until the whole piece is clean. Also create ${R}/score/music-global.ly defining \\global (key, time, tempo marks per the blueprint), \\marks (rehearsal marks at section starts) and \\dynamicsLine (dynamics and hairpins per the blueprint's dynamic arc, as spacer rests with dynamics) so that ${R}/score/piano.ly and quartet.ly compile; compile both with lilypond (output into ${R}/score/out/) and fix errors. Commit.${PREVIEW('draft1_composed')}`,
   { label: 'integrator', phase: 'Join', schema: JOIN_SCHEMA })
 log(`Joined: ${join ? join.total_bars + ' bars; ' + join.checker_summary : 'integrator failed'}`)
 
@@ -110,7 +112,7 @@ Every issue must name the SECTION FILE and bar:beat. Report only issues that mat
 ROLE: SECTION FIXER (round ${round}) for ${g.file} (section ${g.s.id}, bars ${g.s.bars}). Resolve these whole-piece review findings, editing ONLY this file; keep the first and last beat of each voice unchanged unless a finding requires it (then note it). Checker-clean, commit.
 ${fmtIssues(g.xs)}`, { label: `fix ${g.s.id} r${round}`, phase: 'Review', schema: SEC_SCHEMA })))
   join = await agent(`${CONTEXT}
-ROLE: INTEGRATOR (round ${round}). Section fixers just edited section files. Re-assemble, re-check the whole piece and every seam, fix seam problems minimally, recompile piano.ly and quartet.ly into ${R}/score/out/, commit.${unplaced.length ? `\nAlso resolve these findings that were not tied to one section:\n${fmtIssues(unplaced)}` : ''}`,
+ROLE: INTEGRATOR (round ${round}). Section fixers just edited section files. Re-assemble, re-check the whole piece and every seam, fix seam problems minimally, recompile piano.ly and quartet.ly into ${R}/score/out/, commit.${PREVIEW('draft' + (round + 1) + '_review' + round)}${unplaced.length ? `\nAlso resolve these findings that were not tied to one section:\n${fmtIssues(unplaced)}` : ''}`,
     { label: `integrator r${round}`, phase: 'Review', schema: JOIN_SCHEMA }) || join
 }
 

@@ -4,3 +4,4 @@
 *.m4a
 __pycache__/
 *.pyc
+ricercar/preview/*.mid
