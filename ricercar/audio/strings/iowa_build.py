@@ -12,21 +12,27 @@ For every instrument (violin, viola, cello, bass) and every chromatic note it
   3. extends the sustain to SUSTAIN_S seconds by pitch-synchronous grain
      splicing (cross-correlation matched splice points, 70 ms crossfades, random
      grain order, slow level normalisation) so long notes never loop audibly;
-  4. measures the K-weighted (BS.1770) steady level of each note, smooths the
+  4. flattens the pitch drift of the recorded attack (attack_tune.py: many notes
+     start 20-120 c off and settle over 0.2-0.5 s, which is all a short note
+     plays) by time-varying resampling, and records where an unpitched ff
+     scratch ends (settle_s) so strokes start at most 30-40 ms before it;
+  5. measures the K-weighted (BS.1770) steady level of each note, smooths the
      level across the range, and calibrates the three layers to fixed loudness steps
      (ff = 0 dB, mf = -6.5 dB, pp = -16 dB) so CC1 behaves predictably;
-  5. writes <inst>.sfz with:
+  6. writes <inst>.sfz with:
        CC1   dynamics on the perform.py scale (ppp 36, pp 49, p 62, mp 75, mf 88,
-             f 101, ff 114, fff 127): equal-power crossfade of the recorded layers
-             pp (<=49) -> mf (88) -> ff (>=114) plus a volume curve so loudness
-             moves about 3.5 dB per dynamic step (CC1_TARGET)
+             f 101, ff 114, fff 127): the pp recording up to 65, mf from 71 to
+             104, ff from 110, equal-power crossfades only in the two narrow zones
+             between (two takes of one note interfere, see XF); a volume curve
+             moves loudness about 3.5 dB per dynamic step (CC1_TARGET) and a high
+             shelf adds brightness with CC1 inside each layer (EQ_DEPTH)
        CC20  articulation (set by render_quartet.py before each note-on):
              0-63 normal bow stroke (recorded attack, slow swells shortened),
-             64-95 legato (slurred: starts in the sustain, 40-70 ms fade-in),
+             64-95 legato (slurred: starts in the sustain, 30 ms fade-in),
              96-127 short (crisp onset, small accent decay, for fast notes)
-       CC21  release time: 0.03 s + 1.2 s * cc21/127
-       vel   attack softness (vel 127 = the recorded bite, vel 1 = 100 ms fade-in)
-             and a gentle accent (amp_veltrack 30 %)
+       CC21  release time: 0.03 s + 1.2 s * cc21/127 (exponential, -78 dB at the end)
+       vel   attack softness of the normal stroke (vel 127: 15 ms fade-in, vel 32:
+             41 ms) and a gentle accent (amp_veltrack 30 %)
        pitch bend +-2 semitones.
      CC11/CC7 are applied by render_quartet.py as post-gain on each voice.
 
@@ -49,6 +55,7 @@ import soundfile as sf
 from scipy.signal import bilinear, butter, lfilter, resample_poly, sosfiltfilt
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import attack_tune  # noqa: E402
 from iowa_common import (DYNAMICS, INSTRUMENTS, QUARTET_DIR, RAW_DIR, base_of, load_audio,  # noqa: E402
                          load_iowa, midi_name, midi_to_hz)
 
@@ -60,7 +67,19 @@ SUSTAIN_S = 10.0
 # Each recorded layer plays alone at its anchor and is crossfaded (equal power)
 # with its neighbour in between: pp <= 49, pp->mf 49..88, mf->ff 88..114, ff >= 114.
 LAYER_CC1 = {"pp": 49, "mf": 88, "ff": 114}
-XF = {"pp": (0, 49, 49, 88), "mf": (49, 88, 88, 114), "ff": (88, 114, 114, 127)}
+# Two recordings of the same note sounding together interfere (independent vibrato:
+# the sum swells and fades by 5-8 dB at 0.2-3 Hz), so the layers overlap only in two
+# narrow zones, pp->mf over CC1 65-72 and mf->ff over 104-111 (sfizz: gain = 0 at the
+# zone start, 1 one step before its end).  Every named level (p 62, mp 75, f 101,
+# ff 114) is a single recording; CC1_TARGET carries the loudness in between.
+# render_quartet.py never parks inside a zone: it holds each layer in its home range
+# (LAYER_HOME) and crosses a zone in 50 ms at a note-on (0.3 s inside a held note),
+# with hysteresis (LAYER_UP / LAYER_DOWN), and restores the loudness of the true CC1
+# as a gain.  Other players of the SFZ get the narrow zones.
+XF = {"pp": (0, 65, 65, 72), "mf": (65, 72, 104, 111), "ff": (104, 111, 111, 127)}
+LAYER_HOME = {"pp": (0, 65), "mf": (71, 104), "ff": (110, 127)}
+LAYER_UP = {"pp": 70, "mf": 109}          # switch to the next layer at CC1 >= this
+LAYER_DOWN = {"mf": 66, "ff": 106}        # back to the lower layer at CC1 <= this
 # loudness of each layer at its anchor (dB re ff) = the CC1 target there, so the
 # compensation curve is 0 dB at the anchors and only evens out the crossfades
 LAYER_DB = {"pp": -16.0, "mf": -6.5, "ff": 0.0}
@@ -72,8 +91,16 @@ CC1_TARGET = [(0, -30.0), (20, -24.5), (36, -20.0), (49, -16.0), (62, -12.5), (7
 # articulation timing (s): 'normal' notes keep at most NORMAL_RISE of the recorded
 # rise before the note reaches steady-3 dB (Iowa players often swell into pp/mf
 # notes for 0.3-0.6 s, far too slow for eighth notes); 'short' notes keep SHORT_RISE
-NORMAL_RISE = 0.14
+NORMAL_RISE = 0.10
 SHORT_RISE = 0.035
+# a stroke starts at most this long before the pitch has settled (ff scratch on low strings)
+SETTLE_LEAD = {"normal": 0.04, "short": 0.03}
+# brightness follows CC1 within each layer too: a high shelf (EQ_FREQ Hz) whose gain is
+# EQ_DEPTH[inst] * EQ_CURVE(CC1) dB (0 at mf).  The violins' recorded mf and ff differ
+# little above 2 kHz (Violin I: 0.0 dB gain-matched 2-5 kHz), the cello's by 12 dB.
+EQ_FREQ = 2200
+EQ_DEPTH = {"violin": 5.0, "violin2": 5.0, "viola": 3.0, "cello": 1.5, "bass": 1.5}
+EQ_CURVE = [(0, -1.0), (49, -0.5), (88, 0.0), (114, 0.5), (127, 0.7)]
 
 
 # --------------------------------------------------------------------------- DSP
@@ -328,6 +355,14 @@ def process_one(job):
     cut = s0 + int(min(0.3 * fs, (s1 - s0) / 2))
     total = int(sustain_s * fs)
     y = extend_sustain(seg, fs, f0, s0, s1, total, seed=midi * 7 + DYNAMICS.index(dyn), cut=cut)
+    # flatten the pitch drift of the attack (attack_tune.py); y[:end] is the recorded
+    # attack, the grain-spliced sustain starts at `cut`
+    t20 = rise_times(y, fs, s0, s1)["rise20_s"]
+    end = min(cut, max(s0, int((t20 + 0.45) * fs)))
+    y, shift, att_info = attack_tune.correct_attack(y, fs, f0, end, t20)
+    remap = att_info.pop("remap", None)
+    if remap is not None:
+        s0, s1 = int(remap(s0)), int(remap(s1))
     # fade the last 20 ms (the loop region never reaches it)
     fl = int(0.02 * fs)
     y[-fl:] *= np.linspace(1, 0, fl)[:, None]
@@ -346,7 +381,7 @@ def process_one(job):
     m = dict(inst=inst, dyn=dyn, midi=midi, file=c["file"], string=c["string"], cents=c["cents"],
              path=str(out_path.relative_to(QUARTET_DIR)), level_db=level, klevel_db=klevel,
              norm_gain_db=20 * np.log10(gain), attack_s=att, loop_start=int(loop_start), loop_end=int(loop_end),
-             s0=s0, s1=s1, frames=len(y))
+             s0=s0, s1=s1, frames=len(y), attack=att_info, settle_s=att_info["settle_s"])
     m.update(rise_times(y, fs, s0, s1))
     return m
 
@@ -366,6 +401,28 @@ def rise_times(y: np.ndarray, fs: int, s0: int, s1: int) -> dict:
     return dict(rise20_s=first(-20.0), rise6_s=first(-6.0), rise3_s=first(-3.0))
 
 
+SETTLE_VERSION = 2
+
+
+def _settle_one(m):
+    y, fs = sf.read(str(QUARTET_DIR / m["path"]), dtype="float64", always_2d=True)
+    f0 = midi_to_hz(m["midi"] + m["cents"] / 100.0)
+    end = min(m["s0"] + int(0.3 * fs), max(m["s0"], int((m["rise20_s"] + 0.45) * fs)))
+    return attack_tune.measure_settle(y, fs, f0, end, m["rise20_s"])
+
+
+def add_settle_times(meta: list[dict], jobs: int = 8) -> bool:
+    """(Re)measure settle_s on the built (attack-corrected) samples when the rule changed."""
+    todo = [m for m in meta if m.get("settle_v") != SETTLE_VERSION]
+    if not todo:
+        return False
+    with ProcessPoolExecutor(jobs) as ex:
+        for m, st in zip(todo, ex.map(_settle_one, todo)):
+            m["settle_s"] = st
+            m["settle_v"] = SETTLE_VERSION
+    return True
+
+
 def add_rise_times(meta: list[dict]) -> bool:
     changed = False
     for m in meta:
@@ -381,12 +438,17 @@ def articulation_offsets(m: dict, fs: int = SR) -> dict:
     """Sample start per articulation (frames).  Every stroke starts no earlier than
     5 ms before the tone does (t20), so all instruments speak on the note-on;
     normal strokes keep at most NORMAL_RISE of a slow swell, short strokes
-    SHORT_RISE; slurred notes enter in the sustain."""
+    SHORT_RISE; where the pitch only settles later (the scratch of an ff stroke on a
+    low string, attack_tune.settle_s), a stroke starts at most SETTLE_LEAD before it;
+    slurred notes enter in the sustain, after the pitch has settled."""
     t20, t3 = m["rise20_s"], m["rise3_s"]
+    settle = m.get("settle_s", t20)
     start = max(0.0, t20 - 0.005)
     normal = max(start, t3 - NORMAL_RISE)
     short = max(start, t3 - SHORT_RISE) if t3 - t20 > 0.1 else max(start, start + 0.3 * (t3 - start))
-    legato = float(np.clip(max(t3 + 0.05, 0.12), 0.12, max(0.12, m["s1"] / fs - 0.2)))
+    normal = max(normal, min(settle - SETTLE_LEAD["normal"], t20 + 0.2))
+    short = max(short, min(settle - SETTLE_LEAD["short"], t20 + 0.2))
+    legato = float(np.clip(max(t3 + 0.05, 0.12, settle + 0.02), 0.12, max(0.12, m["s1"] / fs - 0.2)))
     return dict(normal_offset=int(normal * fs), short_offset=int(short * fs), legato_offset=int(legato * fs))
 
 
@@ -497,12 +559,18 @@ def write_sfz(inst: str, meta: list[dict]):
         "set_cc20=0",
         "set_cc21=30",
         "<curve>curve_index=17 " + " ".join(f"v{v:03d}={comp[v] / depth:.4f}" for v in range(128)),
+        "<curve>curve_index=18 " + " ".join(
+            f"v{v:03d}={np.interp(v, [p[0] for p in EQ_CURVE], [p[1] for p in EQ_CURVE]):.4f}" for v in range(128)),
         "<global>",
         "loop_mode=loop_continuous loop_crossfade=0.12",
         "xf_cccurve=power",
         f"volume_oncc1={depth:g} volume_curvecc1=17",
+        # brightness follows CC1 inside each layer as well (0 dB at mf)
+        f"eq1_type=hshelf eq1_freq={EQ_FREQ} eq1_bw=1 eq1_gain=0 "
+        f"eq1_gain_oncc1={EQ_DEPTH.get(inst, 2.0):g} eq1_gain_curvecc1=18",
         "amp_veltrack=30",
-        "ampeg_attack=0.10 ampeg_vel2attack=-0.09",
+        # normal stroke: velocity 127 = 15 ms, velocity 32 (pp) = 41 ms linear fade-in
+        "ampeg_attack=0.05 ampeg_vel2attack=-0.035",
         "ampeg_release=0.03 ampeg_release_oncc21=1.2",
         "bend_up=200 bend_down=-200",
         "pitch_random=3",
@@ -510,10 +578,11 @@ def write_sfz(inst: str, meta: list[dict]):
     ]
     arts = [  # (locc20, hicc20, offset key, envelope override)
         # normal bow stroke: recorded attack, slow swells shortened to NORMAL_RISE;
-        # velocity 127 = the recorded bite, low velocity = up to 90 ms softer start
+        # velocity 127 = the recorded bite, low velocity = a softer start (up to 50 ms)
         (0, 63, "normal_offset", None),
         # slurred: enters in the sustain, fades in under the previous note's release
-        (64, 95, "legato_offset", "ampeg_attack=0.07 ampeg_vel2attack=-0.03"),
+        # (render_quartet.py starts it 20 ms early so the 30 ms fade is centred on the beat)
+        (64, 95, "legato_offset", "ampeg_attack=0.03 ampeg_vel2attack=0"),
         # short (detache / spiccato-like): crisp start and a small accent decay
         (96, 127, "short_offset", "ampeg_attack=0.008 ampeg_vel2attack=0 ampeg_hold=0.03 "
                                    "ampeg_decay=0.12 ampeg_sustain=60"),
@@ -592,7 +661,7 @@ def main():
             meta_path.parent.mkdir(parents=True, exist_ok=True)
             meta_path.write_text(json.dumps(all_meta, indent=1))
         meta = all_meta[inst]
-        if add_k_levels(meta) | add_rise_times(meta):
+        if add_k_levels(meta) | add_rise_times(meta) | add_settle_times(meta, a.jobs):
             meta_path.write_text(json.dumps(all_meta, indent=1))
         path = write_sfz(inst, meta)
         cov = {d: len([m for m in meta if m["dyn"] == d]) for d in DYNAMICS}

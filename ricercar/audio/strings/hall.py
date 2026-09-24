@@ -17,12 +17,23 @@ Each instrument is fed to the hall as the mono source it is.  Source S1 stood
 left of centre, so its early reflections lean 1.5 dB to the left; instruments
 on the right of the stage use the mirrored response, so every player gets
 the stronger early reflections from its own side.
+
+Levels: the IR is normalised to unit energy summed over both channels, and
+place_dry() keeps the stem's energy (constant-power pan), so --wet W dB means
+exactly what it says: reverb energy W dB relative to the dry sound, and c80()
+is the clarity of that mix for an impulse.
+
+Tail: the measured Detmold response is 1.44 s long and faded out from 1.3 s
+(at about -50 dB), although the hall decays for 1.2-2.1 s per octave.  At load
+time extend_tail() continues it with octave-band noise decaying at the rates
+fitted to the measured response (0.25-1.1 s), crossfaded in at 1.0-1.2 s, to
+3.5 s, so a final chord dies away the way the room does.
 """
 from __future__ import annotations
 
 import numpy as np
 import soundfile as sf
-from scipy.signal import butter, fftconvolve, sosfilt
+from scipy.signal import butter, fftconvolve, sosfilt, sosfiltfilt
 
 from iowa_common import IR_ROOT
 
@@ -116,7 +127,72 @@ def synthetic_ir(sr: int, seed: int = 1) -> np.ndarray:
         tail *= onset
         tail *= ref * 0.35 / (np.sqrt(np.mean(tail[int(0.08 * sr): int(0.2 * sr)] ** 2)) + 1e-12)
         ir[:, ch] += tail
-    return ir / np.sqrt(np.sum(ir ** 2) / 2)
+    return ir / np.sqrt(np.sum(ir ** 2))
+
+
+# ------------------------------------------------------------- tail extension
+OCTAVES = [63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+
+
+def _octave_sos(fc: float, sr: int):
+    lo, hi = fc / np.sqrt(2), fc * np.sqrt(2)
+    if fc == OCTAVES[0]:
+        return butter(3, hi, "lowpass", fs=sr, output="sos")
+    if hi >= 0.49 * sr:
+        return butter(3, lo, "highpass", fs=sr, output="sos")
+    return butter(3, [lo, hi], "bandpass", fs=sr, output="sos")
+
+
+def decay_rates(ir: np.ndarray, sr: int, t0: float = 0.25, t1: float = 1.1) -> dict:
+    """T60 (s) per octave band from a line fitted to the 50 ms energy envelope (dB)
+    of the mid (L+R) response over [t0, t1]."""
+    m = ir.mean(axis=1)
+    t = np.arange(len(m)) / sr
+    w = int(0.05 * sr)
+    sel = (t >= t0) & (t <= t1)
+    out = {}
+    for fc in OCTAVES:
+        b = sosfiltfilt(_octave_sos(fc, sr), m)
+        e = 10 * np.log10(np.convolve(b ** 2, np.ones(w) / w, mode="same") + 1e-30)
+        slope = np.polyfit(t[sel], e[sel], 1)[0]
+        out[fc] = float(np.clip(-60.0 / slope if slope < 0 else 3.0, 0.4, 3.5))
+    for lo, hi in zip(OCTAVES[5:], OCTAVES[6:]):       # air absorption: the top octaves never ring longer
+        out[hi] = min(out[hi], out[lo])
+    return out
+
+
+def extend_tail(ir: np.ndarray, sr: int, length_s: float = 3.5, xf=(1.0, 1.2), seed: int = 11) -> np.ndarray:
+    """Continue a truncated IR with per-octave exponentially decaying noise that
+    matches its band levels around the splice and its fitted decay rates."""
+    t60 = decay_rates(ir, sr)
+    n = int(length_s * sr)
+    t = np.arange(n) / sr
+    rng = np.random.default_rng(seed)
+    a, b = int(xf[0] * sr), int(xf[1] * sr)
+    ref0, ref1 = int((xf[0] - 0.15) * sr), a                   # band levels matched here
+    tref = 0.5 * (xf[0] - 0.15 + xf[0])
+    rho = float(np.clip(np.corrcoef(ir[int(0.6 * sr): a, 0], ir[int(0.6 * sr): a, 1])[0, 1], -0.9, 0.9))
+    noise = rng.standard_normal((n, 2))
+    noise[:, 1] = rho * noise[:, 0] + np.sqrt(1 - rho ** 2) * noise[:, 1]
+    tail = np.zeros((n, 2))
+    for fc in OCTAVES:
+        sos = _octave_sos(fc, sr)
+        for ch in range(2):
+            nb = sosfiltfilt(sos, noise[:, ch])
+            env = np.exp(-6.91 * (t - tref) / t60[fc])
+            band_ir = sosfiltfilt(sos, ir[:, ch])
+            target = np.sqrt(np.mean(band_ir[ref0:ref1] ** 2))
+            got = np.sqrt(np.mean((nb[ref0:ref1] * env[ref0:ref1]) ** 2)) + 1e-30
+            tail[:, ch] += nb * env * target / got
+    out = np.zeros((n, 2))
+    out[: min(len(ir), n)] = ir[:n]
+    th = np.zeros(n)                                    # equal-power crossfade (uncorrelated signals)
+    th[a:b] = 0.5 * np.pi * (np.arange(b - a) + 0.5) / (b - a)
+    th[b:] = 0.5 * np.pi
+    out = out * np.cos(th)[:, None] + tail * np.sin(th)[:, None]
+    fl = int(0.3 * sr)
+    out[-fl:] *= np.cos(0.5 * np.pi * np.arange(fl) / fl)[:, None] ** 2
+    return out
 
 
 # ------------------------------------------------------------------- hall
@@ -129,14 +205,17 @@ class Hall:
                 raise SystemExit(f"missing {DETMOLD_IR}: run setup_strings.sh (it builds the piano's hall IR)")
             ir, fs = sf.read(str(DETMOLD_IR), dtype="float64", always_2d=True)
             assert fs == sr, "hall IR must be 48 kHz"
+            if len(ir) < 2.5 * sr:
+                ir = extend_tail(ir, sr)
         else:
             ir = synthetic_ir(sr)
-        self.ir = ir / np.sqrt(np.sum(ir ** 2) / 2)                   # unit energy
+        self.ir = ir / np.sqrt(np.sum(ir ** 2))          # unit energy, both channels together
         self.mirror = self.ir[:, ::-1].copy()
 
     def c80(self, g: float) -> float:
-        """Clarity of dry (unit impulse) + g * IR, in dB."""
-        e = np.sum(self.ir ** 2, axis=1) / 2
+        """Clarity (dB) of a placed dry impulse (energy 1 over both channels) plus
+        g * IR (energy g^2), early = first 80 ms."""
+        e = np.sum(self.ir ** 2, axis=1)
         n80 = int(0.080 * self.sr)
         return float(10 * np.log10((1.0 + g * g * e[:n80].sum()) / (g * g * e[n80:].sum())))
 
