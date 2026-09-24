@@ -24,11 +24,11 @@ soprano = \absolute {
   % 41
   e''2. e''8 f''8 | e''2. e''8 f''8 | e''4. d''8 d''4. b'8 | b'2. c''8 e''8 |
   % 45
-  d''4. f''8 a''4 r4 | r1 | r1 | f''2. f''8 ges''8 |
+  d''4. f''8 a''4 r4 | r1 | r1 | r1 |
   % 49
-  f''1 | f''1~ | f''2. ges''4 ~ | ges''2 g''2 |
+  r1 | r2 f''4. f''16 ees''16 | ges''4. ges''16 f''16 a''4. a''16 aes''16 | g''2 c'''4. c'''16 bes''16 |
   % 53
-  bes''2 bes''4 a''4 | bes''1 | bes'2. bes'8 a'8 | bes'2. bes'8 a'8 |
+  bes''2. a''4 | f''4 ees''4 c''4 a'4 | bes'2. bes'8 a'8 | bes'2. bes'8 a'8 |
   % 57
   bes'4. c''8 c''4. ees''8 | ees''2. d''8 bes'8 | c''4. a'8 f'4 d''8 bes'8 | c''2. f''8 bes'8 |
   % 61
@@ -60,11 +60,11 @@ alto = \absolute {
   % 41
   c''4 a'4 gis'4 r4 | e'8 f'8 e'8 d'8 c'8 d'8 b8 g'8 | c'4 d'8 a8 ~ a4 b4 | b8 a8 b8 c'8 d'4 c'4 |
   % 45
-  a'4. f'8 e'4 gis'4 | c''4. a'8 f'4 des''8 bes'8 | c''2. f''8 bes'8 | ees''4. des''8 des''4. c''8 |
+  a'4. f'8 e'4 gis'4 | r1 | r1 | c''4. a'8 f'4 des''8 bes'8 |
   % 49
-  c''1 | des''2 c''2 | a'2 c''4 ees''4 | ees''2 e''2 |
+  c''2. f''8 bes'8 | ees''4. des''8 des''4. c''8 | c''1 | e''4. e''16 dis''16 e''2 |
   % 53
-  e''2. c''4 | ees'2. ees'4 | d'4. ees'8 f'4 ees'4 | d'4 f'4 ees'4 f'8 ees'8 |
+  e''4. e''16 d''16 e''4 f''4 | c''2 a'4 c'4 | d'4. ees'8 f'4 ees'4 | d'4 f'4 ees'4 f'8 ees'8 |
   % 57
   f'4. ees'8 ees'4. f'8 | a'2 g'4 f'4~ | f'4 e'4 d'4 e'4~ | e'4 ees'4 f'2 |
   % 61
@@ -96,11 +96,11 @@ tenor = \absolute {
   % 41
   a4. c'8 e'4 r4 | r1 | r1 | r1 |
   % 45
-  a4. a8 c'4 b4 | bes2 a2 | aes2 g4 ges4 | bes2. bes8 a8 |
+  a4. a8 c'4 b4 | bes2 a2 | aes2 g4 c'4 | bes2. bes8 a8 |
   % 49
-  bes2. bes8 a8 | bes4. c'8 c'4. ees'8 | ees'2. des'8 bes8 | c'4. a8 bes2 ~ |
+  bes2. bes8 a8 | bes4. c'8 c'4. ees'8 | ees'2. des'8 bes8 | c'4. a8 bes2 |
   % 53
-  bes2. c'4 | g2. ges4 | f2 g4 f4 | bes4 aes4 g4 f4 |
+  g2 g4 c'4 | a2 c'4 ees4 | f2 g4 f4 | bes4 aes4 g4 f4 |
   % 57
   f4 d'4 c'4. c'8 | c'2. f4 | f2. f8 g8 | f2. f8 g8 |
   % 61

@@ -120,27 +120,28 @@ SECTIONS = [
          breaths=[{'at': '1:1', 'ms': 300}],
          pedal=[],
     ),
-    dict(id='sec06_pedal_climax', title='Dominant pedal, combination, Climax II, plagal turn', bars=9,
-         soprano='''r1 | r1 | f''2. f''8 ges''8 | f''1 |
-            f''1~ | f''2. ges''4 ~ | ges''2 g''2 | bes''2 bes''4 a''4 |
-            bes''1''',
-         alto='''c''4. a'8 f'4 des''8 bes'8 | c''2. f''8 bes'8 | ees''4. des''8 des''4. c''8 | c''1 |
-            des''2 c''2 | a'2 c''4 ees''4 | ees''2 e''2 | e''2. c''4 |
-            ees'2. ees'4''',
-         tenor='''bes2 a2 | aes2 g4 ges4 | bes2. bes8 a8 | bes2. bes8 a8 |
-            bes4. c'8 c'4. ees'8 | ees'2. des'8 bes8 | c'4. a8 bes2 ~ | bes2. c'4 |
-            g2. ges4''',
-         bass='''f,1 | f,2 f,4 ges,4 | f,1 | f,2 f,4 ges,4 |
+    dict(id='sec06_pedal_climax', title='Dominant pedal: both subjects over the augmented inversion, Climax II in three speeds, dominant hinge', bars=9,
+         soprano="""r1 | r1 | r1 | r1 |
+            r2 f''4. f''16 ees''16 | ges''4. ges''16 f''16 a''4. a''16 aes''16 | g''2 c'''4. c'''16 bes''16 | bes''2. a''4 |
+            f''4 ees''4 c''4 a'4""",
+         alto="""r1 | r1 | c''4. a'8 f'4 des''8 bes'8 | c''2. f''8 bes'8 |
+            ees''4. des''8 des''4. c''8 | c''1 | e''4. e''16 dis''16 e''2 | e''4. e''16 d''16 e''4 f''4 |
+            c''2 a'4 c'4""",
+         tenor="""bes2 a2 | aes2 g4 c'4 | bes2. bes8 a8 | bes2. bes8 a8 |
+            bes4. c'8 c'4. ees'8 | ees'2. des'8 bes8 | c'4. a8 bes2 | g2 g4 c'4 |
+            a2 c'4 ees4""",
+         bass="""f,1 | f,2 f,4 ges,4 | f,1 | f,2 f,4 ges,4 |
             f,2. ees,4 | ees,2. c,4 | c,1 | c,2 des,4 f,4 |
-            ees,2. ges,4''',
+            ees,2. ges,4""",
          roles=[('bass', '1:1', '10:1', 'cf'),
-                ('alto', '1:1', '5:1', 'subject'),
-                ('tenor', '3:1', '7:4', 'subject'),
-                ('soprano', '3:1', '4:1', 'answer')],
-         tempo=[{'at': '1:1', 'bpm': 76}, {'at': '8:1', 'until': '9:1', 'to_bpm': 68}, {'at': '9:1', 'bpm': 56}],
-         dynamics=[{'at': '1:1', 'level': 'p'}, {'at': '3:1', 'until': '5:1', 'to': 'mp'}, {'at': '5:1', 'until': '7:1', 'to': 'f'}, {'at': '7:1', 'until': '8:4', 'to': 'fff'}, {'at': '9:1', 'level': 'pp'}],
-         fermatas=[{'at': '8:4', 'extra_beats': 3}],
-         breaths=[{'at': '1:1', 'ms': 250}, {'at': '9:1', 'ms': 700}],
+                ('alto', '3:1', '7:1', 'subject'),
+                ('tenor', '3:1', '7:3', 'subject'),
+                ('soprano', '5:3', '8:4', 'subject'),
+                ('alto', '7:1', '8:3', 'subject')],
+         tempo=[{'at': '1:1', 'bpm': 76}, {'at': '8:1', 'until': '8:4', 'to_bpm': 68}, {'at': '9:1', 'bpm': 60}, {'at': '9:1', 'until': '10:1', 'to_bpm': 54}],
+         dynamics=[{'at': '1:1', 'level': 'p'}, {'at': '3:1', 'until': '5:1', 'to': 'mp'}, {'at': '5:1', 'until': '7:1', 'to': 'f'}, {'at': '7:1', 'until': '8:4', 'to': 'fff'}, {'at': '9:1', 'level': 'f'}, {'at': '9:1', 'until': '10:1', 'to': 'p'}],
+         fermatas=[{'at': '8:4', 'extra_beats': 2}],
+         breaths=[{'at': '1:1', 'ms': 250}],
          pedal=[],
     ),
     dict(id='sec07_apotheosis_coda', title='Apotheosis (cantus firmus) and coda', bars=12,

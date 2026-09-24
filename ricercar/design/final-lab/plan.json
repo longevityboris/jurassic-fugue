@@ -35,12 +35,17 @@
   },
   {
    "at": "53:1",
-   "until": "54:1",
+   "until": "53:4",
    "to_bpm": 68
   },
   {
    "at": "54:1",
-   "bpm": 56
+   "bpm": 60
+  },
+  {
+   "at": "54:1",
+   "until": "55:1",
+   "to_bpm": 54
   },
   {
    "at": "55:1",
@@ -59,7 +64,7 @@
   },
   {
    "at": "53:4",
-   "extra_beats": 3
+   "extra_beats": 2
   },
   {
    "at": "66:3",
@@ -78,10 +83,6 @@
   {
    "at": "46:1",
    "ms": 250
-  },
-  {
-   "at": "54:1",
-   "ms": 700
   },
   {
    "at": "55:1",
@@ -165,7 +166,12 @@
   },
   {
    "at": "54:1",
-   "level": "pp"
+   "level": "f"
+  },
+  {
+   "at": "54:1",
+   "until": "55:1",
+   "to": "p"
   },
   {
    "at": "55:1",
@@ -353,21 +359,27 @@
   },
   {
    "voice": "alto",
-   "at": "46:1",
-   "until": "50:1",
+   "at": "48:1",
+   "until": "52:1",
    "role": "subject"
   },
   {
    "voice": "tenor",
    "at": "48:1",
-   "until": "52:4",
+   "until": "52:3",
    "role": "subject"
   },
   {
    "voice": "soprano",
-   "at": "48:1",
-   "until": "49:1",
-   "role": "answer"
+   "at": "50:3",
+   "until": "53:4",
+   "role": "subject"
+  },
+  {
+   "voice": "alto",
+   "at": "52:1",
+   "until": "53:3",
+   "role": "subject"
   },
   {
    "voice": "soprano",
