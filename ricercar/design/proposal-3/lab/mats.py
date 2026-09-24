@@ -24,3 +24,13 @@ from p3 import tmirror
 S1I = tmirror(S1)       # f'2. f'8 ges' | f'2. f'8 ges' | f'4. ees'8 ees'4. c'8 | c'2. des'8 ees' | f'2
 CS1I = tmirror(CS1)     # r2 aes | a bes | ces bes | a bes     (rising chromatic 7-#7-1-b2, turn about the tonic)
 CS2I = tmirror(CS2)     # r4 aes'2 bes' c'' des'' ees'' f'' ges''2 ees''4 | des''  (rising cascade: retardations)
+
+# ---- augmentation: the answer in doubled values in the bass = the dominant pedal; last beat g -> ges (German sixth)
+from p3 import setpitch
+_aug = octs(aug(ANS, 2), -3)                      # f, ... (8 bars + final f,)
+AUG = setpitch(_aug, len([n for n in _aug if n.step is not None]) - 2, "ges,")   # aes, g, -> aes, ges,
+S1I_BES = tr(S1I, '11')                           # mirror on bes'' (rectus/inversus wedge with S1 on bes')
+S2F = tr(S2, '5')
+S2SUB = tr(S2, '4')
+ANSM = tr(S1M, '-4')
+CS2M = mel("r4 g'2 f'2 ees'2 d'2 c'2 bes2 a2 c'4 | d'2")   # cascade in B-flat major
