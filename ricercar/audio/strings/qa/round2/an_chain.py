@@ -94,6 +94,8 @@ def main():
     ap.add_argument("--reuse", help="existing --keep-start --keep-temp report (with 'temp' key added)")
     ap.add_argument("--mid")
     ap.add_argument("--tag", default="fugue")
+    ap.add_argument("--target", default="strings", help="perform.py --target (piano: no CC1, dynamics from velocity)")
+    ap.add_argument("--extra", nargs="*", default=[], help="extra render_quartet.py options")
     a = ap.parse_args()
     TMP.mkdir(exist_ok=True)
     out = TMP / f"chain_{a.tag}"
@@ -101,8 +103,8 @@ def main():
     if a.reuse:
         rep = json.loads(Path(a.reuse).read_text())
     else:
-        perform(a.score, a.plan, mid)
-        rep = render(mid, out, "--keep-start")
+        perform(a.score, a.plan, mid, target=a.target)
+        rep = render(mid, out, "--keep-start", *a.extra)
     val = validate_detector()
     midi = midi_voices(mid)
     jobs = job_wavs(rep)
@@ -283,7 +285,14 @@ def main():
                          key=lambda r: -abs(r["c_fft"] + r["c_yin"]))[:15]
     octave_flags = [r for r in notes_out if r.get("sub_db") is not None and (r["sub_db"] > -12 or r["odd_db"] < -15)]
     dropped = [r for r in notes_out if r.get("rms_re_job_db") is not None and r["rms_re_job_db"] < -30]
-    res = dict(validation=val, accounting=acct, onsets=onsets, repeat=repeat, n_ambiguous_change=n_ambiguous,
+    lev = {}
+    for ji, (j, x) in enumerate(jobs):
+        te, e = rms_env(x, 0.4, 0.2)
+        e = e[e > -90]
+        if len(e):
+            lev[j["label"]] = dict(p5_db=round(float(np.percentile(e, 5)), 1), p95_db=round(float(np.percentile(e, 95)), 1),
+                                   range_db=round(float(np.percentile(e, 95) - np.percentile(e, 5)), 1))
+    res = dict(target=a.target, extra=a.extra, log=rep.get("notes"), level_range_400ms=lev, validation=val, accounting=acct, onsets=onsets, repeat=repeat, n_ambiguous_change=n_ambiguous,
                n_notes=len(notes_out),
                undetected=[{k: r.get(k) for k in ("voice", "key", "on", "dur", "cls", "pre_db")} for r in undetected],
                late_gt20=[{k: r.get(k) for k in ("voice", "key", "on", "dur", "cls", "art", "vel", "on6_ms", "pre_db")}
