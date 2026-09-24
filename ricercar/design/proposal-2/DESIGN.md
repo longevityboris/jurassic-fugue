@@ -200,7 +200,7 @@ harmony labels. For comparison, the old piece was mostly diatonic major triads.
 | 1-4 | Exposition, entry 1 | S1 alone in the bass (cello / piano LH), p sotto voce | b-flat |
 | 5-8 | entry 2 | tenor ANS at f'; bass: S1 tail, then CS1 (lament bass) | f |
 | 9-12 | entry 3 | alto S1 (head over C7 from the answer's tail); tenor CS1; bass CS2 (walking motor); N at 12:3 | b-flat |
-| 13-17:3 | entry 4 | soprano ANS; alto CS1; tenor CS2; free bass: tonic pedal, dim7 on E over D-flat, N6 (16:3), cadential 6/4, V | f |
+| 13-17:3 | entry 4 | soprano ANS; alto CS1; tenor CS2; free bass: tonic pedal F, vii°6/5 (E°7 over G), N6 (16:3), cadential 6/4, V | f |
 | 17:4-19 | Episode 1 | cell b (C-D-flat-D-flat-F) answered by its mirror (G-flat-F-F-E-flat, the inversion's bar 3, foreshadowed); bass fifths F-B-flat-E-flat-F | f to b-flat |
 | 20-26:3 | **Stretto** | bass S1 (b-flat) 20; soprano S1 (e-flat), 2 bars later, a 4th + 2 octaves above, entering exactly where the bass subject's harmony reaches iv; alto CS1, tenor CS2; minor-dominant tails; 25:4 ii°7 to 26:1 i6/4 | b-flat to e-flat to b-flat |
 | 26:3-28 | **Liquidation** | head H on E (bass 26:3), G (tenor 27:1), B-flat (alto 27:3), D-flat (soprano 28:1); each slides down a semitone: E°7 becomes A°7 (via E-flat major at 27:3, a glimpse of light, then E-flat minor) | b-flat |
@@ -333,10 +333,10 @@ third of the piece, and the release, the apotheosis, is earned by it.
   neighbours. Piano: the pedal re-caught on each bass note.
 * Apotheosis: the melody is in the soprano at the theme's own register (B-flat4-F5). Voice the tenor's
   mirror audibly (a "cs" role in plan.json).
-* **Keyboard spans.** The lower staff (T+B) exceeds a 10th in many bars: the tenor in the answer register
+* **Keyboard spans.** The lower staff (T+B) is wider than a 9th in many bars: the tenor in the answer register
   over a low bass, and the tenor subject over the augmented bass in Part IV. In a printed piano score the
   tenor is taken by the right hand where the alto allows. MIDI sample rendering does not care. Upper-staff
-  spans over a 10th occur in 13, 15-17, 24-25, 36, 39, 50 and 53-56.
+  spans wider than a 9th occur in bars 13, 15-17, 24-25, 36, 39, 50 and 53-56.
 
 ---------------------------------------------------------------------------------------------------
 
