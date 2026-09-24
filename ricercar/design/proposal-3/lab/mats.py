@@ -34,3 +34,8 @@ S2F = tr(S2, '5')
 S2SUB = tr(S2, '4')
 ANSM = tr(S1M, '-4')
 CS2M = mel("r4 g'2 f'2 ees'2 d'2 c'2 bes2 a2 c'4 | d'2")   # cascade in B-flat major
+
+# ---- Part II combination: S1 (answer form) + S2 entering two beats later a fourth above + CS2 (answer frame)
+ANS_LO = tr(S1, '-4')          # f' f' e' f' ...  (the answer an octave below ANS)
+S2_2 = at(S2, 2)               # S2 delayed by two beats
+CS2F = tr(CS2, '-4')           # d' c' bes aes g f e g aes
