@@ -1,10 +1,17 @@
 \version "2.24.0"
 
 \header {
-  title = "Fugue on a Theme from Jurassic Park"
+  title = "Fugue on the Theme from Jurassic Park"
   subtitle = "for organ, in B-flat major"
-  composer = "after John Williams (1993)"
+  instrument = "Organo pleno"
+  composer = "Theme: John Williams (1993)"
+  arranger = "Four-voice fugue in the style of J. S. Bach"
   tagline = ##f
+}
+
+\paper {
+  #(set-paper-size "a4")
+  ragged-last-bottom = ##t
 }
 
 global = {
@@ -68,7 +75,7 @@ soprano = \absolute {
   % 35-37 free, final cadence
   f''4 ees''8 d'' ees''4 d''8 c'' |
   d''4 c''2. |
-  bes'1 |
+  bes'1\fermata |
 }
 
 %% ALTO (upper manual, stems down)
@@ -127,7 +134,7 @@ alto = \absolute {
   % 35-37 free
   d'4 g' f'2 |
   bes'4 g' a'2 |
-  f'1 |
+  f'1\fermata |
 }
 
 %% TENOR (lower manual)
@@ -177,7 +184,7 @@ tenor = \absolute {
   % 35-36 final subject over tonic pedal, cadential ending adapted
   bes4. bes16 a bes4. bes16 a |
   bes8. c'16 c'8. ees'16 ees'2 |
-  d'1 |
+  d'1\fermata |
 }
 
 %% PEDAL
@@ -221,17 +228,34 @@ pedal = \absolute {
   % 35-37 tonic pedal, then V-I
   bes,1 ~ |
   bes,2 f, |
-  bes,1 |
+  bes,1\fermata |
 }
+
+rm = #(define-music-function (letter text) (string? string?)
+  #{ \mark \markup { \box \bold #letter \hspace #0.8 \italic \small #text } #})
 
 marks = {
   \tempo "Maestoso" 4 = 66
-  s1*37
+  \mark \markup \italic \small "Exposition"
+  s1*9
+  \rm "A" "Episode 1: circle of fifths" s1*2      % 10
+  \rm "B" "Subject in E-flat (S)" s1*2            % 12
+  \rm "C" "Episode 2: 7-6 suspensions" s1*2       % 14
+  \rm "D" "Subject in G minor (T)" s1*2           % 16
+  \rm "E" "Episode 3: manualiter" s1*2            % 18
+  \rm "F" "Subject in C minor (A), manualiter" s1*2 % 20
+  \rm "G" "Episode 4: circle of fifths, pedal returns" s1*4 % 22
+  \rm "H" "Stretto (T, S, A)" s1*4                % 26
+  \rm "I" "Dominant pedal" s1*3                   % 30
+  \rm "J" "Final entries: pedal, then tenor over tonic pedal" s1*4 % 33
+  s1                                               % 37
+  \bar "|."
 }
 
 tenorClefs = {
-  \clef bass
-  s1*37
+  \clef tenor s1*17
+  \clef bass s1*4      % 18-21: tenor is the bass of the manualiter passage
+  \clef tenor s1*16
 }
 
 \score {
@@ -255,6 +279,14 @@ tenorClefs = {
       \new Voice = "pedal" { \pedal }
     >>
   >>
-  \layout { }
+  \layout {
+    \context {
+      \Score
+      barNumberVisibility = #all-bar-numbers-visible
+      \override BarNumber.break-visibility = #end-of-line-invisible
+      \override BarNumber.font-size = #-2
+      \override RehearsalMark.self-alignment-X = #LEFT
+    }
+  }
   \midi { }
 }
