@@ -1,0 +1,153 @@
+{
+ "state": {
+  "head": "d09e1a3",
+  "render_quartet_commit": "6773f21",
+  "render_quartet_sha": "dc8ec5376814a8d9",
+  "sfz": {
+   "bass.sfz": "434b699deec6efcc",
+   "cello.sfz": "d8f1264c7eec62b1",
+   "viola.sfz": "fd65d3205b4486a7",
+   "violin.sfz": "ddb87187023132fb",
+   "violin2.sfz": "14a7badb474554e8"
+  }
+ },
+ "piano_target": {
+  "log": [
+   "MIDI written by perform.py (target=piano)",
+   "soprano: no CC1, dynamic level taken from note velocities",
+   "alto: no CC1, dynamic level taken from note velocities",
+   "tenor: no CC1, dynamic level taken from note velocities",
+   "pedal: no CC1, dynamic level taken from note velocities",
+   "tenor: 11 notes 63.75-71.21s (down to 41) handed to the resting Cello"
+  ],
+  "notes": 648,
+  "wrong_pitch": [
+   [
+    "alto",
+    14.76,
+    69,
+    -53
+   ]
+  ],
+  "n_wrong": 1,
+  "first_10s_k_db": -37.5,
+  "loudest_10s_k_db": -13.8,
+  "range_db": 23.7,
+  "cc1_derived": {
+   "vn1": [
+    37,
+    120
+   ],
+   "vn2": [
+    36,
+    116
+   ],
+   "va": [
+    39,
+    125
+   ],
+   "vc": [
+    48,
+    125
+   ]
+  }
+ },
+ "bass_double": {
+  "on": {
+   "double_notes": 112,
+   "cello_notes": 112,
+   "pitch_cents_median_abs": 1.5,
+   "wrong_octave_or_note": 0,
+   "checked": 101,
+   "lowest_key": 24,
+   "cb_stem_db_per_5s": [
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -49.2,
+    -47.3,
+    -47.7,
+    -47.7,
+    -46.9,
+    -44.2,
+    -42.0,
+    -42.7,
+    -41.5,
+    -48.6,
+    -45.8,
+    -36.0,
+    -35.2,
+    -35.2,
+    -35.3,
+    -33.7,
+    -36.0,
+    -34.6,
+    -30.8,
+    -29.5,
+    -29.9,
+    -29.7,
+    -30.2,
+    -31.6
+   ],
+   "log": [
+    "MIDI written by perform.py (target=strings)",
+    "tenor: 11 notes 63.75-71.23s (down to 41) handed to the resting Cello"
+   ]
+  },
+  "auto": {
+   "double_notes": 112,
+   "cello_notes": 112,
+   "pitch_cents_median_abs": 1.5,
+   "wrong_octave_or_note": 0,
+   "checked": 101,
+   "lowest_key": 24,
+   "cb_stem_db_per_5s": [
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -200.0,
+    -53.1,
+    -33.8,
+    -29.5,
+    -30.0,
+    -30.1,
+    -31.7,
+    -31.9
+   ],
+   "log": [
+    "MIDI written by perform.py (target=strings)",
+    "tenor: 11 notes 63.75-71.23s (down to 41) handed to the resting Cello"
+   ]
+  },
+  "cello_cc1_max": 124,
+  "cello_cc1_at_or_above_ff_114_s": [
+   120.0,
+   120.234,
+   120.469,
+   "...",
+   141.631,
+   141.931,
+   142.231
+  ]
+ }
+}
