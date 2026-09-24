@@ -26,8 +26,14 @@ soprano = \absolute {
   d''4 ees'' f''8 ees''16 d'' c''8 bes'16 d'' |
   % 8-9 free
   f''4 f''8 e''16 d'' c''8 a' bes'8. c''16 |
-  c''8 d'' bes'4 g'4. c''8 |
-  R1*28 |
+  c''8 d'' bes'4 g'4. c''16 ees'' |
+  % 10-11 episode 1: circle of fifths (theme bar 5 cell)
+  d''8. bes'16 g'8 ees''16 c'' ees''2 ~ |
+  ees''4. d''8 ~ d''4 r4 |
+  % 12-13 subject in E-flat major
+  ees''4. ees''16 d'' ees''4. ees''16 d'' |
+  ees''8. f''16 f''8. aes''16 aes''4. g''16 ees'' |
+  R1*24 |
 }
 
 %% ALTO (upper manual, stems down)
@@ -46,7 +52,13 @@ alto = \absolute {
   % 8-9 free
   a'2 f'4 d'8. c'16 |
   f'4 d' e'4. f'8 |
-  R1*28 |
+  % 10-11
+  d'4 ees'8 f' g'4. f'8 |
+  a'4. bes'8 f'8. d'16 bes8 g'16 ees' |
+  % 12-13 countersubject (E-flat version)
+  r8 g' c'' bes'16 aes' g'8 ees' f'4 |
+  g'4 aes' bes'8 aes'16 g' f'8 ees'16 g' |
+  R1*24 |
 }
 
 %% TENOR (lower manual)
@@ -58,7 +70,13 @@ tenor = \absolute {
   % 8-9 countersubject (F version, above pedal answer)
   r8 a d' c'16 bes a8 f g4 |
   a4 bes c'8 bes16 a g8 f16 a |
-  R1*28 |
+  % 10-11
+  bes4. bes16 a g8. ees16 c8 a16 f |
+  c'8. a16 f8 d'16 bes aes4. g8 |
+  % 12-13
+  g4 aes8 c' bes2 |
+  bes4 c' d' bes |
+  R1*24 |
 }
 
 %% PEDAL
@@ -67,7 +85,13 @@ pedal = \absolute {
   % 8-9 answer (F)
   f,4. f,16 e, f,4. f,16 e, |
   f,8. g,16 g,8. bes,16 bes,4. a,16 f, |
-  R1*28 |
+  % 10-11
+  g,4 g c c, |
+  f,2 bes,2 |
+  % 12-13
+  ees4 aes, ees bes, |
+  ees4 aes, f, d8 ees |
+  R1*24 |
 }
 
 marks = {
