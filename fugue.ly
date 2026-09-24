@@ -32,8 +32,20 @@ soprano = \absolute {
   ees''4. d''8 ~ d''4 r4 |
   % 12-13 subject in E-flat major
   ees''4. ees''16 d'' ees''4. ees''16 d'' |
-  ees''8. f''16 f''8. aes''16 aes''4. g''16 ees'' |
-  R1*24 |
+  ees''8. f''16 f''8. aes''16 aes''4. g''16 ees'' ~ |
+  % 14-15 episode 2: chain of 7-6 suspensions (theme bar 7 rhythm)
+  ees''4. d''8 ~ d''4. c''8 ~ |
+  c''4. bes'8 ~ bes'4. a'8 |
+  % 16-17 countersubject (G minor, above tenor)
+  r8 bes' ees'' d''16 c'' bes'8 g' a'4 |
+  bes'4 c'' d''8 c''16 bes' a'8 g'16 bes' |
+  % 18-19 episode 3, manuals only: theme bars 5-8 (diminished, C minor)
+  d''8. b'16 g'8 ees''16 c'' d''4. g''16 c'' |
+  f''8. ees''16 ees''8. d''16 d''2 |
+  % 20-21 free
+  g'4 aes' g'4. f'8 |
+  g'4 d'' b'4. c''8 |
+  R1*16 |
 }
 
 %% ALTO (upper manual, stems down)
@@ -58,7 +70,19 @@ alto = \absolute {
   % 12-13 countersubject (E-flat version)
   r8 g' c'' bes'16 aes' g'8 ees' f'4 |
   g'4 aes' bes'8 aes'16 g' f'8 ees'16 g' |
-  R1*24 |
+  % 14-15 (countersubject figure and subject-head neighbour motif)
+  c''8 bes'16 a' g'8 f'16 a' g'4. g'16 f' |
+  a'8 g'16 f' ees'8 d'16 f' ees'4 d'8. fis'16 |
+  % 16-17 free
+  g'8 d' ees'4 d'4 ees'8 d' |
+  d'8 ees'4 g'8 fis'4. g'8 |
+  % 18-19
+  d'4 ees' d' b8 d' |
+  c'2 b4 r4 |
+  % 20-21 subject in C minor (manuals only)
+  c'4. c'16 b c'4. c'16 b |
+  c'8. d'16 d'8. f'16 f'4. ees'16 c' |
+  R1*16 |
 }
 
 %% TENOR (lower manual)
@@ -76,7 +100,17 @@ tenor = \absolute {
   % 12-13
   g4 aes8 c' bes2 |
   bes4 c' d' bes |
-  R1*24 |
+  R1*2 |
+  % 16-17 subject in G minor
+  g4. g16 fis g4. g16 fis |
+  g8. a16 a8. c'16 c'4. bes16 g |
+  % 18-19 (bass of the manuals-only passage)
+  g,8 d ees c g, b, g,4 |
+  aes,4 f, g, g8 f |
+  % 20-21 countersubject (C minor, below alto)
+  r8 ees aes g16 f ees8 c d4 |
+  ees4 f g8 f16 ees d8 c16 ees |
+  R1*16 |
 }
 
 %% PEDAL
@@ -91,7 +125,15 @@ pedal = \absolute {
   % 12-13
   ees4 aes, ees bes, |
   ees4 aes, f, d8 ees |
-  R1*24 |
+  % 14-15
+  f2 ees |
+  d2 c |
+  % 16-17
+  bes,4 c8 d g,4 c8 d |
+  g,4 ees d4. g,8 |
+  % 18-21 manuals only
+  R1*4 |
+  R1*16 |
 }
 
 marks = {
