@@ -2,9 +2,10 @@
 """Generate the dynamics proof MIDI files for the quartet renderer.
 
 For each instrument the same short phrase (quarters, eighths, a sixteenth run
-and a held half note) is played three times, at pp (CC1 = 16), mf (CC1 = 64)
-and ff (CC1 = 112), all with the same velocity (90) so that only CC1 differs.
-Then one note is held for 9 s while CC1 sweeps 0 -> 127 -> 0 (crescendo and
+and a held half note) is played three times, at pp (CC1 = 49), mf (CC1 = 88)
+and ff (CC1 = 114) -- perform.py's scale, where each recorded layer plays
+alone -- all with the same velocity (90) so that only CC1 differs.
+Then one note is held for 9 s while CC1 sweeps 40 -> 124 -> 40 (crescendo and
 diminuendo).  A JSON sidecar lists every segment's start/end time so
 measure_dynamics.py can report RMS and timbre per segment.
 

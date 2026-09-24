@@ -16,7 +16,7 @@ from pathlib import Path
 
 import numpy as np
 
-LIB_ROOT = Path(os.environ.get("SAMPLE_LIBRARIES", "/Users/biobook/Music/SampleLibraries"))
+LIB_ROOT = Path(os.environ.get("SAMPLE_LIBRARIES", Path.home() / "Music" / "SampleLibraries"))
 IOWA_ROOT = LIB_ROOT / "IowaMIS"
 RAW_DIR = IOWA_ROOT / "raw"
 QUARTET_DIR = IOWA_ROOT / "quartet"          # generated samples + SFZ live here

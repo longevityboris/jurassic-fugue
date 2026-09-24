@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Install, build and verify everything render_quartet.py needs.  Idempotent: whatever
-# is already present and verified is left alone, so a second run is a quick check.
+# is already present and verified is left alone.  A second run re-checks files and
+# hashes and renders a smoke test (about 10 s); the tuning verification (every key x
+# layer, steady and attack, about 1 min) only reruns when the instruments changed.
 #
 #   ./setup_strings.sh              install what is missing, build, verify
 #   ./setup_strings.sh --check      verify only (no downloads, no builds)
@@ -13,8 +15,10 @@
 #   IowaMIS/raw/{violin,viola,cello,bass}/*.aif   131 arco stereo recordings (2.2 GB)
 #   IowaMIS/quartet/analysis.json                 note segmentation + pitch (iowa_analyze.py)
 #   IowaMIS/quartet/samples/, {violin,violin2,viola,cello,bass}.sfz   built instruments (iowa_build.py;
-#                                                 violin2 = Violin II, next lower string where recorded)
+#                                                 violin2 = Violin II, next lower string where recorded;
+#                                                 attack pitch drift flattened by attack_tune.py)
 #   IowaMIS/quartet/tuning_corrections.json       closed-loop tuning (verify_tuning.py + retune)
+#   IowaMIS/quartet/tuning_verify.json, verified.sha256   last verification and what it covered
 #   tools/sfizz/build/library/bin/sfizz_render    pinned sfizz + float patch, shared with the piano
 #   IR/Detmold-Konzerthaus-S1R163-MS-48k.wav      hall IR, shared with the piano (make_ir.py)
 #   VPO3/                                         optional, --with-vpo3
@@ -45,7 +49,7 @@ for a in "$@"; do
     --check) MODE="check" ;;
     --force) FORCE=1 ;;
     --with-vpo3) VPO=1 ;;
-    -h|--help) sed -n '2,36p' "$0"; exit 0 ;;
+    -h|--help) awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' "$0"; exit 0 ;;
     *) echo "unknown option $a" >&2; exit 2 ;;
   esac
 done
@@ -206,7 +210,8 @@ if [[ "$MODE" == "install" && "$FAILED" == 0 ]]; then
     (cd "$HERE" && python3 iowa_analyze.py --jobs "$(ncpu)" >/dev/null)
   fi
   need_build=0
-  python3 -c "import json,sys; m=json.load(open(sys.argv[1])); sys.exit(0 if all(i in m for i in ('violin','violin2','viola','cello','bass')) else 1)" \
+  # every instrument built, and built with the attack-pitch correction (meta 'attack')
+  python3 -c "import json,sys; m=json.load(open(sys.argv[1])); sys.exit(0 if all(i in m and all('attack' in s for s in m[i]) for i in ('violin','violin2','viola','cello','bass')) else 1)" \
     "$Q/samples/meta.json" 2>/dev/null || need_build=1
   if [[ "$FORCE" == 1 || "$need_build" == 1 ]]; then
     doing "iowa_build.py (trims, extends and calibrates about 540 samples, about 1 min)"
@@ -234,12 +239,21 @@ fi
 for i in violin violin2 viola cello bass; do
   [[ -f "$Q/$i.sfz" ]] && ok "$i.sfz ($(grep -c '<region>' "$Q/$i.sfz") regions)" || fail "missing $Q/$i.sfz"
 done
+# the verification covers these files; its stamp lets a second run skip it
+stamp() { (cd "$Q" && cat violin.sfz violin2.sfz viola.sfz cello.sfz bass.sfz tuning_corrections.json samples/meta.json
+           cat "$HERE/verify_tuning.py") 2>/dev/null | shasum -a 256 | cut -d' ' -f1; }
 if [[ "$FAILED" == 0 ]]; then
-  if (cd "$HERE" && python3 verify_tuning.py violin violin2 viola cello bass --tol 15 --json "$Q/tuning_verify.json" >/dev/null); then
-    ok "tuning: every key x layer within 15 cents through sfizz ($(python3 -c "
-import json,sys; r=json.load(open(sys.argv[1])); c=[abs(x['cents']) for i in r.values() for l in i.values() for x in l]
-print(f'max {max(c):.1f} c, median {sorted(c)[len(c)//2]:.1f} c')" "$Q/tuning_verify.json"))"
+  if [[ -f "$Q/verified.sha256" && "$(cat "$Q/verified.sha256")" == "$(stamp)" && -f "$Q/tuning_verify.json" ]]; then
+    ok "tuning: verified earlier for exactly these instruments (steady and attack pitch, every key x layer)"
+  elif (cd "$HERE" && python3 verify_tuning.py violin violin2 viola cello bass --tol 15 --attack --attack-tol 30 \
+          --json "$Q/tuning_verify.json" >/dev/null); then
+    ok "tuning: every key x layer within 15 cents through sfizz, attacks (40-200 ms) within 30 ($(python3 -c "
+import json,sys; r=json.load(open(sys.argv[1])); c=[abs(x['cents']) for i in r['steady'].values() for l in i.values() for x in l]
+a=[abs(x['cents']) for i in r['attack'].values() for l in i.values() for s in l.values() for x in s if x['cents'] is not None]
+print(f'steady max {max(c):.1f} c, median {sorted(c)[len(c)//2]:.1f} c; attack median {sorted(a)[len(a)//2]:.1f} c, {sum(v > 15 for v in a)} of {len(a)} over 15 c')" "$Q/tuning_verify.json"))"
+    stamp > "$Q/verified.sha256"
   else
+    rm -f "$Q/verified.sha256"
     fail "tuning check failed, see $Q/tuning_verify.json (silent notes show as cents=null)"
   fi
 fi

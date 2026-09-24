@@ -10,8 +10,15 @@ iowa_analyze.py used to derive the tune= corrections) as the median over the
 steady part of the note, so vibrato averages out.  Reports every note whose
 pitch error exceeds --tol cents (default 15) or that sounds a wrong note.
 
+--attack adds the pitch a short note hears: every key x layer x stroke (CC20
+short 112 and normal 0, as render_quartet.py sets them) as a 0.25 s note, the
+median YIN pitch 40-200 ms after the note-on (a 16th note at 64 bpm is nothing
+but this attack).  A note fails if it is more than --attack-tol cents off
+(default 30: the class of error this catches was 50-120 c; the report also
+counts notes over 15 c).
+
 Usage:
-  python3 verify_tuning.py violin viola cello [--lib iowa|vpo3] [--json OUT]
+  python3 verify_tuning.py violin viola cello [--lib iowa|vpo3] [--json OUT] [--attack]
   exit status 1 if any note fails.
 """
 from __future__ import annotations
@@ -35,8 +42,11 @@ SR = 48000
 NOTE_S, STEP_S = 2.0, 2.6
 
 
-def yin(x: np.ndarray, sr: int, fmin: float, fmax: float, W: int = 2048, hop: int = 512, thr: float = 0.12):
-    """YIN (de Cheveigne & Kawahara 2002) -> per-frame f0 (Hz, nan if unvoiced)."""
+def yin(x: np.ndarray, sr: int, fmin: float, fmax: float, W: int = 2048, hop: int = 512, thr: float = 0.12,
+        global_min: bool = False):
+    """YIN (de Cheveigne & Kawahara 2002) -> per-frame f0 (Hz, nan if unvoiced).
+    global_min: take the deepest dip in [fmin, fmax] (for a narrow range around a
+    known note) instead of the first dip under thr."""
     tmax = int(sr / fmin) + 2
     tmin = max(2, int(sr / fmax) - 1)
     out = []
@@ -55,13 +65,19 @@ def yin(x: np.ndarray, sr: int, fmin: float, fmax: float, W: int = 2048, hop: in
         cm = np.ones_like(d)
         cs = np.cumsum(d[1:])
         cm[1:] = d[1:] * np.arange(1, tmax) / np.maximum(cs, 1e-20)
-        cand = np.flatnonzero(cm[tmin:] < thr)
-        if len(cand) == 0:
-            out.append(np.nan)
-            continue
-        t = tmin + cand[0]
-        while t + 1 < tmax and cm[t + 1] < cm[t]:
-            t += 1
+        if global_min:
+            t = tmin + int(np.argmin(cm[tmin:tmax - 1]))
+            if cm[t] >= thr:
+                out.append(np.nan)
+                continue
+        else:
+            cand = np.flatnonzero(cm[tmin:] < thr)
+            if len(cand) == 0:
+                out.append(np.nan)
+                continue
+            t = tmin + cand[0]
+            while t + 1 < tmax and cm[t + 1] < cm[t]:
+                t += 1
         if 1 <= t < tmax - 1:
             y0, y1, y2 = cm[t - 1], cm[t], cm[t + 1]
             den = y0 - 2 * y1 + y2
@@ -130,12 +146,64 @@ def check(sfz: Path, keys: list[int], cc1: int, tmp: Path, tag: str):
     return rows
 
 
+STROKES = (("short", 112, 6), ("normal", 0, 18))       # CC20, CC21 as render_quartet.py sets them
+ATT_NOTE_S, ATT_STEP_S = 0.25, 1.0
+
+
+def check_attack(sfz: Path, keys: list[int], cc1: int, tmp: Path, tag: str):
+    rows = {}
+    for stroke, cc20, cc21 in STROKES:
+        mp, wp = tmp / f"{tag}_{stroke}.mid", tmp / f"{tag}_{stroke}.wav"
+        mid = mido.MidiFile(type=0, ticks_per_beat=960)
+        tr = mido.MidiTrack()
+        tr.append(mido.MetaMessage("set_tempo", tempo=500000))
+        tps = 1920
+        ev = [(0, 0, mido.Message("control_change", control=1, value=cc1)),
+              (0, 0, mido.Message("control_change", control=20, value=cc20)),
+              (0, 0, mido.Message("control_change", control=21, value=cc21))]
+        for i, k in enumerate(keys):
+            t0 = int((0.2 + i * ATT_STEP_S) * tps)
+            ev.append((t0, 2, mido.Message("note_on", note=k, velocity=64)))
+            ev.append((t0 + int(ATT_NOTE_S * tps), 1, mido.Message("note_off", note=k, velocity=0)))
+        ev.sort(key=lambda e: (e[0], e[1]))
+        last = 0
+        for t, _, m in ev:
+            tr.append(m.copy(time=t - last))
+            last = t
+        tr.append(mido.MetaMessage("end_of_track", time=tps))
+        mid.tracks.append(tr)
+        mid.save(str(mp))
+        r = subprocess.run([str(SFIZZ_RENDER), "--sfz", str(sfz), "--midi", str(mp), "--wav", str(wp),
+                            "-s", str(SR), "-q", "3"], capture_output=True, text=True)
+        if r.returncode:
+            raise RuntimeError(r.stderr)
+        x, _ = sf.read(str(wp), dtype="float64", always_2d=True)
+        m = x.mean(axis=1)
+        out = []
+        for i, k in enumerate(keys):
+            f = midi_to_hz(k)
+            t0 = 0.2 + i * ATT_STEP_S
+            W = int(max(0.03, 4.0 / f) * SR)
+            seg = m[int((t0 + 0.04) * SR) - W // 2: int((t0 + 0.2) * SR) + W // 2]
+            f0 = yin(seg, SR, f / 1.41, f * 1.41, W=W, hop=int(0.01 * SR), thr=0.4, global_min=True)
+            f0 = f0[np.isfinite(f0)]
+            if len(f0) < 3:
+                out.append(dict(key=k, name=midi_name(k), cents=None, voiced=int(len(f0))))
+                continue
+            out.append(dict(key=k, name=midi_name(k), cents=round(float(np.median(1200 * np.log2(f0 / f))), 1),
+                            voiced=int(len(f0))))
+        rows[stroke] = out
+    return rows
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("inst", nargs="+")
     ap.add_argument("--lib", default="iowa", choices=["iowa", "vpo3"])
     ap.add_argument("--tol", type=float, default=15.0)
     ap.add_argument("--json", type=Path)
+    ap.add_argument("--attack", action="store_true", help="also check the pitch of short notes (see above)")
+    ap.add_argument("--attack-tol", type=float, default=30.0)
     a = ap.parse_args()
     tmp = Path(tempfile.mkdtemp(prefix="tune_"))
     report, fails = {}, 0
@@ -159,6 +227,26 @@ def main():
                   f"{np.median(np.abs(c)):.1f} c, max |err| {np.max(np.abs(c)):.1f} c, "
                   f"{len(bad)} over {a.tol:g} c" + ("" if not bad else ": " + ", ".join(
                       f"{r['name']}({r['cents']})" for r in bad)))
+    if a.attack:
+        attack = {}
+        for inst in a.inst:
+            if a.lib != "iowa":
+                break
+            sfz = QUARTET_DIR / f"{inst}.sfz"
+            lo, hi = INSTRUMENTS[inst]["lo"], INSTRUMENTS[inst]["hi"]
+            keys = list(range(lo, hi + 1))
+            attack[inst] = {}
+            for layer, cc in layer_cc1(a.lib).items():
+                rows = check_attack(sfz, keys, cc, tmp, f"att_{inst}_{layer}")
+                attack[inst][layer] = rows
+                for stroke, rr in rows.items():
+                    c = np.array([abs(r["cents"]) for r in rr if r["cents"] is not None])
+                    bad = [r for r in rr if r["cents"] is not None and abs(r["cents"]) > a.attack_tol]
+                    fails += len(bad)
+                    print(f"{inst:7s} {layer:3s} {stroke:6s} attack 40-200 ms: median |err| {np.median(c):.1f} c, "
+                          f"max {c.max():.1f} c, {int((c > 15).sum())} over 15 c, {len(bad)} over {a.attack_tol:g} c"
+                          + ("" if not bad else ": " + ", ".join(f"{r['name']}({r['cents']})" for r in bad)))
+        report = dict(steady=report, attack=attack) if a.json else report
     if a.json:
         a.json.write_text(json.dumps(report, indent=1))
     sys.exit(1 if fails else 0)

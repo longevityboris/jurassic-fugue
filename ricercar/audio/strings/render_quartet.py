@@ -18,7 +18,7 @@ END TO END (the ricercar pipeline)
 OPTIONS
   -o, --out PATH         output basename -> PATH.wav, PATH.m4a (default: next to INPUT)
   --lib iowa|vpo3        sample library (default iowa; vpo3 = Virtual Playing Orchestra 3
-                         solo strings, kept for comparison, see README/ANALYSIS)
+                         solo strings, kept for comparison, see README.md)
   --map SPEC             voice -> instrument, e.g. "soprano=vn1,alto=vn2,tenor=va,pedal=vc"
                          or by index "0=vn1,1=vn2".  Instruments: vn1 vn2 va vc cb
   --bass-double MODE     off (default) | on | auto: add a double bass an octave below the
@@ -27,20 +27,33 @@ OPTIONS
                          also carry CC22 = doubling amount 0-127 (overrides auto)
   --bass-threshold LVL   dynamic level for auto doubling, ppp..fff or 1-8 (default ff)
   --hall NAME            detmold (default: Konzerthaus Detmold, measured, CC BY 4.0, same
-                         hall as the piano renders) | synthetic | none
-  --wet DB               reverb energy relative to the dry signal (default -2 dB)
+                         hall as the piano renders, tail continued to 3.5 s) | synthetic | none
+  --wet DB               reverb energy relative to the dry sound, both summed over the two
+                         channels (default -4 dB: C80 about +8.4 dB)
   --short-ms MS          notes shorter than this get the short (detache) stroke (default 260)
-  --legato-xfade-ms MS   overlap of slurred notes (default 70)
+  --legato-pre-ms MS     a slurred note starts this early (default 25)
+  --legato-xfade-ms MS   the note before a slur is held this long past the beat (default 5)
+  --normal-pre-ms MS     a new-bow stroke starts this early (default 15)
   --cc11-depth X         CC11 gain = X * 20*log10(v/127) dB (default 0.5, see below)
-  --stems                also write dry per-instrument stems (float WAV)
-  --report PATH.json     write a JSON render report (voices, articulations, levels)
+  --lead-in S            silence before the first note-on (default 0.3 s, like the piano)
+  --keep-start           output starts at MIDI time 0 instead (for measurements; a note that
+                         starts early at time 0 loses those milliseconds)
+  --stems                also write dry per-instrument stems (float WAV, same start as the mix)
+  --report PATH.json     write a JSON render report (voices, articulations, layer switches,
+                         levels; offset_s = MIDI time of the output's first sample)
   --peak DB              true-peak target (default -1.0 dBFS)
+  QUARTET_SHORT_REL      environment variable: release (s) of a short note into the next
+                         one (default 0.09)
 
 VOICE MAPPING (first rule that applies)
-  --map; perform.py / SATB names (soprano -> Violin I, alto -> Violin II,
-  tenor -> Viola, bass or pedal -> Cello); instrument names (violin 1/2, viola,
-  cello, contrabass); GM program (40 violin, 41 viola, 42 cello, 43 contrabass);
-  otherwise by mean pitch, highest -> Violin I.
+  --map (exact voice name, else whole-word match, or track index); perform.py /
+  SATB names (soprano -> Violin I, alto -> Violin II, tenor -> Viola, bass or
+  pedal -> Cello); instrument names, whole words ("Violin II" is never Violin I);
+  GM program family (40 violin, 41 viola, 42 cello, 43 contrabass) if that
+  instrument is free; else a free instrument whose compass holds the voice's
+  median pitch.  An instrument is never taken twice while one is free; with more
+  voices than instruments a second desk of the best-fitting instrument plays
+  (seated beside the first, logged).
   Notes below an instrument's compass are rescued the way an arranger would:
   dropped if another voice doubles them in unison, else the whole connected
   phrase is handed to a lower instrument that is resting at that moment (the
@@ -49,12 +62,18 @@ VOICE MAPPING (first rule that applies)
 
 MIDI CONVENTIONS (what perform.py --target strings writes)
   * One track per voice.  Velocity = accent / attack bite (127 = the recorded
-    bite, low = softer, slower start; about +-2 dB).
+    bite, low = softer, slower start, 15-41 ms; about +-2 dB).
   * CC1 = dynamic level with real timbre change, perform.py's scale:
-    ppp 36, pp 49, p 62, mp 75, mf 88, f 101, ff 114, fff 127.  The pp, mf and
-    ff recordings play alone at 49, 88 and 114 and are equal-power crossfaded in
-    between; loudness moves about 3.5 dB per step.  Linear ramps between CC
-    events are reconstructed (perform.py samples every 16th note).
+    ppp 36, pp 49, p 62, mp 75, mf 88, f 101, ff 114, fff 127.  The pp
+    recording plays up to 65, mf from 71 to 104, ff from 110 (two takes of one
+    note sounding together interfere, so they only overlap in the narrow zones
+    between); a volume curve moves loudness about 3.5 dB per step and a high
+    shelf brightens with CC1 inside each layer.  This renderer never parks in a
+    zone: it holds CC1 inside the current layer's range, switches layers with
+    hysteresis (up at 70 / 109, down at 66 / 106) at the nearest note-on
+    (50 ms) or, inside a held note, over 0.3 s, and restores the true CC1's
+    loudness as a gain.  Linear ramps between CC events are reconstructed
+    (perform.py samples every 16th note).
   * CC11 = expression gain without timbre change, X*20*log10(v/127) dB with
     X = --cc11-depth (0.5 default).  perform.py sends CC11 = CC1, so the full
     GM curve would double-count the dynamics: pp -> ff would span ~32 dB.
@@ -63,17 +82,25 @@ MIDI CONVENTIONS (what perform.py --target strings writes)
     (fixed stage positions).  CC64 is ignored.
   * No CC1 at all (e.g. a --target piano file): the dynamic level is taken from
     note velocities on perform.py's velocity scale.
-  * Optional CC20 articulation per note: 0-63 normal bow stroke, 64-95 slurred,
-    96-127 short.  If absent it is inferred: a note that starts within 60 ms of
-    the previous note's end, on a different pitch, and is not short, is slurred
-    (the previous note is held --legato-xfade-ms into it and released over
-    0.12 s while the new note enters in its sustain); notes shorter than
+  * Optional CC20 articulation per note (value in force at the note-on):
+    0-63 normal bow stroke, 64-95 slurred, 96-127 short.  If absent it is
+    inferred: a note that starts within 60 ms of the previous note's end, on a
+    different pitch, and is not short, is slurred; notes shorter than
     --short-ms get the short stroke; everything else is a new bow.
-  * Optional CC21 release per note: 0.03 + 1.2*v/127 s.  If absent: 0.12 s
-    into a slur, 0.09 s from a short note into the next, 0.22 s between other
-    detached notes, 0.5-1.1 s before a rest.  A long note followed directly by
-    a short one (dotted figures, the start of a run) lifts 25 ms early so the
-    short note speaks.
+  * Timing: a slurred note starts --legato-pre-ms early and fades in over
+    30 ms; the note before it is held --legato-xfade-ms past the beat and
+    released over 0.12 s, so the new pitch takes over about 10 ms after the
+    beat.  A new-bow stroke starts --normal-pre-ms early; short strokes start
+    on the beat (8 ms attack).
+  * Optional CC21 release per note (value in force at the note-on): 0.03 +
+    1.2*v/127 s (sfizz's release is exponential, -78 dB at that time).  If
+    absent: 0.12 s into a slur, 0.09 s from a short note into the next, 0.22 s
+    between other detached notes, 0.5-1.1 s before a rest.  A long note
+    followed directly by a short one (dotted figures, the start of a run)
+    lifts 25 ms early so the short note speaks.  A repeated key (perform.py
+    lifts 60 ms early) is held to 12 ms before the new stroke and released
+    over 0.18 s: a dip of about 15 dB, not a hole.
+  * A note-on without a note-off is closed at the end of its track (logged).
   * Tempo map honoured (all timing is converted to seconds before rendering).
 """
 from __future__ import annotations
@@ -487,8 +514,8 @@ def rel_cc(seconds: float) -> int:
 
 
 SHORT_REL = float(os.environ.get("QUARTET_SHORT_REL", "0.09"))   # release of a short note into the next
-NORMAL_PRE_MS = 10.0
-WET_DEFAULT = -3.0
+NORMAL_PRE_MS = 15.0
+WET_DEFAULT = -4.0
 
 
 def shape_articulation(notes: list[Note], short_s: float, xfade_s: float, art_events=None, rel_events=None,
@@ -503,8 +530,8 @@ def shape_articulation(notes: list[Note], short_s: float, xfade_s: float, art_ev
         the beat) and the previous note is held xfade_s past the beat, so the new
         pitch takes over on the beat instead of 60-70 ms late;
       * a normal (new-bow) stroke starts normal_pre early;
-      * a repeated key (gap under 80 ms) is held to 15 ms before the new stroke
-        and released over at least 0.12 s: a 10-15 dB re-articulation dip rather
+      * a repeated key (gap under 80 ms) is held to 12 ms before the new stroke
+        and released over 0.18 s: a re-articulation dip of about 15 dB rather
         than a hole of silence;
       * a long note directly followed by a short one lifts 25 ms early."""
     counts = {"normal": 0, "legato": 0, "short": 0}
@@ -542,8 +569,8 @@ def shape_articulation(notes: list[Note], short_s: float, xfade_s: float, art_ev
             rel = 0.12
         elif gap < 0.08 and nxt.key == n.key:
             # repeated note: re-articulate with a dip, not a hole (perform.py lifts 60 ms early)
-            n.off = max(n.off, min(nxt.on - nxt.pre - 0.015, n.on + 0.9 * (nxt.on - n.on)))
-            rel = 0.12
+            n.off = max(n.off, min(nxt.on - nxt.pre - 0.012, n.on + 0.9 * (nxt.on - n.on)))
+            rel = 0.18
         elif gap < 0.08 and dur >= short_s and (nxt.art or 0) >= 96:
             # into a detached short note (a dotted figure, a run): lift the bow a
             # moment early so the short note speaks instead of drowning in a release
@@ -887,6 +914,10 @@ def main(argv=None):
         print("  note:", line)
     with ThreadPoolExecutor(min(6, os.cpu_count() or 4)) as ex:
         stems = list(ex.map(lambda t: run_sfizz(*t), tasks))
+    sh = int(round(shift_s * SR))
+    if a.keep_temp:        # kept job WAVs start at MIDI time 0, like the MIDI files' notes minus the shift
+        for (_, _, wav_path), x in zip(tasks, stems):
+            sf.write(str(wav_path), x[sh:], SR, subtype="FLOAT")
 
     n = max(len(s) for s in stems) + int(4.0 * SR)
     reverb = None if a.hall == "none" else hall.Hall(a.hall, SR)
@@ -895,7 +926,6 @@ def main(argv=None):
     stem_out = {}
     level_report = {}
     thr_cc1 = level_to_cc1(parse_level(a.bass_threshold))
-    sh = int(round(shift_s * SR))
     for j, x in zip(jobs, stems):
         y = np.zeros((n, 2))
         y[: len(x)] = x
