@@ -1,51 +1,51 @@
 {
  "segments": {
   "pp": {
-   "rms_dbfs": -39.67,
-   "centroid_hz": 278.8,
-   "hf_ratio_db": -42.79
+   "rms_dbfs": -39.4,
+   "centroid_hz": 284.4,
+   "hf_ratio_db": -41.5
   },
   "mf": {
-   "rms_dbfs": -24.7,
-   "centroid_hz": 378.4,
-   "hf_ratio_db": -26.36
+   "rms_dbfs": -24.35,
+   "centroid_hz": 378.6,
+   "hf_ratio_db": -26.32
   },
   "ff": {
-   "rms_dbfs": -17.54,
-   "centroid_hz": 414.8,
-   "hf_ratio_db": -23.37
+   "rms_dbfs": -17.17,
+   "centroid_hz": 414.7,
+   "hf_ratio_db": -23.34
   },
   "hairpin": {
-   "rms_dbfs": -21.16,
-   "centroid_hz": 436.5,
-   "hf_ratio_db": -21.92
+   "rms_dbfs": -20.73,
+   "centroid_hz": 436.9,
+   "hf_ratio_db": -21.89
   }
  },
  "gain_matched_bands_db": {
   "pp": {
-   "gain_applied_db": 21.94,
+   "gain_applied_db": 21.96,
    "bands": {
-    "63": 2.92,
-    "125": 2.37,
-    "250": 1.24,
-    "500": -2.12,
-    "1000": -6.78,
-    "2000": -13.81,
-    "4000": -22.33,
-    "8000": -28.16
+    "63": 2.53,
+    "125": 2.29,
+    "250": 1.33,
+    "500": -1.97,
+    "1000": -6.23,
+    "2000": -12.54,
+    "4000": -21.26,
+    "8000": -29.44
    }
   },
   "mf": {
    "gain_applied_db": 7.14,
    "bands": {
-    "63": 0.48,
+    "63": 0.44,
     "125": 0.56,
-    "250": 0.3,
-    "500": -0.39,
-    "1000": -0.99,
-    "2000": -2.27,
-    "4000": -3.09,
-    "8000": -9.83
+    "250": 0.29,
+    "500": -0.38,
+    "1000": -0.97,
+    "2000": -2.28,
+    "4000": -3.04,
+    "8000": -9.33
    }
   },
   "ff": {
@@ -63,21 +63,21 @@
   }
  },
  "hairpin": {
-  "level_range_db": 21.52,
-  "hf_ratio_range_db": 15.25,
+  "level_range_db": 21.51,
+  "hf_ratio_range_db": 15.11,
   "centroid_range_hz": [
-   316.6,
-   474.7
+   316.7,
+   474.6
   ],
   "corr_level_vs_control": 0.987,
   "rising_steps_negative": 0,
   "falling_steps_positive": 0,
   "peak_note_level_db": -21.9,
   "first_last_level_db": [
-   -43.42,
-   -41.92
+   -43.41,
+   -41.93
   ],
-  "hf_ratio_loudest_minus_softest_db": 15.13,
+  "hf_ratio_loudest_minus_softest_db": 14.92,
   "corr_hf_ratio_vs_control": 0.931
  }
 }

@@ -24,7 +24,7 @@ The script:
 | Salamander V3 | FreePats tarball, 742 MB, extracted to `SalamanderGrandPiano/` | tarball length, SHA-256 of the stock SFZ, manifest hash over all 641 FLAC samples (FreePats publishes no checksum) |
 | Detmold IRs | 3 WAVs (Omni, Fig8, DummyHead at seat S1R163) cut out of the 986 MB Zenodo zip with HTTP range requests (`fetch_zip_members.py`, ~3 MB transferred) | pinned SHA-256 |
 | sfizz_render | sfizz at commit `f5c6e29`, `sfizz_render_float32.patch` (32-bit float output instead of 16-bit PCM), CMake Release build | renders a sine test and must write IEEE float at 48 kHz |
-| derived SFZ | `make_sfz.py`: onset alignment, L/R time alignment of every note (lossless copies in `samples-aligned/`, 670 MB), continuous velocity-to-loudness calibration, keyboard evenness at every dynamic, stretch tuning key by key, damper release, samples held in RAM | the SFZ header records the SHA-256 of the `make_sfz.py` that wrote it; a different script means a stale instrument, which setup regenerates (and `render_piano.py` refuses); 480 aligned copies present |
+| derived SFZ | `make_sfz.py`: onset alignment, L/R time alignment of every note (lossless copies in `samples-aligned/`, 670 MB), continuous velocity-to-loudness calibration, velocity layers re-spread and crossfaded, keyboard evenness at every dynamic, stretch tuning key by key, damper release, release samples trimmed to key-up, the piano's long-term spectrum (for the hall calibration), samples held in RAM | the SFZ header records the SHA-256 of the `make_sfz.py` that wrote it; a different script means a stale instrument, which setup regenerates (and `render_piano.py` refuses); 480 aligned copies present |
 | hall IR | `make_ir.py`: Omni + Fig8 decoded as M/S to stereo, direct sound removed, late tail continued per octave band to 3.1 s (the measurement is 1.44 s long, the bass reverberates longer) | the IR's JSON records the SHA-256 of the `make_ir.py` that wrote it; setup rebuilds a stale IR (and `render_piano.py` refuses it) |
 | smoke test | two-voice render through `render_piano.py` | render report |
 
@@ -77,7 +77,7 @@ Useful options (all in `python3 render_piano.py --help`):
   in the calibration JSON).
 * **perform.py's velocity scale.** perform.py writes pp 32, p 44, mp 56,
   mf 68, f 82, ff 98. Played raw, its f would be this piano's mf-, and the
-  chain test's pp-ff span shrinks from 22.1 dB to 16.8 dB. `--velocity-scale
+  chain test's pp-ff span shrinks from 22.2 dB to 16.9 dB. `--velocity-scale
   perform` maps its anchors piecewise-linearly onto the calibrated ones (read
   from the calibration JSON). perform.py now tags its files
   with a text meta event `perform.py target=piano|strings`, so `auto` does
@@ -124,32 +124,32 @@ HF ratio, because both are ratios within one spectrum.
 
 | test | segment | RMS dBFS | centroid Hz | HF>2k dB | 4 kHz band after gain-matching to ff |
 |---|---|---|---|---|---|
-| direct | pp (vel 30) | -41.0 | 298 | -44.4 | -24.2 dB |
-| direct | mf (vel 86) | -24.9 | 397 | -26.2 | -3.0 dB |
-| direct | ff (vel 115) | -17.9 | 429 | -23.1 | 0 |
-| chain | pp (plan pp) | -39.7 | 279 | -42.8 | -22.3 dB |
-| chain | mf (plan mf) | -24.7 | 378 | -26.4 | -3.1 dB |
-| chain | ff (plan ff) | -17.5 | 415 | -23.4 | 0 |
+| direct | pp (vel 30) | -40.0 | 299 | -43.6 | -23.5 dB |
+| direct | mf (vel 86) | -23.8 | 397 | -26.1 | -2.9 dB |
+| direct | ff (vel 115) | -16.7 | 429 | -23.1 | 0 |
+| chain | pp (plan pp) | -39.4 | 284 | -41.5 | -21.3 dB |
+| chain | mf (plan mf) | -24.4 | 379 | -26.3 | -3.0 dB |
+| chain | ff (plan ff) | -17.2 | 415 | -23.3 | 0 |
 
-Brought up to the ff level, the pp phrase is still 22-24 dB darker at 4 kHz
-and 28-30 dB darker at 8 kHz. A pure gain change would leave every band at 0.
+Brought up to the ff level, the pp phrase is still 21-24 dB darker at 4 kHz
+and 29-31 dB darker at 8 kHz. A pure gain change would leave every band at 0.
 
 Crescendo / diminuendo, constant pitch so that pitch does not affect timbre:
 
 | ramp | control | level span | HF-ratio span | corr(level, control) | monotonic |
 |---|---|---|---|---|---|
-| direct, repeated chord, 29 hits | velocity 18-120-18 | 27.5 dB | 29.1 dB | 0.992 | yes, no step against the ramp |
-| direct, same chord at velocity 120 | CC11 36-127-36 | 20.2 dB | 13.6 dB | 0.990 | yes |
-| chain, repeated bar of eighths, per half bar | plan pp-ff-pp hairpin | 21.5 dB | 15.3 dB | 0.987 | yes |
+| direct, repeated chord, 29 hits | velocity 18-120-18 | 27.5 dB | 29.3 dB | 0.992 | yes, no step against the ramp |
+| direct, same chord at velocity 120 | CC11 36-127-36 | 20.2 dB | 13.4 dB | 0.990 | yes |
+| chain, repeated bar of eighths, per half bar | plan pp-ff-pp hairpin | 21.5 dB | 15.1 dB | 0.987 | yes |
 
 The CC11 ramp keeps the note velocity at 120 throughout and still moves the HF
-ratio by 13.6 dB between the softest and loudest chord, so expression is
+ratio by 13.4 dB between the softest and loudest chord, so expression is
 realised as hammer velocity rather than as a fader. Voicing: raising the tenor
-from 60 to 80 while the others drop to 56 moves it from +2.5 dB to +7.3 dB
-above the other voices, and its centroid from 360 to 378 Hz.
+from 60 to 80 while the others drop to 56 moves it from +2.5 dB to +7.2 dB
+above the other voices, and its centroid from 360 to 389 Hz.
 
-With `--velocity-scale raw` the chain test spans only 16.8 dB from pp to ff
-(-34.5 to -17.7 dBFS), instead of 22.1 dB.
+With `--velocity-scale raw` the chain test spans only 16.9 dB from pp to ff
+(-34.2 to -17.4 dBFS), instead of 22.2 dB.
 
 ## Instrument fixes and how they were measured
 
@@ -169,6 +169,23 @@ defects; all are fixed and re-measured with the same scripts.
 | documentation drift | this README, the docstrings and `run_tests.sh` re-measured | |
 | no attribution in the files | WAV RIFF INFO (title, artist, comment, copyright, software); M4A tags via an ffmpeg remux with the audio copied | M4A decodes sample-aligned with the WAV (lag 0), true peak unchanged, 250 trailing samples of silence (-121 dBFS) |
 
+### QA round 2
+
+A second adversarial pass (`qa/round2/`, results in `qa/round2/results/`)
+found one major and six minor defects. All are fixed; `qa/fixes2/verify_fixes.py`
+re-measures each one with the round-2 probes and methods (results in
+`qa/fixes2/results/`).
+
+| defect | fix | before -> after |
+|---|---|---|
+| **major:** a General MIDI file that sends CC1=0 (the modulation reset) played every note at velocity 1, with no warning | `--cc-dynamics auto` reads CC1 as dynamics only in perform.py files (its own convention); any other file uses CC11 alone (new mode `cc11`). Warnings, also listed in the report, when controllers pull a voice below mean velocity 10 or the mix needs more than +20 dB of make-up gain | probe: velocity 100 -> 1 before, 100 now, the same as `--cc-dynamics off`; forced to `--cc-dynamics velocity`, the same file is 35 dB quieter and now prints three warnings (`midi_contract.json`) |
+| the hall was about 9 dB wetter than documented: the IR is unit energy, so `--wet-db -4` held only for a white impulse; the report's C80 (8.4) was computed on the IR, not the music | `--wet-db` is set against the IR's gain on the piano's long-term spectrum (+9.4 dB, from the calibration JSON), so it is the hall's energy re the dry piano; the report measures hall-to-dry and C80 on the render; default 0 dB | demo: hall +5.2 -> -0.2 dB re dry, C80 +2.1 -> +4.9 dB (report and QA method agree); median onset contrast in the final file alto 22.4 -> 24.4, soprano 21.8 -> 23.3, tenor 15.5 -> 16.1, pedal 10.7 -> 12.0 dB (no reverb: 25.2/25.3/18.4/14.4); bass 16ths at q=144 4.8 -> 6.4 dB (`hall.json`) |
+| the bass reverb stopped 1.3 s after a staccato chord: the Detmold IR is 1.5 s long, the hall's 63 Hz T20 2.2 s, and the end fade cut the tail about 40 dB down | `make_ir.py` continues each octave band with noise decaying at its measured rate, matched in level and L/R correlation, to 3.1 s; T20 per band unchanged | ff chord, 63 Hz: -20.8 then -142.6 dB/s -> -19.7 then -23.9 dB/s; 125 Hz: -22.0/-141.6 -> -24.9/-25.5 dB/s; broadband no longer drops 15 dB in 0.1 s (`tail_truncation.json`) |
+| brightness jumped at velocity-layer boundaries (no crossfades; layers 3 and 5 only 2-3 velocities wide) | layers 2-7 re-spread to five velocities each over the same v27-56; adjacent layers crossfaded over 4-6 velocities, linear weights, mix level corrected to the calibrated curve; 80 of 450 pairs with a partial in opposite phase keep a hard switch | velocity sweep, largest HF (>2 kHz) step per 2 velocities: C4 5.0 -> 2.6 dB, C6 5.0 -> 2.6 dB, C2 7.3 -> 6.8 dB (a hard pair); level still monotonic, largest step 1.6 dB (`velsweep.json`) |
+| hammer-noise releases sounded 20-160 ms after key-up (recorded pre-roll) | `offset=` 10 ms before each release sample's -20 dB point, 2 ms fade-in; hammer noise `trigger=release_key` (at key-up, pedal or not) | noise onset after key-up (noise rendered alone, A0-E6): median 64.5 ms (19-160) -> 12 ms (7-16) (`release_timing.json`) |
+| two tracks with the same name were merged into one voice | the later one becomes `name.2`, with a warning | odd_names probe: stems soprano, soprano.2, track3 (`midi_contract.json`) |
+| setup rebuilt the hall IR only when missing; fallback velocity marks differed from the calibration; stretch tuning undocumented | IR JSON records `make_ir.py`'s SHA-256, setup rebuilds and the renderer refuses a stale IR; fallback marks = calibration (13/30/63); stretch curve under Limits | |
+
 ## Demo
 
 `out/fugue_jp_piano.{wav,m4a}` (not in git): the four-voice organ fugue on the
@@ -182,17 +199,20 @@ Episode 3 +5, free voices -5. In the stretto each entry is a subject for its
 first bar only and its tail then recedes with the free voices, so that every
 new head is heard over the previous one. Quarter = 66, 141 s.
 
-Measured (`out/fugue_jp_piano.render.json`): -19.0 LUFS integrated, loudness
-range 22.1 LU (the pp opening sits near -40 LUFS, the close near -14.5),
-true peak -1.0 dBTP in both WAV and M4A, C80 +8.4 dB. The four stems sit
-within 0.7 dB of each other in RMS. Stereo: L/R correlation +0.47 in the mix
-(+0.56 dry), mono fold-down -1.4 dB (worst second -2.3 dB). The soprano sits
-7.3 dB to the right and the pedal 2.7 dB to the left: the treble-right,
-bass-left image of the recording, heard from the keyboard. No stem needed a
-second render (`truncation_check`). Each of the 13 subject and answer entries
-sits 0.4-6.6 dB above the loudest other voice and 2.5-9.8 dB above their mean
-during its first bar (`qa/results/mix.json`; with the earlier +9/-4 voicing
-some entries were 0.2-0.3 dB above, and the stretto 1.3 dB).
+Measured (`out/fugue_jp_piano.render.json`, `qa/fixes2/results/demo.json`):
+-18.9 LUFS integrated, loudness range 22.1 LU (short-term loudness: the pp
+opening about -38 LUFS, the close up to -13.8), true peak -1.0 dBTP in both
+WAV and M4A. Hall: -0.2 dB re the dry piano, C80 +4.9 dB, both measured on the
+render. The four stems sit within 0.7 dB of each other in RMS. Stereo: L/R
+correlation +0.51 in the mix (+0.56 dry), mono fold-down -1.3 dB (worst second
+-2.1 dB). The soprano sits 7.3 dB to the right and the pedal 2.7 dB to the
+left: the treble-right, bass-left image of the recording, heard from the
+keyboard. No stem needed a second render (`truncation_check`), and a click scan
+of the final file finds nothing away from note onsets. Each of the 12 later
+subject and answer entries sits 0.3-6.9 dB above the loudest other voice and
+1.3-9.6 dB above their mean during its first bar (the first round's voicing
+fix; with the earlier +9/-4 voicing some entries were 0.2-0.3 dB above, and
+the stretto 1.3 dB).
 
 `out/fugue_organmidi.json` is the earlier render of LilyPond's own flat MIDI
 (every note velocity 90, no plan), kept for comparison.
@@ -202,7 +222,8 @@ some entries were 0.2-0.3 dB above, and the stretto 1.3 dB).
 | file | role |
 |---|---|
 | `render_piano.py` | the renderer |
-| `qa/` | adversarial QA scripts and their results (`qa/results/*.json`); audio goes to `/tmp/pianoqa` |
+| `qa/` | adversarial QA scripts and their results (`qa/results/*.json`, round 2 in `qa/round2/`); audio goes to `/tmp/pianoqa*` |
+| `qa/fixes2/` | re-checks of the round-2 defects after the fixes (`make_fix_probes.py`, `verify_fixes.py`, results in `qa/fixes2/results/*.json`); audio goes to `/tmp/pianofix2` |
 | `setup_piano.sh`, `fetch_zip_members.py`, `sfizz_render_float32.patch` | installation |
 | `make_sfz.py`, `make_ir.py`, `piano_paths.py` | derived instrument, hall IR, shared paths |
 | `plans/fugue_jp.plan.json` | demo performance plan |
@@ -218,8 +239,26 @@ some entries were 0.2-0.3 dB above, and the stretto 1.3 dB).
 * Each sfizz instance holds its voice's samples in RAM (about 1 GB for a fugue
   voice, up to 3 GB for a voice that spans the keyboard); four run in parallel
   by default.
-* The string-resonance and hammer release samples are used as recorded (not
-  L/R aligned); they are quiet and short.
+* The string-resonance and hammer release samples are not L/R aligned (only
+  their recorded pre-roll is trimmed); they are quiet and short. The hammer
+  noise sounds at key-up whether or not the pedal is down; the
+  string-resonance release of a key lifted under the pedal sounds at pedal-up,
+  when the dampers fall.
+* 80 of the 450 velocity-layer boundaries (two thirds of them below C3) switch
+  without a crossfade, because the two recordings have a partial in opposite
+  phase and a crossfade would notch it out. At those boundaries brightness
+  still steps (C2 at velocity 37: +6.8 dB above 2 kHz between v35 and v37).
+* Tuning is the recorded piano's own stretch curve, smoothed key by key, not
+  equal temperament. Isolated keys, energy-weighted partials 1-6: about
+  -23 cents at A0, -18 at C1, -13 at F#1, -3 at C3, 0 at C4, +4.5 at F5, +9 at
+  C6 and +39 at C8 (QA round 2). Octaves are therefore slightly wide, as on any
+  grand, and a part written in the bottom octave sounds flat against equal
+  temperament: the demo's pedal line (`--transpose pedal=-12`, C1-C3) sits at a
+  median -10.8 cents, while the upper voices sit within 2.5 cents of equal
+  temperament.
+* The hall tail after 1.25 s is synthetic: the Detmold measurement is 1.44 s
+  long, so each octave band is continued with noise that decays at the band's
+  measured rate, from the measured tail's level and L/R correlation.
 * After alignment the image is carried by the level difference between the
   channels. A few notes still correlate weakly (C8 +0.23, F#7 +0.31, D#1 +0.40).
 * The Salamander samples decay quickly in the mid register (20-25 dB in the

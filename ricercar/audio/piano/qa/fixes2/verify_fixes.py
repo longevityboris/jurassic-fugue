@@ -229,7 +229,7 @@ def release() -> None:
     old = P / "old_Ricercar.sfz"  # copy of the derived SFZ taken before make_sfz.py was changed
     res = {}
     for probe in ("iso", "pedal_rel"):
-        rep = render(P / f"{probe}.mid", probe, "--keep-temp", "--no-reverb")
+        rep = render(P / f"{probe}.mid", probe, "--keep-temp", "--no-reverb", stems=True)
         stem_mid = Path(rep["temp"]) / "stem00.mid"
         ups = sorted({round(nt["end"] + 0.3, 4) for nt in midi_notes(P / f"{probe}.mid") if nt["key"] <= 88})
         for lab, src in (("before", old), ("after", DERIVED_SFZ)):
@@ -250,6 +250,15 @@ def release() -> None:
                                            "at_pedal_up": events_after(x, [pu], 0.3)[0]}
         import shutil
         shutil.rmtree(rep["temp"], ignore_errors=True)
+    # clicks: the full iso stem (onsets protected) near key-ups, and the noise alone at its start
+    from lib2 import click_scan
+    iso_notes = midi_notes(P / "iso.mid")
+    ups = np.array([nt["end"] + 0.3 for nt in iso_notes])
+    full = click_scan(read(P / "iso_stems/iso.wav"), protect=[nt["start"] + 0.3 for nt in iso_notes], k=12.0)
+    alone = click_scan(read(P / "hammer_iso_after.wav"), k=12.0)
+    res["clicks"] = {"iso_stem_within_30ms_after_keyup": [c for c in full if np.min(np.abs(ups - c["t"])) < 0.03],
+                     "iso_stem_elsewhere": len(full),
+                     "hammer_noise_alone_within_3ms_of_its_start": len([c for c in alone if np.min(np.abs(ups - c["t"])) < 0.003])}
     res["note"] = ("QA round 2 measured the high-frequency event after key-up in the full mix at a median 110 ms "
                    "(75-190 ms); here the noise is rendered alone")
     save("release_timing", res)
@@ -318,6 +327,44 @@ def hall() -> None:
                                    "report said C80 8.4; articulation medians alto 25.4->22.1, tenor 18.3->15.4, pedal "
                                    "14.5->10.6 dB from no reverb to the default (qa/round2/results/hall.json, demo_clarity.json)")
     save("hall", res)
+
+
+def demo() -> None:
+    """The shipped demo (out/fugue_jp_piano.*): QA round 2's entry prominence (qa/round2/an_entries.py)
+    on its stems, and how the file ends after the last key-up."""
+    import an_entries
+    import tempfile
+    from lib2 import midi_notes
+    d = Path(tempfile.mkdtemp(prefix="pianofix2_demo_"))
+    (d / "demo.mid").symlink_to(PIANO / "out/fugue_jp.mid")
+    (d / "demo_j4_stems").symlink_to(PIANO / "out/fugue_jp_piano_stems")
+    an_entries.P = d
+    got = {}
+    an_entries.write_json = lambda path, obj: got.update(obj)
+    an_entries.main()
+    rep = json.loads((PIANO / "out/fugue_jp_piano.render.json").read_text())
+    x = read(PIANO / "out/fugue_jp_piano.wav")
+    last_up = max(nt["end"] for nt in midi_notes(PIANO / "out/fugue_jp.mid")) + 0.3
+    fr = SR // 100
+    n = len(x) // fr
+    env = 10 * np.log10((x[: n * fr] ** 2).sum(axis=1).reshape(n, fr).mean(axis=1) + 1e-30)
+    env -= env.max()
+    i = int(last_up * 100)
+    tail = env[i:]
+    t = np.arange(len(tail)) / 100
+    sel = (t > 0.3) & (tail > -70)
+    from lib2 import click_scan
+    notes = midi_notes(PIANO / "out/fugue_jp.mid")
+    clicks = click_scan(x, protect=[nt["start"] + 0.3 for nt in notes], k=12.0)
+    ups = np.array([nt["end"] + 0.3 for nt in notes])
+    save("demo", {"clicks_away_from_onsets": clicks[:20], "clicks_within_30ms_after_a_keyup":
+                  sum(1 for c in clicks if np.min(np.abs(ups - c["t"])) < 0.03),
+                  "entries": got, "render": {k: rep[k] for k in ("duration_s", "hall", "normalise_gain_db", "measured",
+                                                                 "stereo", "truncation_check", "warnings")},
+                  "tail_after_last_keyup": {"file_ends_s_after_last_keyup": round(len(x) / SR - last_up, 2),
+                                            "level_db_re_loudest_10ms": {f"{a:g}": round(float(tail[int(a * 100)]), 1)
+                                                                         for a in (0.5, 1.0, 1.5, 2.0, 2.5) if a * 100 < len(tail)},
+                                            "decay_db_per_s_above_-70": round(float(np.polyfit(t[sel], tail[sel], 1)[0]), 1) if sel.sum() > 10 else None}})
 
 
 def main() -> None:

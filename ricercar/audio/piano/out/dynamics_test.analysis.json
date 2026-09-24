@@ -1,71 +1,71 @@
 {
  "segments": {
   "pp": {
-   "rms_dbfs": -41.0,
-   "centroid_hz": 298.1,
-   "hf_ratio_db": -44.39
+   "rms_dbfs": -40.01,
+   "centroid_hz": 299.1,
+   "hf_ratio_db": -43.61
   },
   "mf": {
-   "rms_dbfs": -24.9,
-   "centroid_hz": 396.6,
-   "hf_ratio_db": -26.16
+   "rms_dbfs": -23.79,
+   "centroid_hz": 396.9,
+   "hf_ratio_db": -26.09
   },
   "ff": {
-   "rms_dbfs": -17.87,
-   "centroid_hz": 429.3,
-   "hf_ratio_db": -23.13
+   "rms_dbfs": -16.73,
+   "centroid_hz": 429.0,
+   "hf_ratio_db": -23.14
   },
   "cresc_velocity": {
-   "rms_dbfs": -18.17,
-   "centroid_hz": 491.9,
-   "hf_ratio_db": -15.95
+   "rms_dbfs": -17.5,
+   "centroid_hz": 491.6,
+   "hf_ratio_db": -15.98
   },
   "cresc_cc11": {
-   "rms_dbfs": -16.02,
-   "centroid_hz": 496.6,
-   "hf_ratio_db": -15.73
+   "rms_dbfs": -15.36,
+   "centroid_hz": 497.9,
+   "hf_ratio_db": -15.69
   },
   "voicing_flat": {
-   "rms_dbfs": -28.34,
-   "centroid_hz": 383.4,
+   "rms_dbfs": -26.96,
+   "centroid_hz": 383.5,
    "hf_ratio_db": -26.42
   },
   "voicing_tenor": {
-   "rms_dbfs": -26.07,
-   "centroid_hz": 384.5,
-   "hf_ratio_db": -23.86
+   "rms_dbfs": -24.83,
+   "centroid_hz": 391.1,
+   "hf_ratio_db": -22.85
   },
   "pedal": {
-   "rms_dbfs": -28.7,
+   "rms_dbfs": -27.69,
    "centroid_hz": 488.5,
-   "hf_ratio_db": -25.13
+   "hf_ratio_db": -25.12
   }
  },
  "gain_matched_bands_db": {
   "pp": {
-   "gain_applied_db": 23.09,
+   "gain_applied_db": 23.1,
    "bands": {
-    "63": 3.1,
-    "125": 2.24,
-    "250": 1.02,
-    "500": -1.56,
-    "1000": -7.18,
-    "2000": -16.15,
-    "4000": -24.2,
-    "8000": -29.94
+    "63": 3.03,
+    "125": 2.2,
+    "250": 1.03,
+    "500": -1.54,
+    "1000": -7.01,
+    "2000": -15.38,
+    "4000": -23.54,
+    "8000": -30.64
    }
   },
   "mf": {
    "gain_applied_db": 7.08,
    "bands": {
-    "63": 0.45,
-    "125": 0.49,
+    "63": 0.43,
+    "125": 0.47,
     "250": 0.33,
     "500": -0.16,
-    "1000": -0.95,
-    "2000": -2.15,
-    "4000": -2.99,
-    "8000": -9.71
+    "1000": -0.94,
+    "2000": -2.12,
+    "4000": -2.93,
+    "8000": -9.46
    }
   },
   "ff": {
@@ -83,71 +83,71 @@
   }
  },
  "cresc_velocity": {
-  "level_range_db": 27.49,
-  "hf_ratio_range_db": 29.14,
+  "level_range_db": 27.45,
+  "hf_ratio_range_db": 29.3,
   "centroid_range_hz": [
-   321.0,
-   515.8
+   321.7,
+   518.4
   ],
   "corr_level_vs_control": 0.992,
   "rising_steps_negative": 0,
   "falling_steps_positive": 0,
-  "peak_note_level_db": -15.94,
+  "peak_note_level_db": -15.98,
   "first_last_level_db": [
    -43.42,
    -43.36
   ],
-  "hf_ratio_loudest_minus_softest_db": 29.06,
-  "corr_hf_ratio_vs_control": 0.884
+  "hf_ratio_loudest_minus_softest_db": 29.3,
+  "corr_hf_ratio_vs_control": 0.881
  },
  "cresc_cc11": {
-  "level_range_db": 20.2,
-  "hf_ratio_range_db": 13.63,
+  "level_range_db": 20.19,
+  "hf_ratio_range_db": 13.38,
   "centroid_range_hz": [
-   372.0,
-   514.9
+   374.7,
+   518.6
   ],
   "corr_level_vs_control": 0.99,
   "rising_steps_negative": 0,
   "falling_steps_positive": 0,
-  "peak_note_level_db": -15.94,
+  "peak_note_level_db": -15.98,
   "first_last_level_db": [
-   -36.13,
-   -36.1
+   -36.17,
+   -36.15
   ],
-  "hf_ratio_loudest_minus_softest_db": 13.57,
-  "corr_hf_ratio_vs_control": 0.925
+  "hf_ratio_loudest_minus_softest_db": 13.38,
+  "corr_hf_ratio_vs_control": 0.937
  },
  "voicing": {
   "voicing_flat": {
    "stem_rms_dbfs": {
-    "Alto": -41.57,
+    "Alto": -41.56,
     "Bass": -38.81,
     "Soprano": -43.18,
-    "Tenor": -38.32
+    "Tenor": -38.33
    },
    "stem_centroid_hz": {
     "Alto": 489.9,
-    "Bass": 260.8,
-    "Soprano": 626.6,
-    "Tenor": 360.2
+    "Bass": 260.7,
+    "Soprano": 626.5,
+    "Tenor": 360.5
    },
    "tenor_minus_mean_other_db": 2.48
   },
   "voicing_tenor": {
    "stem_rms_dbfs": {
-    "Alto": -42.32,
-    "Bass": -39.47,
+    "Alto": -42.33,
+    "Bass": -39.48,
     "Soprano": -44.13,
-    "Tenor": -34.29
+    "Tenor": -34.34
    },
    "stem_centroid_hz": {
-    "Alto": 486.9,
-    "Bass": 259.4,
-    "Soprano": 624.5,
-    "Tenor": 378.5
+    "Alto": 488.0,
+    "Bass": 259.6,
+    "Soprano": 625.1,
+    "Tenor": 388.6
    },
-   "tenor_minus_mean_other_db": 7.25
+   "tenor_minus_mean_other_db": 7.21
   }
  }
 }

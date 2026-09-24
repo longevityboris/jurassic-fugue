@@ -3,14 +3,14 @@
   "keyups": 68,
   "events": 68,
   "onset_after_keyup_ms": {
-   "median": 64.5,
+   "median": 63.5,
    "range": [
     19,
     160
    ]
   },
   "loudest_after_keyup_ms": {
-   "median": 155.0,
+   "median": 154.5,
    "range": [
     71,
     259
@@ -113,15 +113,20 @@
    },
    {
     "t": 7.3,
-    "onset_ms": 12,
-    "peak_ms": 103,
-    "peak_dbfs": -62.5
+    "onset_ms": 0,
+    "peak_ms": 0,
+    "peak_dbfs": -119.3
    }
   ],
   "at_pedal_up": {
    "t": 3.3,
    "event": false
   }
+ },
+ "clicks": {
+  "iso_stem_within_30ms_after_keyup": [],
+  "iso_stem_elsewhere": 0,
+  "hammer_noise_alone_within_3ms_of_its_start": 1
  },
  "note": "QA round 2 measured the high-frequency event after key-up in the full mix at a median 110 ms (75-190 ms); here the noise is rendered alone"
 }

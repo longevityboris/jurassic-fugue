@@ -96,8 +96,8 @@ MIDI contract (for the performance script)
   struck harder.
 * **Velocity scale.** perform.py writes its own scale (VEL_AT: ppp 22, pp 32,
   p 44, mp 56, mf 68, f 82, ff 98, fff 112). Played raw, its "f" would be this
-  piano's mf-, and the chain test's pp->ff span would be 16.8 dB instead of
-  22.1 dB. ``--velocity-scale
+  piano's mf-, and the chain test's pp->ff span would be 16.9 dB instead of
+  22.2 dB. ``--velocity-scale
   perform`` maps it piecewise-linearly onto the calibrated markings above
   (22->13, 32->30, 44->42, 56->63, 68->86, 82->103, 98->115, 112->127, read
   from the calibration JSON); accents and voicing offsets between anchors

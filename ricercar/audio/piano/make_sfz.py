@@ -87,7 +87,8 @@ counterpoint. This script fixes them without touching the audio files:
    reached -20 dB 15-180 ms into the file and so sounded 20-160 ms after
    key-up (median 65 ms; its loudest part 155 ms). Each release region gets an
    ``offset=`` 10 ms before the sample first comes within 20 dB of its loudest
-   5 ms (rel*: median 51 ms cut; harm*: 0-26 ms). The hammer-noise group is
+   5 ms (rel*: median 51 ms cut; harm*: 0-26 ms), with a 2 ms fade-in
+   (``ampeg_attack``), as the cut is not at a zero crossing. The hammer-noise group is
    ``trigger=release_key``: the action sounds when a key is lifted, pedal or
    not. (With ``trigger=release`` sfizz holds every release back while the
    sustain pedal is down and fires them together at pedal-up; the
@@ -557,8 +558,10 @@ def trim_releases(text: str) -> tuple[str, dict]:
         st = line.strip()
         if st.startswith("//HammerNoise"):
             hammer = True
-        elif st.startswith("<group>") and hammer:
-            line = line.replace("trigger=release ", "trigger=release_key ")
+        elif st.startswith("<group>"):
+            if hammer:
+                line = line.replace("trigger=release ", "trigger=release_key ")
+            line = f"{line.rstrip()} ampeg_attack=0.002"  # the cut point is not a zero crossing
         elif st.startswith("<region>"):
             sample = parse_opcodes(st[len("<region>"):])["sample"]
             off = release_onset(SALAMANDER_DIR / sample)
