@@ -14,7 +14,8 @@ OUT_BASENAME.wav.  Levels are K-weighted (BS.1770).
               more than 15 dB above both the median of the surrounding 40 ms
               and the frames 2 ms either side (a bow attack rises over several
               ms and is not counted); reported per stem with the nearest note
-              boundary
+              boundary and the spike level re the instrument's own level (100 ms
+              RMS); spikes within 20 dB of it are counted as audible candidates
   short notes onset rise (20 ms RMS, level 20-40 ms after the note-on minus 10 ms before) and
               time to reach the note's peak - 3 dB, for notes played with the
               short stroke
@@ -107,6 +108,7 @@ def main():
     for inst, x in stems.items():
         h = sosfilt(sos, x)
         e, hp = env_db(h, sr, 0.0005)
+        full, fhp = env_db(x, sr, 0.0005, 0.1)          # the instrument's own level around each frame
         k = int(0.02 / 0.0005)
         med = median_filter(e, size=2 * k + 1, mode="nearest")
         side = np.maximum(np.roll(e, 4), np.roll(e, -4))
@@ -121,9 +123,13 @@ def main():
                 continue
             last = t
             near = float(bounds[np.argmin(np.abs(bounds - t))] - t) if len(bounds) else None
+            rel = float(e[i] - full[min(i, len(full) - 1)])
             events.append(dict(t=round(t + off, 3), db_over_local=round(float(e[i] - med[i]), 1),
+                               db_re_instrument_level=round(rel, 1),
                                nearest_note_boundary_ms=None if near is None else round(near * 1000, 1)))
-        clicks[NAMES[inst]] = dict(count=len(events), events=events[:20])
+        # a spike more than 20 dB below the instrument's own sound is masked by it
+        clicks[NAMES[inst]] = dict(count=len(events), audible_candidates=sum(ev["db_re_instrument_level"] > -20
+                                                                             for ev in events), events=events[:20])
     out["clicks"] = clicks
 
     # ------------------------------------------------------- short / legato
@@ -177,7 +183,8 @@ def main():
                   ", ".join(f"{k} {v} / {s['balance']['p10_db_re_loudest'][k]}"
                             for k, v in s["balance"]["median_db_re_loudest"].items()),
                   f"[{s['balance']['windows']} windows]")
-        print("clicks:", ", ".join(f"{k} {v['count']}" for k, v in s["clicks"].items()))
+        print("clicks (flagged / within 20 dB of the instrument's level):",
+              ", ".join(f"{k} {v['count']}/{v['audible_candidates']}" for k, v in s["clicks"].items()))
         print("short notes:", "; ".join(f"{k}: rise {v['median_onset_rise_db']} dB (p10 {v['p10_onset_rise_db']}), "
                                         f"peak-3dB after {v['median_time_to_peak_ms']} ms"
                                         for k, v in s["short_notes"].items()))

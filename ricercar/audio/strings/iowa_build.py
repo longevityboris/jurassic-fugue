@@ -515,7 +515,7 @@ def write_sfz(inst: str, meta: list[dict]):
         # slurred: enters in the sustain, fades in under the previous note's release
         (64, 95, "legato_offset", "ampeg_attack=0.07 ampeg_vel2attack=-0.03"),
         # short (detache / spiccato-like): crisp start and a small accent decay
-        (96, 127, "short_offset", "ampeg_attack=0.004 ampeg_vel2attack=0 ampeg_hold=0.03 "
+        (96, 127, "short_offset", "ampeg_attack=0.008 ampeg_vel2attack=0 ampeg_hold=0.03 "
                                    "ampeg_decay=0.12 ampeg_sustain=60"),
     ]
     for d in DYNAMICS:
