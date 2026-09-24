@@ -1,89 +1,407 @@
 {
- "voices": ["soprano", "alto", "tenor", "bass"],
+ "voices": [
+  "soprano",
+  "alto",
+  "tenor",
+  "bass"
+ ],
  "measure": "1",
  "tempo": [
-  {"at": "1:1", "bpm": 74},
-  {"at": "28:1", "until": "29:1", "to_bpm": 66},
-  {"at": "30:1", "bpm": 52},
-  {"at": "35:1", "bpm": 60},
-  {"at": "35:1", "until": "42:1", "to_bpm": 76},
-  {"at": "42:1", "bpm": 76},
-  {"at": "49:1", "until": "50:1", "to_bpm": 68},
-  {"at": "50:1", "bpm": 56},
-  {"at": "51:1", "bpm": 69},
-  {"at": "59:1", "until": "62:3", "to_bpm": 56}
+  {
+   "at": "1:1",
+   "bpm": 74
+  },
+  {
+   "at": "28:1",
+   "until": "29:1",
+   "to_bpm": 66
+  },
+  {
+   "at": "30:1",
+   "bpm": 52
+  },
+  {
+   "at": "35:1",
+   "bpm": 60
+  },
+  {
+   "at": "35:1",
+   "until": "42:1",
+   "to_bpm": 76
+  },
+  {
+   "at": "42:1",
+   "bpm": 76
+  },
+  {
+   "at": "49:1",
+   "until": "50:1",
+   "to_bpm": 68
+  },
+  {
+   "at": "50:1",
+   "bpm": 56
+  },
+  {
+   "at": "51:1",
+   "bpm": 69
+  },
+  {
+   "at": "59:1",
+   "until": "62:3",
+   "to_bpm": 56
+  }
  ],
  "fermatas": [
-  {"at": "29:1", "extra_beats": 3},
-  {"at": "49:4", "extra_beats": 3},
-  {"at": "62:1", "extra_beats": 3}
+  {
+   "at": "29:1",
+   "extra_beats": 3
+  },
+  {
+   "at": "49:4",
+   "extra_beats": 3
+  },
+  {
+   "at": "62:1",
+   "extra_beats": 3
+  }
  ],
  "breaths": [
-  {"at": "30:1", "ms": 1400},
-  {"at": "35:1", "ms": 300},
-  {"at": "42:1", "ms": 250},
-  {"at": "50:1", "ms": 700},
-  {"at": "51:1", "ms": 400}
+  {
+   "at": "30:1",
+   "ms": 1400
+  },
+  {
+   "at": "35:1",
+   "ms": 300
+  },
+  {
+   "at": "42:1",
+   "ms": 250
+  },
+  {
+   "at": "50:1",
+   "ms": 700
+  },
+  {
+   "at": "51:1",
+   "ms": 400
+  }
  ],
  "dynamics": [
-  {"at": "1:1", "level": "p"},
-  {"at": "5:1", "until": "13:1", "to": "mp"},
-  {"at": "13:1", "until": "17:3", "to": "mf"},
-  {"at": "18:1", "level": "mp"},
-  {"at": "20:1", "until": "26:1", "to": "f"},
-  {"at": "26:3", "until": "28:4", "to": "ff"},
-  {"at": "29:1", "level": "ff"},
-  {"at": "30:1", "level": "pp"},
-  {"at": "31:1", "until": "32:1", "to": "p"},
-  {"at": "32:1", "until": "34:1", "to": "pp"},
-  {"at": "35:1", "level": "pp"},
-  {"at": "35:1", "until": "41:4", "to": "mf"},
-  {"at": "42:1", "level": "p"},
-  {"at": "44:1", "until": "46:1", "to": "mp"},
-  {"at": "46:1", "until": "48:1", "to": "f"},
-  {"at": "48:1", "until": "49:4", "to": "fff"},
-  {"at": "50:1", "level": "pp"},
-  {"at": "51:1", "level": "p"},
-  {"at": "51:1", "until": "55:1", "to": "mf"},
-  {"at": "55:1", "until": "57:1", "to": "f"},
-  {"at": "57:3", "until": "59:1", "to": "mp"},
-  {"at": "59:1", "until": "62:3", "to": "pp"}
+  {
+   "at": "1:1",
+   "level": "p"
+  },
+  {
+   "at": "5:1",
+   "until": "13:1",
+   "to": "mp"
+  },
+  {
+   "at": "13:1",
+   "until": "17:3",
+   "to": "mf"
+  },
+  {
+   "at": "18:1",
+   "level": "mp"
+  },
+  {
+   "at": "20:1",
+   "until": "26:1",
+   "to": "f"
+  },
+  {
+   "at": "26:3",
+   "until": "28:4",
+   "to": "ff"
+  },
+  {
+   "at": "29:1",
+   "level": "ff"
+  },
+  {
+   "at": "30:1",
+   "level": "pp"
+  },
+  {
+   "at": "31:1",
+   "until": "32:1",
+   "to": "p"
+  },
+  {
+   "at": "32:1",
+   "until": "34:1",
+   "to": "pp"
+  },
+  {
+   "at": "35:1",
+   "level": "pp"
+  },
+  {
+   "at": "35:1",
+   "until": "41:4",
+   "to": "mf"
+  },
+  {
+   "at": "42:1",
+   "level": "p"
+  },
+  {
+   "at": "44:1",
+   "until": "46:1",
+   "to": "mp"
+  },
+  {
+   "at": "46:1",
+   "until": "48:1",
+   "to": "f"
+  },
+  {
+   "at": "48:1",
+   "until": "49:4",
+   "to": "fff"
+  },
+  {
+   "at": "50:1",
+   "level": "pp"
+  },
+  {
+   "at": "51:1",
+   "level": "p"
+  },
+  {
+   "at": "51:1",
+   "until": "55:1",
+   "to": "mf"
+  },
+  {
+   "at": "55:1",
+   "until": "57:1",
+   "to": "f"
+  },
+  {
+   "at": "57:3",
+   "until": "59:1",
+   "to": "mp"
+  },
+  {
+   "at": "59:1",
+   "until": "62:3",
+   "to": "pp"
+  }
  ],
  "roles": [
-  {"voice": "soprano", "at": "1:1", "until": "5:4", "role": "subject"},
-  {"voice": "alto", "at": "5:1", "until": "9:4", "role": "answer"},
-  {"voice": "soprano", "at": "5:4", "until": "9:4", "role": "cs"},
-  {"voice": "bass", "at": "9:1", "until": "13:4", "role": "subject"},
-  {"voice": "alto", "at": "9:4", "until": "13:4", "role": "cs"},
-  {"voice": "soprano", "at": "10:1", "until": "13:1", "role": "cs"},
-  {"voice": "tenor", "at": "13:1", "until": "17:4", "role": "answer"},
-  {"voice": "bass", "at": "13:4", "until": "17:4", "role": "cs"},
-  {"voice": "alto", "at": "14:1", "until": "17:1", "role": "cs"},
-  {"voice": "bass", "at": "20:1", "until": "24:4", "role": "subject"},
-  {"voice": "alto", "at": "20:4", "until": "24:4", "role": "cs"},
-  {"voice": "tenor", "at": "21:1", "until": "23:4", "role": "cs"},
-  {"voice": "soprano", "at": "22:1", "until": "26:4", "role": "subject"},
-  {"voice": "bass", "at": "26:3", "until": "29:1", "role": "subject"},
-  {"voice": "tenor", "at": "27:1", "until": "29:1", "role": "subject"},
-  {"voice": "alto", "at": "27:3", "until": "29:1", "role": "subject"},
-  {"voice": "soprano", "at": "28:1", "until": "29:1", "role": "subject"},
-  {"voice": "soprano", "at": "30:1", "until": "35:1", "role": "subject"},
-  {"voice": "bass", "at": "35:1", "until": "39:4", "role": "subject"},
-  {"voice": "alto", "at": "35:4", "until": "39:4", "role": "cs"},
-  {"voice": "soprano", "at": "36:1", "until": "39:4", "role": "cs"},
-  {"voice": "tenor", "at": "37:1", "until": "41:4", "role": "answer"},
-  {"voice": "bass", "at": "42:1", "until": "51:1", "role": "cf"},
-  {"voice": "alto", "at": "42:1", "until": "46:1", "role": "subject"},
-  {"voice": "tenor", "at": "44:1", "until": "48:4", "role": "subject"},
-  {"voice": "soprano", "at": "44:1", "until": "45:1", "role": "answer"},
-  {"voice": "soprano", "at": "51:1", "until": "59:1", "role": "subject"},
-  {"voice": "bass", "at": "51:1", "until": "59:1", "role": "cs"},
-  {"voice": "tenor", "at": "55:1", "until": "59:1", "role": "cs"},
-  {"voice": "tenor", "at": "61:1", "until": "62:4", "role": "subject"}
+  {
+   "voice": "soprano",
+   "at": "1:1",
+   "until": "5:4",
+   "role": "subject"
+  },
+  {
+   "voice": "alto",
+   "at": "5:1",
+   "until": "9:4",
+   "role": "answer"
+  },
+  {
+   "voice": "soprano",
+   "at": "5:4",
+   "until": "9:4",
+   "role": "cs"
+  },
+  {
+   "voice": "bass",
+   "at": "9:1",
+   "until": "13:4",
+   "role": "subject"
+  },
+  {
+   "voice": "alto",
+   "at": "9:4",
+   "until": "13:4",
+   "role": "cs"
+  },
+  {
+   "voice": "soprano",
+   "at": "10:1",
+   "until": "13:1",
+   "role": "cs"
+  },
+  {
+   "voice": "tenor",
+   "at": "13:1",
+   "until": "17:4",
+   "role": "answer"
+  },
+  {
+   "voice": "bass",
+   "at": "13:4",
+   "until": "17:4",
+   "role": "cs"
+  },
+  {
+   "voice": "alto",
+   "at": "14:1",
+   "until": "17:1",
+   "role": "cs"
+  },
+  {
+   "voice": "bass",
+   "at": "20:1",
+   "until": "24:4",
+   "role": "subject"
+  },
+  {
+   "voice": "alto",
+   "at": "20:4",
+   "until": "24:4",
+   "role": "cs"
+  },
+  {
+   "voice": "tenor",
+   "at": "21:1",
+   "until": "23:4",
+   "role": "cs"
+  },
+  {
+   "voice": "soprano",
+   "at": "22:1",
+   "until": "26:4",
+   "role": "subject"
+  },
+  {
+   "voice": "bass",
+   "at": "26:3",
+   "until": "29:1",
+   "role": "subject"
+  },
+  {
+   "voice": "tenor",
+   "at": "27:1",
+   "until": "29:1",
+   "role": "subject"
+  },
+  {
+   "voice": "alto",
+   "at": "27:3",
+   "until": "29:1",
+   "role": "subject"
+  },
+  {
+   "voice": "soprano",
+   "at": "28:1",
+   "until": "29:1",
+   "role": "subject"
+  },
+  {
+   "voice": "soprano",
+   "at": "30:1",
+   "until": "35:1",
+   "role": "subject"
+  },
+  {
+   "voice": "bass",
+   "at": "35:1",
+   "until": "39:4",
+   "role": "subject"
+  },
+  {
+   "voice": "alto",
+   "at": "35:4",
+   "until": "39:4",
+   "role": "cs"
+  },
+  {
+   "voice": "soprano",
+   "at": "36:1",
+   "until": "39:4",
+   "role": "cs"
+  },
+  {
+   "voice": "tenor",
+   "at": "37:1",
+   "until": "41:4",
+   "role": "answer"
+  },
+  {
+   "voice": "bass",
+   "at": "42:1",
+   "until": "51:1",
+   "role": "cf"
+  },
+  {
+   "voice": "alto",
+   "at": "42:1",
+   "until": "46:1",
+   "role": "subject"
+  },
+  {
+   "voice": "tenor",
+   "at": "44:1",
+   "until": "48:4",
+   "role": "subject"
+  },
+  {
+   "voice": "soprano",
+   "at": "44:1",
+   "until": "45:1",
+   "role": "answer"
+  },
+  {
+   "voice": "soprano",
+   "at": "51:1",
+   "until": "59:1",
+   "role": "subject"
+  },
+  {
+   "voice": "bass",
+   "at": "51:1",
+   "until": "59:1",
+   "role": "cs"
+  },
+  {
+   "voice": "tenor",
+   "at": "55:1",
+   "until": "59:1",
+   "role": "cs"
+  },
+  {
+   "voice": "tenor",
+   "at": "61:1",
+   "until": "62:4",
+   "role": "subject"
+  }
  ],
  "pedal": [
-  {"at": "30:1", "until": "35:1", "every": "harmony"},
-  {"at": "51:1", "until": "62:4", "every": "harmony"}
+  {
+   "at": "30:1",
+   "until": "35:1",
+   "every": "harmony"
+  },
+  {
+   "at": "51:1",
+   "until": "62:4",
+   "every": "harmony"
+  }
  ],
- "humanize": {"ms": 6, "vel": 2}
+ "humanize": {
+  "ms": 6,
+  "vel": 2
+ },
+ "role_boost": {
+  "subject": 9,
+  "answer": 9,
+  "cf": 7,
+  "cs": 2,
+  "free": -4
+ },
+ "role_level": {
+  "subject": 0.7,
+  "answer": 0.7,
+  "cf": 0.5,
+  "cs": 0.2,
+  "free": -0.2
+ }
 }
