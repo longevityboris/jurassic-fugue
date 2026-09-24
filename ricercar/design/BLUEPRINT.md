@@ -1,6 +1,6 @@
 # BLUEPRINT: "The Neighbour", ricercar a 4 on the Theme from Jurassic Park
 
-B-flat minor to B-flat major. 4 voices (S A T B), piano and string quartet. 4/4, **62 bars, 227.2 s**
+B-flat minor to B-flat major. 4 voices (S A T B), piano and string quartet. 4/4, **62 bars, 227.3 s**
 (measured with `tools/perform.py` and `final-lab/plan.json`, piano and strings targets alike).
 
 Everything musical in this document exists as notes in `final-lab/SK_final.ly`, the verified skeleton of
@@ -37,7 +37,7 @@ B-flat A B-flat in the tenor, over the tonic pedal.
 | decision | source | why |
 |---|---|---|
 | Base: concept, materials, triple invertible counterpoint, stretto at the 4th, dim7 liquidation, arioso, German-sixth pivot to A minor, fuga inversa with its stretto, INV in augmentation as the pedal, plagal turn into the major | P2 | the only design fully written, checked and measured; the judges' execution winner |
-| **Exposition re-ordered S-A-B-T, tune first alone in the soprano at its own pitch (bes')** | P1 (Op. 131 top-down idea), judges of execution and beauty | P2 began in the cello at B-flat2; recognition matters most for a user who heard the melody as "off". Realised with P2's own counterpoint: entry 3 is P2's proven order C2-C1-S at identical registers, entry 4 the proven order C2-S-C1 a fifth higher |
+| **Exposition re-ordered S-A-B-T, tune first alone in the soprano at its own pitch (bes')** | P1 (Op. 131 top-down idea), judges of execution and beauty | P2 began in the cello at B-flat2; recognition matters most for a user who heard the melody as "off". Realised with P2's own counterpoint: entry 3 is P2's proven order C2-C1-S at identical registers, entry 4 the proven order C2-S-C1 transposed down a perfect fourth (interval-identical to lab T4) |
 | **The full lament in the bass under the last exposition entry** (CS1 at c,: aes, g, f, e, ees, des, c,) | P4 | gives the exposition gravity (P1's and P2's lower registers were thin); here it falls out of the permutation for free |
 | Entry tails no longer collapse into four-octave unisons (13:3, 17:3) | beauty judge | CS2 and CS1 landings varied (f'' at 13, c'' at 17; CS1 tail a c' a) |
 | **Four thematic forms at once over the pedal (44-45): S2 (A), S1 (T), the INV head (S), INV augmented (B)**, then the double pedal F2/F5 that becomes the climax wedge | P1 P12 and P3 wedge ideas, realised with P2 material | P2's S1+S2 combination was nominal and bars 42-46 were 2-3 voices; P1's quadruple lab had parallel 2nds and a unison. The INV head (not the whole INV) is what fits the C7 "light" at 48 |
@@ -104,7 +104,7 @@ f'', 17: c'').
 
 **S1, CS1, CS2 are triple invertible counterpoint at the octave: all six vertical orders are proven**
 (labs T1-T6). The exposition uses two of them in real time: C2-C1-S (bars 9-13, identical registers to
-T3) and C2-S-C1 (bars 13-17, T4 a fifth higher with CS2 an octave up).
+T3) and C2-S-C1 (bars 13-17 = T4 transposed down a perfect fourth in all three voices).
 
 ### 2.5 Subject II (S2) = theme bars 5-8, 16 beats (`subjectTwo`)
 
@@ -178,7 +178,7 @@ The complete tune is heard only once, at 51-58, untouched in B-flat major.
 
 4/4 throughout (the tune's own metre; every entry keeps the tune's metric placement). Measured:
 `python3 tools/perform.py design/final-lab/SK_final.ly design/final-lab/plan.json OUT.mid --target piano|strings`
-gives **227.2 s** for both targets (window 210-240; 13 s headroom for reverb tails and a slightly
+gives **227.3 s** for both targets (window 210-240; 12.7 s headroom for reverb tails and a slightly
 longer fermata, 17 s above the floor).
 
 | section | bars | tempo (quarter) | measured s | starts at |
@@ -189,8 +189,8 @@ longer fermata, 17 s above the floor).
 | 4 Arioso dolente | 30-34 | 52 | 23.4 | 98.8 |
 | 5 Fuga inversa | 35-41 | 60, poco a poco to 76 ("poi a poi di nuovo vivente") | 25.1 | 122.1 |
 | 6 Pedal, combination, Climax II | 42-50 | 76; rit. to 68 in 49; fermata 49:4 (+3); 50 at 56; breath 0.7 s | 33.4 | 147.2 |
-| 7 Apotheosis and coda | 51-62 | 69 (Largamente); rit. to 56 from 59; final fermata (+3) | 46.5 | 180.6 |
-| **total** | **62** | | **227.2** | |
+| 7 Apotheosis and coda | 51-62 | 69 (Largamente); rit. to 56 from 59; final fermata on the full chord at 62:3 (+3) | 46.6 | 180.6 |
+| **total** | **62** | | **227.3** | |
 
 Arithmetic cross-check: 1-27 at 74 = 27 x 4 x 60/74 = 87.6 s; 28-29 with rit., fermata and GP about
 11 s; 30-34 at 52 = 23.1 s; 35-41 accelerando (mean about 67) about 25 s; 42-48 at 76 = 22.1 s; 49-50
@@ -297,6 +297,11 @@ Seven sections, each self-contained, each with a verified starter file in `final
 | 6 | 42-50 | `sec06_pedal_climax.ly` | Pedal, combination, Climax II, plagal turn | 8.6 | free alto 46-50, tenor 49-50 |
 | 7 | 51-62 | `sec07_apotheosis_coda.ly` | Apotheosis and coda | 10.2 | free alto 51-60, tenor 51-54 |
 
+Section 4 is 5 bars, under the usual 6: it stays its own section because its tempo (52), texture
+(melody over pulsing eighths) and function (the collapse after the general pause, the pivot to A
+minor) are unique, and merging it into section 3 or 5 would put a fermata and a general pause, or the
+key change to A minor, inside one composer's work.
+
 ---------------------------------------------------------------------------------------------------
 
 ## 6. Section specifications
@@ -342,7 +347,7 @@ First sonority (1:1): Bb4 alone. Last sonority (12:4.5): Bb2 F3 Db5 = B-flat min
 
 * Entries: 13:1 T ANS f; 13:4 B CS1 answer level (c,, the lament to C2); 14:1 A CS2 answer level (f').
 * Voices: T 13-17:3 LOCKED; B 13:4-17:3 CS; A 13:1-3 CS1 tail (CS), 14-17 CS2 (CS); S 13-17 FREE
-  descant; 17:4-19 all FREE (episode). Order in 13-17: proven C2-S-C1 (lab T4) + free soprano.
+  descant; 17:4-19 all FREE (episode). Order in 13-17: proven C2-S-C1 = lab T4 transposed down a perfect fourth in all three voices (interval-identical), + free soprano.
 * FREE work: (a) soprano 13-17: keep the sighing descant's shape (entries on weak beats, c''-des''-c''
   = the INV sigh at the answer level, des''-f''-e'' to the half cadence) and its boundary; it may be
   enriched with suspensions over the lament bass (e.g. prepare 16:1 and 17:1 as 7-6 / 4-3), but avoid
@@ -492,7 +497,7 @@ First sonority (35:1): E3 alone. Last sonority (41:4): C3 C4 E5 G5 = C major (V 
 
 First sonority (42:1): F2 Bb3 C5 = Vsus4. Last sonority (50:4): Gb2 Gb3 Eb4 Bb5 = iv6 (E-flat minor over G-flat).
 
-### Section 7: bars 51-62, Apotheosis and coda (180.6-227.2 s)
+### Section 7: bars 51-62, Apotheosis and coda (180.6-227.3 s)
 
 * Entries: 51:1 S the whole tune, major, bes' (LOCKED 51-58); 51:1 B mirror of S1 bes, (CS 51-54);
   55:1 B ANS major f, (CS 55-58); 55:1 T answer's mirror f (CS 55-58); 61:1 T S1 head bes (LOCKED).
@@ -567,7 +572,7 @@ First sonority (51:1): Bb2 F3 D4 Bb4 = B-flat major. Last sonority (62:3): Bb2 B
 
 * Tempo map: 74 (1-27), rit. to 66 (28), fermata 29 and general pause 1.4 s; 52 arioso (30-34); 60
   accelerando to 76 (35-41); 76 (42-48), rit. to 68 (49), fermata on V at 49:4, breath 0.7 s; 56 (50);
-  69 (51-58), rit. to 56 (59-62), final fermata.
+  69 (51-58), rit. to 56 (59-62), final fermata on the complete B-flat chord (62:3, after the alto's d' rises to f').
 * Dynamics arc: p (the tune alone) to mf at the first half cadence (17); mp to f through the stretto, ff
   at the liquidation, fermata and silence (29); subito pp arioso, swelling only to p; pp to mf through
   the inverted fugue; subito p misterioso on the pedal; mp, f, fff at the V fermata (49:4, about 170 s,
@@ -594,7 +599,7 @@ strict = `strict.py` (from proposal 3).
 | T1_C1-C2-S | triple counterpoint, CS1 top, CS2 middle, S1 bass | 0/0/0/0 | none |
 | T2_C1-S-C2 | CS1 top, S1 middle, CS2 bass | 0/0/0/0 | none |
 | T3_C2-C1-S | CS2 top, CS1 middle, S1 bass (= bars 9-13) | 0/0/0/0 | none |
-| T4_C2-S-C1 | CS2 top, S1 middle, CS1 bass (= bars 13-17) | 0/0/0/0 | D4? 5:2.5: passing 6/4 in the tail as the next entry starts |
+| T4_C2-S-C1 | CS2 top, S1 middle, CS1 bass (bars 13-17 = this lab down a perfect fourth) | 0/0/0/0 | D4? 5:2.5: passing 6/4 in the tail as the next entry starts |
 | T5_S-C2-C1 | S1 top, CS2 middle, CS1 bass | 0/0/0/0 | same tail 6/4 |
 | T6_S-C1-C2 | S1 top, CS1 middle, CS2 bass | 0/0/0/0 | none. **All six orders pass** |
 | X1_E2_cs1_over_answer | entry 2: CS1 over the answer, two voices (5-9) | 0/0/0/0 | DIR 5:3 (lab bar = 9:3): the two tails land in octaves; not outer voices once the bass enters at 9:1 |
@@ -611,7 +616,7 @@ strict = `strict.py` (from proposal 3).
 | sections/sec01-sec07 | each starter spliced into the skeleton and checked with its joins (bars A-1..B+1) | all PASS, 0/0/0/0 | as listed per section above |
 | **SK_final** | **the whole piece, 62 bars** | **0/0/0/0** | D4? 17:2.5, 47:1; DIR 37:2.5; MEL 32:1; XREL 23:4, 33:4 (x2), 43:3, 56:4.5 (none simultaneous); strict: clash 0, acc 7, acc2 26 (the tail 6/4s, pedal-point 4ths and sevenths, the V4/2 entries, the V9 and ii4/2 over pedals) |
 | compile_test.ly | SK_final compiles in LilyPond 2.26 | no warnings | |
-| plan.json + perform.py | duration | 227.2 s (piano and strings) | |
+| plan.json + perform.py | duration | 227.3 s (piano and strings) | |
 
 Harmony x-ray (`tools/harmony.py --stats`): 301 attacks, 54% chromatic to the local key, 151 distinct
 harmony labels (proposal 2's skeleton: 294, 51%, 133; the old piece: mostly diatonic major triads).
@@ -668,5 +673,11 @@ Search records (not proofs): `search_E4_descant.py` (why the descant is sparse),
 9. **Enrichment could thicken the texture past taste**, especially at the pedal and in the apotheosis.
    Rule 6 lists the places that must stay thin; the composer of section 7 must keep the tune on top and
    clear.
-10. **Duration headroom is 12.8 s.** Longer fermatas, slower ritardandi or long reverb tails in rendering
+10. **The INV head may mask S2 at 44-45.** At 44:1 the soprano's F5 (INV head, then the inverted pedal)
+    sits a major second above the alto's S2 at its most recognisable bar (theme bar 7, e-flat'' d-flat''
+    d-flat'' c''). Voice the soprano lighter there (plan roles already favour S2 and S1). If the render
+    confirms masking, variant x2 of `part4_variants.py` (soprano silent until 46:3, as in proposal 2,
+    then the same wedge) is checked clean and keeps the section's boundaries; using it means deleting the
+    soprano's 44:1-45:1 role from plan.json (otherwise splice_check reports a LOCK).
+11. **Duration headroom is 12.7 s.** Longer fermatas, slower ritardandi or long reverb tails in rendering
     must stay inside it.

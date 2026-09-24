@@ -86,7 +86,9 @@ def write_materials():
            '% B-flat minor unless stated; bar lines mark 4/4 bars of the material itself (bar 1 = its first bar).', '']
     for k, (s, note) in M.items():
         out.append(f"% {k}: {note}")
-        out.append(f"{k} = \\absolute {{ {s} | }}")
+        out.append(f"{k} = \\absolute {{")
+        out.append(f"  {s} |")
+        out.append("}")
         out.append('')
     open(os.path.join(HERE, 'materials.ly'), 'w').write("\n".join(out))
 
