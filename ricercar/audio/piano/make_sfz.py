@@ -31,14 +31,19 @@ counterpoint. This script fixes them without touching the audio files:
    1-26 are not all equally loud.
 
 3. **Keyboard evenness and intonation.** The sampled notes are spaced a minor
-   third apart, so every sample serves three keys, and one uneven sample
-   affects all three. The per-note loudness at velocity 80 is smoothed across
-   the keyboard (correction clipped to +/-3 dB). Tuning is measured from the
-   samples (fundamental from A2 up, partials 2-3 below). A smooth stretch
-   curve is fitted and each note gets ``tune=`` toward that curve (clipped to
-   +/-8 cents). The piano's natural stretch tuning is kept (bass flat, treble
-   sharp), but single notes that are a few cents off their neighbours are
-   corrected. F#4, which also serves F4 and G4, was 5 cents flat.
+   third apart, so every sample serves three keys, and one uneven sample affects
+   all three. At each of 13 velocities (10, 20 ... 120, 127) the per-note
+   loudness is fitted with a smooth keyboard trend and the deviation corrected
+   (clipped to +/-4 dB), then interpolated between those velocities: the soft
+   layers of a sample can be 3-5 dB off their neighbours while the loud ones are
+   even. Tuning is measured from the samples (partial 1 from C4 up, partials 2-3
+   below, as a tuner sets the bass octaves; median of three layers). A smooth
+   stretch curve is fitted, each sample gets ``tune=`` toward it (clipped to
+   +/-8 cents), and ``pitch_keytrack`` = 100 + the local slope of the curve, so
+   the two neighbouring keys a sample also serves follow the curve instead of
+   sharing its offset (which left 8-12 cent steps in the top octave). The
+   piano's natural stretch tuning is kept (bass flat, treble sharp), but single
+   notes that are a few cents off their neighbours are corrected.
 
 4. **Damper release.** The stock SFZ fades every lifted key A0-E6 over the same
    1 s, so in a fast passage the previous note still sounds only 8-10 dB under the
@@ -90,9 +95,11 @@ PREROLL = int(0.0025 * SR)  # samples kept before the -20 dB attack point
 LOUD_WIN = int(0.400 * SR)  # loudness window after the attack
 EXTRA_PP_DB = 10.0  # how far below the softest layer's anchor velocity 1 sits
 VELTRACK = 0.73  # the author's amp_veltrack, reproduced as a continuous curve
-EVEN_VEL = 80  # velocity at which keyboard evenness is smoothed
-EVEN_CLIP_DB = 3.0
+EVEN_VELS = (10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 127)  # evenness smoothed at each
+EVEN_CLIP_DB = 4.0
 TUNE_CLIP_CENTS = 8.0
+TUNE_LAYERS = (8, 10, 12)  # median over three layers
+P1_FROM_KEY = 60  # below C4 a note's pitch is judged by partials 2-3, as a tuner sets octaves
 # Damper release (ampeg_release, s) of the damped keys A0-E6. The stock 1 s lets the
 # previous note of a fast passage sound only 8-10 dB under the current one. Real dampers
 # stop the treble within a few tenths of a second and the heavy bass strings more slowly,
@@ -194,26 +201,51 @@ def analyse_region(r: Region) -> None:
     r.extra["peak_db"] = float(20 * np.log10(peak))
 
 
-def measure_tuning(root: str, key: int) -> float:
-    """Cents deviation of the sampled note from 12-TET (A4 = 440 Hz), layer 10."""
-    x, sr = sf.read(SALAMANDER_DIR / "samples" / f"{root}v10.flac", dtype="float64", always_2d=True)
-    m = x.mean(axis=1)
-    on = int(np.argmax(np.abs(m) > 0.1 * np.abs(m).max()))
-    seg = m[on + int(0.3 * sr) : on + int(2.3 * sr)]
+def partial_cents(m: np.ndarray, key: int, k: int) -> float | None:
+    """Cents deviation of partial k from k times the 12-TET fundamental (A4 = 440 Hz).
+
+    The strongest spectral peak (prominence >= 6 dB) within +/-60 cents is taken: the
+    band edge can sit on the skirt of a stronger neighbouring component (C8 has one
+    about 100 cents up), and a plain arg-max would pick the edge. Its frequency is the
+    power-weighted mean of the bins within 15 cents of it that are no more than 10 dB
+    down, so that the slightly detuned strings of a unison (two peaks a few cents apart,
+    as on A6) count together.
+    """
     n = 1 << 20
-    spec = np.abs(np.fft.rfft(seg * np.hanning(len(seg)), n))
-    freqs = np.fft.rfftfreq(n, 1 / sr)
-    f0 = 440.0 * 2 ** ((key - 69) / 12)
-    partials = [1] if key >= 45 else [2, 3]
-    devs = []
-    for k in partials:
-        fk = k * f0
-        band = (freqs > fk * 2 ** (-60 / 1200)) & (freqs < fk * 2 ** (60 / 1200))
-        i = int(np.argmax(np.where(band, spec, 0)))
-        a, b, c = np.log(spec[i - 1 : i + 2] + 1e-30)
-        p = 0.5 * (a - c) / (a - 2 * b + c)
-        devs.append(1200 * np.log2(((i + p) * sr / n) / fk))
-    return float(np.mean(devs))
+    spec = np.abs(np.fft.rfft(m * np.hanning(len(m)), n))
+    freqs = np.fft.rfftfreq(n, 1 / SR)
+    fk = k * 440.0 * 2 ** ((key - 69) / 12)
+    if fk * 2 ** (60 / 1200) > 0.45 * SR:
+        return None
+    idx = np.nonzero((freqs > fk * 2 ** (-60 / 1200)) & (freqs < fk * 2 ** (60 / 1200)))[0]
+    s = spec[idx]
+    peaks, _ = ss.find_peaks(20 * np.log10(s + 1e-30), prominence=6.0)
+    if len(peaks) == 0:
+        return None
+    i = idx[peaks[np.argmax(s[peaks])]]
+    near = np.nonzero((np.abs(1200 * np.log2(freqs[idx] / freqs[i])) < 15) & (s > spec[i] * 10 ** (-10 / 20)))[0]
+    w = spec[idx[near]] ** 2
+    f = float(np.sum(freqs[idx[near]] * w) / np.sum(w))
+    return float(1200 * np.log2(f / fk))
+
+
+def measure_tuning(root: str, key: int) -> float:
+    """Cents deviation of the sampled note from 12-TET (A4 = 440 Hz): partial 1 from C4
+    up, the mean of partials 2 and 3 below (the fundamental of a wound bass string is
+    weak and pulled by the soundboard; a tuner sets those octaves by the partials).
+    Median over layers 8, 10, 12, 0.3-2.3 s after the attack."""
+    vals = []
+    for layer in TUNE_LAYERS:
+        x, sr = sf.read(SALAMANDER_DIR / "samples" / f"{root}v{layer}.flac", dtype="float64", always_2d=True)
+        m = x.mean(axis=1)
+        on = int(np.argmax(np.abs(m) > 0.1 * np.abs(m).max()))
+        seg = m[on + int(0.3 * sr) : on + int(2.3 * sr)]
+        parts = [1] if key >= P1_FROM_KEY else [2, 3]
+        c = [partial_cents(seg, key, k) for k in parts]
+        c = [v for v in c if v is not None]
+        if c:
+            vals.append(float(np.mean(c)))
+    return float(np.median(vals))
 
 
 def isotonic(y: np.ndarray) -> np.ndarray:
@@ -277,17 +309,32 @@ def main() -> None:
     cents = np.array([measure_tuning(root, k) for k, root in root_keys])
     coef = np.polyfit(keys, cents, 4)
     smooth = np.polyval(coef, keys)
-    tune = {root: int(round(np.clip(s - c, -TUNE_CLIP_CENTS, TUNE_CLIP_CENTS)))
+    slope = np.polyval(np.polyder(coef), keys)  # cents per key of the stretch curve
+    tune = {root: round(float(np.clip(s - c, -TUNE_CLIP_CENTS, TUNE_CLIP_CENTS)), 1)
             for (k, root), c, s in zip(root_keys, cents, smooth)}
+    # Each sample serves up to three keys. pitch_keytrack = 100 + the local slope of the
+    # stretch curve, so the neighbours follow the curve too instead of sharing the root's
+    # offset (which left 8-12 cent steps between sample groups in the top octave).
+    keytrack = {root: round(100.0 + float(np.clip(d, -2.0, 8.0)), 2) for (k, root), d in zip(root_keys, slope)}
 
     # --- loudness -------------------------------------------------------------------------
     curves = {root: loudness_curve(roots[root]) for _, root in root_keys}
-    mid = np.array([curves[root][EVEN_VEL] for _, root in root_keys])
-    mid_fit = np.polyval(np.polyfit(keys, mid, 3), keys)
-    level_fix = {root: float(np.clip(f - m, -EVEN_CLIP_DB, EVEN_CLIP_DB))
-                 for (_, root), m, f in zip(root_keys, mid, mid_fit)}
-    for root in curves:
-        curves[root] = curves[root] + level_fix[root]
+    # Keyboard evenness at every dynamic, not just one: at each anchor velocity the
+    # per-note levels are fitted with a smooth keyboard trend (cubic in key), the
+    # deviation is corrected (clipped to +/-EVEN_CLIP_DB), and the correction is
+    # interpolated between anchor velocities. Soft layers of one sample can sit 3-5 dB
+    # off their neighbours while the loud layers are even.
+    fix_at = np.zeros((len(EVEN_VELS), len(root_keys)))
+    for i, v in enumerate(EVEN_VELS):
+        lv = np.array([curves[root][v] for _, root in root_keys])
+        fit = np.polyval(np.polyfit(keys, lv, 3), keys)
+        fix_at[i] = np.clip(fit - lv, -EVEN_CLIP_DB, EVEN_CLIP_DB)
+    level_fix = {}
+    for j, (_, root) in enumerate(root_keys):
+        fix = np.interp(np.arange(128), EVEN_VELS, fix_at[:, j])
+        level_fix[root] = {v: float(f) for v, f in zip(EVEN_VELS, fix_at[:, j])}
+        c = isotonic(curves[root] + fix)  # a velocity-dependent fix must not break monotonicity
+        curves[root] = c + np.arange(128) * 1e-4  # and strictly increasing, for the inverse curve
     # Global trim: loudest target equals loudest raw sample (keeps float headroom sane).
     top = max(c[127] for c in curves.values())
     raw_top = max(r.loud_db for r in regions)
@@ -335,7 +382,8 @@ def main() -> None:
             f"hivel={r.hivel}",
             f"pitch_keycenter={r.key}",
             f"offset={r.onset}",
-            f"tune={tune[r.root]}",
+            f"tune={tune[r.root]:g}",
+            f"pitch_keytrack={keytrack[r.root]:g}",
             f"volume={vol:.2f}",
         ]
         if damped and r.key < DAMPED_RELEASE[-1][0]:
@@ -367,7 +415,8 @@ def main() -> None:
         "suggested_velocities": marks,
         "tuning_cents_measured": {root: round(float(c), 1) for (_, root), c in zip(root_keys, cents)},
         "tuning_cents_applied": tune,
-        "level_fix_db": {k: round(v, 2) for k, v in level_fix.items()},
+        "pitch_keytrack_applied": keytrack,
+        "level_fix_db": {k: {str(v): round(f, 2) for v, f in d.items()} for k, d in level_fix.items()},
         "onset_ms": {f"{r.root}v{r.layer}": round(r.attack20 / SR * 1000, 2) for r in regions},
         "layer_loudness_db": {f"{r.root}v{r.layer}": round(r.loud_db, 2) for r in regions},
     }
@@ -379,11 +428,12 @@ def main() -> None:
           f"(spread {on.max() - on.min():.1f} ms) -> aligned to {PREROLL / SR * 1000:.1f} ms by offset=")
     print("suggested velocities:", marks)
     if args.report:
-        print("\nnote  key  tune(meas->applied)  level_fix  layer loudness v1..v16 (dB)")
+        print("\nnote  key  tune(meas->applied) keytrack  level_fix v20/v50/v80/v110  layer loudness v1..v16 (dB)")
         for k, root in root_keys:
             ls = " ".join(f"{r.loud_db:6.1f}" for r in sorted(roots[root], key=lambda r: r.layer))
-            print(f"{root:4s} {k:4d}  {calib['tuning_cents_measured'][root]:+6.1f} -> {tune[root]:+3d}   "
-                  f"{level_fix[root]:+5.2f}   {ls}")
+            lf = "/".join(f"{level_fix[root][v]:+.1f}" for v in (20, 50, 80, 110))
+            print(f"{root:4s} {k:4d}  {calib['tuning_cents_measured'][root]:+6.1f} -> {tune[root]:+5.1f} "
+                  f"{keytrack[root]:7.2f}  {lf:>22s}   {ls}")
         print("\nvelocity -> dB (rel. v127):")
         print(" ".join(f"{v}:{rel[v]:.1f}" for v in range(1, 128, 6)))
 
