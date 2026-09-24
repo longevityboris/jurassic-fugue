@@ -1,0 +1,66 @@
+{
+ "input": "out/chain_test.mid",
+ "wav": "out/chain_test.wav",
+ "m4a": "out/chain_test.m4a",
+ "midi_marker": {
+  "source": "perform.py",
+  "target": "piano"
+ },
+ "velocity_scale": "perform",
+ "cc_dynamics": "velocity",
+ "duration_s": 78.19,
+ "voices": {
+  "soprano": {
+   "notes": 103,
+   "velocity_in_mean": 64.1,
+   "velocity_in_range": [
+    29,
+    104
+   ],
+   "velocity_eff_mean": 74.4,
+   "velocity_eff_range": [
+    24,
+    120
+   ],
+   "rms_dbfs_prenorm": -35.65,
+   "transpose": 0
+  },
+  "bass": {
+   "notes": 53,
+   "velocity_in_mean": 66.4,
+   "velocity_in_range": [
+    33,
+    104
+   ],
+   "velocity_eff_mean": 77.2,
+   "velocity_eff_range": [
+    30,
+    120
+   ],
+   "rms_dbfs_prenorm": -35.52,
+   "transpose": 0
+  }
+ },
+ "key_sharing": {
+  "unisons_merged": 0,
+  "restrikes": 0
+ },
+ "pedal_changes": 0,
+ "wet_db": -4.0,
+ "c80_db": 8.4,
+ "normalise_gain_db": 2.09,
+ "true_peak_dbfs": -1.0,
+ "rms_dbfs": -23.86,
+ "measured": {
+  "wav": {
+   "integrated_lufs": -19.2,
+   "lra_lu": 21.9,
+   "true_peak_dbtp": -1.0
+  },
+  "m4a": {
+   "integrated_lufs": -19.2,
+   "lra_lu": 21.9,
+   "true_peak_dbtp": -1.0
+  }
+ }
+}

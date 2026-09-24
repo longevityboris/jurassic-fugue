@@ -1,0 +1,83 @@
+{
+ "segments": {
+  "pp": {
+   "rms_dbfs": -38.09,
+   "centroid_hz": 258.7,
+   "hf_ratio_db": -40.12
+  },
+  "mf": {
+   "rms_dbfs": -23.71,
+   "centroid_hz": 325.1,
+   "hf_ratio_db": -24.43
+  },
+  "ff": {
+   "rms_dbfs": -16.49,
+   "centroid_hz": 362.0,
+   "hf_ratio_db": -20.84
+  },
+  "hairpin": {
+   "rms_dbfs": -19.89,
+   "centroid_hz": 425.1,
+   "hf_ratio_db": -20.44
+  }
+ },
+ "gain_matched_bands_db": {
+  "pp": {
+   "gain_applied_db": 21.89,
+   "bands": {
+    "63": 1.92,
+    "125": 2.72,
+    "250": 1.62,
+    "500": -0.65,
+    "1000": -4.02,
+    "2000": -12.34,
+    "4000": -21.11,
+    "8000": -26.6
+   }
+  },
+  "mf": {
+   "gain_applied_db": 7.46,
+   "bands": {
+    "63": 0.95,
+    "125": 0.72,
+    "250": 0.44,
+    "500": 0.13,
+    "1000": -0.47,
+    "2000": -2.14,
+    "4000": -3.3,
+    "8000": -10.18
+   }
+  },
+  "ff": {
+   "gain_applied_db": 0.0,
+   "bands": {
+    "63": 0.0,
+    "125": 0.0,
+    "250": 0.0,
+    "500": 0.0,
+    "1000": 0.0,
+    "2000": 0.0,
+    "4000": 0.0,
+    "8000": 0.0
+   }
+  }
+ },
+ "hairpin": {
+  "level_range_db": 22.43,
+  "hf_ratio_range_db": 19.06,
+  "centroid_range_hz": [
+   331.0,
+   519.4
+  ],
+  "corr_level_vs_control": 0.988,
+  "rising_steps_negative": 0,
+  "falling_steps_positive": 0,
+  "peak_note_level_db": -22.1,
+  "first_last_level_db": [
+   -44.53,
+   -43.08
+  ],
+  "hf_ratio_loudest_minus_softest_db": 18.72,
+  "corr_hf_ratio_vs_control": 0.882
+ }
+}

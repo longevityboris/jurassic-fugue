@@ -8,6 +8,11 @@ Usage::
     python3 analyse_dynamics.py            # defaults match the two commands above
     python3 analyse_dynamics.py --json out/dynamics_test.analysis.json
 
+With --wav/--stems/--segments it also analyses the chain test (make_chain_test.py):
+phrase segments are compared with the one named ff, ramp segments are tabulated per
+note or per window, and the voicing section runs only when those segments exist.
+``run_tests.sh`` runs both tests end to end.
+
 The script answers one question: do dynamics change the timbre, or only the
 gain? For every segment it reports
 
@@ -96,14 +101,16 @@ def main() -> None:
         res["segments"][sg["name"]] = r
         print(f"{sg['name']:16s} {r['rms_dbfs']:9.2f} {r['centroid_hz']:12.1f} {r['hf_ratio_db']:9.2f}")
 
-    # --- pp / mf / ff: gain-matched spectra --------------------------------------------------
+    # --- phrases (pp / mf / ff): gain-matched spectra ------------------------------------------
     ph = {sg["name"]: sg for sg in segs if sg["kind"] == "phrase"}
-    ref = octave_bands(win(dry, ph["ff"]["start_s"], ph["ff"]["end_s"] + 0.3), sr)
-    ref_rms = rms_db(win(dry, ph["ff"]["start_s"], ph["ff"]["end_s"] + 0.3))
-    print("\ngain-matched to ff (dry, same RMS): octave-band level minus ff (dB); pure gain would be all 0")
+    ref_name = "ff" if "ff" in ph else list(ph)[-1]
+    ref = octave_bands(win(dry, ph[ref_name]["start_s"], ph[ref_name]["end_s"] + 0.3), sr)
+    ref_rms = rms_db(win(dry, ph[ref_name]["start_s"], ph[ref_name]["end_s"] + 0.3))
+    print(f"\ngain-matched to {ref_name} (dry, same RMS): octave-band level minus {ref_name} (dB); "
+          "pure gain would be all 0")
     print("         " + " ".join(f"{b:>6d}" for b in BANDS))
     res["gain_matched_bands_db"] = {}
-    for name in ["pp", "mf", "ff"]:
+    for name in ph:
         x = win(dry, ph[name]["start_s"], ph[name]["end_s"] + 0.3)
         gain = ref_rms - rms_db(x)
         bands = octave_bands(x, sr) + gain - ref
@@ -112,22 +119,28 @@ def main() -> None:
         print(f"{name:3s} +{gain:4.1f}  " + " ".join(f"{v:6.1f}" for v in bands))
 
     # --- crescendo ramps -----------------------------------------------------------------------
-    for name in ["cresc_velocity", "cresc_cc11"]:
-        sg = next(s for s in segs if s["name"] == name)
+    for sg in (s for s in segs if s["kind"] == "ramp"):
+        name = sg["name"]
         rows = []
         for nt in sg["notes"]:
-            x = win(dry, nt["t_s"], nt["t_s"] + 0.25)
+            x = win(dry, nt["t_s"], nt["t_s"] + nt.get("win_s", 0.25))
             rows.append((nt, rms_db(x), centroid(x, sr), hf_ratio(x, sr)))
         lv = np.array([r[1] for r in rows])
         ce = np.array([r[2] for r in rows])
         hf = np.array([r[3] for r in rows])
-        ctl = np.array([r[0].get("cc11", r[0]["velocity"]) for r in rows], dtype=float)
+        key = "cc11" if "cc11" in rows[0][0] else "level" if "level" in rows[0][0] else "velocity"
+        ctl = np.array([r[0][key] for r in rows], dtype=float)
         imax = int(np.argmax(ctl))
         rise = np.diff(lv[: imax + 1])
         fall = np.diff(lv[imax:])
-        print(f"\n{name}: per-note level (dB, dry) / HF ratio (dB); control = "
-              f"{'CC11 at velocity 120' if 'cc11' in rows[0][0] else 'velocity'}")
-        print("  " + " ".join(f"{int(c)}:{l:.0f}/{h:.0f}" for c, l, h in zip(ctl, lv, hf)))
+        label = {"cc11": "CC11 at velocity 120", "level": "plan level (2 = pp, 7 = ff) via perform.py",
+                 "velocity": "velocity"}[key]
+        print(f"\n{name}: per-{'window' if key == 'level' else 'note'} level (dB, dry) / HF ratio (dB); "
+              f"control = {label}")
+        print("  " + " ".join(f"{c:g}:{l:.0f}/{h:.0f}" for c, l, h in zip(ctl, lv, hf)))
+        if key == "level":
+            print("  velocity per window: " + " ".join(f"{r[0]['velocity']:g}" for r in rows))
+            print("  centroid per window: " + " ".join(f"{c:.0f}" for c in ce))
         stat = {
             "level_range_db": round(float(lv.max() - lv.min()), 2),
             "hf_ratio_range_db": round(float(hf.max() - hf.min()), 2),
@@ -146,6 +159,12 @@ def main() -> None:
         print("  " + json.dumps(stat))
 
     # --- voicing ---------------------------------------------------------------------------------
+    names = [s["name"] for s in segs]
+    if "voicing_flat" not in names or "voicing_tenor" not in names:
+        if args.json:
+            args.json.write_text(json.dumps(res, indent=1))
+            print(f"\nwrote {args.json}")
+        return
     res["voicing"] = {}
     print("\nvoicing: per-voice stem RMS (dBFS, dry, before normalisation)")
     for name in ["voicing_flat", "voicing_tenor"]:
