@@ -94,21 +94,28 @@ SECTIONS = [
          breaths=[{'at': '1:1', 'ms': 1400}],
          pedal=[{'at': '1:1', 'until': '6:1', 'every': 'harmony'}],
     ),
-    dict(id='sec05_inversa', title='Fuga inversa and transition', bars=7,
+    dict(id='sec05_inversa', title='Fuga inversa: three entries, A minor established, deceptive link to F', bars=11,
          soprano='''r1 | e''8 f''8 e''8 d''8 c''8 d''8 b'8 g''8 | c''4 d''8 a'8 ~ a'4 b'4 | b'8 a'8 b'8 c''8 d''4 c''4 |
-            f''2 e''4 dis''4 ~ | dis''2. e''4 | e''2 g''2''',
+            f''2 e''4 d''4 | dis''2. r4 | e''2. e''8 f''8 | e''2. e''8 f''8 |
+            e''4. d''8 d''4. b'8 | b'2. c''8 e''8 | d''4. f''8 a''4 r4''',
          alto='''r2. a'4 | c'2. d'4 | e'4 f'4 fis'2 | gis'2. a'4 |
-            f'4. d'8 a'2 | a'2. g'4 | g'2 c''4 e''4''',
+            f'4. d'8 c'4 b4 | fis'2. e'4 | c''4 a'4 gis'4 r4 | e'8 f'8 e'8 d'8 c'8 d'8 b8 g'8 |
+            c'4 d'8 a8 ~ a4 b4 | b8 a8 b8 c'8 d'4 c'4 | a'4. f'8 e'4 gis'4''',
          tenor='''r1 | r1 | b2. b8 c'8 | b2. b8 c'8 |
-            b4. a8 a4. fis8 | fis2. g8 b8 | a4. c'8 e'4 c'4''',
+            b4. a8 a4. fis8 | fis2. g8 b8 | a4. c'8 e'4 r4 | r1 |
+            r1 | r1 | a4. a8 c'4 b4''',
          bass='''e2. e8 f8 | e2. e8 f8 | e4. d8 d4. b,8 | b,2. c8 e8 |
-            d4. f8 a4 fis4 | b,2. e4 | c2. c4''',
+            d4. f8 a,4 b,4 | b,2. e4 ~ | e2. a,4 | c2. d4 |
+            e4 f4 fis2 | gis2. a4 | f4. d8 a,4 e,4''',
          roles=[('bass', '1:1', '5:4', 'subject'),
-                ('alto', '1:4', '5:4', 'cs'),
-                ('soprano', '2:1', '5:4', 'cs'),
-                ('tenor', '3:1', '7:4', 'answer')],
-         tempo=[{'at': '1:1', 'bpm': 60}, {'at': '1:1', 'until': '8:1', 'to_bpm': 76}],
-         dynamics=[{'at': '1:1', 'level': 'pp'}, {'at': '1:1', 'until': '7:4', 'to': 'mf'}],
+                ('alto', '1:4', '5:4', 'cs', '5:3'),
+                ('soprano', '2:1', '5:1', 'cs'),
+                ('tenor', '3:1', '7:4', 'answer'),
+                ('soprano', '7:1', '11:4', 'subject'),
+                ('bass', '7:4', '11:1', 'cs'),
+                ('alto', '8:1', '11:1', 'cs', '10:4')],
+         tempo=[{'at': '1:1', 'bpm': 60}, {'at': '1:1', 'until': '12:1', 'to_bpm': 76}],
+         dynamics=[{'at': '1:1', 'level': 'pp'}, {'at': '1:1', 'until': '11:3', 'to': 'mf'}],
          fermatas=[],
          breaths=[{'at': '1:1', 'ms': 300}],
          pedal=[],

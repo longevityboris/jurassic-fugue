@@ -26,29 +26,29 @@
   },
   {
    "at": "35:1",
-   "until": "42:1",
+   "until": "46:1",
    "to_bpm": 76
   },
   {
-   "at": "42:1",
+   "at": "46:1",
    "bpm": 76
   },
   {
-   "at": "49:1",
-   "until": "50:1",
+   "at": "53:1",
+   "until": "54:1",
    "to_bpm": 68
   },
   {
-   "at": "50:1",
+   "at": "54:1",
    "bpm": 56
   },
   {
-   "at": "51:1",
+   "at": "55:1",
    "bpm": 69
   },
   {
-   "at": "59:1",
-   "until": "62:3",
+   "at": "63:1",
+   "until": "66:3",
    "to_bpm": 56
   }
  ],
@@ -58,11 +58,11 @@
    "extra_beats": 3
   },
   {
-   "at": "49:4",
+   "at": "53:4",
    "extra_beats": 3
   },
   {
-   "at": "62:3",
+   "at": "66:3",
    "extra_beats": 3
   }
  ],
@@ -76,15 +76,15 @@
    "ms": 300
   },
   {
-   "at": "42:1",
+   "at": "46:1",
    "ms": 250
   },
   {
-   "at": "50:1",
+   "at": "54:1",
    "ms": 700
   },
   {
-   "at": "51:1",
+   "at": "55:1",
    "ms": 400
   }
  ],
@@ -141,54 +141,54 @@
   },
   {
    "at": "35:1",
-   "until": "41:4",
+   "until": "45:3",
    "to": "mf"
-  },
-  {
-   "at": "42:1",
-   "level": "p"
-  },
-  {
-   "at": "44:1",
-   "until": "46:1",
-   "to": "mp"
   },
   {
    "at": "46:1",
-   "until": "48:1",
-   "to": "f"
-  },
-  {
-   "at": "48:1",
-   "until": "49:4",
-   "to": "fff"
-  },
-  {
-   "at": "50:1",
-   "level": "pp"
-  },
-  {
-   "at": "51:1",
    "level": "p"
   },
   {
-   "at": "51:1",
-   "until": "55:1",
-   "to": "mf"
-  },
-  {
-   "at": "55:1",
-   "until": "57:1",
-   "to": "f"
-  },
-  {
-   "at": "57:3",
-   "until": "59:1",
+   "at": "48:1",
+   "until": "50:1",
    "to": "mp"
   },
   {
+   "at": "50:1",
+   "until": "52:1",
+   "to": "f"
+  },
+  {
+   "at": "52:1",
+   "until": "53:4",
+   "to": "fff"
+  },
+  {
+   "at": "54:1",
+   "level": "pp"
+  },
+  {
+   "at": "55:1",
+   "level": "p"
+  },
+  {
+   "at": "55:1",
+   "until": "59:1",
+   "to": "mf"
+  },
+  {
    "at": "59:1",
-   "until": "62:3",
+   "until": "61:1",
+   "to": "f"
+  },
+  {
+   "at": "61:3",
+   "until": "63:1",
+   "to": "mp"
+  },
+  {
+   "at": "63:1",
+   "until": "66:3",
    "to": "pp"
   }
  ],
@@ -311,12 +311,13 @@
    "voice": "alto",
    "at": "35:4",
    "until": "39:4",
-   "role": "cs"
+   "role": "cs",
+   "landing_from": "39:3"
   },
   {
    "voice": "soprano",
    "at": "36:1",
-   "until": "39:4",
+   "until": "39:1",
    "role": "cs"
   },
   {
@@ -326,51 +327,70 @@
    "role": "answer"
   },
   {
+   "voice": "soprano",
+   "at": "41:1",
+   "until": "45:4",
+   "role": "subject"
+  },
+  {
    "voice": "bass",
-   "at": "42:1",
-   "until": "51:1",
-   "role": "cf"
+   "at": "41:4",
+   "until": "45:1",
+   "role": "cs"
   },
   {
    "voice": "alto",
    "at": "42:1",
-   "until": "46:1",
+   "until": "45:1",
+   "role": "cs",
+   "landing_from": "44:4"
+  },
+  {
+   "voice": "bass",
+   "at": "46:1",
+   "until": "55:1",
+   "role": "cf"
+  },
+  {
+   "voice": "alto",
+   "at": "46:1",
+   "until": "50:1",
    "role": "subject"
   },
   {
    "voice": "tenor",
-   "at": "44:1",
-   "until": "48:4",
+   "at": "48:1",
+   "until": "52:4",
    "role": "subject"
   },
   {
    "voice": "soprano",
-   "at": "44:1",
-   "until": "45:1",
+   "at": "48:1",
+   "until": "49:1",
    "role": "answer"
   },
   {
    "voice": "soprano",
-   "at": "51:1",
-   "until": "59:1",
+   "at": "55:1",
+   "until": "63:1",
    "role": "subject"
   },
   {
    "voice": "bass",
-   "at": "51:1",
-   "until": "59:1",
-   "role": "cs"
-  },
-  {
-   "voice": "tenor",
    "at": "55:1",
-   "until": "59:1",
+   "until": "63:1",
    "role": "cs"
   },
   {
    "voice": "tenor",
-   "at": "61:1",
-   "until": "62:4",
+   "at": "59:1",
+   "until": "63:1",
+   "role": "cs"
+  },
+  {
+   "voice": "tenor",
+   "at": "65:1",
+   "until": "66:4",
    "role": "subject"
   }
  ],
@@ -381,8 +401,8 @@
    "every": "harmony"
   },
   {
-   "at": "51:1",
-   "until": "62:4",
+   "at": "55:1",
+   "until": "66:4",
    "every": "harmony"
   }
  ],

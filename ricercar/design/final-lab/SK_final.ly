@@ -20,18 +20,20 @@ soprano = \absolute {
   % 33
   c''1 | c''2 b'2 | r1 | e''8 f''8 e''8 d''8 c''8 d''8 b'8 g''8 |
   % 37
-  c''4 d''8 a'8 ~ a'4 b'4 | b'8 a'8 b'8 c''8 d''4 c''4 | f''2 e''4 dis''4 ~ | dis''2. e''4 |
+  c''4 d''8 a'8 ~ a'4 b'4 | b'8 a'8 b'8 c''8 d''4 c''4 | f''2 e''4 d''4 | dis''2. r4 |
   % 41
-  e''2 g''2 | r1 | r1 | f''2. f''8 ges''8 |
+  e''2. e''8 f''8 | e''2. e''8 f''8 | e''4. d''8 d''4. b'8 | b'2. c''8 e''8 |
   % 45
-  f''1 | f''1~ | f''2. ges''4 ~ | ges''2 g''2 |
+  d''4. f''8 a''4 r4 | r1 | r1 | f''2. f''8 ges''8 |
   % 49
-  bes''2 bes''4 a''4 | bes''1 | bes'2. bes'8 a'8 | bes'2. bes'8 a'8 |
+  f''1 | f''1~ | f''2. ges''4 ~ | ges''2 g''2 |
   % 53
-  bes'4. c''8 c''4. ees''8 | ees''2. d''8 bes'8 | c''4. a'8 f'4 d''8 bes'8 | c''2. f''8 bes'8 |
+  bes''2 bes''4 a''4 | bes''1 | bes'2. bes'8 a'8 | bes'2. bes'8 a'8 |
   % 57
-  ees''4. d''8 d''4. c''8 | c''1 | d''1~ | d''1 |
+  bes'4. c''8 c''4. ees''8 | ees''2. d''8 bes'8 | c''4. a'8 f'4 d''8 bes'8 | c''2. f''8 bes'8 |
   % 61
+  ees''4. d''8 d''4. c''8 | c''1 | d''1~ | d''1 |
+  % 65
   d''2 c''2 | d''1 |
 }
 alto = \absolute {
@@ -54,18 +56,20 @@ alto = \absolute {
   % 33
   ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 | e'8 e'8 e'8 e'8 e'8 e'8 e'8 e'8 | r2. a'4 | c'2. d'4 |
   % 37
-  e'4 f'4 fis'2 | gis'2. a'4 | f'4. d'8 a'2 | a'2. g'4 |
+  e'4 f'4 fis'2 | gis'2. a'4 | f'4. d'8 c'4 b4 | fis'2. e'4 |
   % 41
-  g'2 c''4 e''4 | c''4. a'8 f'4 des''8 bes'8 | c''2. f''8 bes'8 | ees''4. des''8 des''4. c''8 |
+  c''4 a'4 gis'4 r4 | e'8 f'8 e'8 d'8 c'8 d'8 b8 g'8 | c'4 d'8 a8 ~ a4 b4 | b8 a8 b8 c'8 d'4 c'4 |
   % 45
-  c''1 | des''2 c''2 | a'2 c''4 ees''4 | ees''2 e''2 |
+  a'4. f'8 e'4 gis'4 | c''4. a'8 f'4 des''8 bes'8 | c''2. f''8 bes'8 | ees''4. des''8 des''4. c''8 |
   % 49
-  e''2. c''4 | ees'2. ees'4 | d'4. ees'8 f'4 ees'4 | d'4 f'4 ees'4 f'8 ees'8 |
+  c''1 | des''2 c''2 | a'2 c''4 ees''4 | ees''2 e''2 |
   % 53
-  f'4. ees'8 ees'4. f'8 | a'2 g'4 f'4~ | f'4 e'4 d'4 e'4~ | e'4 ees'4 f'2 |
+  e''2. c''4 | ees'2. ees'4 | d'4. ees'8 f'4 ees'4 | d'4 f'4 ees'4 f'8 ees'8 |
   % 57
-  c''2. bes'4~ | bes'4 a'4 g'2 | f'1 | ges'2 f'2 |
+  f'4. ees'8 ees'4. f'8 | a'2 g'4 f'4~ | f'4 e'4 d'4 e'4~ | e'4 ees'4 f'2 |
   % 61
+  c''2. bes'4~ | bes'4 a'4 g'2 | f'1 | ges'2 f'2 |
+  % 65
   f'2 ees'2 | d'2 f'2 |
 }
 tenor = \absolute {
@@ -90,16 +94,18 @@ tenor = \absolute {
   % 37
   b2. b8 c'8 | b2. b8 c'8 | b4. a8 a4. fis8 | fis2. g8 b8 |
   % 41
-  a4. c'8 e'4 c'4 | bes2 a2 | aes2 g4 ges4 | bes2. bes8 a8 |
+  a4. c'8 e'4 r4 | r1 | r1 | r1 |
   % 45
-  bes2. bes8 a8 | bes4. c'8 c'4. ees'8 | ees'2. des'8 bes8 | c'4. a8 bes2 ~ |
+  a4. a8 c'4 b4 | bes2 a2 | aes2 g4 ges4 | bes2. bes8 a8 |
   % 49
-  bes2. c'4 | g2. ges4 | f2 g4 f4 | bes4 aes4 g4 f4 |
+  bes2. bes8 a8 | bes4. c'8 c'4. ees'8 | ees'2. des'8 bes8 | c'4. a8 bes2 ~ |
   % 53
-  f4 d'4 c'4. c'8 | c'2. f4 | f2. f8 g8 | f2. f8 g8 |
+  bes2. c'4 | g2. ges4 | f2 g4 f4 | bes4 aes4 g4 f4 |
   % 57
-  f4. e8 e4. c8 | c2. d8 f8 | d'1 | ees'2 d'2 |
+  f4 d'4 c'4. c'8 | c'2. f4 | f2. f8 g8 | f2. f8 g8 |
   % 61
+  f4. e8 e4. c8 | c2. d8 f8 | d'1 | ees'2 d'2 |
+  % 65
   bes2. bes8 a8 | bes1 |
 }
 bass = \absolute {
@@ -122,17 +128,19 @@ bass = \absolute {
   % 33
   f,1 | e,1 | e2. e8 f8 | e2. e8 f8 |
   % 37
-  e4. d8 d4. b,8 | b,2. c8 e8 | d4. f8 a4 fis4 | b,2. e4 |
+  e4. d8 d4. b,8 | b,2. c8 e8 | d4. f8 a,4 b,4 | b,2. e4 ~ |
   % 41
-  c2. c4 | f,1 | f,2 f,4 ges,4 | f,1 |
+  e2. a,4 | c2. d4 | e4 f4 fis2 | gis2. a4 |
   % 45
-  f,2 f,4 ges,4 | f,2. ees,4 | ees,2. c,4 | c,1 |
+  f4. d8 a,4 e,4 | f,1 | f,2 f,4 ges,4 | f,1 |
   % 49
-  c,2 des,4 f,4 | ees,2. ges,4 | bes,2. bes,8 c8 | bes,2. bes,8 c8 |
+  f,2 f,4 ges,4 | f,2. ees,4 | ees,2. c,4 | c,1 |
   % 53
-  bes,4. a,8 a,4. f,8 | f,2. d,4 | f,2. f,8 e,8 | f,2. f,8 e,8 |
+  c,2 des,4 f,4 | ees,2. ges,4 | bes,2. bes,8 c8 | bes,2. bes,8 c8 |
   % 57
-  f,4. g,8 g,4. bes,8 | bes,2. a,8 f,8 | bes,1~ | bes,1 |
+  bes,4. a,8 a,4. f,8 | f,2. d,4 | f,2. f,8 e,8 | f,2. f,8 e,8 |
   % 61
+  f,4. g,8 g,4. bes,8 | bes,2. a,8 f,8 | bes,1~ | bes,1 |
+  % 65
   bes,1~ | bes,1 |
 }
