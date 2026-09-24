@@ -155,6 +155,8 @@ def main():
     releases = []
     for ji, (j, x) in enumerate(jobs):
         rows = sorted(rows_by_job[ji], key=lambda r: r["on"])
+        if not rows:            # e.g. the --bass-double job: its notes are the cello's, accounted to the cello job
+            continue
         win = 0.08 if j["inst"] in ("vc", "cb") else 0.05
         sp = Spec(x, win=win)
         Te, E = rms_env(x, 0.01, 0.002)
