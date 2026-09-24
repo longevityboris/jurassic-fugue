@@ -1,0 +1,88 @@
+{
+ "state": {
+  "head": "654d5ad",
+  "render_quartet_commit": "6773f21",
+  "render_quartet_sha": "dc8ec5376814a8d9",
+  "sfz": {
+   "bass.sfz": "434b699deec6efcc",
+   "cello.sfz": "d8f1264c7eec62b1",
+   "viola.sfz": "fd65d3205b4486a7",
+   "violin.sfz": "ddb87187023132fb",
+   "violin2.sfz": "14a7badb474554e8"
+  }
+ },
+ "results": {
+  "violin2/67/cc1=62": {
+   "layer_alone_p2p_db": {
+    "pp": 1.7,
+    "mf": 1.1
+   },
+   "layer_level_db": {
+    "pp": -50.1,
+    "mf": -43.7
+   },
+   "actual_sum_p2p_db": 7.0,
+   "power_sum_p2p_db": 0.9
+  },
+  "violin2/67/cc1=101": {
+   "layer_alone_p2p_db": {
+    "mf": 1.1,
+    "ff": 0.8
+   },
+   "layer_level_db": {
+    "mf": -40.9,
+    "ff": -34.4
+   },
+   "actual_sum_p2p_db": 6.0,
+   "power_sum_p2p_db": 0.6
+  },
+  "cello/60/cc1=62": {
+   "layer_alone_p2p_db": {
+    "pp": 1.2,
+    "mf": 1.5
+   },
+   "layer_level_db": {
+    "pp": -53.1,
+    "mf": -47.1
+   },
+   "actual_sum_p2p_db": 7.0,
+   "power_sum_p2p_db": 1.3
+  },
+  "cello/60/cc1=101": {
+   "layer_alone_p2p_db": {
+    "mf": 1.5,
+    "ff": 1.0
+   },
+   "layer_level_db": {
+    "mf": -44.3,
+    "ff": -37.8
+   },
+   "actual_sum_p2p_db": 5.8,
+   "power_sum_p2p_db": 0.8
+  },
+  "viola/54/cc1=62": {
+   "layer_alone_p2p_db": {
+    "pp": 3.6,
+    "mf": 0.8
+   },
+   "layer_level_db": {
+    "pp": -51.4,
+    "mf": -45.2
+   },
+   "actual_sum_p2p_db": 7.6,
+   "power_sum_p2p_db": 1.1
+  },
+  "viola/54/cc1=101": {
+   "layer_alone_p2p_db": {
+    "mf": 0.8,
+    "ff": 0.9
+   },
+   "layer_level_db": {
+    "mf": -42.4,
+    "ff": -35.9
+   },
+   "actual_sum_p2p_db": 7.2,
+   "power_sum_p2p_db": 0.8
+  }
+ }
+}
