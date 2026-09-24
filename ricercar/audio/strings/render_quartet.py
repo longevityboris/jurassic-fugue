@@ -2,7 +2,8 @@
 """Render a multi-voice MIDI file as a solo string quartet in a concert hall.
 
 Engine: sfizz_render (float output) playing the University of Iowa MIS solo
-strings (pp / mf / ff recorded layers, built into SFZ by iowa_build.py).  Each
+strings (pp / mf / ff recorded layers, built into SFZ by iowa_build.py; the
+second violin uses its own set taken from the next lower string).  Each
 voice is rendered dry, placed on stage, convolved with a measured concert-hall
 impulse response, mixed, normalised to a true peak of -1 dBFS and written as
 48 kHz / 24-bit WAV plus 256 kb/s AAC (.m4a).
@@ -69,7 +70,10 @@ MIDI CONVENTIONS (what perform.py --target strings writes)
     0.12 s while the new note enters in its sustain); notes shorter than
     --short-ms get the short stroke; everything else is a new bow.
   * Optional CC21 release per note: 0.03 + 1.2*v/127 s.  If absent: 0.12 s
-    into a slur, 0.18-0.22 s between detached notes, 0.5-1.1 s before a rest.
+    into a slur, 0.09 s from a short note into the next, 0.22 s between other
+    detached notes, 0.5-1.1 s before a rest.  A long note followed directly by
+    a short one (dotted figures, the start of a run) lifts 25 ms early so the
+    short note speaks.
   * Tempo map honoured (all timing is converted to seconds before rendering).
 """
 from __future__ import annotations
@@ -107,11 +111,11 @@ def level_to_cc1(L: float) -> int:
 
 # id: sfz, display name, stage azimuth (deg, + = left), depth (m), trim (dB), compass lo/hi
 INSTR = {
-    "vn1": dict(sfz="violin.sfz", name="Violin I", az=30.0, depth=0.0, trim=0.0, lo=55, hi=100),
-    "vn2": dict(sfz="violin2.sfz", name="Violin II", az=10.0, depth=0.4, trim=0.0, lo=55, hi=100),
+    "vn1": dict(sfz="violin.sfz", name="Violin I", az=30.0, depth=0.0, trim=0.5, lo=55, hi=100),
+    "vn2": dict(sfz="violin2.sfz", name="Violin II", az=10.0, depth=0.4, trim=-0.5, lo=55, hi=100),
     "va": dict(sfz="viola.sfz", name="Viola", az=-10.0, depth=0.4, trim=0.0, lo=48, hi=91),
     "vc": dict(sfz="cello.sfz", name="Cello", az=-28.0, depth=0.0, trim=0.0, lo=36, hi=81),
-    "cb": dict(sfz="bass.sfz", name="Contrabass", az=-36.0, depth=1.2, trim=0.0, lo=28, hi=67),
+    "cb": dict(sfz="bass.sfz", name="Contrabass", az=-36.0, depth=1.2, trim=0.0, lo=24, hi=67),
 }
 ORDER = ["vn1", "vn2", "va", "vc", "cb"]
 EXT_DOWN = 2            # the SFZ stretches the lowest sample this many semitones down

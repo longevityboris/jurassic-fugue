@@ -97,6 +97,9 @@ def main():
         res["swell"] = dict(samples=samples,
                             corr_level_cc1=round(float(np.corrcoef(pts[:, 1], pts[:, 2])[0, 1]), 3),
                             corr_centroid_cc1=round(float(np.corrcoef(pts[:, 1], pts[:, 3])[0, 1]), 3),
+                            corr_hf_cc1=round(float(np.corrcoef(pts[:, 1], pts[:, 4])[0, 1]), 3),
+                            hf_pct_at_lo_hi=(round(float(np.median(pts[pts[:, 1] < lo + 8, 4])), 2),
+                                             round(float(np.median(pts[pts[:, 1] > hi - 8, 4])), 2)),
                             level_range_db=round(float(pts[:, 2].max() - pts[:, 2].min()), 1))
     if a.json:
         print(json.dumps(res))
@@ -110,7 +113,8 @@ def main():
         print("swell  " + "  ".join(f"{s['cc1']}{'^' if s['dir'] == 'up' else 'v'}:{s['rms_db']:.1f}dB/{s['centroid_hz']}Hz"
                                     for s in sw["samples"]))
         print(f"swell  level range {sw['level_range_db']} dB, corr(level,CC1) {sw['corr_level_cc1']}, "
-              f"corr(centroid,CC1) {sw['corr_centroid_cc1']}")
+              f"corr(centroid,CC1) {sw['corr_centroid_cc1']}, corr(HF%,CC1) {sw['corr_hf_cc1']}, "
+              f"HF% at ends/top {sw['hf_pct_at_lo_hi'][0]} -> {sw['hf_pct_at_lo_hi'][1]}")
 
 
 if __name__ == "__main__":
