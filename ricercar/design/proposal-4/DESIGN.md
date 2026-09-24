@@ -1,6 +1,6 @@
 # Proposal 4: "Ricercar sopra il canto fermo" (melodic-beauty / cantus-firmus design)
 
-Status: design complete; 10 proof labs (P01-P10) all checker-clean. Everything in the proof table
+Status: design complete; 11 proof labs (P01-P11) all checker-clean. Everything in the proof table
 has a lab file in `lab/` that was run through `tools/ck.sh` (= project checker with the four voice
 ranges S 60-84, A 53-77, T 48-72, B 36-62). What is NOT proven is listed in section D.
 
@@ -97,7 +97,7 @@ Checker = `tools/ck.sh` (project check.py with the four ranges). "0/0/0" = 0 PAR
 |---|---|---|---|
 | P01_S1_CSa.ly | S1 + CSa (lament) below it; answer context is the exact transposition | errors 0, parallels 0, beat-par 0, unjustified 0 | 2:3 accented passing c'; 2:4.5 aug-6th ces'/a' -> 8ve; 3:4.5 vii(o) over a (lament); 4:4 escape tone des'' over g |
 | P02_answer_CSb.ly | answer + CSb as a duet (answer is the bass: 4ths count) | errors 0, parallels 0, beat-par 0, unjustified 0 | only passing tones and the answer's own e' neighbour |
-| P03_answer_CSb_CSa.ly | triple complex CSb / answer / CSa | errors 0, parallels 0, beat-par 0, unjustified 0 | 1:1 c''/bes = elision note (replaced by des'' when the soprano is not coming off S1); 4:1 des'' 7th over ees (lament passing) |
+| P03_answer_CSb_CSa.ly | triple complex CSb / answer / CSa | errors 0, parallels 0, beat-par 0, unjustified 0 | 1:1 c''/bes = elision note (replaced by bes' in P11 when the soprano is not coming off S1); 4:1 des'' 7th over ees (lament passing) |
 | P04_stretto_chain_5ths.ly | stretto chain at the lower 5th, 2 bars apart, 3 voices: S1 b-flat (S), e-flat (A), a-flat (T) | errors 0, parallels 0, beat-par 0, unjustified 0 | only the followers' leading-tone neighbours (d, g) and the leader's escape tone |
 | P05_CB1_S2_over_answer.ly | S1+S2 combination: S2 (soprano) over the real answer (alto), simultaneous, with a free bass | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:1 V7 (ees'' over f, resolves to des''); 4:1 4-3 suspension bes'->aes' over f under S2's c'' |
 | P06_apotheosis_frame.ly | B-flat major apotheosis, 4 voices, 10 bars: complete tune (S) over its mirror (B 1-4) and the answer (B 5-8), c'' -> d'', plagal minor-iv close | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:3 V6/5 7th; 4:1, 7:1 V7; 8:1 ii4/2 (bass bes, is the 7th, resolves to a,); 10:1 minor iv6/4 neighbour chord |
@@ -229,8 +229,8 @@ piece balances sharp-side tension (II) against flat-side darkness (III) around t
    below the voice ending on c''), and the bass entry at 10 has only CSb (alto) above it. Anyone
    re-ordering entries must re-check.
 3. Elision at the start of CSb: the first quarter c'' is the end of the preceding S1. Where the
-   soprano is not coming off S1 (bar 14) it must start des'' instead (P03 1:1 shows c''/bes as an
-   appoggiatura against the lament).
+   soprano is not coming off S1 (bar 14) it starts on bes' instead (P11); c'' there would clash with
+   the lament's bes, (P03 1:1 shows it only as an appoggiatura).
 4. Free voices not lab-proven (to be composed and checked by the composer): the motor bass 19-24
    (no motor countersubject survived: the solver's candidates were stepwise but harmonically aimless
    and cross-related with S2's a-natural, and CSb does not fit against S2); the episodes 29-32 and
