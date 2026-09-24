@@ -1,7 +1,7 @@
 \version "2.24.0"
 % bars 35-41
 % Section 5: Fuga inversa and transition. Starter = the verified skeleton; enrich per BLUEPRINT.md
-% and verify with: python3 ../splice_check.py sec5_inversa.ly
+% and verify with: python3 ../splice_check.py sec05_inversa.ly
 soprano = \absolute {
   % 35
   r1 | e''8 f''8 e''8 d''8 c''8 d''8 b'8 g''8 | c''4 d''8 a'8 ~ a'4 b'4 | b'8 a'8 b'8 c''8 d''4 c''4 |

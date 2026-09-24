@@ -64,39 +64,39 @@ R2_P06_apotheosis_frame: source of bars 51-60: proposal-4 P06 as written
   check: errors 0, parallels 0, beat-par 0, unjustified 0
   strict: clash 0, xrel 1, acc 4, acc2 4
     XREL  6:4.5->7:1 bass E2 then soprano Eb5
-sections/sec1_expo: section starter (skeleton window), spliced and checked with joins
+sections/sec01_expo: section starter (skeleton window), spliced and checked with joins
   PASS section bars 1-12 (checked 1-13)
   check: errors 0, parallels 0, beat-par 0, unjustified 0
   strict: clash 0, xrel 0, acc 0, acc2 3
-sections/sec2_entry4_episode: section starter (skeleton window), spliced and checked with joins
+sections/sec02_entry4_episode: section starter (skeleton window), spliced and checked with joins
   PASS section bars 13-19 (checked 12-20)
   check: errors 0, parallels 0, beat-par 0, unjustified 0
   strict: clash 0, xrel 0, acc 0, acc2 2
     D4?  17:2.5 weak   AB P4/bass C5/G2  [UNJUSTIFIED]
-sections/sec3_stretto_liquidation: section starter (skeleton window), spliced and checked with joins
+sections/sec03_stretto_liquidation: section starter (skeleton window), spliced and checked with joins
   PASS section bars 20-29 (checked 19-30)
   check: errors 0, parallels 0, beat-par 0, unjustified 0
   strict: clash 0, xrel 1, acc 1, acc2 5
     XREL  23:4->23:4.5 bass Db3 then soprano D5
-sections/sec4_arioso: section starter (skeleton window), spliced and checked with joins
+sections/sec04_arioso: section starter (skeleton window), spliced and checked with joins
   PASS section bars 30-34 (checked 29-35)
   check: errors 0, parallels 0, beat-par 0, unjustified 0
   strict: clash 0, xrel 2, acc 0, acc2 1
     MEL  B 32:1 D2->Gb2: dim4 leap
     XREL  33:4->34:1 alto Eb4 then bass E2
     XREL  33:4.5->34:1 alto Eb4 then bass E2
-sections/sec5_inversa: section starter (skeleton window), spliced and checked with joins
+sections/sec05_inversa: section starter (skeleton window), spliced and checked with joins
   PASS section bars 35-41 (checked 34-42)
   check: errors 0, parallels 0, beat-par 0, unjustified 0
   strict: clash 0, xrel 0, acc 0, acc2 4
     DIR  37:2.5 S/B direct 5th (S leaps D5->A4)
-sections/sec6_pedal_climax: section starter (skeleton window), spliced and checked with joins
+sections/sec06_pedal_climax: section starter (skeleton window), spliced and checked with joins
   PASS section bars 42-50 (checked 41-51)
   check: errors 0, parallels 0, beat-par 0, unjustified 0
   strict: clash 0, xrel 1, acc 1, acc2 13
     D4?  47:1 strong AB TT/bass A4/Eb2  [UNJUSTIFIED]
     XREL  43:3->43:4 tenor G3 then bass Gb2
-sections/sec7_apotheosis_coda: section starter (skeleton window), spliced and checked with joins
+sections/sec07_apotheosis_coda: section starter (skeleton window), spliced and checked with joins
   PASS section bars 51-62 (checked 50-62)
   check: errors 0, parallels 0, beat-par 0, unjustified 0
   strict: clash 0, xrel 1, acc 5, acc2 4

@@ -1,7 +1,7 @@
 \version "2.24.0"
 % bars 13-19
 % Section 2: Exposition entry 4 and Episode 1. Starter = the verified skeleton; enrich per BLUEPRINT.md
-% and verify with: python3 ../splice_check.py sec2_entry4_episode.ly
+% and verify with: python3 ../splice_check.py sec02_entry4_episode.ly
 soprano = \absolute {
   % 13
   f''2. r4 | r4 c''2 des''4 | c''2 r2 | r4 des''2 f''4 |

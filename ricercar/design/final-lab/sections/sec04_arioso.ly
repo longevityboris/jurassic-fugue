@@ -1,7 +1,7 @@
 \version "2.24.0"
 % bars 30-34
 % Section 4: Arioso dolente and the German-sixth pivot. Starter = the verified skeleton; enrich per BLUEPRINT.md
-% and verify with: python3 ../splice_check.py sec4_arioso.ly
+% and verify with: python3 ../splice_check.py sec04_arioso.ly
 soprano = \absolute {
   % 30
   c''4. a'8 f'4 des''8 bes'8 | c''2. f''8 bes'8 | ees''4. des''8 des''4. c''8 | c''1 |

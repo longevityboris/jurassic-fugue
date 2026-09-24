@@ -1,7 +1,7 @@
 \version "2.24.0"
 % bars 42-50
 % Section 6: Dominant pedal, combination, Climax II, plagal turn. Starter = the verified skeleton; enrich per BLUEPRINT.md
-% and verify with: python3 ../splice_check.py sec6_pedal_climax.ly
+% and verify with: python3 ../splice_check.py sec06_pedal_climax.ly
 soprano = \absolute {
   % 42
   r1 | r1 | f''2. f''8 ges''8 | f''1 |

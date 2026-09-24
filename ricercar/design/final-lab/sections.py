@@ -124,10 +124,10 @@ def main():
     os.makedirs(os.path.join(HERE, 'sections'), exist_ok=True)
     show_spans = '--spans' in sys.argv
     for num, a, b, slug, title in SECTIONS:
-        path = os.path.join(HERE, 'sections', f"sec{num}_{slug}.ly")
+        path = os.path.join(HERE, 'sections', f"sec{num:02d}_{slug}.ly")
         win = fl.window(sk, a, b)
         fl.write(path, win, f"bars {a}-{b}\nSection {num}: {title}. Starter = the verified skeleton; enrich per BLUEPRINT.md\n"
-                            f"and verify with: python3 ../splice_check.py sec{num}_{slug}.ly", first_bar=a)
+                            f"and verify with: python3 ../splice_check.py sec{num:02d}_{slug}.ly", first_bar=a)
         rows, (fc, fp), (lc, lp) = boundary(data, a, b)
         print(f"\n#### Section {num} boundary (bars {a}-{b})\n")
         print("| voice | first attack at %d:1 | last note |" % a)

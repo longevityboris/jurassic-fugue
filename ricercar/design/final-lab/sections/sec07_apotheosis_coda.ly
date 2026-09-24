@@ -1,7 +1,7 @@
 \version "2.24.0"
 % bars 51-62
 % Section 7: Apotheosis (cantus firmus) and coda. Starter = the verified skeleton; enrich per BLUEPRINT.md
-% and verify with: python3 ../splice_check.py sec7_apotheosis_coda.ly
+% and verify with: python3 ../splice_check.py sec07_apotheosis_coda.ly
 soprano = \absolute {
   % 51
   bes'2. bes'8 a'8 | bes'2. bes'8 a'8 | bes'4. c''8 c''4. ees''8 | ees''2. d''8 bes'8 |

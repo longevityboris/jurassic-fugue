@@ -1,7 +1,7 @@
 \version "2.24.0"
 % bars 20-29
 % Section 3: Stretto, liquidation, Climax I. Starter = the verified skeleton; enrich per BLUEPRINT.md
-% and verify with: python3 ../splice_check.py sec3_stretto_liquidation.ly
+% and verify with: python3 ../splice_check.py sec03_stretto_liquidation.ly
 soprano = \absolute {
   % 20
   des''4 r2. | r1 | ees''2. ees''8 d''8 | ees''2. ees''8 d''8 |
