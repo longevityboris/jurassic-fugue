@@ -359,3 +359,141 @@ def perms3(lines, names, bars, voice_sets=(('soprano', 'alto', 'tenor'), ('alto'
         if verbose:
             print('\n'.join('     ' + l for l in lines_ if not l.startswith('DIS ') or 'D4' in l))
     return res
+
+
+def place(lines_in_order, kmin=-5, kmax=3):
+    """octave-place lines (top->bottom) without crossing, minimal spread; returns list of octave shifts"""
+    import itertools
+    base = lines_in_order[0]
+    ts = sorted({n.t for m in lines_in_order for n in m})
+
+    def val(m, t):
+        return next((n.midi for n in m if n.step is not None and n.t <= t < n.t + n.d), None)
+    best = None
+    for ks in itertools.product(range(kmin, kmax), repeat=len(lines_in_order) - 1):
+        ms = [base] + [octs(m, k) for m, k in zip(lines_in_order[1:], ks)]
+        ok, spread = True, 0
+        for t in ts:
+            vals = [val(m, t) for m in ms]
+            pres = [v for v in vals if v is not None]
+            if pres != sorted(pres, reverse=True):
+                ok = False
+                break
+            if len(pres) >= 2:
+                spread = max(spread, pres[0] - pres[-1])
+        if ok and (best is None or spread < best[0]):
+            best = (spread, ks, ms)
+    return best
+
+
+def permsN(lines, names, bars, show_all=False, voices=VOICES):
+    import itertools
+    res = []
+    for order in itertools.permutations(names):
+        b = place([lines[n] for n in order])
+        if b is None:
+            res.append((order, None))
+            continue
+        spread, ks, ms = b
+        n = len(order)
+        best = None
+        vsets = [tuple(voices[i:i + n]) for i in range(0, len(voices) - n + 1)]
+        for vs in vsets:
+            for sh in range(-3, 3):
+                parts = {v: [octs(m, sh)] for v, m in zip(vs, ms)}
+                s, ls = quick(parts, bars)
+                if s['err'] == 0:
+                    key = (bad(s), s['d4'], s['dir'])
+                    if best is None or key < best[0]:
+                        best = (key, vs, sh, s, ls, ks)
+        res.append((order, best))
+    ok = 0
+    for order, best in res:
+        if best is None:
+            print(' > '.join(order), '-- no placement/range fit')
+            continue
+        key, vs, sh, s, ls, ks = best
+        ok += key[0] == 0
+        if show_all or key[0] == 0:
+            print(' > '.join(order), f"oct{ks} sh{sh}", f"bad {key[0]} d4 {key[1]} dir {key[2]}")
+    print(f"clean orders: {ok}/{len(res)}")
+    return res
+
+
+def strict(path, extra=()):
+    r = subprocess.run([sys.executable, os.path.join(HERE, 'strict.py'), path, '-v'] + list(extra),
+                       capture_output=True, text=True)
+    lines = r.stdout.strip().split('\n')
+    last = lines[-1]
+    import re as _re
+    m = _re.search(r"clash (\d+), xrel (\d+), acc (\d+), acc2 (\d+)", last)
+    d = dict(zip(('clash', 'xrel', 'acc', 'acc2'), map(int, m.groups()))) if m else {}
+    return d, lines
+
+
+def full(parts, bars, path='/tmp/p3full.ly'):
+    write_lab(path, 'full', parts, bars)
+    s, l1 = check(path)
+    d, l2 = strict(path)
+    return s, d, l1, l2
+
+
+def pair_search2(A, B, dts, ivs, va='alto', vb='soprano', bars=None, extra_parts=None, show=15):
+    """like pair_search but also runs strict.py; ranks by (bad, clash, acc2, xrel, acc, soft)"""
+    from concurrent.futures import ThreadPoolExecutor
+    jobs = []
+    for dt in dts:
+        for iv in ivs:
+            b = at(tr(B, iv), dt)
+            nb = bars or int((max(end(A), end(b)) + 3) // 4)
+            parts = {va: [A], vb: [b]}
+            if extra_parts:
+                for k, v in extra_parts.items():
+                    parts.setdefault(k, []).extend(v)
+            jobs.append((dt, iv, parts, nb))
+
+    def run(j):
+        dt, iv, parts, nb = j
+        fd, p = tempfile.mkstemp(suffix='.ly', dir='/tmp')
+        os.close(fd)
+        write_lab(p, 'x', parts, nb)
+        s, _ = check(p)
+        d, _ = strict(p)
+        os.unlink(p)
+        key = (bad(s), d.get('clash', 9), d.get('acc2', 9), d.get('xrel', 9), d.get('acc', 9), s['d4'] + s['mel'] + s['cros'] + s['dir'])
+        return key, dt, iv, s, d
+
+    with ThreadPoolExecutor(8) as ex:
+        res = list(ex.map(run, jobs))
+    res.sort(key=lambda r: r[0])
+    for key, dt, iv, s, d in res[:show]:
+        print(f"key {key}  dt {float(dt):5g}q  iv {iv:>4}")
+    return res
+
+
+# tonal mirror in B-flat harmonic minor about des (degree 2): bes<->f, c<->ees, des<->des, a<->ges, g<->aes, e<->ces
+_HM = [('b', -1), ('c', 0), ('d', -1), ('e', -1), ('f', 0), ('g', -1), ('a', 0)]   # bes c des ees f ges a
+
+
+def tmirror(m, axis_oct_shift=0):
+    """tonal mirror about des (B-flat harmonic minor scale degrees d -> 4 - d, alterations flipped).
+    Octave: bes' <-> f' (i.e. the mirror of bes' is f')."""
+    out = []
+    for n in m:
+        if n.step is None:
+            out.append(n.copy())
+            continue
+        # degree relative to bes (scale index from the letter), octave-aware via diatonic step
+        # diatonic step of bes' = 34 (b=6 + 7*4); degree = step - 34 (+ octave multiples)
+        deg = n.step - 34
+        letter_idx = n.step % 7
+        # base alteration of this letter in harmonic minor
+        base = {6: -1, 0: 0, 1: -1, 2: -1, 3: 0, 4: -1, 5: 0}[letter_idx]
+        dev = n.alt - base
+        nd = 4 - deg + 34 - 4  # mirror: degree d -> 4 - d, anchored so bes'(34) -> f'(34+4-4... )
+        # anchor: bes' (deg 0) -> f' (step 31: f=3 + 7*4 = 31)
+        nstep = 31 - deg
+        nl = nstep % 7
+        nbase = {6: -1, 0: 0, 1: -1, 2: -1, 3: 0, 4: -1, 5: 0}[nl]
+        out.append(n.copy(step=nstep + 7 * axis_oct_shift, alt=nbase - dev))
+    return out

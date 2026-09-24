@@ -18,3 +18,9 @@ S1M = mel("bes'2. bes'8 a' | bes'2. bes'8 a' | bes'4. c''8 c''4. ees''8 | ees''2
 S2M = mel("c''4. a'8 f'4 d''8 bes' | c''2. f''8 bes' | ees''4. d''8 d''4. c''8 | c''1")
 THEME_M = mel("bes'2. bes'8 a' | bes'2. bes'8 a' | bes'4. c''8 c''4. ees''8 | ees''2. d''8 bes' | "
               "c''4. a'8 f'4 d''8 bes' | c''2. f''8 bes' | ees''4. d''8 d''4. c''8 | c''1")
+
+# ---- mirror forms (tonal mirror about des in B-flat harmonic minor: bes<->f, c<->ees, a<->ges, g<->aes, e<->ces)
+from p3 import tmirror
+S1I = tmirror(S1)       # f'2. f'8 ges' | f'2. f'8 ges' | f'4. ees'8 ees'4. c'8 | c'2. des'8 ees' | f'2
+CS1I = tmirror(CS1)     # r2 aes | a bes | ces bes | a bes     (rising chromatic 7-#7-1-b2, turn about the tonic)
+CS2I = tmirror(CS2)     # r4 aes'2 bes' c'' des'' ees'' f'' ges''2 ees''4 | des''  (rising cascade: retardations)

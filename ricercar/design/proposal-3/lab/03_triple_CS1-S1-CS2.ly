@@ -1,5 +1,4 @@
-% Proposal 3, lab 03: triple counterpoint, order (top->bottom) CS1 > S1 > CS2
-% voices soprano, alto, tenor; B-flat minor frame; 5 bars.
+% Proposal 3, 03_triple: vertical order (top->bottom) CS1 > S1 > CS2; voices soprano, alto, tenor
 
 soprano = \absolute {
   r2 g''2 | ges''2 f''2 | e''2 f''2 | ges''2 f''2 |
