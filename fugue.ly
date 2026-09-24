@@ -142,8 +142,8 @@ tenor = \absolute {
   bes4. bes16 a bes4. bes16 a |
   bes8. c'16 c'8. ees'16 ees'4. d'16 bes |
   % 28-29 free
-  d4 ees2 ~ ees8 f8 ~ |
-  f4 g a4. f8 |
+  d4 ees2 ~ ees8 f8 |
+  d4 g a4. f8 |
   R1*8 |
 }
 
@@ -175,7 +175,7 @@ pedal = \absolute {
   % 26-29
   bes,4 ees8 f bes,4 ees8 f |
   bes,4 ees8 f ees4. bes,8 |
-  g,4 c8 f, c4. bes,8 |
+  g,4 c2 ~ c8 bes,8 |
   bes,4 ees f4. bes,8 |
   R1*8 |
 }
