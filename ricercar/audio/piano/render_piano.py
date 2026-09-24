@@ -7,10 +7,12 @@ Usage
 
     python3 render_piano.py IN.mid [-o OUT] [options]
 
-    # typical
-    python3 render_piano.py ../../performance/ricercar_expressive.mid -o out/ricercar
-    # organ-style MIDI whose pedal part should sound an octave lower, with dry stems
-    python3 render_piano.py fugue.midi -o out/fugue --transpose pedal=-12 --stems out/fugue_stems
+    # the chain: LilyPond score + performance plan -> MIDI -> piano
+    python3 ../../tools/perform.py SCORE.ly PLAN.json out/x.mid --target piano
+    python3 render_piano.py out/x.mid -o out/x
+    # the demo (old organ fugue; its pedal part sounds an octave lower, as a 16' stop)
+    python3 ../../tools/perform.py ../../../fugue.ly plans/fugue_jp.plan.json out/fugue_jp.mid --target piano
+    python3 render_piano.py out/fugue_jp.mid -o out/fugue_jp_piano --transpose pedal=-12
 
 This writes ``OUT.wav`` (48 kHz, 24-bit stereo, true peak normalised to -1 dBFS)
 and ``OUT.m4a`` (AAC 256 kb/s via ``afconvert``). It plays nothing through the
@@ -21,7 +23,8 @@ Options: ``--wet-db`` (reverb energy relative to the dry piano, default
 audible), ``--no-reverb``, ``--ir PATH``,
 ``--peak-db``, ``--lead-in``, ``--dyn-db`` (global dynamic offset realised
 through velocity), ``--transpose VOICE=N``, ``--stems DIR``,
-``--cc11-mode velocity|gain``, ``--no-key-sharing``, ``--quality`` (sfizz
+``--velocity-scale auto|raw|perform``, ``--cc-dynamics auto|velocity|gain|off``
+(both explained under the MIDI contract), ``--no-key-sharing``, ``--quality`` (sfizz
 resampler, 10 = sinc72), ``--jobs``, ``--keep-temp``, ``--no-m4a``,
 ``--json PATH`` (render report).
 
@@ -62,6 +65,15 @@ MIDI contract (for the performance script)
   voice, raise its velocities by about 8-15 (+3 to +5 dB, brighter).
   A piano cannot swell a held note, so a crescendo means successive notes
   struck harder.
+* **Velocity scale.** perform.py writes its own scale (VEL_AT: ppp 22, pp 32,
+  p 44, mp 56, mf 68, f 82, ff 98, fff 112). Played raw, its "f" would be this
+  piano's mf- and its pp->ff span 18 dB instead of 24. ``--velocity-scale
+  perform`` maps it piecewise-linearly onto the calibrated markings above
+  (22->12, 32->29, 44->42, 56->64, 68->86, 82->103, 98->115, 112->127);
+  accents and voicing offsets between anchors scale with the local slope.
+  perform.py marks its files with a ``text`` meta event ``perform.py
+  target=piano|strings`` in the tempo track, and the default ``auto`` picks
+  ``perform`` for such files and ``raw`` for everything else.
 * **CC11 (expression) and CC1 (modulation/dynamics) = dynamics envelope.**
   Default 127 = neutral, and a channel that never sends them is neutral. The
   lower of the two values in force at each note-on moves that note's level by
@@ -71,7 +83,13 @@ MIDI contract (for the performance script)
   the lower value means a strings-style file that writes the same envelope to
   CC1 and CC11 (``perform.py --target strings``) is not counted twice, and
   either controller can be used alone. Notes that are already sounding do not
-  change. ``--cc11-mode gain`` switches CC11 to a continuous fader instead.
+  change. ``--cc-dynamics gain`` keeps CC1 as velocity but makes CC11 a
+  continuous fader, ``off`` ignores both. The default ``auto`` is ``velocity``,
+  except for ``perform.py --target strings`` files: their velocities already
+  carry the dynamic level, and the CC1/CC11 copy of the same envelope would
+  count it twice, so ``auto`` ignores CC1/CC11 there. (For the piano, render
+  ``--target piano``; a strings file also works, with string-style
+  articulation and without the piano voicing boosts.)
 * **CC7 (channel volume) = mixing fader** for that voice's stem, in dB
   ``40*log10(cc7/100)``: default 100 = 0 dB, 127 = +4.2 dB, 71 = -6 dB. It
   is applied continuously with 20 ms smoothing and changes only level, not
@@ -277,6 +295,35 @@ def cc_db(value: int) -> float:
     return -120.0 if value <= 0 else 40.0 * math.log10(value / 127.0)
 
 
+# perform.py (ricercar/tools) maps its dynamic levels ppp..fff to velocities 22..112
+# (VEL_AT). The calibrated markings of this instrument are 12..127. "--velocity-scale
+# perform" maps one onto the other, piecewise linear between the level anchors, so that
+# perform.py's "f" is this piano's f (velocity 103, -6 dB) and not mf- (82, -11 dB).
+# Accent and voicing offsets that perform.py adds on top of a level are scaled with the
+# local slope, so a voice brought out stays brought out.
+PERFORM_VEL_MAP = [(0, 0), (22, 12), (32, 29), (44, 42), (56, 64), (68, 86), (82, 103), (98, 115), (112, 127)]
+
+
+def perform_velocity(v: int) -> int:
+    xs, ys = zip(*PERFORM_VEL_MAP)
+    return int(np.clip(round(float(np.interp(v, xs, ys))), 1, 127))
+
+
+def midi_marker(path: Path) -> dict:
+    """Read the ``perform.py target=...`` text event that perform.py writes into the
+    tempo track, if present. Returns e.g. {"source": "perform.py", "target": "piano"}."""
+    for track in mido.MidiFile(path).tracks:
+        for msg in track:
+            if msg.type == "text" and msg.text.startswith("perform.py"):
+                info = {"source": "perform.py"}
+                for tok in msg.text.split()[1:]:
+                    if "=" in tok:
+                        k, v = tok.split("=", 1)
+                        info[k] = v
+                return info
+    return {}
+
+
 # ----------------------------------------------------------------------------------------
 # One keyboard shared by all voices
 # ----------------------------------------------------------------------------------------
@@ -392,6 +439,25 @@ def c80_of(ir: np.ndarray, g: float) -> float:
     return 10 * math.log10(early / late)
 
 
+def measure_file(path: Path) -> dict | None:
+    """EBU R128 integrated loudness, loudness range and true peak of a written file (ffmpeg)."""
+    if shutil.which("ffmpeg") is None:
+        return None
+    r = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(path), "-filter_complex",
+                        "ebur128=peak=true", "-f", "null", "-"], capture_output=True, text=True)
+    summary = r.stderr[r.stderr.rfind("Summary:"):]
+    out = {}
+    for key, label in (("integrated_lufs", "I:"), ("lra_lu", "LRA:"), ("true_peak_dbtp", "Peak:")):
+        for line in summary.splitlines():
+            if line.strip().startswith(label):
+                try:
+                    out[key] = float(line.split()[1])
+                except ValueError:
+                    pass
+                break
+    return out or None
+
+
 def write_outputs(x: np.ndarray, out: Path, make_m4a: bool) -> dict:
     wav = out.with_suffix(".wav")
     # TPDF dither to 24 bit
@@ -422,7 +488,15 @@ def main(argv=None) -> dict:
     ap.add_argument("--transpose", action="append", default=[], metavar="VOICE=N",
                     help="transpose one voice by N semitones (repeatable), e.g. pedal=-12")
     ap.add_argument("--stems", type=Path, help="write each voice's dry stem (float WAV) into this directory")
-    ap.add_argument("--cc11-mode", choices=["velocity", "gain"], default="velocity")
+    ap.add_argument("--velocity-scale", choices=["auto", "raw", "perform"], default="auto",
+                    help="raw: velocities are this piano's calibrated scale; perform: perform.py's scale "
+                    "(pp 32, f 82, ff 98), remapped; auto (default): perform if the file was written by "
+                    "perform.py, else raw")
+    ap.add_argument("--cc-dynamics", choices=["auto", "velocity", "gain", "off"], default="auto",
+                    help="velocity: min(CC1, CC11) at each note-on -> hammer velocity; gain: CC1 -> velocity, "
+                    "CC11 -> continuous fader; off: ignore CC1/CC11; auto (default): off for perform.py "
+                    "--target strings files (their velocities already carry the dynamics), else velocity")
+    ap.add_argument("--cc11-mode", choices=["velocity", "gain"], help=argparse.SUPPRESS)  # old name
     ap.add_argument("--no-key-sharing", action="store_true")
     ap.add_argument("--quality", type=int, default=10, help="sfizz resampling quality 1-10 (10 = sinc72)")
     ap.add_argument("--jobs", type=int, default=min(8, os.cpu_count() or 4))
@@ -437,10 +511,22 @@ def main(argv=None) -> dict:
 
     out = args.out or args.midi.with_suffix("")
     out.parent.mkdir(parents=True, exist_ok=True)
-    transpose = {}
+    transpose_arg = {}
     for t in args.transpose:
         k, v = t.split("=")
-        transpose[k.strip()] = int(v)
+        transpose_arg[k.strip()] = int(v)
+
+    marker = midi_marker(args.midi)
+    vscale = args.velocity_scale
+    if vscale == "auto":
+        vscale = "perform" if marker.get("source") == "perform.py" else "raw"
+    ccdyn = args.cc_dynamics
+    if args.cc11_mode and ccdyn == "auto":
+        ccdyn = args.cc11_mode
+    if ccdyn == "auto":
+        ccdyn = "off" if marker.get("target") == "strings" else "velocity"
+    print(f"velocity scale: {vscale}; CC1/CC11 dynamics: {ccdyn}"
+          + (f"; written by perform.py --target {marker.get('target')}" if marker else ""))
 
     voices = load_midi(args.midi)
     glob = voices.pop("__global__", None)
@@ -452,20 +538,28 @@ def main(argv=None) -> dict:
     voices = {k: v for k, v in voices.items() if v.notes}
     if not voices:
         raise SystemExit("no notes found")
-    for name in transpose:
-        if name not in voices:
+    # Voice names match case-insensitively (perform.py writes "pedal", other files "Pedal").
+    transpose = {}
+    for name, semis in transpose_arg.items():
+        hits = [v for v in voices if v.lower() == name.lower()]
+        if not hits:
             raise SystemExit(f"--transpose: no voice named {name!r}; voices are {list(voices)}")
+        for h in hits:
+            transpose[h] = semis
 
     curve = VelocityCurve()
     all_notes = []
     for v in voices.values():
         cc1, cc11 = v.cc.get(1, []), v.cc.get(11, [])
         for n in v.notes:
-            dyn = cc_value_at(cc1, n.start, 127)
-            if args.cc11_mode == "velocity":
-                dyn = min(dyn, cc_value_at(cc11, n.start, 127))
+            vel = perform_velocity(n.velocity) if vscale == "perform" else n.velocity
+            dyn = 127
+            if ccdyn != "off":
+                dyn = cc_value_at(cc1, n.start, 127)
+                if ccdyn == "velocity":
+                    dyn = min(dyn, cc_value_at(cc11, n.start, 127))
             delta = args.dyn_db + cc_db(dyn)
-            n.vel_eff = curve.shift(n.velocity, delta)
+            n.vel_eff = curve.shift(vel, delta)
             all_notes.append(n)
 
     # Key sharing works on sounding pitches.
@@ -502,7 +596,7 @@ def main(argv=None) -> dict:
         g7 = fader(v.cc.get(7, []), len(s), 100, lambda c: -120.0 if c <= 0 else 40 * math.log10(c / 100), args.lead_in)
         if g7 is not None:
             s *= g7[:, None]
-        if args.cc11_mode == "gain":
+        if ccdyn == "gain":
             g11 = fader(v.cc.get(11, []), len(s), 127, cc_db, args.lead_in)
             if g11 is not None:
                 s *= g11[:, None]
@@ -511,7 +605,9 @@ def main(argv=None) -> dict:
         report_voices[name] = {
             "notes": len(vel),
             "velocity_in_mean": round(float(np.mean([x.velocity for x in v.notes])), 1),
+            "velocity_in_range": [int(min(x.velocity for x in v.notes)), int(max(x.velocity for x in v.notes))],
             "velocity_eff_mean": round(float(np.mean(vel)), 1) if vel else None,
+            "velocity_eff_range": [int(min(vel)), int(max(vel))] if vel else None,
             "rms_dbfs_prenorm": round(float(10 * np.log10(np.mean(s**2) + 1e-20)), 2),
             "transpose": transpose.get(name, 0),
         }
@@ -550,6 +646,9 @@ def main(argv=None) -> dict:
     report = {
         "input": str(args.midi),
         **files,
+        "midi_marker": marker or None,
+        "velocity_scale": vscale,
+        "cc_dynamics": ccdyn,
         "duration_s": round(len(mix) / SR, 2),
         "voices": report_voices,
         "key_sharing": share,
@@ -559,6 +658,7 @@ def main(argv=None) -> dict:
         "normalise_gain_db": round(20 * math.log10(gain), 2),
         "true_peak_dbfs": args.peak_db,
         "rms_dbfs": round(float(10 * np.log10(np.mean(mix**2))), 2),
+        "measured": {k: measure_file(Path(files[k])) for k in ("wav", "m4a") if k in files},
     }
     print(json.dumps(report, indent=1))
     if args.json:

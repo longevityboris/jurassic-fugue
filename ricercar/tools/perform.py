@@ -174,6 +174,8 @@ def build(score_path, plan_path, out_path, target='piano', cues=False):
     mid = mido.MidiFile(type=1, ticks_per_beat=TPQ)
     tt = mido.MidiTrack()
     tt.append(mido.MetaMessage('track_name', name='tempo', time=0))
+    # Provenance marker: tells a renderer which velocity scale and CC meaning to expect.
+    tt.append(mido.MetaMessage('text', text=f'perform.py target={target}', time=0))
     last = 0
     prev_us = None
     for tick, us in tempo_events:
