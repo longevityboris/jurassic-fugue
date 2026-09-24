@@ -81,9 +81,9 @@ answer at the fifth keeps the leading-tone neighbour (f-e-f), which is the subje
 | S2 | dotted quarter + 8th, leaps of a sixth | arpeggio, augmented triad | lyrical second subject |
 
 In S1+CS1+CS2 no two lines move together except at cadences: S1 moves at 4.5, CS1 on 1 and 3, CS2 on 2
-and 4. The composite is a steady quarter pulse. Eighth-note motion is kept back for the free voices of
-Part II, and the top voice of the climax gets the widest leaps. The surface therefore accelerates with
-the form, which the old two-bar blocks never did.
+and 4. The composite is a steady quarter pulse. Continuous 8ths first appear in Episode 1 (bar 18);
+Part II brings S2's dotted 8th rhythms; the climax brings the widest leaps and the densest chromatic
+harmony. The surface therefore accelerates with the form, which the old two-bar blocks never did.
 
 The two countersubjects are opposite in character: CS1 is chromatic and on the beat, CS2 diatonic and
 off the beat. Together they sound what the old piece's "3rds/6ths filler" never had: real 7-6 and 4/2-6
@@ -115,6 +115,8 @@ note; that is the normal pedal-point licence.
 | 9 | Climax bars 43-51: augmented answer (= dominant pedal) + S1 + its mirror on the same B-flat (rectus/inversus wedge) + CS2; then the whole theme in the alto under a descant; augmented sixth on the bass g-flat | `08_climax.ly` | 0/0/0/0 | acc2 5: four are the i6/4 over the F pedal, one is a passing 6/4 over the bass g, (bar 48.1) |
 | 10 | Apotheosis + coda, 4 voices, B-flat major, bars 52-62 | `09_apotheosis.ly` | 0/0/0/0 | acc 1 (iv6/4 over the tonic pedal), acc2 1 (passing seventh f'-ees'-d' of V7) |
 | 11 | E7 (S2 stretto over the answer, bass tacet) + Episode 2 (bass re-enters f, and climbs g, aes, a, bes, b, c under the held g'') + the crisis chord, 4 voices, bars 28-34 | `12_stretto_to_crisis.ly` | errors 0, parallels 0, beat-par 0, unjustified 0 (one DIR: S2-F's leap g''-e'' against the answer's f-e, a hidden octave between two subject statements on a weak 8th) | clash 0; xrel 1 (tenor des' then alto d'', covered by the alto's own des''-d''); acc2 3 (bes''/c'' = the two subjects' 7-6 at 31.3; the tritones of the two diminished sevenths at 33.3 and 34.1) |
+| 14 | E5-E6: S2 with the answer (three voices) and S2-sub with S1 and the cascade plus a free alto, bars 20-28 | `13_second_subject.ly` | errors 0, parallels 0, beat-par 0, unjustified 0 | clash 0, xrel 0, acc 0, acc2 0 |
+| 15 | Episode 1 on the dominant pedal, in context (bars 17-20) | `14_episode1.ly` | errors 0, parallels 0, beat-par 0, unjustified 0 (one D4?: alto bes' over the F pedal at 19.1 = i6/4 over the pedal) | acc 5, all against the held F pedal (IV/V, i6/4, the seventh of V7) |
 | 12 | Double counterpoint at the 10th and 12th: **CS1 against CS2 is invertible at the 8ve, 10th and 12th** | `11_cs1cs2_10th.ly`, `11_cs1cs2_12th.ly` (8ve: lab 03) | 0/0/0/0 both | clash 0, xrel 0, acc 0, acc2 0 both |
 | 13 | Negative result, kept on purpose: S1 against CS1 or CS2 is invertible **only at the octave**. Moved a 10th or 12th, each countersubject lands in another key and makes augmented-octave clashes (b' against bes', g against ges) | `11_s1cs1_*_fails.ly`, `11_s1cs2_*_fails.ly` | check.py passes 3 of 4 (it cannot see clashes); the 12th/CS2 case has a range error | clash 1-2 in all four: **not used** |
 
@@ -153,9 +155,9 @@ Bar count 62. Proportions: the first crisis falls at bar 34 (0.55 of the bars), 
 | 9 | codetta | f -> V6 -> i (bass f c bes, a,) | f -> b-flat |
 | 10-13 | E3 | alto S1, tenor CS1, bass CS2 (order S1>CS1>CS2) | b-flat |
 | 14-17 | E4 | soprano ANS, alto CS1-F, tenor CS2-F, free bass | f |
-| 18-19 | Episode 1 | first running 8ths: S1's 4-3-2-1 tail in 8ths, imitated at one beat between S and A; tenor CS2 fragment; bass f bes, ees f | f -> V of b-flat |
-| 20-24 | **II. Second subject** E5 | alto S2 from 20.3; tenor ANS from 20.1; bass CS2-F from 20.2; free soprano in 8ths | b-flat (on its dominant) |
-| 24-28 | E6 | soprano S2-sub from 24.3; bass S1 from 24.1; tenor CS2 from 24.2; free alto in 8ths | e-flat (on its dominant) |
+| 18-19 | Episode 1 | two bars on a dominant pedal (bass f,): soprano runs S1's 4-3-2-1 tail in 8ths, sequenced down by step (f''-c'', ees''-bes', des''-a'), the first continuous 8ths of the piece; alto and tenor in half and quarter notes: fm, Eb/F, bbm6/4, F, F7 | f -> V of b-flat |
+| 20-23 | **II. Second subject** E5 | alto S2 from 20.3; tenor ANS from 20.1; bass CS2-F from 20.2 (cadence f, e, f,); **soprano tacet** (three voices); S2's last c'' resolves 9-8 to bes' at 24.2 | b-flat (on its dominant) |
+| 24-27 | E6 | soprano S2-sub from 24.3 (re-entering after four bars' rest); bass S1 from 24.1; tenor CS2 from 24.2; alto tacet 24.3-25, then free (f' g' ees' \| ees' c'' c'' -> des'' at 28.1) | e-flat (on its dominant) |
 | 28-31 | E7 = S2 stretto | tenor ANS on f from 28.1; alto S2 from 28.3; soprano S2-F from 29.3 (one bar later, upper fifth; its last note g'' is held 32.3-33.3); **bass tacet** (three voices) | b-flat / f |
 | 32-33 | Episode 2 | the bass re-enters on f, (32.1) and climbs in quarters g, aes, a, bes, b, to c (34.1), under the soprano's held g'' (starting on g, so that no ges sounds against it); quarter-note chords Eb/G, Ab maj7, A half-dim7, b-flat m6, B dim7; cresc. molto | -> |
 | 34 | **Crisis** | 34.1 vii7 over c (c ees ges a), ff; 34.3 C-flat major in root position (the Neapolitan), subito p, fermata, G.P. | b-flat: N |
@@ -268,12 +270,13 @@ starts quietly and grows, so the brightest major sonority (57-58) is also the lo
 
 ### C.8 Notes for the composer (free parts)
 
-- **Episode 1 (18-19)**: model = S1's tail (ees des c bes) diminished to 8ths in the soprano, answered one
-  beat later by the alto a third lower; tenor holds a CS2-style syncopated descent; bass f | bes, | ees |
-  f (circle of fifths to V). This is the first continuous 8th-note motion of the piece.
-- **Free 8th-note voices in E5-E7**: stepwise, sequential, made from S1's neighbour cell (x x-1 x x+1).
-  They must avoid `g` against `ges`: S2 and CS1 must never sound together, because CS1's ges clashes with
-  S2-F's g (verified CLASH). Use CS2 with S2, never CS1.
+- **Episode 1 (18-19)**: written out and proven in `14_episode1.ly` (in context with bars 17 and 20).
+- **Textures of Part II**: E5 and E7 are deliberately three-voice (soprano tacet, then bass tacet); this
+  thins the middle of the piece and makes the re-entries (soprano S2-sub at 24.3, bass chromatic climb
+  at 32.1) into events. If the composer adds a free fourth voice, it must avoid `g` against `ges`: S2
+  and CS1 must never sound together, because CS1's ges clashes with S2-F's g (verified CLASH). Use CS2
+  with S2, never CS1. A trial soprano descant over E5 produced parallels with the cascade bass at every
+  attempt, which is why the rest is written into the design.
 - **Episode 2 (32-33)**: written out and proven in `12_stretto_to_crisis.ly`; the composer may add
   inner-voice 8ths (S1's neighbour cell) as long as the lab stays clean.
 - **Keyboard**: upper staff S+A, lower T+B, except in 10-13 where the soprano rests and the right hand
@@ -288,11 +291,13 @@ starts quietly and grows, so the brightest major sonority (57-58) is also the lo
 
 ## D. Risks (honest)
 
-1. **Free voices are not all written.** Episode 1 and the free 8th-note voices of E5-E6 exist only as
-   specifications (C.8). Their cores (the subject combinations) are proven; the fillers can still
-   introduce parallels. The composer must run `lab/run.sh` and `lab/strict.py` on every section.
-2. **E5-E6 in four voices are not yet a lab.** The three-voice cores are proven (row 4, and E6 is an
-   exact transposition of a proven order). E7 to the crisis is proven in four voices (row 11).
+1. **Coverage.** Bars 1-20 (labs 01, 14), 20-28 (lab 13), 28-34 (lab 12), 34-43 (lab 10), 43-51
+   (lab 08) and 52-62 (lab 09) are all written out and proven, so every bar of the 62 exists in a
+   checked lab. Joins between labs were checked by overlapping one bar (17, 20, 28, 34, 43, 52) or by
+   matching end and start notes, but the whole has not yet been run through `tools/assemble.py` as
+   one file. That is the composer's first step.
+2. **Three-voice stretches** (E5, E7, E8) are a deliberate choice. If a fuller sound is wanted, the fourth
+   voice is the composer's to add and to re-check.
 3. **The checker is lenient.** check.py accepts any stepwise dissonance, even struck on the beat. The
    strict script catches that, and every residual ACC2 is explained above. Its cross-relation test is
    heuristic, so the ear should still review 20-33.
