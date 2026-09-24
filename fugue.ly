@@ -142,8 +142,8 @@ tenor = \absolute {
   bes4. bes16 a bes4. bes16 a |
   bes8. c'16 c'8. ees'16 ees'4. d'16 bes |
   % 28-29 free
-  d4 ees2 ~ ees8 d8 ~ |
-  d4 g a4. f8 |
+  d4 ees2 ~ ees8 f8 ~ |
+  f4 g a4. f8 |
   R1*8 |
 }
 
