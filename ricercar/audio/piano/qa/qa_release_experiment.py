@@ -8,6 +8,11 @@ sfizz_render directly; the overlap of the previous note (dB, first 100 ms of eac
 and the note-off click crest are compared with the shipped 1 s release.
 
     python3 qa/qa_release_experiment.py      # writes qa/results/release_experiment.json
+
+Historical: this measured the stock 1 s release against shorter ones before the fix.
+make_sfz.py now writes 0.35 s (0.5-0.375 s per region below F2), so the replace() below
+no longer finds "ampeg_release=1" and its "1.0" row would silently be the new release.
+The fix is re-measured by qa_clarity.py instead; do not re-run this script as is.
 """
 from __future__ import annotations
 
