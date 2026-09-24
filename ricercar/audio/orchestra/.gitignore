@@ -1,0 +1,7 @@
+*.wav
+*.m4a
+*.aif
+*.aiff
+*.stems/
+__pycache__/
+out/test/
