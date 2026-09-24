@@ -257,10 +257,10 @@ def main():
     stem_raw = {inst: sf.read(f"{base}_stem_{inst}.wav", always_2d=True)[0].mean(axis=1) for inst in ("vn1", "vn2", "va", "vc")}
     sigs = {"mix": x.mean(axis=1), "dry_sum": sum(stem_raw.values())}
     for nm, suffix in (("hall_none", "_dryhall"), ("wet_minus8", "_wet8")):
-        p_ = Path(str(TMP / "fugue") + suffix + ".wav")
+        p_ = Path(str(TMP / a.tag) + suffix + ".wav")
         if p_.exists():
             z, _ = sf.read(str(p_), always_2d=True)
-            rz = json.loads(Path(str(TMP / "fugue") + suffix + ".json").read_text())
+            rz = json.loads(Path(str(TMP / a.tag) + suffix + ".json").read_text())
             d = int(round((rz["offset_s"] - off) * SR))            # align to this render's timeline
             zz = z.mean(axis=1)
             sigs[nm] = np.concatenate([np.zeros(d), zz])[: len(sigs["mix"])] if d >= 0 else zz[-d:]
