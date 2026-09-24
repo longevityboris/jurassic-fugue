@@ -37,7 +37,8 @@ GAP_BEATS = 2.0
 SWELL_BEATS = 14.4          # 9 s at 96 bpm
 TONIC = {"Violin I": 67, "Violin II": 67, "Viola": 60, "Cello": 48, "Contrabass": 36}
 SHORT = {"Violin I": "vn1", "Violin II": "vn2", "Viola": "va", "Cello": "vc", "Contrabass": "cb"}
-LEVELS = [("pp", 16), ("mf", 64), ("ff", 112)]
+LEVELS = [("pp", 49), ("mf", 88), ("ff", 114)]
+SWELL_LO, SWELL_HI = 40, 124
 
 
 def track_events(name: str, tonic: int):
@@ -53,16 +54,17 @@ def track_events(name: str, tonic: int):
         segs.append(dict(label=label, cc1=cc, start=b * SPB, end=(b + PHRASE_BEATS) * SPB))
         b += PHRASE_BEATS + GAP_BEATS
     # crescendo / diminuendo on a held note (the dominant)
-    ev.append((b, 0, mido.Message("control_change", control=1, value=0)))
+    ev.append((b, 0, mido.Message("control_change", control=1, value=SWELL_LO)))
     ev.append((b + 0.01, 2, mido.Message("note_on", note=tonic + 7, velocity=70)))
     steps = 200
     for i in range(1, steps + 1):
         t = b + SWELL_BEATS * i / steps
         x = i / steps
-        v = round(127 * (1 - abs(2 * x - 1)))
+        v = round(SWELL_LO + (SWELL_HI - SWELL_LO) * (1 - abs(2 * x - 1)))
         ev.append((t, 0, mido.Message("control_change", control=1, value=v)))
     ev.append((b + SWELL_BEATS, 1, mido.Message("note_off", note=tonic + 7, velocity=0)))
-    segs.append(dict(label="swell", cc1="0-127-0", start=b * SPB, end=(b + SWELL_BEATS) * SPB))
+    segs.append(dict(label="swell", cc1=f"{SWELL_LO}-{SWELL_HI}-{SWELL_LO}", lo=SWELL_LO, hi=SWELL_HI,
+                     start=b * SPB, end=(b + SWELL_BEATS) * SPB))
     return ev, segs, b + SWELL_BEATS + 3
 
 

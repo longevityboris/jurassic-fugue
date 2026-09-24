@@ -350,18 +350,19 @@ def smooth_levels(meta: list[dict]) -> dict:
     ref = curves.get("ff") if "ff" in curves else next(iter(curves.values()))
     keys = sorted({m["midi"] for m in meta})
     k_mid = keys[len(keys) // 2]
+    dev = defaultdict(list)                  # each note's deviation from its layer's smooth curve
+    for m in meta:
+        dev[m["midi"]].append(m["level_db"] - float(np.polyval(curves[m["dyn"]], m["midi"])))
     for m in meta:
         k = m["midi"]
         # keep the instrument's natural register slope (clamped to +-6 dB), but pin
         # the ff curve at the middle of the range to REF_DB for every instrument
         slope = float(np.clip(np.polyval(ref, k) - np.polyval(ref, k_mid), -6, 6))
         target = REF_DB + slope + LAYER_DB[m["dyn"]]
-        smooth_own = np.polyval(curves[m["dyn"]], k)
-        # pull 80 % of the way from the note's own level toward the smooth curve
-        own = m["level_db"]
-        corrected = own + 0.8 * (smooth_own - own)
-        corrected = own + np.clip(corrected - own, -8, 8)
-        out[(m["dyn"], k)] = float(target - corrected)
+        # all layers of a key keep the same 30 % of that key's natural unevenness,
+        # so the pp/mf/ff crossfade of one key never bulges or dips
+        keep = 0.3 * float(np.clip(np.mean(dev[k]), -3, 3))
+        out[(m["dyn"], k)] = float(target + keep - m["level_db"])
     return out
 
 

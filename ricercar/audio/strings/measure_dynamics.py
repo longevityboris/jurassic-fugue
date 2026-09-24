@@ -9,8 +9,8 @@ segment (pp / mf / ff phrase and the 0-127-0 CC1 swell):
   RMS dBFS, A-weighted dB, spectral centroid (Hz) and the share of energy
   above 2 kHz (HF %).  A gain-only instrument keeps centroid and HF % constant
   across pp/mf/ff; real dynamic layers make both rise with loudness.
-For the swell it also samples the sliding 0.5 s level/centroid at CC1 =
-0, 32, 64, 96, 127 (rising) and 96, 64, 32, 0 (falling) and reports the
+For the swell it also samples the sliding 0.5 s level/centroid at the CC1
+values of pp, p, mp, mf, f, ff (rising, then falling) and reports the
 correlation of level and centroid with CC1.  --json prints machine-readable output.
 """
 from __future__ import annotations
@@ -67,22 +67,22 @@ def main():
         st = stats(x[i0:i1], sr, aw)
         rows.append(dict(segment=s["label"], cc1=s["cc1"], **st))
         if s["label"] == "swell":
-            swell = (i0, i1)
+            swell = (i0, i1, s.get("lo", 0), s.get("hi", 127))
     res = dict(label=a.label or a.wav.stem, voice=voice, segments=rows)
     if swell:
-        i0, i1 = swell
+        i0, i1, lo, hi = swell
         win, hop = int(0.5 * sr), int(0.1 * sr)
         pts = []
         for c in range(i0, i1 - win, hop):
             frac = (c + win / 2 - i0) / (i1 - i0)
-            cc = 127 * (1 - abs(2 * frac - 1))
+            cc = lo + (hi - lo) * (1 - abs(2 * frac - 1))
             st = stats(x[c:c + win], sr, aw)
             pts.append((frac, cc, st["rms_db"], st["centroid_hz"], st["hf_pct"]))
         pts = np.array(pts)
         samples = []
-        for target, rising in [(0, True), (32, True), (64, True), (96, True), (127, True),
-                               (96, False), (64, False), (32, False), (0, False)]:
-            sel = pts[(pts[:, 0] <= 0.5) == rising] if target != 127 else pts
+        marks = [49, 62, 75, 88, 101, 114]                  # pp p mp mf f ff on perform.py's scale
+        for target, rising in [(m, True) for m in marks] + [(hi, True)] + [(m, False) for m in marks[::-1]]:
+            sel = pts[(pts[:, 0] <= 0.5) == rising] if target != hi else pts
             j = int(np.argmin(np.abs(sel[:, 1] - target)))
             samples.append(dict(cc1=target, dir="up" if rising else "down", rms_db=round(sel[j, 2], 1),
                                 centroid_hz=int(sel[j, 3]), hf_pct=round(sel[j, 4], 2)))
