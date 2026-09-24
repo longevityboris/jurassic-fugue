@@ -1,7 +1,8 @@
 # Concert-grand renderer
 
 Turns the multi-voice MIDI written by `tools/perform.py` (or any one-voice-per-track
-MIDI) into a concert-grand recording: Salamander Grand Piano V3 (Yamaha C5, 16
+MIDI; in files not written by perform.py, CC11 is expression and CC1 is General
+MIDI modulation, which the piano ignores) into a concert-grand recording: Salamander Grand Piano V3 (Yamaha C5, 16
 velocity layers) played by sfizz, one stem per voice, convolved with a measured
 concert hall (Detmold Konzerthaus). Output is 48 kHz / 24-bit stereo WAV
 normalised to -1 dBTP, plus a 256 kb/s AAC `.m4a`. Nothing is played through
@@ -55,7 +56,7 @@ Useful options (all in `python3 render_piano.py --help`):
 | `--transpose VOICE=N` | | shift one voice (name matched case-insensitively) |
 | `--dyn-db` | 0 | global dynamic offset, realised as hammer velocity, so timbre follows |
 | `--velocity-scale` | auto | `perform` for perform.py files (see below), else `raw` |
-| `--cc-dynamics` | auto | `velocity`, `gain`, `off`; `off` for perform.py strings-target files |
+| `--cc-dynamics` | auto | `velocity` (min of CC1, CC11), `cc11` (CC11 only), `gain`, `off`; auto: `velocity` for perform.py piano files, `off` for perform.py strings files, `cc11` for any other file |
 | `--stems DIR` | | write each voice's dry stem |
 | `--json PATH` | | render report: per-voice velocities and levels, key sharing, C80, LUFS, LRA, true peak of WAV and M4A |
 | `--jobs` | 4 | parallel sfizz instances; each holds its voice's samples in RAM (about 1 GB for a fugue voice) |
@@ -67,6 +68,9 @@ Useful options (all in `python3 render_piano.py --help`):
 * **Voices.** One voice per track (or per channel), named by the track name.
   perform.py writes a `tempo` track and then `soprano`, `alto`, `tenor`,
   `bass`/`pedal` on channels 1-4. Tempo maps and tick timing are honoured.
+  Two tracks with the same name stay two voices: the second `soprano` becomes
+  `soprano.2`, with a warning, and gets its own stem, CC7 fader and
+  `--transpose` name.
 * **Velocity = hammer velocity.** It picks one of 16 recorded layers (timbre)
   and the level on a calibrated, monotonic curve: pp 30, p 42, mp 63, mf 86,
   f 103, ff 115 (-27, -21, -15, -10, -6, -3 dB re 127; `suggested_velocities`
@@ -79,11 +83,21 @@ Useful options (all in `python3 render_piano.py --help`):
   with a text meta event `perform.py target=piano|strings`, so `auto` does
   this by itself. (This one-line marker is the only change the piano renderer
   needed in perform.py; other consumers ignore it.)
-* **CC1 / CC11** = dynamics envelope: the lower of the two at each note-on
-  becomes a different hammer velocity (40·log10(cc/127) dB), not a fader
-  (unless `--cc-dynamics gain`), so the timbre follows. perform.py's `--target strings` files carry the
-  dynamic in the velocities *and* in CC1/CC11; `auto` ignores the CCs there so
-  it is not applied twice. For the piano, use `--target piano`.
+* **CC11 (and CC1 in perform.py files)** = dynamics envelope: the value at
+  each note-on becomes a different hammer velocity (40·log10(cc/127) dB), not
+  a fader (unless `--cc-dynamics gain`), so the timbre follows. Which
+  controllers count depends on who wrote the file (`--cc-dynamics auto`):
+  * perform.py `--target piano`: the lower of CC1 and CC11 (perform.py uses
+    both for dynamics; its piano files send neither, so velocity carries the
+    dynamics).
+  * perform.py `--target strings`: none. These files carry the dynamic in the
+    velocities *and* in CC1/CC11, so the CCs are ignored rather than applied
+    twice. For the piano, use `--target piano`.
+  * any other file: CC11 only. In General MIDI, CC1 is modulation, and a GM
+    reset sends CC1=0; read as dynamics it would play every note at velocity 1.
+  A voice whose mean velocity the controllers pull below 10 (from 30 or more),
+  and a render that needs more than +20 dB of make-up gain, are warned about
+  and listed under `warnings` in the render report.
 * **CC7** = static per-voice fader (100 = 0 dB). **CC64** = the one sustain
   pedal (any track).
 * **One keyboard.** Two voices striking one key less than 30 ms apart (a

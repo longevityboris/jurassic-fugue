@@ -23,7 +23,7 @@ Options: ``--wet-db`` (reverb energy relative to the dry piano, default
 audible), ``--no-reverb``, ``--ir PATH``,
 ``--peak-db``, ``--lead-in``, ``--dyn-db`` (global dynamic offset realised
 through velocity), ``--transpose VOICE=N``, ``--stems DIR``,
-``--velocity-scale auto|raw|perform``, ``--cc-dynamics auto|velocity|gain|off``
+``--velocity-scale auto|raw|perform``, ``--cc-dynamics auto|velocity|cc11|gain|off``
 (both explained under the MIDI contract), ``--no-key-sharing``, ``--no-fold``,
 ``--quality`` (sfizz resampler, 10 = sinc72), ``--jobs`` (parallel sfizz
 instances, default 4), ``--keep-temp``, ``--no-m4a``, ``--json PATH`` (render
@@ -65,6 +65,9 @@ MIDI contract (for the performance script)
 * **One voice per track, or per channel.** Every (track, channel) pair that
   holds notes becomes a voice, named after the track (``Soprano``,
   ``Alto`` ...). With several channels in one track, ``.chN`` is appended.
+  Tracks that share a name stay separate voices: the second ``soprano``
+  becomes ``soprano.2`` (with a warning), with its own stem, CC7 fader and
+  ``--transpose`` name.
   Tempo (``set_tempo`` on any track, usually track 0) and ticks are honoured, so
   rubato may be written as a tempo map or as note timing. Both work.
 * **Note velocity = hammer velocity.** This is the main expressive control. It
@@ -92,22 +95,32 @@ MIDI contract (for the performance script)
   perform.py marks its files with a ``text`` meta event ``perform.py
   target=piano|strings`` in the tempo track, and the default ``auto`` picks
   ``perform`` for such files and ``raw`` for everything else.
-* **CC11 (expression) and CC1 (modulation/dynamics) = dynamics envelope.**
+* **CC11 (expression) = dynamics envelope; CC1 too, in perform.py files.**
   Default 127 = neutral, and a channel that never sends them is neutral. The
-  lower of the two values in force at each note-on moves that note's level by
+  controller value in force at each note-on moves that note's level by
   ``40*log10(cc/127)`` dB, realised as a **different hammer velocity** through
   the inverse of the calibrated curve, so the timbre follows the dynamic as on
-  a real piano. Examples: 64 -> -11.9 dB, 90 -> -6 dB, 107 -> -3 dB. Taking
-  the lower value means a strings-style file that writes the same envelope to
-  CC1 and CC11 (``perform.py --target strings``) is not counted twice, and
-  either controller can be used alone. Notes that are already sounding do not
-  change. ``--cc-dynamics gain`` keeps CC1 as velocity but makes CC11 a
-  continuous fader, ``off`` ignores both. The default ``auto`` is ``velocity``,
-  except for ``perform.py --target strings`` files: their velocities already
-  carry the dynamic level, and the CC1/CC11 copy of the same envelope would
-  count it twice, so ``auto`` ignores CC1/CC11 there. (For the piano, render
-  ``--target piano``; a strings file also works, with string-style
-  articulation and without the piano voicing boosts.)
+  a real piano. Examples: 64 -> -11.9 dB, 90 -> -6 dB, 107 -> -3 dB. Notes
+  that are already sounding do not change. What counts depends on who wrote
+  the file (``--cc-dynamics``, default ``auto``):
+
+  - ``perform.py --target piano`` files: ``velocity``, the lower of CC1 and
+    CC11 (perform.py's convention: both mean dynamics; its piano files send
+    neither today, so velocity alone carries the dynamics).
+  - ``perform.py --target strings`` files: ``off``. Their velocities already
+    carry the dynamic level, and the CC1/CC11 copy of the same envelope would
+    count it twice. (For the piano, render ``--target piano``; a strings file
+    also works, with string-style articulation and without the piano voicing
+    boosts.)
+  - every other file: ``cc11``, CC11 only. In General MIDI, CC1 is modulation,
+    and a GM reset sends CC1=0 at the start; read as dynamics that would play
+    every note at velocity 1.
+
+  ``--cc-dynamics velocity`` applies min(CC1, CC11) to any file, ``gain``
+  keeps CC1 as velocity but makes CC11 a continuous fader, ``off`` ignores
+  both. A voice whose mean velocity the controllers pull below 10 (from 30 or
+  more), and a render that needs more than +20 dB of make-up gain, are
+  warned about, and the warnings are listed in the render report.
 * **CC7 (channel volume) = mixing fader** for that voice's stem, in dB
   ``40*log10(cc7/100)``: default 100 = 0 dB, 127 = +4.2 dB, 71 = -6 dB. It
   is applied continuously with 20 ms smoothing and changes only level, not
@@ -202,6 +215,7 @@ class Voice:
     cc: dict = field(default_factory=dict)  # cc number -> list[(time, value)]
     zero_length: int = 0  # note_on and note_off on the same tick: played as MIN_NOTE
     unterminated: int = 0  # note_on without note_off: played for 1 s
+    renamed_from: str = ""  # track name shared with an earlier track (this voice got a ".2" suffix)
 
 
 class TempoMap:
@@ -248,8 +262,26 @@ def load_midi(path: Path) -> dict[str, Voice]:
         if msg.type != "control_change":
             chans_per_track.setdefault(ti, set()).add(msg.channel)
 
-    def vname(ti: int, ch: int) -> str:
+    # Every track that holds notes is its own voice (stem, CC7 fader, --transpose name), even
+    # when two tracks carry the same name: the later ones become "name.2", "name.3" ...
+    base_names: dict[int, str] = {}
+    renamed: dict[int, str] = {}
+    used: dict[str, int] = {}
+    for ti in sorted(chans_per_track):
         base = names.get(ti) or f"track{ti}"
+        key = base.lower()
+        used[key] = used.get(key, 0) + 1
+        if used[key] > 1:
+            renamed[ti] = base
+            base = f"{base}.{used[key]}"
+            while base.lower() in used:  # a track may already be called "soprano.2"
+                used[key] += 1
+                base = f"{renamed[ti]}.{used[key]}"
+            used[base.lower()] = 1
+        base_names[ti] = base
+
+    def vname(ti: int, ch: int) -> str:
+        base = base_names.get(ti) or names.get(ti) or f"track{ti}"
         return f"{base}.ch{ch + 1}" if len(chans_per_track.get(ti, ())) > 1 else base
 
     voices: dict[str, Voice] = {}
@@ -265,7 +297,7 @@ def load_midi(path: Path) -> dict[str, Voice]:
             cc_events.append((t, ti, msg))
             continue
         name = vname(ti, msg.channel)
-        v = voices.setdefault(name, Voice(name))
+        v = voices.setdefault(name, Voice(name, renamed_from=renamed.get(ti, "")))
         k = (name, msg.note)
         if msg.type == "note_on" and msg.velocity > 0:
             if orphan_off.pop(k, None) == tick:
@@ -355,7 +387,9 @@ PERFORM_VEL_AT = {"ppp": 22, "pp": 32, "p": 44, "mp": 56, "mf": 68, "f": 82, "ff
 def perform_vel_map() -> list[tuple[int, int]]:
     """perform.py's level anchors -> this piano's calibrated markings, read from the
     calibration JSON that make_sfz.py writes (so a recalibration moves the map with it)."""
-    marks = {"ppp": 12, "pp": 29, "p": 42, "mp": 64, "mf": 86, "f": 103, "ff": 115, "fff": 127}
+    # fallback = the calibration's own suggested_velocities (make_sfz.py), used only if the
+    # calibration JSON is missing
+    marks = {"ppp": 13, "pp": 30, "p": 42, "mp": 63, "mf": 86, "f": 103, "ff": 115, "fff": 127}
     if CALIBRATION_JSON.exists():
         marks.update(json.loads(CALIBRATION_JSON.read_text()).get("suggested_velocities", {}))
     return [(0, 0)] + [(PERFORM_VEL_AT[k], int(marks[k])) for k in PERFORM_VEL_AT]
@@ -722,10 +756,12 @@ def main(argv=None) -> dict:
                     help="raw: velocities are this piano's calibrated scale; perform: perform.py's scale "
                     "(pp 32, f 82, ff 98), remapped; auto (default): perform if the file was written by "
                     "perform.py, else raw")
-    ap.add_argument("--cc-dynamics", choices=["auto", "velocity", "gain", "off"], default="auto",
-                    help="velocity: min(CC1, CC11) at each note-on -> hammer velocity; gain: CC1 -> velocity, "
-                    "CC11 -> continuous fader; off: ignore CC1/CC11; auto (default): off for perform.py "
-                    "--target strings files (their velocities already carry the dynamics), else velocity")
+    ap.add_argument("--cc-dynamics", choices=["auto", "velocity", "cc11", "gain", "off"], default="auto",
+                    help="velocity: min(CC1, CC11) at each note-on -> hammer velocity; cc11: CC11 only -> "
+                    "hammer velocity, CC1 ignored (General MIDI: CC1 is modulation); gain: CC1 -> velocity, "
+                    "CC11 -> continuous fader; off: ignore CC1/CC11; auto (default): velocity for perform.py "
+                    "--target piano files, off for perform.py --target strings files (their velocities already "
+                    "carry the dynamics), cc11 for every other file")
     ap.add_argument("--cc11-mode", choices=["velocity", "gain"], help=argparse.SUPPRESS)  # old name
     ap.add_argument("--no-key-sharing", action="store_true")
     ap.add_argument("--no-fold", action="store_true",
@@ -755,9 +791,19 @@ def main(argv=None) -> dict:
     if args.cc11_mode and ccdyn == "auto":
         ccdyn = args.cc11_mode
     if ccdyn == "auto":
-        ccdyn = "off" if marker.get("target") == "strings" else "velocity"
-    print(f"velocity scale: {vscale}; CC1/CC11 dynamics: {ccdyn}"
+        if marker.get("target") == "strings":
+            ccdyn = "off"  # the velocities already carry the envelope that CC1/CC11 repeat
+        elif marker.get("source") == "perform.py":
+            ccdyn = "velocity"  # perform.py's convention: CC1 and CC11 both mean dynamics
+        else:
+            ccdyn = "cc11"  # General MIDI: CC11 is expression, CC1 is modulation (a GM reset sends CC1=0)
+    print(f"velocity scale: {vscale}; CC dynamics: {ccdyn}"
           + (f"; written by perform.py --target {marker.get('target')}" if marker else ""))
+    warnings: list[str] = []
+
+    def warn(msg: str) -> None:
+        warnings.append(msg)
+        print(f"warning: {msg}", file=sys.stderr)
 
     voices = load_midi(args.midi)
     glob = voices.pop("__global__", None)
@@ -770,11 +816,14 @@ def main(argv=None) -> dict:
     if not voices:
         raise SystemExit("no notes found")
     for v in voices.values():
+        if v.renamed_from:
+            warn(f"track {v.renamed_from!r} appears more than once; this one is voice {v.name!r} (its own stem, "
+                 "CC7 fader and --transpose name)")
         if v.zero_length:
-            print(f"warning: {v.name}: {v.zero_length} zero-length note(s) (note-on and note-off on one tick) "
-                  f"played as {MIN_NOTE * 1000:.0f} ms", file=sys.stderr)
+            warn(f"{v.name}: {v.zero_length} zero-length note(s) (note-on and note-off on one tick) "
+                 f"played as {MIN_NOTE * 1000:.0f} ms")
         if v.unterminated:
-            print(f"warning: {v.name}: {v.unterminated} note(s) without note-off played for 1 s", file=sys.stderr)
+            warn(f"{v.name}: {v.unterminated} note(s) without note-off played for 1 s")
     # Voice names match case-insensitively (perform.py writes "pedal", other files "Pedal").
     transpose = {}
     for name, semis in transpose_arg.items():
@@ -786,18 +835,31 @@ def main(argv=None) -> dict:
 
     curve = VelocityCurve()
     all_notes = []
+    cc_shift: dict[str, float] = {}
     for v in voices.values():
         cc1, cc11 = v.cc.get(1, []), v.cc.get(11, [])
+        scaled, shifts = [], []
         for n in v.notes:
             vel = perform_velocity(n.velocity) if vscale == "perform" else n.velocity
             dyn = 127
-            if ccdyn != "off":
+            if ccdyn in ("velocity", "gain"):  # CC1 as dynamics (perform.py's convention)
                 dyn = cc_value_at(cc1, n.start, 127)
-                if ccdyn == "velocity":
-                    dyn = min(dyn, cc_value_at(cc11, n.start, 127))
+            if ccdyn in ("velocity", "cc11"):  # CC11 (expression) at note-on
+                dyn = min(dyn, cc_value_at(cc11, n.start, 127))
             delta = args.dyn_db + cc_db(dyn)
             n.vel_eff = curve.shift(vel, delta)
+            scaled.append(vel)
+            shifts.append(cc_db(dyn))
             all_notes.append(n)
+        cc_shift[v.name] = float(np.mean(shifts))
+        # A controller that silences a voice is almost always a misread file (for example a
+        # General MIDI CC1=0 modulation reset read as dynamics with --cc-dynamics velocity).
+        vin, veff = float(np.mean(scaled)), float(np.mean([n.vel_eff for n in v.notes]))
+        if veff < 10 and vin >= 30:
+            warn(f"{v.name}: mean velocity {vin:.0f} becomes {veff:.0f} (nearly silent): "
+                 f"CC dynamics ({ccdyn}) move it by {cc_shift[v.name]:+.0f} dB on average"
+                 + (f", --dyn-db by {args.dyn_db:+.0f} dB" if args.dyn_db else "")
+                 + "; if the file uses CC1 as modulation or CC11 as a fader, try --cc-dynamics cc11 or off")
 
     # Key sharing works on sounding pitches. A note pushed off the keyboard (A0-C8), for
     # example by --transpose, is folded back by octaves, with a warning, or refused with
@@ -820,7 +882,7 @@ def main(argv=None) -> dict:
                + (f", transpose {transpose[name]:+d}" if transpose.get(name) else "") + ")")
         if args.no_fold:
             raise SystemExit(f"{msg}; --no-fold refuses to fold them into range")
-        print(f"warning: {msg} folded back by octaves", file=sys.stderr)
+        warn(f"{msg} folded back by octaves")
     share = {"unisons_merged": 0, "restrikes": 0} if args.no_key_sharing else share_keyboard(all_notes)
     pedal = pedal_events(voices)
 
@@ -851,8 +913,7 @@ def main(argv=None) -> dict:
             if attempt == 2:
                 raise SystemExit(f"{name}: notes stop while held after 3 renders ({hits[:3]}); "
                                  f"stem kept in {tmp}")
-            print(f"warning: {name}: {len(hits)} note(s) cut while held at {[h['t'] for h in hits][:5]} s; rendering again",
-                  file=sys.stderr)
+            warn(f"{name}: {len(hits)} note(s) cut while held at {[h['t'] for h in hits][:5]} s; rendering again")
             truncation["rerendered"][name] = attempt + 1
             run_sfizz(j[0], j[1], j[2], args.quality)
 
@@ -883,6 +944,7 @@ def main(argv=None) -> dict:
             "velocity_in_range": [int(min(x.velocity for x in v.notes)), int(max(x.velocity for x in v.notes))],
             "velocity_eff_mean": round(float(np.mean(vel)), 1) if vel else None,
             "velocity_eff_range": [int(min(vel)), int(max(vel))] if vel else None,
+            "cc_dynamics_db_mean": round(cc_shift[name], 2),
             "rms_dbfs_prenorm": round(float(10 * np.log10(np.mean(s**2) + 1e-20)), 2),
             "transpose": transpose.get(name, 0),
             "zero_length_notes": v.zero_length,
@@ -915,6 +977,9 @@ def main(argv=None) -> dict:
     tp = true_peak(mix)
     gain = 10 ** (args.peak_db / 20) / tp
     mix *= gain
+    if 20 * math.log10(gain) > 20:
+        warn(f"the render needed {20 * math.log10(gain):+.1f} dB of make-up gain to reach {args.peak_db:g} dBTP: "
+             "it is nearly silent before normalisation (check velocities, CC1/CC11/CC7, --cc-dynamics)")
     files = write_outputs(mix, out, not args.no_m4a)
 
     if not args.keep_temp:
@@ -941,6 +1006,7 @@ def main(argv=None) -> dict:
         "rms_dbfs": round(float(10 * np.log10(np.mean(mix**2))), 2),
         "stereo": {"dry": stereo_dry, "mix": stereo_stats(mix)},
         "measured": {k: measure_file(Path(files[k])) for k in ("wav", "m4a") if k in files},
+        "warnings": warnings,
     }
     print(json.dumps(report, indent=1))
     if args.json:
