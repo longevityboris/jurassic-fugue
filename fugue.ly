@@ -45,7 +45,19 @@ soprano = \absolute {
   % 20-21 free
   g'4 aes' g'4. f'8 |
   g'4 d'' b'4. c''8 |
-  R1*16 |
+  % 22-25 episode 4: circle of fifths (subject bar-2 rhythm)
+  c''8. ees''16 ees''8. d''16 d''4. c''16 bes' |
+  bes'8. d''16 d''8. c''16 c''4. bes'16 a' |
+  a'8. c''16 c''8. bes'16 bes'4. a'16 g' |
+  g'8. bes'16 bes'8. a'16 a'4. g'16 f' |
+  % 26 countersubject head
+  r8 d'' g'' f''16 ees'' d''8 bes' c''4 |
+  % 27-28 stretto: subject (one bar after tenor, octave above)
+  bes'4. bes'16 a' bes'4. bes'16 a' |
+  bes'8. c''16 c''8. ees''16 ees''4. d''16 bes' |
+  % 29 free (theme bar 7 cell)
+  f''8. ees''16 ees''8. d''16 c''4. bes'8 |
+  R1*8 |
 }
 
 %% ALTO (upper manual, stems down)
@@ -82,7 +94,18 @@ alto = \absolute {
   % 20-21 subject in C minor (manuals only)
   c'4. c'16 b c'4. c'16 b |
   c'8. d'16 d'8. f'16 f'4. ees'16 c' |
-  R1*16 |
+  % 22-25 (subject-head neighbour motif, inverted, falling by step)
+  a'4. a'16 bes' a'2 |
+  g'4. g'16 a' g'2 |
+  f'4. f'16 g' f'2 |
+  ees'4. ees'16 f' ees'2 |
+  % 26-27 free
+  d'8 f' g'4 f'4 g'8. f'16 |
+  d'4 g'2 ~ g'8 f' |
+  % 28-29 stretto: subject (one bar after soprano, octave below)
+  bes4. bes16 a bes4. bes16 a |
+  bes8. c'16 c'8. ees'16 ees'4. d'16 bes |
+  R1*8 |
 }
 
 %% TENOR (lower manual)
@@ -110,7 +133,18 @@ tenor = \absolute {
   % 20-21 countersubject (C minor, below alto)
   r8 ees aes g16 f ees8 c d4 |
   ees4 f g8 f16 ees d8 c16 ees |
-  R1*16 |
+  % 22-25
+  c'2 bes ~ |
+  bes2 a ~ |
+  a2 g ~ |
+  g2 f4 r4 |
+  % 26-27 stretto: subject (first entry)
+  bes4. bes16 a bes4. bes16 a |
+  bes8. c'16 c'8. ees'16 ees'4. d'16 bes |
+  % 28-29 free
+  d4 ees2 ~ ees8 d8 ~ |
+  d4 g a4. f8 |
+  R1*8 |
 }
 
 %% PEDAL
@@ -133,7 +167,17 @@ pedal = \absolute {
   g,4 ees d4. g,8 |
   % 18-21 manuals only
   R1*4 |
-  R1*16 |
+  % 22-25 pedal returns: F-Bb-Eb-A-D-G-C-F
+  f,4 c8 a, d2 |
+  ees4 bes,8 g, c2 |
+  d4 a,8 f, bes,2 |
+  c4 g,8 c a,4 f, |
+  % 26-29
+  bes,4 ees8 f bes,4 ees8 f |
+  bes,4 ees8 f ees4. bes,8 |
+  g,4 c8 f, c4. bes,8 |
+  bes,4 ees f4. bes,8 |
+  R1*8 |
 }
 
 marks = {

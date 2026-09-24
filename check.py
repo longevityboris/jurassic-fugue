@@ -256,6 +256,10 @@ for t in times:
                 si = pv is not None and 1 <= abs(n.midi - pv.midi) <= 2
                 so = nxt is not None and 1 <= abs(nxt.midi - n.midi) <= 2
                 held = n.start < t or (pv is not None and pv.midi == n.midi)
+                i_n = data[v][0].index(n)
+                nx2 = data[v][0][i_n + 2] if i_n + 2 < len(data[v][0]) else None
+                restep = (nxt is not None and nxt.midi == n.midi and nx2 is not None
+                          and nx2.midi is not None and 1 <= n.midi - nx2.midi <= 2)
                 if si and so and n.start == t:
                     just.append(f"{ABBR[v]}:PT/NT")
                 elif held and nxt is not None and nxt.midi < n.midi and so:
@@ -264,8 +268,12 @@ for t in times:
                     just.append(f"{ABBR[v]}:RET")
                 elif n.start == t and so:
                     just.append(f"{ABBR[v]}:APP" if not si else f"{ABBR[v]}:APT")
+                elif held and restep:
+                    just.append(f"{ABBR[v]}:SUS(re)")
                 elif n.start == t and nxt is not None and nxt.midi == n.midi and si:
                     just.append(f"{ABBR[v]}:ANT")
+                elif n.start == t and restep:
+                    just.append(f"{ABBR[v]}:ANT7")
                 elif n.start == t and si and not so:
                     just.append(f"{ABBR[v]}:ESC?")
             strong = (t * 4) % 2 == 0
