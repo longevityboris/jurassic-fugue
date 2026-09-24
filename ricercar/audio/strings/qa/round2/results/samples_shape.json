@@ -1,0 +1,1187 @@
+{
+ "per_inst": {
+  "vn1": {
+   "regions": 272,
+   "flagged": 23,
+   "flagged_used_by_test_music": 4,
+   "test_music_notes_on_flagged": 14
+  },
+  "vn2": {
+   "regions": 272,
+   "flagged": 25,
+   "flagged_used_by_test_music": 1,
+   "test_music_notes_on_flagged": 4
+  },
+  "va": {
+   "regions": 276,
+   "flagged": 15,
+   "flagged_used_by_test_music": 0,
+   "test_music_notes_on_flagged": 0
+  },
+  "vc": {
+   "regions": 274,
+   "flagged": 4,
+   "flagged_used_by_test_music": 0,
+   "test_music_notes_on_flagged": 0
+  }
+ },
+ "n_regions": 1094,
+ "n_flagged": 67,
+ "flagged_by_use": [
+  {
+   "inst": "vn1",
+   "layer": "mf",
+   "art": "legato",
+   "key": 75,
+   "keys": [
+    75,
+    75
+   ],
+   "sample": "samples/violin/violin_mf_075_Eb5.wav",
+   "offset": 16560,
+   "test_music_notes": 5,
+   "early_db": -2.9,
+   "notch_db": -6.0,
+   "notch_at_s": 0.5,
+   "jump_db": 5.7
+  },
+  {
+   "inst": "vn1",
+   "layer": "mf",
+   "art": "normal",
+   "key": 72,
+   "keys": [
+    72,
+    72
+   ],
+   "sample": "samples/violin/violin_mf_072_C5.wav",
+   "offset": 13680,
+   "test_music_notes": 5,
+   "early_db": -3.2,
+   "notch_db": -4.8,
+   "notch_at_s": 0.45,
+   "jump_db": 3.7
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "legato",
+   "key": 62,
+   "keys": [
+    62,
+    62
+   ],
+   "sample": "samples/violin2/violin2_pp_062_D4.wav",
+   "offset": 16079,
+   "test_music_notes": 4,
+   "early_db": -2.4,
+   "notch_db": -7.7,
+   "notch_at_s": 0.2,
+   "jump_db": 6.2
+  },
+  {
+   "inst": "vn1",
+   "layer": "mf",
+   "art": "normal",
+   "key": 75,
+   "keys": [
+    75,
+    75
+   ],
+   "sample": "samples/violin/violin_mf_075_Eb5.wav",
+   "offset": 9359,
+   "test_music_notes": 3,
+   "early_db": -3.1,
+   "notch_db": -6.1,
+   "notch_at_s": 0.65,
+   "jump_db": 5.7
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "legato",
+   "key": 73,
+   "keys": [
+    73,
+    73
+   ],
+   "sample": "samples/violin/violin_pp_073_Db5.wav",
+   "offset": 18720,
+   "test_music_notes": 1,
+   "early_db": -3.8,
+   "notch_db": -5.1,
+   "notch_at_s": 0.2,
+   "jump_db": 1.6
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "legato",
+   "key": 99,
+   "keys": [
+    99,
+    99
+   ],
+   "sample": "samples/violin/violin_pp_099_Eb7.wav",
+   "offset": 6720,
+   "test_music_notes": 0,
+   "early_db": -9.3,
+   "notch_db": -16.9,
+   "notch_at_s": 0.23,
+   "jump_db": 7.1
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "legato",
+   "key": 99,
+   "keys": [
+    99,
+    99
+   ],
+   "sample": "samples/violin2/violin2_pp_099_Eb7.wav",
+   "offset": 6720,
+   "test_music_notes": 0,
+   "early_db": -9.3,
+   "notch_db": -16.9,
+   "notch_at_s": 0.23,
+   "jump_db": 7.1
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "normal",
+   "key": 99,
+   "keys": [
+    99,
+    99
+   ],
+   "sample": "samples/violin/violin_pp_099_Eb7.wav",
+   "offset": 3839,
+   "test_music_notes": 0,
+   "early_db": -9.0,
+   "notch_db": -16.5,
+   "notch_at_s": 0.28,
+   "jump_db": 7.2
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "normal",
+   "key": 99,
+   "keys": [
+    99,
+    99
+   ],
+   "sample": "samples/violin2/violin2_pp_099_Eb7.wav",
+   "offset": 3839,
+   "test_music_notes": 0,
+   "early_db": -9.0,
+   "notch_db": -16.5,
+   "notch_at_s": 0.28,
+   "jump_db": 7.2
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "normal",
+   "key": 91,
+   "keys": [
+    91,
+    91
+   ],
+   "sample": "samples/viola/viola_pp_091_G6.wav",
+   "offset": 25200,
+   "test_music_notes": 0,
+   "early_db": -6.3,
+   "notch_db": -12.1,
+   "notch_at_s": 0.58,
+   "jump_db": 12.1
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "legato",
+   "key": 91,
+   "keys": [
+    91,
+    91
+   ],
+   "sample": "samples/viola/viola_pp_091_G6.wav",
+   "offset": 32400,
+   "test_music_notes": 0,
+   "early_db": -5.2,
+   "notch_db": -12.0,
+   "notch_at_s": 0.43,
+   "jump_db": 12.1
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "normal",
+   "key": 80,
+   "keys": [
+    80,
+    80
+   ],
+   "sample": "samples/viola/viola_pp_080_Ab5.wav",
+   "offset": 26160,
+   "test_music_notes": 0,
+   "early_db": -3.5,
+   "notch_db": -10.7,
+   "notch_at_s": 0.48,
+   "jump_db": 9.9
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "legato",
+   "key": 80,
+   "keys": [
+    80,
+    80
+   ],
+   "sample": "samples/viola/viola_pp_080_Ab5.wav",
+   "offset": 33360,
+   "test_music_notes": 0,
+   "early_db": -2.9,
+   "notch_db": -10.7,
+   "notch_at_s": 0.33,
+   "jump_db": 9.9
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "normal",
+   "key": 93,
+   "keys": [
+    93,
+    91
+   ],
+   "sample": "samples/viola/viola_pp_093_A6.wav",
+   "offset": 34080,
+   "test_music_notes": 0,
+   "early_db": -2.2,
+   "notch_db": -10.5,
+   "notch_at_s": 0.62,
+   "jump_db": 11.0
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "legato",
+   "key": 93,
+   "keys": [
+    93,
+    91
+   ],
+   "sample": "samples/viola/viola_pp_093_A6.wav",
+   "offset": 41280,
+   "test_music_notes": 0,
+   "early_db": -2.7,
+   "notch_db": -10.4,
+   "notch_at_s": 0.48,
+   "jump_db": 11.0
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "normal",
+   "key": 89,
+   "keys": [
+    89,
+    89
+   ],
+   "sample": "samples/viola/viola_pp_089_F6.wav",
+   "offset": 24720,
+   "test_music_notes": 0,
+   "early_db": -3.2,
+   "notch_db": -9.1,
+   "notch_at_s": 0.55,
+   "jump_db": 9.2
+  },
+  {
+   "inst": "vn1",
+   "layer": "mf",
+   "art": "normal",
+   "key": 97,
+   "keys": [
+    97,
+    97
+   ],
+   "sample": "samples/violin/violin_mf_097_Db7.wav",
+   "offset": 3120,
+   "test_music_notes": 0,
+   "early_db": -0.7,
+   "notch_db": -9.0,
+   "notch_at_s": 1.1,
+   "jump_db": 8.5
+  },
+  {
+   "inst": "vn2",
+   "layer": "mf",
+   "art": "normal",
+   "key": 97,
+   "keys": [
+    97,
+    97
+   ],
+   "sample": "samples/violin2/violin2_mf_097_Db7.wav",
+   "offset": 3120,
+   "test_music_notes": 0,
+   "early_db": -0.7,
+   "notch_db": -9.0,
+   "notch_at_s": 1.1,
+   "jump_db": 8.5
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "legato",
+   "key": 89,
+   "keys": [
+    89,
+    89
+   ],
+   "sample": "samples/viola/viola_pp_089_F6.wav",
+   "offset": 31920,
+   "test_music_notes": 0,
+   "early_db": -3.2,
+   "notch_db": -9.0,
+   "notch_at_s": 0.4,
+   "jump_db": 9.2
+  },
+  {
+   "inst": "vn1",
+   "layer": "mf",
+   "art": "legato",
+   "key": 97,
+   "keys": [
+    97,
+    97
+   ],
+   "sample": "samples/violin/violin_mf_097_Db7.wav",
+   "offset": 6960,
+   "test_music_notes": 0,
+   "early_db": -0.9,
+   "notch_db": -8.9,
+   "notch_at_s": 1.02,
+   "jump_db": 8.3
+  },
+  {
+   "inst": "vn2",
+   "layer": "mf",
+   "art": "legato",
+   "key": 97,
+   "keys": [
+    97,
+    97
+   ],
+   "sample": "samples/violin2/violin2_mf_097_Db7.wav",
+   "offset": 6960,
+   "test_music_notes": 0,
+   "early_db": -0.9,
+   "notch_db": -8.9,
+   "notch_at_s": 1.02,
+   "jump_db": 8.3
+  },
+  {
+   "inst": "vn1",
+   "layer": "mf",
+   "art": "normal",
+   "key": 98,
+   "keys": [
+    98,
+    98
+   ],
+   "sample": "samples/violin/violin_mf_098_D7.wav",
+   "offset": 36480,
+   "test_music_notes": 0,
+   "early_db": -3.5,
+   "notch_db": -7.9,
+   "notch_at_s": 0.28,
+   "jump_db": 5.6
+  },
+  {
+   "inst": "vn1",
+   "layer": "ff",
+   "art": "normal",
+   "key": 86,
+   "keys": [
+    86,
+    86
+   ],
+   "sample": "samples/violin/violin_ff_086_D6.wav",
+   "offset": 36240,
+   "test_music_notes": 0,
+   "early_db": -3.6,
+   "notch_db": -7.9,
+   "notch_at_s": 0.28,
+   "jump_db": 5.6
+  },
+  {
+   "inst": "vn2",
+   "layer": "mf",
+   "art": "normal",
+   "key": 98,
+   "keys": [
+    98,
+    98
+   ],
+   "sample": "samples/violin2/violin2_mf_098_D7.wav",
+   "offset": 36480,
+   "test_music_notes": 0,
+   "early_db": -3.5,
+   "notch_db": -7.9,
+   "notch_at_s": 0.28,
+   "jump_db": 5.6
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "normal",
+   "key": 88,
+   "keys": [
+    88,
+    88
+   ],
+   "sample": "samples/violin2/violin2_pp_088_E6.wav",
+   "offset": 7680,
+   "test_music_notes": 0,
+   "early_db": -2.6,
+   "notch_db": -7.8,
+   "notch_at_s": 0.2,
+   "jump_db": 8.5
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "legato",
+   "key": 62,
+   "keys": [
+    62,
+    62
+   ],
+   "sample": "samples/violin/violin_pp_062_D4.wav",
+   "offset": 16079,
+   "test_music_notes": 0,
+   "early_db": -2.4,
+   "notch_db": -7.7,
+   "notch_at_s": 0.2,
+   "jump_db": 6.2
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "normal",
+   "key": 62,
+   "keys": [
+    62,
+    62
+   ],
+   "sample": "samples/violin/violin_pp_062_D4.wav",
+   "offset": 8879,
+   "test_music_notes": 0,
+   "early_db": -3.6,
+   "notch_db": -7.6,
+   "notch_at_s": 0.35,
+   "jump_db": 6.2
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "normal",
+   "key": 62,
+   "keys": [
+    62,
+    62
+   ],
+   "sample": "samples/violin2/violin2_pp_062_D4.wav",
+   "offset": 8879,
+   "test_music_notes": 0,
+   "early_db": -3.6,
+   "notch_db": -7.6,
+   "notch_at_s": 0.35,
+   "jump_db": 6.2
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "normal",
+   "key": 81,
+   "keys": [
+    81,
+    81
+   ],
+   "sample": "samples/viola/viola_pp_081_A5.wav",
+   "offset": 25200,
+   "test_music_notes": 0,
+   "early_db": -4.1,
+   "notch_db": -7.3,
+   "notch_at_s": 0.48,
+   "jump_db": 6.1
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "legato",
+   "key": 81,
+   "keys": [
+    81,
+    81
+   ],
+   "sample": "samples/viola/viola_pp_081_A5.wav",
+   "offset": 32400,
+   "test_music_notes": 0,
+   "early_db": -3.2,
+   "notch_db": -7.3,
+   "notch_at_s": 0.33,
+   "jump_db": 6.1
+  },
+  {
+   "inst": "vc",
+   "layer": "pp",
+   "art": "normal",
+   "key": 45,
+   "keys": [
+    45,
+    45
+   ],
+   "sample": "samples/cello/cello_pp_045_A2.wav",
+   "offset": 15839,
+   "test_music_notes": 0,
+   "early_db": -4.5,
+   "notch_db": -7.1,
+   "notch_at_s": 0.75,
+   "jump_db": 4.5
+  },
+  {
+   "inst": "vc",
+   "layer": "pp",
+   "art": "legato",
+   "key": 45,
+   "keys": [
+    45,
+    45
+   ],
+   "sample": "samples/cello/cello_pp_045_A2.wav",
+   "offset": 23040,
+   "test_music_notes": 0,
+   "early_db": -5.6,
+   "notch_db": -7.1,
+   "notch_at_s": 0.6,
+   "jump_db": 4.5
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "legato",
+   "key": 88,
+   "keys": [
+    88,
+    88
+   ],
+   "sample": "samples/violin2/violin2_pp_088_E6.wav",
+   "offset": 14880,
+   "test_music_notes": 0,
+   "early_db": -1.7,
+   "notch_db": -6.9,
+   "notch_at_s": 0.28,
+   "jump_db": 8.5
+  },
+  {
+   "inst": "vn2",
+   "layer": "mf",
+   "art": "legato",
+   "key": 77,
+   "keys": [
+    77,
+    77
+   ],
+   "sample": "samples/violin2/violin2_mf_077_F5.wav",
+   "offset": 55440,
+   "test_music_notes": 0,
+   "early_db": -1.8,
+   "notch_db": -6.6,
+   "notch_at_s": 0.28,
+   "jump_db": 5.4
+  },
+  {
+   "inst": "vn2",
+   "layer": "mf",
+   "art": "normal",
+   "key": 77,
+   "keys": [
+    77,
+    77
+   ],
+   "sample": "samples/violin2/violin2_mf_077_F5.wav",
+   "offset": 48239,
+   "test_music_notes": 0,
+   "early_db": -2.2,
+   "notch_db": -6.5,
+   "notch_at_s": 0.43,
+   "jump_db": 5.4
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "normal",
+   "key": 84,
+   "keys": [
+    84,
+    84
+   ],
+   "sample": "samples/viola/viola_pp_084_C6.wav",
+   "offset": 30240,
+   "test_music_notes": 0,
+   "early_db": -1.1,
+   "notch_db": -6.4,
+   "notch_at_s": 0.23,
+   "jump_db": 5.5
+  },
+  {
+   "inst": "va",
+   "layer": "pp",
+   "art": "normal",
+   "key": 92,
+   "keys": [
+    92,
+    92
+   ],
+   "sample": "samples/viola/viola_pp_092_Ab6.wav",
+   "offset": 14160,
+   "test_music_notes": 0,
+   "early_db": -1.9,
+   "notch_db": -6.4,
+   "notch_at_s": 0.17,
+   "jump_db": 5.6
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "normal",
+   "key": 96,
+   "keys": [
+    96,
+    96
+   ],
+   "sample": "samples/violin/violin_pp_096_C7.wav",
+   "offset": 7440,
+   "test_music_notes": 0,
+   "early_db": -2.7,
+   "notch_db": -6.1,
+   "notch_at_s": 0.53,
+   "jump_db": 7.2
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "legato",
+   "key": 96,
+   "keys": [
+    96,
+    96
+   ],
+   "sample": "samples/violin/violin_pp_096_C7.wav",
+   "offset": 14640,
+   "test_music_notes": 0,
+   "early_db": -2.0,
+   "notch_db": -6.1,
+   "notch_at_s": 0.38,
+   "jump_db": 7.2
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "normal",
+   "key": 96,
+   "keys": [
+    96,
+    96
+   ],
+   "sample": "samples/violin2/violin2_pp_096_C7.wav",
+   "offset": 7440,
+   "test_music_notes": 0,
+   "early_db": -2.7,
+   "notch_db": -6.1,
+   "notch_at_s": 0.53,
+   "jump_db": 7.2
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "legato",
+   "key": 96,
+   "keys": [
+    96,
+    96
+   ],
+   "sample": "samples/violin2/violin2_pp_096_C7.wav",
+   "offset": 14640,
+   "test_music_notes": 0,
+   "early_db": -2.0,
+   "notch_db": -6.1,
+   "notch_at_s": 0.38,
+   "jump_db": 7.2
+  },
+  {
+   "inst": "vn2",
+   "layer": "mf",
+   "art": "normal",
+   "key": 91,
+   "keys": [
+    91,
+    91
+   ],
+   "sample": "samples/violin2/violin2_mf_091_G6.wav",
+   "offset": 6000,
+   "test_music_notes": 0,
+   "early_db": -3.9,
+   "notch_db": -6.1,
+   "notch_at_s": 0.45,
+   "jump_db": 4.8
+  },
+  {
+   "inst": "vn2",
+   "layer": "mf",
+   "art": "legato",
+   "key": 91,
+   "keys": [
+    91,
+    91
+   ],
+   "sample": "samples/violin2/violin2_mf_091_G6.wav",
+   "offset": 13200,
+   "test_music_notes": 0,
+   "early_db": -2.8,
+   "notch_db": -6.1,
+   "notch_at_s": 0.3,
+   "jump_db": 4.8
+  },
+  {
+   "inst": "vn2",
+   "layer": "ff",
+   "art": "normal",
+   "key": 77,
+   "keys": [
+    77,
+    77
+   ],
+   "sample": "samples/violin2/violin2_ff_077_F5.wav",
+   "offset": 21120,
+   "test_music_notes": 0,
+   "early_db": -4.0,
+   "notch_db": -6.1,
+   "notch_at_s": 0.35,
+   "jump_db": 3.0
+  },
+  {
+   "inst": "va",
+   "layer": "ff",
+   "art": "normal",
+   "key": 93,
+   "keys": [
+    93,
+    91
+   ],
+   "sample": "samples/viola/viola_ff_093_A6.wav",
+   "offset": 10560,
+   "test_music_notes": 0,
+   "early_db": -0.1,
+   "notch_db": -6.1,
+   "notch_at_s": 1.17,
+   "jump_db": 10.0
+  },
+  {
+   "inst": "vn1",
+   "layer": "mf",
+   "art": "normal",
+   "key": 96,
+   "keys": [
+    96,
+    96
+   ],
+   "sample": "samples/violin/violin_mf_096_C7.wav",
+   "offset": 5760,
+   "test_music_notes": 0,
+   "early_db": -1.1,
+   "notch_db": -5.8,
+   "notch_at_s": 0.17,
+   "jump_db": 4.6
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "normal",
+   "key": 89,
+   "keys": [
+    89,
+    89
+   ],
+   "sample": "samples/violin2/violin2_pp_089_F6.wav",
+   "offset": 240,
+   "test_music_notes": 0,
+   "early_db": -4.0,
+   "notch_db": -5.8,
+   "notch_at_s": 0.62,
+   "jump_db": 3.8
+  },
+  {
+   "inst": "vn2",
+   "layer": "mf",
+   "art": "normal",
+   "key": 96,
+   "keys": [
+    96,
+    96
+   ],
+   "sample": "samples/violin2/violin2_mf_096_C7.wav",
+   "offset": 5760,
+   "test_music_notes": 0,
+   "early_db": -1.1,
+   "notch_db": -5.8,
+   "notch_at_s": 0.17,
+   "jump_db": 4.6
+  },
+  {
+   "inst": "vc",
+   "layer": "mf",
+   "art": "normal",
+   "key": 67,
+   "keys": [
+    67,
+    67
+   ],
+   "sample": "samples/cello/cello_mf_067_G4.wav",
+   "offset": 20640,
+   "test_music_notes": 0,
+   "early_db": -2.7,
+   "notch_db": -5.8,
+   "notch_at_s": 0.35,
+   "jump_db": 4.5
+  },
+  {
+   "inst": "vc",
+   "layer": "mf",
+   "art": "legato",
+   "key": 67,
+   "keys": [
+    67,
+    67
+   ],
+   "sample": "samples/cello/cello_mf_067_G4.wav",
+   "offset": 27840,
+   "test_music_notes": 0,
+   "early_db": -2.2,
+   "notch_db": -5.8,
+   "notch_at_s": 0.2,
+   "jump_db": 4.5
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "legato",
+   "key": 89,
+   "keys": [
+    89,
+    89
+   ],
+   "sample": "samples/violin2/violin2_pp_089_F6.wav",
+   "offset": 6960,
+   "test_music_notes": 0,
+   "early_db": -4.3,
+   "notch_db": -5.7,
+   "notch_at_s": 0.68,
+   "jump_db": 3.9
+  },
+  {
+   "inst": "vn2",
+   "layer": "ff",
+   "art": "normal",
+   "key": 86,
+   "keys": [
+    86,
+    86
+   ],
+   "sample": "samples/violin2/violin2_ff_086_D6.wav",
+   "offset": 4800,
+   "test_music_notes": 0,
+   "early_db": -0.4,
+   "notch_db": -5.7,
+   "notch_at_s": 0.23,
+   "jump_db": 7.9
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "normal",
+   "key": 98,
+   "keys": [
+    98,
+    98
+   ],
+   "sample": "samples/violin/violin_pp_098_D7.wav",
+   "offset": 9119,
+   "test_music_notes": 0,
+   "early_db": -1.0,
+   "notch_db": -5.6,
+   "notch_at_s": 0.62,
+   "jump_db": 6.6
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "legato",
+   "key": 98,
+   "keys": [
+    98,
+    98
+   ],
+   "sample": "samples/violin/violin_pp_098_D7.wav",
+   "offset": 16319,
+   "test_music_notes": 0,
+   "early_db": -0.1,
+   "notch_db": -5.6,
+   "notch_at_s": 0.48,
+   "jump_db": 6.6
+  },
+  {
+   "inst": "vn1",
+   "layer": "mf",
+   "art": "normal",
+   "key": 83,
+   "keys": [
+    83,
+    83
+   ],
+   "sample": "samples/violin/violin_mf_083_B5.wav",
+   "offset": 0,
+   "test_music_notes": 0,
+   "early_db": -3.4,
+   "notch_db": -5.6,
+   "notch_at_s": 0.45,
+   "jump_db": 4.5
+  },
+  {
+   "inst": "vn1",
+   "layer": "mf",
+   "art": "normal",
+   "key": 99,
+   "keys": [
+    99,
+    99
+   ],
+   "sample": "samples/violin/violin_mf_099_Eb7.wav",
+   "offset": 6479,
+   "test_music_notes": 0,
+   "early_db": -1.4,
+   "notch_db": -5.6,
+   "notch_at_s": 0.68,
+   "jump_db": 8.6
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "normal",
+   "key": 98,
+   "keys": [
+    98,
+    98
+   ],
+   "sample": "samples/violin2/violin2_pp_098_D7.wav",
+   "offset": 9119,
+   "test_music_notes": 0,
+   "early_db": -1.0,
+   "notch_db": -5.6,
+   "notch_at_s": 0.62,
+   "jump_db": 6.6
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "legato",
+   "key": 98,
+   "keys": [
+    98,
+    98
+   ],
+   "sample": "samples/violin2/violin2_pp_098_D7.wav",
+   "offset": 16319,
+   "test_music_notes": 0,
+   "early_db": -0.1,
+   "notch_db": -5.6,
+   "notch_at_s": 0.48,
+   "jump_db": 6.6
+  },
+  {
+   "inst": "vn2",
+   "layer": "mf",
+   "art": "normal",
+   "key": 99,
+   "keys": [
+    99,
+    99
+   ],
+   "sample": "samples/violin2/violin2_mf_099_Eb7.wav",
+   "offset": 6479,
+   "test_music_notes": 0,
+   "early_db": -1.4,
+   "notch_db": -5.6,
+   "notch_at_s": 0.68,
+   "jump_db": 8.6
+  },
+  {
+   "inst": "va",
+   "layer": "ff",
+   "art": "legato",
+   "key": 93,
+   "keys": [
+    93,
+    91
+   ],
+   "sample": "samples/viola/viola_ff_093_A6.wav",
+   "offset": 17760,
+   "test_music_notes": 0,
+   "early_db": 0.8,
+   "notch_db": -5.5,
+   "notch_at_s": 1.02,
+   "jump_db": 10.0
+  },
+  {
+   "inst": "vn2",
+   "layer": "pp",
+   "art": "legato",
+   "key": 68,
+   "keys": [
+    68,
+    68
+   ],
+   "sample": "samples/violin2/violin2_pp_068_Ab4.wav",
+   "offset": 12720,
+   "test_music_notes": 0,
+   "early_db": -3.1,
+   "notch_db": -5.3,
+   "notch_at_s": 0.45,
+   "jump_db": 2.6
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "normal",
+   "key": 73,
+   "keys": [
+    73,
+    73
+   ],
+   "sample": "samples/violin/violin_pp_073_Db5.wav",
+   "offset": 11520,
+   "test_music_notes": 0,
+   "early_db": -3.9,
+   "notch_db": -5.1,
+   "notch_at_s": 0.35,
+   "jump_db": 1.6
+  },
+  {
+   "inst": "vn1",
+   "layer": "ff",
+   "art": "normal",
+   "key": 84,
+   "keys": [
+    84,
+    84
+   ],
+   "sample": "samples/violin/violin_ff_084_C6.wav",
+   "offset": 0,
+   "test_music_notes": 0,
+   "early_db": -3.8,
+   "notch_db": -5.1,
+   "notch_at_s": 0.4,
+   "jump_db": 2.0
+  },
+  {
+   "inst": "vn1",
+   "layer": "ff",
+   "art": "legato",
+   "key": 84,
+   "keys": [
+    84,
+    84
+   ],
+   "sample": "samples/violin/violin_ff_084_C6.wav",
+   "offset": 7200,
+   "test_music_notes": 0,
+   "early_db": -3.7,
+   "notch_db": -5.1,
+   "notch_at_s": 0.25,
+   "jump_db": 2.0
+  },
+  {
+   "inst": "vn1",
+   "layer": "pp",
+   "art": "normal",
+   "key": 67,
+   "keys": [
+    67,
+    67
+   ],
+   "sample": "samples/violin/violin_pp_067_G4.wav",
+   "offset": 1680,
+   "test_music_notes": 0,
+   "early_db": -3.4,
+   "notch_db": -5.0,
+   "notch_at_s": 0.33,
+   "jump_db": 3.8
+  },
+  {
+   "inst": "va",
+   "layer": "mf",
+   "art": "normal",
+   "key": 83,
+   "keys": [
+    83,
+    83
+   ],
+   "sample": "samples/viola/viola_mf_083_B5.wav",
+   "offset": 31200,
+   "test_music_notes": 0,
+   "early_db": -3.3,
+   "notch_db": -4.9,
+   "notch_at_s": 0.35,
+   "jump_db": 3.8
+  },
+  {
+   "inst": "vn2",
+   "layer": "ff",
+   "art": "normal",
+   "key": 80,
+   "keys": [
+    80,
+    80
+   ],
+   "sample": "samples/violin2/violin2_ff_080_Ab5.wav",
+   "offset": 479,
+   "test_music_notes": 0,
+   "early_db": -3.2,
+   "notch_db": -3.9,
+   "notch_at_s": 0.38,
+   "jump_db": 2.8
+  }
+ ],
+ "distribution": {
+  "early_db_p5": -2.7,
+  "notch_db_p5": -5.7
+ },
+ "state": {
+  "head": "6893232",
+  "render_quartet_sha": "b32c34e0dd47ed48",
+  "perform_sha": "4d527a2643657675",
+  "sfz": {
+   "bass.sfz": "00762544528904ce",
+   "cello.sfz": "1509632bd473c8ed",
+   "viola.sfz": "eeb0117a420062b4",
+   "violin.sfz": "bf2e18602a9816a2",
+   "violin2.sfz": "c50e3d0762fdcf75"
+  }
+ }
+}
