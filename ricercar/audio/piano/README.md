@@ -25,7 +25,7 @@ The script:
 | Detmold IRs | 3 WAVs (Omni, Fig8, DummyHead at seat S1R163) cut out of the 986 MB Zenodo zip with HTTP range requests (`fetch_zip_members.py`, ~3 MB transferred) | pinned SHA-256 |
 | sfizz_render | sfizz at commit `f5c6e29`, `sfizz_render_float32.patch` (32-bit float output instead of 16-bit PCM), CMake Release build | renders a sine test and must write IEEE float at 48 kHz |
 | derived SFZ | `make_sfz.py`: onset alignment, L/R time alignment of every note (lossless copies in `samples-aligned/`, 670 MB), continuous velocity-to-loudness calibration, keyboard evenness at every dynamic, stretch tuning key by key, damper release, samples held in RAM | the SFZ header records the SHA-256 of the `make_sfz.py` that wrote it; a different script means a stale instrument, which setup regenerates (and `render_piano.py` refuses); 480 aligned copies present |
-| hall IR | `make_ir.py`: Omni + Fig8 decoded as M/S to stereo, direct sound removed | files present |
+| hall IR | `make_ir.py`: Omni + Fig8 decoded as M/S to stereo, direct sound removed, late tail continued per octave band to 3.1 s (the measurement is 1.44 s long, the bass reverberates longer) | the IR's JSON records the SHA-256 of the `make_ir.py` that wrote it; setup rebuilds a stale IR (and `render_piano.py` refuses it) |
 | smoke test | two-voice render through `render_piano.py` | render report |
 
 Needs python3 with numpy, scipy, soundfile, mido; git, cmake and a C++ compiler

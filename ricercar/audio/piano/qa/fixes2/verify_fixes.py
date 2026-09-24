@@ -72,7 +72,7 @@ def tail() -> None:
     slopes early (0.5-1.2 s) and late (1.3-2.2 s): a truncated IR shows a cliff after ~1.3 s."""
     rep = render(P / "ffchord_end.mid", "ffchord_end")
     x = read(P / "ffchord_end.wav")
-    keyup = 0.3 + 1.0 + 0.4  # lead-in + note-on at 1.0 s (480 ticks at 120 bpm) + 0.4 s held
+    keyup = 0.3 + 0.5 + 0.4  # lead-in + note-on at 0.5 s (480 ticks = one beat at 120 bpm) + 0.4 s held
     out = {"file_duration_s": round(len(x) / SR, 2), "keyup_s": keyup, "render_wet_db": rep["wet_db"]}
     for fc in (63, 125, 250, 500, 1000):
         y = ss.sosfiltfilt(band_sos(fc), x, axis=0)
@@ -103,8 +103,11 @@ def tail() -> None:
     out["broadband_db_re_peak"] = {f"{a:g}": round(float(env[np.argmin(np.abs(t - a))]), 1)
                                    for a in (0.5, 1.0, 1.25, 1.3, 1.35, 1.4, 1.45, 1.6, 1.8, 2.0, 2.2)
                                    if a + keyup < len(x) / SR}
-    steps = np.diff(env[t > 0.2])
-    out["largest_10ms_drop_after_keyup_db"] = round(float(-steps.min()), 1)
+    sel = np.nonzero((t > 0.2) & (env > -70))[0]
+    steps = env[sel[1:]] - env[sel[1:] - 1]
+    out["largest_10ms_drop_after_keyup_above_-70dB"] = round(float(-steps.min()), 1)
+    out["before_fix_qa_round2"] = "broadband -49.5 dB at 1.30 s -> -64.6 dB at 1.40 s; 63 Hz band -20.8 dB/s then " \
+        "-142.6 dB/s from 1.3 s; 125 Hz -22.0 then -141.6 dB/s (qa/round2/results/tail_truncation.json)"
     save("tail_truncation", out)
 
 

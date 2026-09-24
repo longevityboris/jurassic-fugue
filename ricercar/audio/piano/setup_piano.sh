@@ -62,6 +62,7 @@ DET_FILES=(
   "SetC_DenseKH_LSOrchestra/Data/DummyHead/S1R163.wav b7000263aeb5edc44b307cc72a3c8725bdee4abbf42595c60105cc60129a1010"
 )
 HALL_IR="$LIB/IR/Detmold-Konzerthaus-S1R163-MS-48k.wav"
+HALL_IR_JSON="$LIB/IR/Detmold-Konzerthaus-S1R163-MS-48k.json"
 
 SFIZZ_GIT="https://github.com/sfztools/sfizz.git"
 SFIZZ_COMMIT="f5c6e29f23b8057867c08e88f5f6ac6738baa30b"
@@ -202,13 +203,16 @@ echo "[5/6] derived instrument (make_sfz.py) and hall IR (make_ir.py)"
 GEN_SHA="$(sha256 "$HERE/make_sfz.py")"
 current() { [[ -f "$1" ]] && head -20 "$1" | grep -q "make_sfz.py sha256=$GEN_SHA"; }
 n_aligned() { find "$ALIGNED" -maxdepth 1 -name '*.flac' 2>/dev/null | wc -l | tr -d ' '; }
+# The hall IR's JSON records the SHA-256 of the make_ir.py that wrote it, in the same way.
+IR_SHA="$(sha256 "$HERE/make_ir.py")"
+ir_current() { [[ -f "$HALL_IR" && -f "$HALL_IR_JSON" ]] && grep -q "\"make_ir.py sha256\": \"$IR_SHA\"" "$HALL_IR_JSON"; }
 if [[ "$MODE" == "install" && -f "$SAL_SFZ" ]]; then
   if [[ "$FORCE" == 1 || ! -f "$CALIB" || "$(n_aligned)" != 480 ]] || ! current "$DERIVED_SFZ" || ! current "$DERIVED_SFZ_NP"; then
     doing "make_sfz.py (aligns and analyses the 480 note samples; about 1 min when it writes the aligned copies, 30 s otherwise)"
     (cd "$HERE" && python3 make_sfz.py >/dev/null)
   fi
-  if [[ "$FORCE" == 1 || ! -f "$HALL_IR" ]]; then
-    doing "make_ir.py"
+  if [[ "$FORCE" == 1 ]] || ! ir_current; then
+    doing "make_ir.py (hall IR, about 5 s)"
     (cd "$HERE" && python3 make_ir.py >/dev/null)
   fi
 fi
@@ -217,9 +221,12 @@ for f in "$DERIVED_SFZ" "$DERIVED_SFZ_NP"; do
   elif [[ -f "$f" ]]; then fail "$(basename "$f") was written by another make_sfz.py (run ./setup_piano.sh)"
   else fail "missing $f (run ./setup_piano.sh)"; fi
 done
-for f in "$CALIB" "$HALL_IR" "$ALIGNED/alignment.json"; do
+for f in "$CALIB" "$ALIGNED/alignment.json"; do
   [[ -f "$f" ]] && ok "$(basename "$f")" || fail "missing $f (run ./setup_piano.sh)"
 done
+if ir_current; then ok "$(basename "$HALL_IR") (current make_ir.py)"
+elif [[ -f "$HALL_IR" ]]; then fail "$(basename "$HALL_IR") was written by another make_ir.py (run ./setup_piano.sh)"
+else fail "missing $HALL_IR (run ./setup_piano.sh)"; fi
 [[ "$(n_aligned)" == 480 ]] && ok "480 L/R-aligned note samples" || fail "$(n_aligned) aligned samples in $ALIGNED, expected 480 (run ./setup_piano.sh)"
 
 # ---------------------------------------------------------------------------------------

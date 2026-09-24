@@ -510,6 +510,19 @@ def check_instrument() -> None:
                              "(it regenerates the derived instrument)")
 
 
+def check_hall_ir(path: Path) -> dict:
+    """The default hall IR must come from the current make_ir.py (its JSON records the
+    script's SHA-256, as the derived SFZ does). A custom --ir is used as it is."""
+    meta = Path(str(path).rsplit(".", 1)[0] + ".json")
+    info = json.loads(meta.read_text()) if meta.exists() else {}
+    if Path(path).resolve() == Path(HALL_IR).resolve():
+        want = hashlib.sha256((Path(__file__).resolve().parent / "make_ir.py").read_bytes()).hexdigest()
+        if info.get("make_ir.py sha256") != want:
+            raise SystemExit(f"{Path(path).name} was written by a different make_ir.py -- run ./setup_piano.sh "
+                             "(it rebuilds the hall IR)")
+    return info
+
+
 def prune_sfz(src: Path, keys: set[int], dst: Path) -> Path | None:
     """Copy of the derived SFZ without the regions that no key of this stem can trigger.
 
@@ -775,6 +788,8 @@ def main(argv=None) -> dict:
     args = ap.parse_args(argv)
 
     check_instrument()
+    if not args.no_reverb:
+        check_hall_ir(args.ir)
 
     out = args.out or args.midi.with_suffix("")
     out.parent.mkdir(parents=True, exist_ok=True)
