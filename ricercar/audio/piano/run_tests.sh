@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Both dynamics tests, end to end (about 30 s). Nothing is played through the speakers.
+# Both dynamics tests, end to end (about 25 s; more under heavy load). Nothing is played through the speakers.
 #   1. direct:  make_test_midi.py (calibrated velocities, CC11 ramp, voicing, pedal)
 #   2. chain:   tests/chain_test.ly + plan -> tools/perform.py --target piano -> renderer
 # Writes out/{dynamics_test,chain_test}.{mid,segments.json,wav,m4a,render.json,analysis.json}.

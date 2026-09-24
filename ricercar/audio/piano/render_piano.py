@@ -24,9 +24,11 @@ audible), ``--no-reverb``, ``--ir PATH``,
 ``--peak-db``, ``--lead-in``, ``--dyn-db`` (global dynamic offset realised
 through velocity), ``--transpose VOICE=N``, ``--stems DIR``,
 ``--velocity-scale auto|raw|perform``, ``--cc-dynamics auto|velocity|gain|off``
-(both explained under the MIDI contract), ``--no-key-sharing``, ``--quality`` (sfizz
-resampler, 10 = sinc72), ``--jobs``, ``--keep-temp``, ``--no-m4a``,
-``--json PATH`` (render report).
+(both explained under the MIDI contract), ``--no-key-sharing``, ``--no-fold``,
+``--quality`` (sfizz resampler, 10 = sinc72), ``--jobs`` (parallel sfizz
+instances, default 4), ``--keep-temp``, ``--no-m4a``, ``--json PATH`` (render
+report: per-voice velocities, levels and stereo, key sharing, folded notes,
+truncation check, C80, loudness, true peak, stereo of the dry sum and the mix).
 
 Instrument
 ----------
@@ -81,7 +83,8 @@ MIDI contract (for the performance script)
   struck harder.
 * **Velocity scale.** perform.py writes its own scale (VEL_AT: ppp 22, pp 32,
   p 44, mp 56, mf 68, f 82, ff 98, fff 112). Played raw, its "f" would be this
-  piano's mf- and its pp->ff span 18 dB instead of 24. ``--velocity-scale
+  piano's mf-, and the chain test's pp->ff span would be 16.8 dB instead of
+  22.1 dB. ``--velocity-scale
   perform`` maps it piecewise-linearly onto the calibrated markings above
   (22->13, 32->30, 44->42, 56->63, 68->86, 82->103, 98->115, 112->127, read
   from the calibration JSON); accents and voicing offsets between anchors

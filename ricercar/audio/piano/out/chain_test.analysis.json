@@ -1,51 +1,51 @@
 {
  "segments": {
   "pp": {
-   "rms_dbfs": -38.09,
-   "centroid_hz": 258.7,
-   "hf_ratio_db": -40.12
+   "rms_dbfs": -39.67,
+   "centroid_hz": 278.8,
+   "hf_ratio_db": -42.79
   },
   "mf": {
-   "rms_dbfs": -23.71,
-   "centroid_hz": 325.1,
-   "hf_ratio_db": -24.43
+   "rms_dbfs": -24.7,
+   "centroid_hz": 378.4,
+   "hf_ratio_db": -26.36
   },
   "ff": {
-   "rms_dbfs": -16.49,
-   "centroid_hz": 362.0,
-   "hf_ratio_db": -20.84
+   "rms_dbfs": -17.54,
+   "centroid_hz": 414.8,
+   "hf_ratio_db": -23.37
   },
   "hairpin": {
-   "rms_dbfs": -19.89,
-   "centroid_hz": 425.1,
-   "hf_ratio_db": -20.44
+   "rms_dbfs": -21.16,
+   "centroid_hz": 436.5,
+   "hf_ratio_db": -21.92
   }
  },
  "gain_matched_bands_db": {
   "pp": {
-   "gain_applied_db": 21.89,
+   "gain_applied_db": 21.94,
    "bands": {
-    "63": 1.92,
-    "125": 2.72,
-    "250": 1.62,
-    "500": -0.65,
-    "1000": -4.02,
-    "2000": -12.34,
-    "4000": -21.11,
-    "8000": -26.6
+    "63": 2.92,
+    "125": 2.37,
+    "250": 1.24,
+    "500": -2.12,
+    "1000": -6.78,
+    "2000": -13.81,
+    "4000": -22.33,
+    "8000": -28.16
    }
   },
   "mf": {
-   "gain_applied_db": 7.46,
+   "gain_applied_db": 7.14,
    "bands": {
-    "63": 0.95,
-    "125": 0.72,
-    "250": 0.44,
-    "500": 0.13,
-    "1000": -0.47,
-    "2000": -2.14,
-    "4000": -3.3,
-    "8000": -10.18
+    "63": 0.48,
+    "125": 0.56,
+    "250": 0.3,
+    "500": -0.39,
+    "1000": -0.99,
+    "2000": -2.27,
+    "4000": -3.09,
+    "8000": -9.83
    }
   },
   "ff": {
@@ -63,21 +63,21 @@
   }
  },
  "hairpin": {
-  "level_range_db": 22.43,
-  "hf_ratio_range_db": 19.06,
+  "level_range_db": 21.52,
+  "hf_ratio_range_db": 15.25,
   "centroid_range_hz": [
-   331.0,
-   519.4
+   316.6,
+   474.7
   ],
-  "corr_level_vs_control": 0.988,
+  "corr_level_vs_control": 0.987,
   "rising_steps_negative": 0,
   "falling_steps_positive": 0,
-  "peak_note_level_db": -22.1,
+  "peak_note_level_db": -21.9,
   "first_last_level_db": [
-   -44.53,
-   -43.08
+   -43.42,
+   -41.92
   ],
-  "hf_ratio_loudest_minus_softest_db": 18.72,
-  "corr_hf_ratio_vs_control": 0.882
+  "hf_ratio_loudest_minus_softest_db": 15.13,
+  "corr_hf_ratio_vs_control": 0.931
  }
 }
