@@ -1,0 +1,377 @@
+{
+ "unison_offsets": {
+  "0": {
+   "key_sharing": {
+    "unisons_merged": 1,
+    "restrikes": 0
+   },
+   "voices": {
+    "soprano": 1,
+    "alto": 0
+   },
+   "rms_0_300ms_db": -37.72,
+   "onset_peaks_ms": [
+    -1.7
+   ]
+  },
+  "3": {
+   "key_sharing": {
+    "unisons_merged": 1,
+    "restrikes": 0
+   },
+   "voices": {
+    "alto": 0,
+    "soprano": 1
+   },
+   "rms_0_300ms_db": -37.74,
+   "onset_peaks_ms": [
+    1.3
+   ]
+  },
+  "6": {
+   "key_sharing": {
+    "unisons_merged": 0,
+    "restrikes": 1
+   },
+   "voices": {
+    "alto": 1,
+    "soprano": 1
+   },
+   "rms_0_300ms_db": -38.76,
+   "onset_peaks_ms": [
+    -1.7
+   ]
+  },
+  "10": {
+   "key_sharing": {
+    "unisons_merged": 0,
+    "restrikes": 1
+   },
+   "voices": {
+    "alto": 1,
+    "soprano": 1
+   },
+   "rms_0_300ms_db": -35.52,
+   "onset_peaks_ms": [
+    -1.7
+   ]
+  },
+  "15": {
+   "key_sharing": {
+    "unisons_merged": 0,
+    "restrikes": 1
+   },
+   "voices": {
+    "alto": 1,
+    "soprano": 1
+   },
+   "rms_0_300ms_db": -35.12,
+   "onset_peaks_ms": [
+    -1.7
+   ]
+  },
+  "25": {
+   "key_sharing": {
+    "unisons_merged": 0,
+    "restrikes": 1
+   },
+   "voices": {
+    "alto": 1,
+    "soprano": 1
+   },
+   "rms_0_300ms_db": -36.65,
+   "onset_peaks_ms": [
+    -1.7
+   ]
+  },
+  "single_note_rms_0_300ms_db": -37.72
+ },
+ "repeats": {
+  "n8_pedal0": {
+   "onset_click_db": [
+    174.3,
+    9.0,
+    9.0,
+    9.0,
+    9.0,
+    9.4,
+    9.8,
+    9.0
+   ],
+   "noteoff_click_db": [
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4
+   ],
+   "strike_level_db": [
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8
+   ]
+  },
+  "n16_pedal0": {
+   "onset_click_db": [
+    174.3,
+    9.0,
+    9.0,
+    9.0,
+    9.0,
+    9.4,
+    9.8,
+    9.0,
+    14.5,
+    9.0,
+    17.0,
+    9.0,
+    9.1,
+    11.5,
+    9.1,
+    9.1
+   ],
+   "noteoff_click_db": [
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4,
+    8.4
+   ],
+   "strike_level_db": [
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.8
+   ]
+  },
+  "n8_pedal1": {
+   "onset_click_db": [
+    43.5,
+    10.0,
+    8.7,
+    7.6,
+    11.4,
+    10.9,
+    9.5,
+    10.2
+   ],
+   "noteoff_click_db": [
+    8.3,
+    10.1,
+    10.1,
+    9.6,
+    6.6,
+    8.5,
+    9.3,
+    7.9
+   ],
+   "strike_level_db": [
+    -33.8,
+    -35.0,
+    -35.0,
+    -32.5,
+    -31.1,
+    -36.1,
+    -32.9,
+    -33.1
+   ]
+  },
+  "n16_pedal1": {
+   "onset_click_db": [
+    43.5,
+    10.0,
+    8.7,
+    7.6,
+    11.4,
+    10.9,
+    9.5,
+    10.2,
+    10.2,
+    9.3,
+    16.6,
+    10.7,
+    11.0,
+    10.3,
+    10.4,
+    10.1
+   ],
+   "noteoff_click_db": [
+    8.3,
+    10.1,
+    10.1,
+    9.6,
+    6.6,
+    8.5,
+    9.3,
+    7.9,
+    8.3,
+    9.2,
+    9.0,
+    8.1,
+    8.5,
+    8.5,
+    8.1,
+    8.2
+   ],
+   "strike_level_db": [
+    -33.8,
+    -35.0,
+    -35.0,
+    -32.5,
+    -31.1,
+    -36.1,
+    -32.9,
+    -33.1,
+    -34.4,
+    -33.4,
+    -33.8,
+    -33.8,
+    -33.8,
+    -33.7,
+    -33.7,
+    -33.9
+   ]
+  }
+ },
+ "zero_length": {
+  "input": "C4 zero-length at 1.0 s; E4 1.1-1.4 s; C4 2.0-2.25 s",
+  "stem_events": [
+   [
+    0.5,
+    "note_on",
+    60
+   ],
+   [
+    0.6,
+    "note_on",
+    64
+   ],
+   [
+    0.9,
+    "note_off",
+    64
+   ],
+   [
+    1.385,
+    "note_off",
+    60
+   ],
+   [
+    1.4,
+    "note_on",
+    60
+   ],
+   [
+    2.4,
+    "note_off",
+    60
+   ]
+  ],
+  "notes": 3
+ },
+ "type0": {
+  "voices": [
+   "Piece.ch1",
+   "Piece.ch2",
+   "Piece.ch3",
+   "Piece.ch4"
+  ]
+ },
+ "conductor_cc": {
+  "pedal_changes": 2,
+  "lower_level_0p1s_db": -33.0,
+  "lower_level_1p0s_db": -44.8,
+  "cc7_step_trace_db_5ms": [
+   -56.9,
+   -56.5,
+   -57.3,
+   -55.7,
+   -58.1,
+   -60.7,
+   -65.0,
+   -68.3,
+   -70.3,
+   -68.8,
+   -69.7,
+   -68.7
+  ],
+  "cc7_click_db": 9.3
+ },
+ "transpose_fold": {
+  "stdout_warnings": [
+   " \"input\": \"/tmp/pianoqa/fold.mid\",",
+   " \"wav\": \"/tmp/pianoqa/fold.wav\",",
+   " \"temp\": \"/var/folders/qh/7w8n7nzn5ns_qjyyllhjxnt40000gn/T/piano_render_urq5tbj8\","
+  ],
+  "stem_keys": [
+   30,
+   22
+  ],
+  "requested_keys": [
+   18,
+   10
+  ],
+  "note2_partial2_hz": 57.49
+ },
+ "strings_target": {
+  "velocity_scale": "perform",
+  "cc_dynamics": "off",
+  "voices": {
+   "soprano": [
+    24,
+    120
+   ],
+   "bass": [
+    30,
+    120
+   ]
+  },
+  "piano_target_voices": {
+   "soprano": [
+    24,
+    120
+   ],
+   "bass": [
+    30,
+    120
+   ]
+  }
+ },
+ "bad_transpose": {
+  "returncode": 1,
+  "message": [
+   "--transpose: no voice named 'tuba'; voices are ['Piece.ch1', 'Piece.ch2', 'Piece.ch3', 'Piece.ch4']"
+  ]
+ }
+}
