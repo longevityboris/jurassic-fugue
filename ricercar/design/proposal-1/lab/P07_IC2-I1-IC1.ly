@@ -1,26 +1,30 @@
 \version "2.24.0"
-%% proposal-1 lab: cs1_inv10
-\header { title = "cs1_inv10" tagline = ##f }
+%% proposal-1 lab: P07 mirrored trio: IC2 / I1 / IC1
+\header { title = "P07 mirrored trio: IC2 / I1 / IC1" tagline = ##f }
 global = { \key bes \minor \time 2/2 }
 
 soprano = \absolute {
-  R1 | R1 | R1 | R1 | R1 |
+  r4 bes'4 c''4 des''8 ees''8 |
+  f''4 ees''4 des''4 c''4 |
+  des''4 ees''4 c''4. des''8 |
+  ees''2 f''4. g''8 |
+  aes''2 r2 |
 }
 
 alto = \absolute {
-  bes'2. bes'8 a'8 |
-  bes'2. bes'8 a'8 |
-  bes'4. c''8 c''4. ees''8 |
-  ees''2. des''8 bes'8 |
-  c''2 r2 |
+  f'2. f'8 ges'8 |
+  f'2. f'8 ges'8 |
+  f'4. ees'8 ees'4. c'8 |
+  c'2. des'8 f'8 |
+  ees'2 r2 |
 }
 
 tenor = \absolute {
-  des2 ees2 |
-  e4. f8 ges4. aes8 |
-  ges2. f4~ |
-  f4 e4 ees4 des4 |
-  cis2 r2 |
+  bes2 a2 |
+  aes4. g8 f4. ees8 |
+  f2. ges8 g8~ |
+  g4 aes4 a4 bes4 |
+  ces'2 r2 |
 }
 
 bass = \absolute {

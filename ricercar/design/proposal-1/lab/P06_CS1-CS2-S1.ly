@@ -1,13 +1,9 @@
 \version "2.24.0"
-%% proposal-1 lab: cs1_subject_above
-\header { title = "cs1_subject_above" tagline = ##f }
+%% proposal-1 lab: P06 triple counterpoint: CS1 / CS2 / S1
+\header { title = "P06 triple counterpoint: CS1 / CS2 / S1" tagline = ##f }
 global = { \key bes \minor \time 2/2 }
 
 soprano = \absolute {
-  R1 | R1 | R1 | R1 | R1 |
-}
-
-alto = \absolute {
   f'2 ges'2 |
   g'4. aes'8 bes'4. c''8 |
   bes'2. aes'4~ |
@@ -15,16 +11,24 @@ alto = \absolute {
   e'2 r2 |
 }
 
+alto = \absolute {
+  r4 f'4 ees'4 des'8 c'8 |
+  bes4 c'4 des'4 ees'4 |
+  des'4 c'4 ees'4. des'8 |
+  c'2 bes4. aes8 |
+  g2 r2 |
+}
+
 tenor = \absolute {
-  bes2. bes8 a8 |
-  bes2. bes8 a8 |
-  bes4. c'8 c'4. ees'8 |
-  ees'2. des'8 bes8 |
-  c'2 r2 |
+  R1 | R1 | R1 | R1 | R1 |
 }
 
 bass = \absolute {
-  R1 | R1 | R1 | R1 | R1 |
+  bes,2. bes,8 a,8 |
+  bes,2. bes,8 a,8 |
+  bes,4. c8 c4. ees8 |
+  ees2. des8 bes,8 |
+  c2 r2 |
 }
 
 \score {

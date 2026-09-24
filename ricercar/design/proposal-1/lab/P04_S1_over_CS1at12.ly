@@ -1,6 +1,6 @@
 \version "2.24.0"
-%% proposal-1 lab: cs1_inv8
-\header { title = "cs1_inv8" tagline = ##f }
+%% proposal-1 lab: P04 CS1 inverted at the 12th (bass)
+\header { title = "P04 CS1 inverted at the 12th (bass)" tagline = ##f }
 global = { \key bes \minor \time 2/2 }
 
 soprano = \absolute {
@@ -16,15 +16,15 @@ alto = \absolute {
 }
 
 tenor = \absolute {
-  f2 ges2 |
-  g4. aes8 bes4. c'8 |
-  bes2. aes4~ |
-  aes4 g4 ges4 f4 |
-  e2 r2 |
+  R1 | R1 | R1 | R1 | R1 |
 }
 
 bass = \absolute {
-  R1 | R1 | R1 | R1 | R1 |
+  bes,2 ces2 |
+  c4. des8 ees4. f8 |
+  ees2. des4~ |
+  des4 c4 ces4 bes,4 |
+  a,2 r2 |
 }
 
 \score {

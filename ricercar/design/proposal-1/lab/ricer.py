@@ -270,3 +270,17 @@ def dtrans(line, steps, tonic="bes'", scale=NMIN):
         alt = p[1] - smidi(r)
         out.append((s, d, (td + r + steps, smidi(r + steps) + alt)))
     return out
+
+
+def strict(out):
+    """Stile-antico filter: dissonances on the half-note beats (beats 1 and 3)
+    that are NOT suspensions/retardations (i.e. accented passing notes,
+    appoggiaturas, escapes, anticipations).  These pass tools/check.py but
+    must be reviewed by ear; the design keeps them rare and deliberate."""
+    bad = []
+    for l in out.splitlines():
+        if l.startswith('DIS ') and ' strong ' in l:
+            just = l[l.index('[') + 1:l.index(']')]
+            if not any(k in just for k in ('SUS', 'RET')):
+                bad.append(l)
+    return bad

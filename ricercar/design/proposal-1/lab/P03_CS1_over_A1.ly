@@ -1,26 +1,26 @@
 \version "2.24.0"
-%% proposal-1 lab: mirror of S1+CS1
-\header { title = "mirror of S1+CS1" tagline = ##f }
+%% proposal-1 lab: P03 CS1 over answer
+\header { title = "P03 CS1 over answer" tagline = ##f }
 global = { \key bes \minor \time 2/2 }
 
 soprano = \absolute {
-  R1 | R1 | R1 | R1 | R1 |
+  c''2 des''2 |
+  d''4. ees''8 f''4. g''8 |
+  f''2. ees''4~ |
+  ees''4 d''4 des''4 c''4 |
+  b'2 r2 |
 }
 
 alto = \absolute {
-  f'''2. f'''8 ges'''8 |
-  f'''2. f'''8 ges'''8 |
-  f'''4. ees'''8 ees'''4. c'''8 |
-  c'''2. des'''8 f'''8 |
-  ees'''2 r2 |
+  f'2. f'8 e'8 |
+  f'2. f'8 e'8 |
+  f'4. g'8 g'4. bes'8 |
+  bes'2. aes'8 f'8 |
+  g'2 r2 |
 }
 
 tenor = \absolute {
-  bes''2 a''2 |
-  aes''4. g''8 f''4. ees''8 |
-  f''2. g''4~ |
-  g''4 aes''4 a''4 bes''4 |
-  ces'''2 r2 |
+  R1 | R1 | R1 | R1 | R1 |
 }
 
 bass = \absolute {

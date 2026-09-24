@@ -1,0 +1,17 @@
+P01_S1_over_CS1.ly                 PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=1
+P02_CS1_over_S1.ly                 PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=0
+P03_CS1_over_A1.ly                 PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=0
+P04_S1_over_CS1at12.ly             PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=1
+P05_A1_over_CS1at12.ly             PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=1
+P06_S1-CS1-CS2.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=2
+P06_S1-CS2-CS1.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=1
+P06_CS1-S1-CS2.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=1
+P06_CS1-CS2-S1.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=0
+P06_CS2-S1-CS1.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=1
+P06_CS2-CS1-S1.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=0
+P07_I1-IC1-IC2.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=1
+P07_I1-IC2-IC1.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=0
+P07_IC1-I1-IC2.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=1 MEL=0 ERR=0 strict=2
+P07_IC1-IC2-I1.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=2
+P07_IC2-I1-IC1.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=0
+P07_IC2-IC1-I1.ly                  PAR!=0 BEAT=0 DIS!=0 D4?=0 DIR=0 CROS=0 MEL=0 ERR=0 strict=2
