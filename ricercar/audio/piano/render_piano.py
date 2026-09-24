@@ -112,6 +112,7 @@ MIDI contract (for the performance script)
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import os
@@ -135,6 +136,7 @@ from piano_paths import (  # noqa: E402
     DERIVED_SFZ,
     DERIVED_SFZ_NO_PEDAL_NOISE,
     HALL_IR,
+    SALAMANDER_DIR,
     SFIZZ_RENDER,
     SR,
 )
@@ -401,12 +403,113 @@ def write_stem_midi(path: Path, notes: list[Note], pedal: list, transpose: int, 
     mf.save(path)
 
 
+def check_instrument() -> None:
+    """Refuse to render with a derived SFZ written by another version of make_sfz.py."""
+    for p in (SFIZZ_RENDER, DERIVED_SFZ, DERIVED_SFZ_NO_PEDAL_NOISE):
+        if not Path(p).exists():
+            raise SystemExit(f"missing {p} -- run setup_piano.sh first")
+    want = hashlib.sha256((Path(__file__).resolve().parent / "make_sfz.py").read_bytes()).hexdigest()
+    for p in (DERIVED_SFZ, DERIVED_SFZ_NO_PEDAL_NOISE):
+        with open(p) as f:
+            head = "".join(f.readline() for _ in range(20))
+        if f"sha256={want}" not in head:
+            raise SystemExit(f"{p.name} was written by a different make_sfz.py -- run ./setup_piano.sh "
+                             "(it regenerates the derived instrument)")
+
+
+def prune_sfz(src: Path, keys: set[int], dst: Path) -> Path:
+    """Copy of the derived SFZ without the regions that no key of this stem can trigger.
+
+    The derived SFZ loads every sample into RAM (hint_ram_based=1: sfizz_render's disk
+    streaming drops notes). One voice of a fugue uses a small part of the keyboard, so
+    dropping the other regions cuts load time and memory several-fold. Regions without
+    a key range (the pedal noises) are kept. The audio is bit-identical to a render with
+    the full file. Sample paths stay relative to the library via default_path.
+    """
+    if any(c.isspace() for c in str(SALAMANDER_DIR)):
+        return src  # default_path with blanks is not portable across SFZ parsers
+    out, group_lo, group_hi = [], None, None
+    for line in src.read_text().split("\n"):
+        s = line.strip()
+        if s.startswith("<control>"):
+            out.append(f"<control> default_path={SALAMANDER_DIR}/ " + s[len("<control>"):].strip())
+            continue
+        if s.startswith("<group>"):
+            ops = dict(t.split("=", 1) for t in s[len("<group>"):].split() if "=" in t)
+            group_lo, group_hi = ops.get("lokey"), ops.get("hikey")
+        elif s.startswith("<region>"):
+            ops = dict(t.split("=", 1) for t in s[len("<region>"):].split() if "=" in t)
+            lo = ops.get("lokey", ops.get("key", group_lo))
+            hi = ops.get("hikey", ops.get("key", group_hi))
+            if lo is not None and hi is not None and int(lo) >= 0:
+                if not any(int(lo) <= k <= int(hi) for k in keys):
+                    continue
+        out.append(line)
+    if not any(l.startswith("<control> default_path=") for l in out):
+        out.insert(0, f"<control> default_path={SALAMANDER_DIR}/")
+    dst.write_text("\n".join(out))
+    return dst
+
+
 def run_sfizz(sfz: Path, mid: Path, wav: Path, quality: int) -> None:
     cmd = [str(SFIZZ_RENDER), "--sfz", str(sfz), "--midi", str(mid), "--wav", str(wav),
            "-s", str(SR), "-q", str(quality), "-p", "512", "-b", "256"]
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode != 0 or not wav.exists():
         raise RuntimeError(f"sfizz_render failed for {mid}:\n{r.stdout}\n{r.stderr}")
+
+
+def sounding_intervals(notes: list[Note], pedal: list, lead_in: float) -> list[tuple[float, float]]:
+    """(start, end) in stem seconds while each note should sound: key down, extended to the
+    next pedal release if the sustain pedal is down at the note-off."""
+    downs = [(t, v) for t, v in pedal]
+    out = []
+    for n in notes:
+        if n.dropped:
+            continue
+        end = n.end
+        state = 0
+        for t, v in downs:
+            if t <= n.end + 1e-9:
+                state = v
+            else:
+                break
+        if state:
+            ups = [t for t, v in downs if t > n.end and v == 0]
+            end = ups[0] if ups else n.end + 5.0
+        out.append((n.start + lead_in, end + lead_in))
+    return out
+
+
+def find_truncations(x: np.ndarray, intervals: list[tuple[float, float]]) -> list[dict]:
+    """Notes that stop dead while they should sound (a sampler streaming underrun).
+
+    1 ms frames; a truncation is a fall of more than 25 dB from the mean power of the
+    10 frames before a frame boundary to the mean of the 10 frames after it (so a single
+    quiet frame at a zero crossing of a bass note does not count), from a level within
+    50 dB of the stem's loudest frame, at a time some note of the stem is held (or
+    sustained by the pedal). A damper release (0.35 s envelope) falls about 2 dB in 10 ms.
+    """
+    m = x.mean(axis=1) if x.ndim == 2 else x
+    fr = SR // 1000
+    nf = len(m) // fr
+    if nf < 30:
+        return []
+    p = (m[: nf * fr].reshape(nf, fr) ** 2).mean(axis=1) + 1e-30
+    top = 10 * np.log10(p.max())
+    k = np.ones(10) / 10
+    before = 10 * np.log10(np.convolve(p, k, mode="full")[:nf])
+    after = 10 * np.log10(np.convolve(p[::-1], k, mode="full")[:nf][::-1])
+    d = after[1:] - before[:-1]
+    cand = np.nonzero((d < -25) & (before[:-1] > top - 50))[0]
+    out, last = [], -100
+    for i in cand:
+        t = (i + 1) / 1000
+        if i - last > 20 and any(a + 0.003 < t < b + 0.002 for a, b in intervals):
+            out.append({"t": round(t, 3), "drop_db": round(float(d[i]), 1),
+                        "level_re_stem_max_db": round(float(before[i] - top), 1)})
+        last = i
+    return out
 
 
 def fader(events: list, n: int, default: int, to_db, lead_in: float) -> np.ndarray | None:
@@ -499,15 +602,14 @@ def main(argv=None) -> dict:
     ap.add_argument("--cc11-mode", choices=["velocity", "gain"], help=argparse.SUPPRESS)  # old name
     ap.add_argument("--no-key-sharing", action="store_true")
     ap.add_argument("--quality", type=int, default=10, help="sfizz resampling quality 1-10 (10 = sinc72)")
-    ap.add_argument("--jobs", type=int, default=min(8, os.cpu_count() or 4))
+    ap.add_argument("--jobs", type=int, default=min(4, os.cpu_count() or 4),
+                    help="parallel sfizz_render instances (default 4; each holds its voice's samples in RAM)")
     ap.add_argument("--keep-temp", action="store_true")
     ap.add_argument("--no-m4a", action="store_true")
     ap.add_argument("--json", type=Path, help="write a JSON render report here")
     args = ap.parse_args(argv)
 
-    for p in (SFIZZ_RENDER, DERIVED_SFZ, DERIVED_SFZ_NO_PEDAL_NOISE):
-        if not Path(p).exists():
-            raise SystemExit(f"missing {p} -- run setup_piano.sh first")
+    check_instrument()
 
     out = args.out or args.midi.with_suffix("")
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -575,11 +677,30 @@ def main(argv=None) -> dict:
         mid = tmp / f"stem{i:02d}.mid"
         wav = tmp / f"stem{i:02d}.wav"
         write_stem_midi(mid, voices[name].notes, pedal, 0, args.lead_in)
-        sfz = DERIVED_SFZ if i == 0 else DERIVED_SFZ_NO_PEDAL_NOISE
+        keys = {n.key for n in voices[name].notes if not n.dropped}
+        sfz = prune_sfz(DERIVED_SFZ if i == 0 else DERIVED_SFZ_NO_PEDAL_NOISE, keys, tmp / f"stem{i:02d}.sfz")
         jobs.append((sfz, mid, wav))
     print(f"rendering {len(names)} voice stem(s) with sfizz: {', '.join(names)}")
-    with ThreadPoolExecutor(max_workers=args.jobs) as ex:
+    with ThreadPoolExecutor(max_workers=max(1, args.jobs)) as ex:
         list(ex.map(lambda j: run_sfizz(j[0], j[1], j[2], args.quality), jobs))
+
+    # Guard against dropped notes: a stem in which a held note stops dead is rendered again.
+    truncation = {"checked_stems": len(jobs), "rerendered": {}, "found": {}}
+    for i, (name, j) in enumerate(zip(names, jobs)):
+        spans = sounding_intervals(voices[name].notes, pedal, args.lead_in)
+        for attempt in range(3):
+            x = sf.read(j[2], dtype="float64", always_2d=True)[0]
+            hits = find_truncations(x, spans)
+            if not hits:
+                break
+            truncation["found"].setdefault(name, []).append(hits)
+            if attempt == 2:
+                raise SystemExit(f"{name}: notes stop while held after 3 renders ({hits[:3]}); "
+                                 f"stem kept in {tmp}")
+            print(f"warning: {name}: {len(hits)} note(s) cut while held at {[h['t'] for h in hits][:5]} s; rendering again",
+                  file=sys.stderr)
+            truncation["rerendered"][name] = attempt + 1
+            run_sfizz(j[0], j[1], j[2], args.quality)
 
     stems = [sf.read(j[2], dtype="float64", always_2d=True)[0] for j in jobs]
     n = max(len(s) for s in stems)
@@ -652,6 +773,7 @@ def main(argv=None) -> dict:
         "duration_s": round(len(mix) / SR, 2),
         "voices": report_voices,
         "key_sharing": share,
+        "truncation_check": truncation,
         "pedal_changes": len(pedal),
         "wet_db": None if ir is None else args.wet_db,
         "c80_db": None if c80 is None else round(c80, 1),

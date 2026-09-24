@@ -41,7 +41,11 @@ counterpoint. This script fixes them without touching the audio files:
    corrected. F#4, which also serves F4 and G4, was 5 cents flat.
 
 The release groups (string-resonance releases harmL/harmS/harmV3, hammer-noise
-releases rel1..88) and the pedal-noise group are copied verbatim. Note regions
+releases rel1..88) and the pedal-noise group are copied verbatim. Both derived
+files start with ``<control> hint_ram_based=1``: sfizz then holds every sample in
+RAM. Streamed from disk, ``sfizz_render`` (which renders about 30 times faster
+than real time) can overrun the 8192-frame preload, and the note stops dead
+160-180 ms after its onset while the key is still held. Note regions
 also get ``note_polyphony=2`` so that re-struck keys under the pedal do not
 pile up. A second SFZ without the pedal-noise group is written for the extra
 stems of a multi-stem render, so that the noise sounds once and not once per
@@ -56,9 +60,12 @@ Outputs (next to the original SFZ, see piano_paths.py):
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
 import re
 from dataclasses import dataclass, field
+from pathlib import Path
 
 import numpy as np
 import scipy.signal as ss
@@ -105,6 +112,21 @@ class Region:
     attack20: int = 0
     loud_db: float = 0.0
     extra: dict = field(default_factory=dict)
+
+
+GENERATOR_TAG = "generator make_sfz.py sha256="
+
+
+def generator_sha256() -> str:
+    """SHA-256 of this script. It is written into the derived SFZ header, so that
+    setup_piano.sh and render_piano.py can tell a stale instrument from a current one."""
+    return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+
+
+def write_atomic(path: Path, text: str) -> None:
+    tmp = path.with_name(path.name + f".tmp{os.getpid()}")
+    tmp.write_text(text)
+    os.replace(tmp, path)
 
 
 def parse_opcodes(text: str) -> dict:
@@ -267,7 +289,13 @@ def main() -> None:
         "// Derived by ricercar/audio/piano/make_sfz.py: onset-aligned offsets,",
         "// continuous velocity->loudness calibration, keyboard evenness, tuning",
         "// smoothing. DO NOT EDIT -- regenerate with make_sfz.py.",
+        f"// {GENERATOR_TAG}{generator_sha256()}",
         "//=====================================================================",
+        "",
+        # Load every sample into RAM. sfizz_render renders far faster than real time, and
+        # its disk streaming can fall behind the 8192-frame preload: the voice then stops
+        # 160-180 ms after note-on with a click while the key is still held (a dropped note).
+        "<control> hint_ram_based=1",
         "",
     ]
     body = []
@@ -300,8 +328,10 @@ def main() -> None:
         body.append("<region> " + " ".join(ops))
 
     common = "\n".join(header + body) + "\n\n" + release_text
-    DERIVED_SFZ.write_text(common + "\n" + pedal_text)
-    DERIVED_SFZ_NO_PEDAL_NOISE.write_text(common)
+    # Atomic writes: a render that starts while this runs sees the old or the new file,
+    # never a half-written instrument.
+    write_atomic(DERIVED_SFZ, common + "\n" + pedal_text)
+    write_atomic(DERIVED_SFZ_NO_PEDAL_NOISE, common)
     print(f"wrote {DERIVED_SFZ}")
     print(f"wrote {DERIVED_SFZ_NO_PEDAL_NOISE}")
 
@@ -324,7 +354,7 @@ def main() -> None:
         "onset_ms": {f"{r.root}v{r.layer}": round(r.attack20 / SR * 1000, 2) for r in regions},
         "layer_loudness_db": {f"{r.root}v{r.layer}": round(r.loud_db, 2) for r in regions},
     }
-    CALIBRATION_JSON.write_text(json.dumps(calib, indent=1))
+    write_atomic(CALIBRATION_JSON, json.dumps(calib, indent=1))
     print(f"wrote {CALIBRATION_JSON}")
 
     on = np.array([r.attack20 for r in regions]) / SR * 1000

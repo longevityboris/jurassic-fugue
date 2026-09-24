@@ -195,9 +195,13 @@ fi
 
 # ---------------------------------------------------------------------------------------
 echo "[5/6] derived instrument (make_sfz.py) and hall IR (make_ir.py)"
+# The derived SFZ records the SHA-256 of the make_sfz.py that wrote it; a different
+# make_sfz.py (a newer checkout) means the instrument on disk is stale.
+GEN_SHA="$(sha256 "$HERE/make_sfz.py")"
+current() { [[ -f "$1" ]] && head -20 "$1" | grep -q "make_sfz.py sha256=$GEN_SHA"; }
 if [[ "$MODE" == "install" && -f "$SAL_SFZ" ]]; then
-  if [[ "$FORCE" == 1 || ! -f "$DERIVED_SFZ" || ! -f "$DERIVED_SFZ_NP" || ! -f "$CALIB" ]]; then
-    doing "make_sfz.py (analyses all 480 note samples, about 10 s)"
+  if [[ "$FORCE" == 1 || ! -f "$CALIB" ]] || ! current "$DERIVED_SFZ" || ! current "$DERIVED_SFZ_NP"; then
+    doing "make_sfz.py (analyses all 480 note samples, about 30 s)"
     (cd "$HERE" && python3 make_sfz.py >/dev/null)
   fi
   if [[ "$FORCE" == 1 || ! -f "$HALL_IR" ]]; then
@@ -205,7 +209,12 @@ if [[ "$MODE" == "install" && -f "$SAL_SFZ" ]]; then
     (cd "$HERE" && python3 make_ir.py >/dev/null)
   fi
 fi
-for f in "$DERIVED_SFZ" "$DERIVED_SFZ_NP" "$CALIB" "$HALL_IR"; do
+for f in "$DERIVED_SFZ" "$DERIVED_SFZ_NP"; do
+  if current "$f"; then ok "$(basename "$f") (current make_sfz.py)"
+  elif [[ -f "$f" ]]; then fail "$(basename "$f") was written by another make_sfz.py (run ./setup_piano.sh)"
+  else fail "missing $f (run ./setup_piano.sh)"; fi
+done
+for f in "$CALIB" "$HALL_IR"; do
   [[ -f "$f" ]] && ok "$(basename "$f")" || fail "missing $f (run ./setup_piano.sh)"
 done
 
