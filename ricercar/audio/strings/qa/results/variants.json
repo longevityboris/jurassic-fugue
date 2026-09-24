@@ -1,6 +1,6 @@
 {
  "state": {
-  "head": "d09e1a3",
+  "head": "fb5bcae",
   "render_quartet_commit": "6773f21",
   "render_quartet_sha": "dc8ec5376814a8d9",
   "sfz": {
@@ -149,5 +149,194 @@
    141.931,
    142.231
   ]
+ },
+ "voicing": {
+  "windows": [
+   {
+    "plan": "role_level",
+    "voice": "alto",
+    "at": "1:1",
+    "role": "subject",
+    "re_others_db": 57.2
+   },
+   {
+    "plan": "role_level",
+    "voice": "soprano",
+    "at": "3:1",
+    "role": "answer",
+    "re_others_db": 2.9
+   },
+   {
+    "plan": "role_level",
+    "voice": "tenor",
+    "at": "6:1",
+    "role": "subject",
+    "re_others_db": 1.7
+   },
+   {
+    "plan": "role_level",
+    "voice": "pedal",
+    "at": "8:1",
+    "role": "answer",
+    "re_others_db": -1.2
+   },
+   {
+    "plan": "role_level",
+    "voice": "soprano",
+    "at": "12:1",
+    "role": "subject",
+    "re_others_db": -4.3
+   },
+   {
+    "plan": "role_level",
+    "voice": "tenor",
+    "at": "16:1",
+    "role": "subject",
+    "re_others_db": -3.0
+   },
+   {
+    "plan": "role_level",
+    "voice": "alto",
+    "at": "20:1",
+    "role": "subject",
+    "re_others_db": 0.1
+   },
+   {
+    "plan": "role_level",
+    "voice": "tenor",
+    "at": "26:1",
+    "role": "subject",
+    "re_others_db": -3.7
+   },
+   {
+    "plan": "role_level",
+    "voice": "soprano",
+    "at": "27:1",
+    "role": "subject",
+    "re_others_db": -2.3
+   },
+   {
+    "plan": "role_level",
+    "voice": "alto",
+    "at": "28:1",
+    "role": "subject",
+    "re_others_db": -2.9
+   },
+   {
+    "plan": "role_level",
+    "voice": "soprano",
+    "at": "31:1",
+    "role": "subject",
+    "re_others_db": -2.2
+   },
+   {
+    "plan": "role_level",
+    "voice": "pedal",
+    "at": "33:1",
+    "role": "subject",
+    "re_others_db": -3.1
+   },
+   {
+    "plan": "role_level",
+    "voice": "tenor",
+    "at": "35:1",
+    "role": "subject",
+    "re_others_db": -4.5
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "alto",
+    "at": "1:1",
+    "role": "subject",
+    "re_others_db": 52.7
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "soprano",
+    "at": "3:1",
+    "role": "answer",
+    "re_others_db": -2.6
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "tenor",
+    "at": "6:1",
+    "role": "subject",
+    "re_others_db": -3.5
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "pedal",
+    "at": "8:1",
+    "role": "answer",
+    "re_others_db": -5.3
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "soprano",
+    "at": "12:1",
+    "role": "subject",
+    "re_others_db": -8.1
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "tenor",
+    "at": "16:1",
+    "role": "subject",
+    "re_others_db": -7.0
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "alto",
+    "at": "20:1",
+    "role": "subject",
+    "re_others_db": -3.5
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "tenor",
+    "at": "26:1",
+    "role": "subject",
+    "re_others_db": -6.3
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "soprano",
+    "at": "27:1",
+    "role": "subject",
+    "re_others_db": -5.0
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "alto",
+    "at": "28:1",
+    "role": "subject",
+    "re_others_db": -5.9
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "soprano",
+    "at": "31:1",
+    "role": "subject",
+    "re_others_db": -5.7
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "pedal",
+    "at": "33:1",
+    "role": "subject",
+    "re_others_db": -5.5
+   },
+   {
+    "plan": "no_role_level",
+    "voice": "tenor",
+    "at": "35:1",
+    "role": "subject",
+    "re_others_db": -6.6
+   }
+  ],
+  "lift_db_median": 3.6,
+  "lift_db_min": 2.1,
+  "lift_db_max": 5.5
  }
 }

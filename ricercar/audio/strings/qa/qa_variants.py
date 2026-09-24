@@ -9,7 +9,9 @@
  bass_double    --bass-double on and auto: the contrabass stem plays the cello's
                 notes exactly an octave lower (pitch at mid-note), auto only where
                 the cello is at or above ff
- wet_level      --hall none vs the default: dry/wet energy of the same render
+ voicing        the QA fugue plan with and without "role_level": in every "roles"
+                window, the marked voice's K-weighted stem level re the power sum of
+                the other three (dB), and the difference the marking makes
 """
 from __future__ import annotations
 
@@ -88,10 +90,70 @@ def bass_double(res):
     print("  auto cb level per 5 s:", out["auto"]["cb_stem_db_per_5s"])
 
 
+def voicing(res):
+    plan = json.loads((QA / "fugue_qa.plan.json").read_text())
+    flat = dict(plan)
+    flat.pop("role_level", None)
+    fp = TMP / "fugue_qa_norole.plan.json"
+    fp.write_text(json.dumps(flat))
+    mid = TMP / "fugue_qa_norole.mid"
+    perform(ROOT / "fugue.ly", fp, mid)
+    render(mid, TMP / "fugue_qa_norole")
+    measure = int(plan.get("measure", "1"))
+    names = {"soprano": "vn1", "alto": "vn2", "tenor": "va", "pedal": "vc"}
+    bar_t = {}
+    # bar start times from the perform.py MIDI via the first notes' grid: use mido tempo map
+    import mido
+    mf = mido.MidiFile(str(TMP / "fugue_qa.mid"))
+    tempos, t = [], 0
+    for m in mf.tracks[0]:
+        t += m.time
+        if m.type == "set_tempo":
+            tempos.append((t, m.tempo))
+
+    def tick2s(tick):
+        s, lt, tp = 0.0, 0, 500000
+        for tt, tq in tempos:
+            if tt > tick:
+                break
+            s += (tt - lt) * tp / 1e6 / mf.ticks_per_beat
+            lt, tp = tt, tq
+        return s + (tick - lt) * tp / 1e6 / mf.ticks_per_beat
+
+    def pos(s_):
+        b, beat = s_.split(":")
+        return tick2s(int(((int(b) - 1) * 4 * measure + (float(beat) - 1)) * mf.ticks_per_beat))
+    out = []
+    for label, base in (("role_level", TMP / "fugue_qa"), ("no_role_level", TMP / "fugue_qa_norole")):
+        rep = json.loads(Path(str(base) + ".json").read_text())
+        off = rep["offset_s"]
+        st = {i: k_weight(load(Path(f"{base}_stem_{i}.wav"))) for i in names.values()}
+        for r in plan["roles"]:
+            a, b = pos(r["at"]) - off, pos(r["until"]) - off
+            i0, i1 = int(a * SR), int(b * SR)
+            me = names[r["voice"]]
+            lv = {i: db(x[i0:i1]) for i, x in st.items()}
+            others = 10 * np.log10(sum(10 ** (lv[i] / 10) for i in lv if i != me and lv[i] > -150))
+            out.append(dict(plan=label, voice=r["voice"], at=r["at"], role=r["role"],
+                            re_others_db=round(lv[me] - others, 1)))
+    diffs = []
+    for r in out:
+        if r["plan"] == "role_level":
+            q = next(x for x in out if x["plan"] == "no_role_level" and x["voice"] == r["voice"] and x["at"] == r["at"])
+            diffs.append(r["re_others_db"] - q["re_others_db"])
+    res["voicing"] = dict(windows=out, lift_db_median=round(float(np.median(diffs)), 1),
+                          lift_db_min=round(float(np.min(diffs)), 1), lift_db_max=round(float(np.max(diffs)), 1))
+    print("voicing lift", res["voicing"]["lift_db_median"], res["voicing"]["lift_db_min"], res["voicing"]["lift_db_max"])
+    for r in out:
+        print("  ", r)
+
+
 def main():
-    res = dict(state=state())
+    res = json.loads((QA / "results" / "variants.json").read_text()) if (QA / "results" / "variants.json").exists() \
+        else {}
+    res["state"] = state()
     only = sys.argv[1:]
-    for f in (piano_target, bass_double):
+    for f in (piano_target, bass_double, voicing):
         if only and f.__name__ not in only:
             continue
         f(res)
