@@ -176,12 +176,20 @@ else
   else
     git -C "$SFIZZ_SRC" apply "$PATCH" && ok "applied $(basename "$PATCH")"
   fi
-  doing "building sfizz_render (a few minutes)"
-  cmake -S "$SFIZZ_SRC" -B "$SFIZZ_SRC/build" -DCMAKE_BUILD_TYPE=Release \
-    -DSFIZZ_RENDER=ON -DSFIZZ_JACK=OFF -DSFIZZ_LV2=OFF -DSFIZZ_LV2_UI=OFF -DSFIZZ_VST=OFF \
-    -DSFIZZ_AU=OFF -DSFIZZ_SHARED=OFF -DSFIZZ_TESTS=OFF -DSFIZZ_DEMOS=OFF \
-    -DSFIZZ_BENCHMARKS=OFF -DSFIZZ_DEVTOOLS=OFF >/dev/null
-  cmake --build "$SFIZZ_SRC/build" --target sfizz_render -j "$(ncpu)" >/dev/null
+  doing "building sfizz_render (a few minutes; log in $SFIZZ_SRC/build/setup_build.log)"
+  # Recent Apple clang (Xcode 16+) turns the bundled atomic_queue's "template keyword
+  # without argument list" into a hard error; the code is fine, so demote it.
+  mkdir -p "$SFIZZ_SRC/build"
+  BLOG="$SFIZZ_SRC/build/setup_build.log"
+  if ! { cmake -S "$SFIZZ_SRC" -B "$SFIZZ_SRC/build" -DCMAKE_BUILD_TYPE=Release \
+           -DCMAKE_CXX_FLAGS="-Wno-error=missing-template-arg-list-after-template-kw -Wno-missing-template-arg-list-after-template-kw" \
+           -DSFIZZ_RENDER=ON -DSFIZZ_JACK=OFF -DSFIZZ_LV2=OFF -DSFIZZ_LV2_UI=OFF -DSFIZZ_VST=OFF \
+           -DSFIZZ_AU=OFF -DSFIZZ_SHARED=OFF -DSFIZZ_TESTS=OFF -DSFIZZ_DEMOS=OFF \
+           -DSFIZZ_BENCHMARKS=OFF -DSFIZZ_DEVTOOLS=OFF &&
+         cmake --build "$SFIZZ_SRC/build" --target sfizz_render -j "$(ncpu)"; } >"$BLOG" 2>&1; then
+    grep -m 5 -E "error:" "$BLOG" >&2 || tail -20 "$BLOG" >&2
+    fail "sfizz build failed, see $BLOG"; exit 1
+  fi
   float_test "$SFIZZ_BIN" && ok "$SFIZZ_BIN renders 32-bit float" || fail "freshly built sfizz_render fails the float test"
 fi
 
@@ -189,7 +197,7 @@ fi
 echo "[5/6] derived instrument (make_sfz.py) and hall IR (make_ir.py)"
 if [[ "$MODE" == "install" && -f "$SAL_SFZ" ]]; then
   if [[ "$FORCE" == 1 || ! -f "$DERIVED_SFZ" || ! -f "$DERIVED_SFZ_NP" || ! -f "$CALIB" ]]; then
-    doing "make_sfz.py (analyses all 480 note samples, about a minute)"
+    doing "make_sfz.py (analyses all 480 note samples, about 10 s)"
     (cd "$HERE" && python3 make_sfz.py >/dev/null)
   fi
   if [[ "$FORCE" == 1 || ! -f "$HALL_IR" ]]; then
