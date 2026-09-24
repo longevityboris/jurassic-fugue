@@ -25,7 +25,8 @@ INVM = "f''2. f''8 g'' | f''2. f''8 g'' | f''4. ees''8 ees''4. c''8 | c''2. d''8
 FULLM = S1M.rsplit('|', 1)[0] + "| c''4. a'8 f'4 d''8 bes' | c''2. f''8 bes' | ees''4. d''8 d''4. c''8 | bes'1"
 S1_DB = "des''2. des''8 c''8 | des''2. des''8 c''8 | des''4. ees''8 ees''4. ges''8 | ges''2. f''8 des''8 | ees''4. c''8 aes'4"
 S1_GB = "ges'2. ges'8 f'8 | ges'2. ges'8 f'8 | ges'4. aes'8 aes'4. ces''8 | ces''2. bes'8 ges'8 | aes'4. f'8 des'4"
-FORMS = dict(S1=S1, S2=S2, INV=INV, ANS=ANS, S1M=S1M, S2M=S2M, INVM=INVM, FULLM=FULLM, S1_DB=S1_DB, S1_GB=S1_GB)
+INVM2 = "f''2. f''8 ges''8 | f''2. f''8 ges''8 | f''4. ees''8 ees''4. c''8 | c''2. d''8 f''8 | ees''4. g''8 bes''4"
+FORMS = dict(INVM2=INVM2, S1=S1, S2=S2, INV=INV, ANS=ANS, S1M=S1M, S2M=S2M, INVM=INVM, FULLM=FULLM, S1_DB=S1_DB, S1_GB=S1_GB)
 
 
 def cross_rel(a, b):
@@ -63,7 +64,7 @@ IVS = {'P1': (0, 0), 'P8u': (7, 12), 'P8d': (-7, -12), 'P15d': (-14, -24),
        'P12d': (-11, -19), 'P11d': (-10, -17), 'P12u': (11, 19),
        'm3d': (-2, -3), 'M3d': (-2, -4), 'm3u': (2, 3), 'M3u': (2, 4),
        'm6d': (-5, -8), 'M6d': (-5, -9), 'm10d': (-9, -15), 'M10d': (-9, -16),
-       'M2d': (-1, -2), 'M9d': (-8, -14), 'm7d': (-6, -10), 'M2u': (1, 2)}
+       'M2d': (-1, -2), 'M9d': (-8, -14), 'm7d': (-6, -10), 'M2u': (1, 2), 'P11u': (10, 17), 'P18u': (17, 29)}
 
 
 def form(name):
