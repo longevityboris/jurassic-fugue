@@ -40,6 +40,12 @@ counterpoint. This script fixes them without touching the audio files:
    sharp), but single notes that are a few cents off their neighbours are
    corrected. F#4, which also serves F4 and G4, was 5 cents flat.
 
+4. **Damper release.** The stock SFZ fades every lifted key A0-E6 over the same
+   1 s, so in a fast passage the previous note still sounds only 8-10 dB under the
+   next one, and the bass blurs. The release now runs from 0.5 s in the bottom
+   octave to 0.35 s from F2 upwards (per region), which separates successive 16ths
+   by about 17 dB. The undamped keys F6-C8 keep their 5 s.
+
 The release groups (string-resonance releases harmL/harmS/harmV3, hammer-noise
 releases rel1..88) and the pedal-noise group are copied verbatim. Both derived
 files start with ``<control> hint_ram_based=1``: sfizz then holds every sample in
@@ -87,6 +93,13 @@ VELTRACK = 0.73  # the author's amp_veltrack, reproduced as a continuous curve
 EVEN_VEL = 80  # velocity at which keyboard evenness is smoothed
 EVEN_CLIP_DB = 3.0
 TUNE_CLIP_CENTS = 8.0
+# Damper release (ampeg_release, s) of the damped keys A0-E6. The stock 1 s lets the
+# previous note of a fast passage sound only 8-10 dB under the current one. Real dampers
+# stop the treble within a few tenths of a second and the heavy bass strings more slowly,
+# so the release runs from 0.5 s (A0-C#1) down to 0.35 s (from F2), per sample region.
+# The recorded string-resonance and hammer release samples still sound on top. The
+# undamped keys F6-C8 keep the stock 5 s.
+DAMPED_RELEASE = ((24, 0.50), (42, 0.35))  # (sample root key, release s), linear between
 
 NOTE_RE = re.compile(r"samples/([A-G]#?)(\d)v(\d+)\.flac")
 PC = {"C": 0, "D#": 3, "F#": 6, "A": 9}
@@ -303,9 +316,10 @@ def main() -> None:
     for r in regions:
         g = r.group_opcodes
         gkey = tuple(sorted(g.items()))
+        damped = float(g.get("ampeg_release", "1")) < 2
         if not groups_seen or groups_seen[-1] != gkey:
             groups_seen.append(gkey)
-            release = g.get("ampeg_release", "1")
+            release = f"{DAMPED_RELEASE[-1][1]:g}" if damped else g.get("ampeg_release", "5")
             body.append("")
             body.append(f"<group> amp_veltrack=100 ampeg_attack=0.001 ampeg_release={release} note_polyphony=2")
         curve = curves[r.root]
@@ -324,6 +338,9 @@ def main() -> None:
             f"tune={tune[r.root]}",
             f"volume={vol:.2f}",
         ]
+        if damped and r.key < DAMPED_RELEASE[-1][0]:
+            (k0, r0), (k1, r1) = DAMPED_RELEASE
+            ops.append(f"ampeg_release={np.interp(r.key, [k0, k1], [r0, r1]):.3f}")
         ops += [f"amp_velcurve_{v}={g_:.5f}" for v, g_ in zip(vels, lin)]
         body.append("<region> " + " ".join(ops))
 
