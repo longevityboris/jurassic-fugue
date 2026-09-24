@@ -139,6 +139,10 @@ def pitch_spectral(seg: np.ndarray, key: int, sr: int = SR, span: int = 13, nh: 
     nfft = 1 << int(np.ceil(np.log2(max(n * 4, 1 << 16))))
     X = np.abs(np.fft.rfft(seg * np.hanning(n), nfft))
     L = np.log(X + 1e-9 * X.max() + 1e-20)
+    # floor 60 dB below the peak: on a clean 24-bit dry stem the half-harmonics of
+    # the octave-below candidate sit in the noise floor, and without a floor their
+    # very low log magnitude "rewards" that candidate (an A#5 read as A#4, -1203 c)
+    L = np.maximum(L, L.max() - 6.9)
     df = sr / nfft
     nyq = sr / 2 * 0.9
 
