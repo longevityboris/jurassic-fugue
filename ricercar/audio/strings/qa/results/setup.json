@@ -3,7 +3,7 @@
   {
    "run": "check",
    "returncode": 0,
-   "seconds": 72.7,
+   "seconds": 19.3,
    "work_lines": [],
    "fail_lines": [],
    "last_line": "strings setup: all checks passed"
@@ -11,7 +11,7 @@
   {
    "run": "install1",
    "returncode": 0,
-   "seconds": 142.5,
+   "seconds": 21.6,
    "work_lines": [],
    "fail_lines": [],
    "last_line": "strings setup: all checks passed"
@@ -19,7 +19,7 @@
   {
    "run": "install2",
    "returncode": 0,
-   "seconds": 103.6,
+   "seconds": 29.2,
    "work_lines": [],
    "fail_lines": [],
    "last_line": "strings setup: all checks passed"
@@ -27,14 +27,14 @@
  ],
  "hashes_identical": true,
  "hashes": [
-  "434b699deec6efcc7f55e14ccb396a8b8ad2064eb5951b4e436e4fcba7206073  ./bass.sfz",
-  "d8f1264c7eec62b1edd2d0a7ad8e23d32e62d9beacdcc5c169c21f50b54e0e0c  ./cello.sfz",
-  "fd65d3205b4486a75a1824bd328fecc5aa6f7433b046de26417521782d40c90b  ./viola.sfz",
-  "ddb87187023132fb825f0fc630aab2821f346d75d7a8317e36193d5404d0831b  ./violin.sfz",
-  "14a7badb474554e8a31c75cbfe1be929f7b5de55b2d85ef8eb5e8eac29c907ce  ./violin2.sfz",
-  "3df1473cb2be5c8e2ad8e8384cd1be80ea752360e08580cdcdb59d3d293f3315  tuning_corrections.json",
-  "581a84f6161a3c27b50ea3c8aa700ff7f275d147df97acb4df97fd7f9c30955e  samples/meta.json",
+  "00762544528904ceae89d052d7683413efc4f4554a0599cf7485fa8e81c87ec4  ./bass.sfz",
+  "1509632bd473c8ed4b91de6f719b5d38fb0239b9b7113b7294d577ba5b7a7119  ./cello.sfz",
+  "eeb0117a420062b47b3429060f605c729d66763ee1073fccda2ef66307782ba6  ./viola.sfz",
+  "bf2e18602a9816a23e57e8decfcd395cc850d0ca63c7d80ad2f187319d2a8308  ./violin.sfz",
+  "c50e3d0762fdcf75d6a34e51731090c93e04eb38cec942c764a5015daaf27925  ./violin2.sfz",
+  "58c070f6471e6097f89d53a29a0d90ec4ffd70f3201a511a212d756722eb8f55  tuning_corrections.json",
+  "1c4eb9ed4b3ad23e5f622810bdf74cbbe03fe144019ba598b6c17a13a18459d6  samples/meta.json",
   "f8dd4190419c8861fe9349f15eca6b66e19e382c984e3a80e9c85a9844f49a58  analysis.json"
  ],
- "help_prints_line_36": "set -euo pipefail"
+ "help_prints_line_36": "#     wave files 3.2 (the site links a Google Drive copy), performance scripts 3.3."
 }

@@ -1,14 +1,14 @@
 {
  "state": {
-  "head": "9f1f669",
-  "render_quartet_commit": "6773f21",
-  "render_quartet_sha": "dc8ec5376814a8d9",
+  "head": "f3a7af6",
+  "render_quartet_commit": "c71ee34",
+  "render_quartet_sha": "b32c34e0dd47ed48",
   "sfz": {
-   "bass.sfz": "434b699deec6efcc",
-   "cello.sfz": "d8f1264c7eec62b1",
-   "viola.sfz": "fd65d3205b4486a7",
-   "violin.sfz": "ddb87187023132fb",
-   "violin2.sfz": "14a7badb474554e8"
+   "bass.sfz": "00762544528904ce",
+   "cello.sfz": "1509632bd473c8ed",
+   "viola.sfz": "eeb0117a420062b4",
+   "violin.sfz": "bf2e18602a9816a2",
+   "violin2.sfz": "c50e3d0762fdcf75"
   }
  },
  "jobs": {
