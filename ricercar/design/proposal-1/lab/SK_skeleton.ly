@@ -1,6 +1,6 @@
 \version "2.24.0"
-%% proposal-1 lab: Thematic skeleton (free voices = rests)
-\header { title = "Thematic skeleton (free voices = rests)" tagline = ##f }
+%% proposal-1 lab: Thematic skeleton with the written passages (free voices = rests)
+\header { title = "Thematic skeleton with the written passages (free voices = rests)" tagline = ##f }
 global = { \key bes \minor \time 2/2 }
 
 soprano = \absolute {
@@ -26,14 +26,14 @@ soprano = \absolute {
   g''4 f''4 ees''4 d''4 |
   ees''4 f''4 d''4. ees''8 |
   f''2 g''4. a''8 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
+  aes''2 g''2~ |
+  g''2 f''4. e''8 |
+  f''2 e''2 |
+  f''4 g''4 bes''4 aes''4 |
+  f''2 ges''2 |
+  g''4. aes''8 bes''4. c'''8 |
+  bes''2. aes''4~ |
+  aes''4 g''4 ges''4 f''4 |
   r1 |
   r1 |
   des''2. des''8 c''8 |
@@ -67,11 +67,11 @@ soprano = \absolute {
   f''4. ees''8 ees''4. c''8 |
   c''2. des''8 f''8 |
   ees''2 bes'2~ |
-  bes'4 bes'8 a'8 bes'2~ |
+  bes'4 bes'8 a'8 bes'2 |
   bes'4 bes'8 a'8 bes'4. c''8 |
   c''4. ees''8 ees''2~ |
-  ees''4 des''8 bes'8 c''4 r4 |
-  r1 |
+  ees''4 des''8 bes'8 c''2~ |
+  c''1 |
   bes'2. bes'8 a'8 |
   bes'2. bes'8 a'8 |
   bes'4. c''8 c''4. ees''8 |
@@ -80,14 +80,14 @@ soprano = \absolute {
   c''2. f''8 bes'8 |
   ees''4. d''8 d''4. c''8 |
   c''1 |
-  c''2 r2 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
+  c''1 |
+  bes'1 |
+  c''1 |
+  d''2 ees''2 |
+  d''2 ees''2 |
+  bes'2. bes'8 a'8 |
+  bes'1 |
+  bes'1 |
 }
 
 alto = \absolute {
@@ -108,11 +108,11 @@ alto = \absolute {
   r4 c''4 bes'4 aes'8 g'8 |
   f'4 g'4 aes'4 bes'4 |
   aes'4 g'4 bes'4. aes'8 |
-  g'2 f'4. ees'8~ |
-  ees'2 r2 |
-  r1 |
-  r1 |
-  r1 |
+  g'2 f'4. ees'8 |
+  ees'2 d'2 |
+  ees'2. c'4~ |
+  c'2 b4. d'8 |
+  f'2. ees'4 |
   c''2. c''8 des''8 |
   c''2. c''8 des''8 |
   c''4. bes'8 bes'4. g'8 |
@@ -155,26 +155,26 @@ alto = \absolute {
   c''1 |
   r1 |
   r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
+  f'2 f'2 |
+  a'2 aes'2 |
+  bes'2 bes'2 |
+  bes'4 a'4 a'2 |
   r1 |
   r1 |
   ees'2. ees'8 d'8 |
   ees'2. ees'8 d'8 |
   ees'4. f'8 f'4. aes'8 |
   aes'2. g'8 ees'8 |
-  f'2 r2 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
+  ges'2 f'2 |
+  f'2 ees'2 |
+  ees'1 |
+  des'1 |
+  f'1 |
+  f'2 ges'2 |
+  f'2 g'2 |
+  f'2 g'4 f'4 |
+  f'2 ges'2 |
+  f'1 |
 }
 
 tenor = \absolute {
@@ -242,26 +242,26 @@ tenor = \absolute {
   ees'2. des'8 bes8 |
   c'2 r2 |
   r1 |
+  des'2 des'2 |
+  ges'2 f'4 ees'4 |
+  ees'2 e'2 |
+  f'2 ees'2 |
   r1 |
   r1 |
   r1 |
   r1 |
   r1 |
   r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
+  bes2 bes2 |
+  a2 a2 |
+  a1 |
+  bes1 |
+  a1 |
+  bes1 |
+  bes1 |
+  d'2 ees'4 ees'4 |
+  d'2 ees'2 |
+  d'1 |
 }
 
 bass = \absolute {
@@ -291,7 +291,7 @@ bass = \absolute {
   c4 bes,4 aes,4 g,4 |
   aes,4 bes,4 g,4. aes,8 |
   bes,2 c4. d8 |
-  r1 |
+  des2 r2 |
   r1 |
   r1 |
   r1 |
@@ -329,26 +329,26 @@ bass = \absolute {
   f,2 f,4 e,4 |
   f,2. g,4 |
   g,2. bes,4 |
-  bes,1~ |
+  bes,1 |
   bes,2 aes,4 f,4 |
-  g,1 |
+  g,2 ges,2 |
+  f,2 f,2 |
   r1 |
   r1 |
   r1 |
   r1 |
   r1 |
   r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
-  r1 |
+  ees2 bes,2 |
+  f,1 |
+  f,1 |
+  ges,1 |
+  f,1 |
+  bes,1 |
+  bes,1 |
+  bes,2 ees4 f4 |
+  bes,1 |
+  bes,1 |
 }
 
 \score {

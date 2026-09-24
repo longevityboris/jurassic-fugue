@@ -45,6 +45,32 @@ g2
 
 
 # --------------------------------------------------------------------------
+# M  Mirror counter-exposition, GLOBAL bars 19-27 (fully voiced; bar 27 = start of
+#    the stretto chain, only its first notes shown).
+#  M1 19-22  B  I1 in c minor (g), elided from the answer's landing: G pedal, b9 sigh
+#            T  IC1 (c'), tied from CS1's c': the lament keeps falling c'-b-bes-a-g-f
+#            S  IC2 (c''), A free (ees'-d' = 6/4-5/3, then c'-b over the V4/2)
+#  M2 23-26  A  I1 in f minor (c''), T IC1 (f'), B IC2 (F,), S free (from aes'')
+#  27        A  S1 b-flat (bes') = I1's landing; S CS1 (f''); B des (i6)
+SEC['M_mirror'] = dict(title='M mirror counter-exposition, bars 19-27', soprano="""
+r4 c''4 d''4 ees''8 f''8 | g''4 f''4 ees''4 d''4 | ees''4 f''4 d''4. ees''8 | f''2 g''4. a''8 |
+aes''2 g''2~ | g''2 f''4. e''8 | f''2 e''2 | f''4 g''4 bes''4 aes''4 |
+f''2 ges''2
+""", alto="""
+ees'2 d'2 | ees'2. c'4~ | c'2 b4. d'8 | f'2. ees'4 |
+c''2. c''8 des''8 | c''2. c''8 des''8 | c''4. bes'8 bes'4. g'8 | g'2. aes'8 c''8 |
+bes'2. bes'8 a'8
+""", tenor="""
+c'2 b2 | bes4. a8 g4. f8 | g2. aes8 a8~ | a4 bes4 b4 c'4 |
+f'2 e'2 | ees'4. d'8 c'4. bes8 | c'2. des'8 d'8~ | d'4 ees'4 e'4 f'4 |
+r1
+""", bass="""
+g2. g8 aes8 | g2. g8 aes8 | g4. f8 f4. d8 | d2. ees8 g8 |
+f4 f,4 g,4 aes,8 bes,8 | c4 bes,4 aes,4 g,4 | aes,4 bes,4 g,4. aes,8 | bes,2 c4. d8 |
+des2 r2
+""")
+
+# --------------------------------------------------------------------------
 # X1  Climax exit, GLOBAL bars 65-69 (fully voiced).  Soprano = end of S1 per arsin
 #     (entered 63:3); bass = end of A1 augmented, its landing g cut to a half note.
 #  65  i (tonic pedal bes,)          66:1 vii°7 over the pedal (a-c-ees-ges), fff

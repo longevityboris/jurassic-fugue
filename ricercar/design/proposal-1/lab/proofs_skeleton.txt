@@ -1,7 +1,9 @@
 -- totals: {'S': '84', 'A': '84', 'T': '84', 'B': '84'}; errors 0, parallels 0, beat-par 0, unjustified 0
   CROS 20:4.5 T F3 below B Ab3
   DIR  74:4.5 S/A direct 5th (S leaps F5->Bb4)
+  strict: DIS  21:3 strong AB TT/bass B3/F3  [A:ESC?]
   strict: DIS  23:3 strong AB P4/bass C5/G2  [B:PT/NT]
+  strict: DIS  26:3 strong SB m7      Bb5/C3  [S:APP, B:PT/NT]
   strict: DIS  33:1 strong SB P4/bass Db5/Ab3  [S:ANT7, B:PT/NT]
   strict: DIS  49:1 strong TB M2/M9   C4/Bb2  [B:ANT]
   strict: DIS  55:3 strong AT TT/bass Gb4/C4  [A:PT/NT]
@@ -16,5 +18,10 @@
   strict: DIS  61:1 strong TB P4/bass Bb3/F2  [T:PT/NT, B:ANT]
   strict: DIS  63:1 strong SB m7      Eb5/F2  [S:ESC?, B:PT/NT]
   strict: DIS  63:3 strong SB P4/bass Bb4/F2  [S:ANT7]
-  strict: DIS  67:3 strong SB P4/bass C5/G2  [S:ESC?]
-  strict: DIS  75:1 strong SA m7      Eb5/F4  [S:APP, A:ESC?]
+  strict: DIS  67:3 strong SB TT/bass C5/Gb2  [S:PT/NT, B:PT/NT]
+  strict: DIS  67:3 strong TB m7      E4/Gb2  [T:PT/NT, B:PT/NT]
+  strict: DIS  68:3 strong TB m7      Eb4/F2  [T:ESC?]
+  strict: DIS  76:3 strong AB m7      Eb4/F2  [A:ANT]
+  strict: DIS  80:3 strong SB P4/bass Eb5/Bb2  [S:PT/NT]
+  strict: DIS  81:3 strong SB P4/bass Eb5/Bb2  [S:ESC?]
+  strict: DIS  83:3 strong TB P4/bass Eb4/Bb2  [T:PT/NT]

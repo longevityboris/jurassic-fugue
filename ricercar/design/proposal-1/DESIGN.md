@@ -5,7 +5,8 @@ A double fugue in B-flat minor, alla breve, 84 bars, about 3'44".
 All proofs are reproducible:
 - `python3 lab/build_core.py` builds the material proofs (P01-P13).
 - `python3 lab/sections.py` builds the fully written passages: the exposition (bars
-  1-19), the climax exit (65-69) and the end of the apotheosis with the coda (75-84).
+  1-19), the mirror section (19-27), the climax exit (65-69), and the end of the
+  apotheosis with the coda (75-84).
 - `python3 lab/skeleton.py --table` builds the whole-piece thematic skeleton.
 
 A lab counts as VERIFIED when `tools/check.py` reports 0 PAR!, 0 BEAT, 0 DIS! and 0 D4?.
@@ -190,11 +191,17 @@ bes'2. bes'8 a'8 | bes'2. bes'8 a'8 | bes'4. c''8 c''4. ees''8 | ees''2. d''8 be
 
 (Rows P08-P13: see B3.)
 
-### B2. The whole-piece thematic skeleton (`lab/SK_skeleton.ly`, `lab/proofs_skeleton.txt`)
+### B2. The whole-piece skeleton (`lab/SK_skeleton.ly`, `lab/proofs_skeleton.txt`)
 Every statement in the entry table (section C3) is placed at its real bar, voice,
-key and octave. The exposition is included complete, free counterpoint is left as
-rests, and the whole file is checked at once. The joints between sections are
-therefore proven too.
+key and octave. The fully written passages are overlaid in their windows:
+- exposition, bars 1-18;
+- mirror section, bars 19-26;
+- climax exit, bars 65-68;
+- apotheosis end and coda, bars 75-84.
+
+The remaining free counterpoint is left as rests: about 70 voice-bars, 21% of the
+piece, not counting the planned rests of the exposition. The whole file is checked
+at once, so the joints between sections are proven too.
 
 `-- totals: 84 bars; errors 0, parallels 0, beat-par 0, unjustified 0`
 
@@ -534,9 +541,9 @@ model:
 
 | bars | voice | material | notes |
 |---|---|---|---|
-| 19-22 | A | from the tied ees' (third of the 6/4) → d' (V), then a descending half-note lament c'-bes-aes-g over the G pedal | the fourth voice of the mirror trio; pp |
-| 23-26 | S | CS2's tetrachord cell in F minor, high and light (c''' bes'' aes'' g'' / f'' g'' aes'' bes'') | ppp; or the I1 × I1 stretto from B3 |
-| 27-31 | S | CS1 above the alto's S1 (CS1 over S1 is P02), at the f'' level: f'' ges'' g'' aes'' bes'' c''' ... | the lament returns with the chain |
+| 19-22 | A | WRITTEN (`M_mirror`): ees'-d' (6/4-5/3), ees', then c'-b over V4/2, f'-ees' | the fourth voice of the mirror trio; pp |
+| 23-26 | S | WRITTEN (`M_mirror`): aes''-g'' ... f''-e'' ... bes''-aes'' (C7's seventh resolving) | ppp |
+| 27-31 | S | CS1 above the alto's S1 at the f'' level (landing dropped); proven in the skeleton together with the tenor's entry at 29 | the lament returns with the chain |
 | 31-36 | A (from 31:3), T (from 33:3), B (from 35:3) | each voice leaving its subject continues with CS1's chromatic fall or CS2's tetrachords, one per voice, so the texture thickens | crescendo to f at 35 |
 | 37-40 | T | quarter-note motion under CS3 (CS2's cell, now in D-flat major) | keep below CS3 |
 | 41-48 | S (from 41:3) | a descant built on S2's leap figure (f''8 bes' → aes''8 des'') | mp at most |
@@ -550,9 +557,9 @@ model:
 
 ## D. Risks and honest caveats
 
-1. **About 35% of the voice-bars are free counterpoint** (C8) and are not yet
-   written or checked. The skeleton proves only that the thematic statements and
-   their joints are clean. The exposition (fully written, clean) shows the standard
+1. **About 21% of the voice-bars are free counterpoint** (C8) and are not yet
+   written or checked (mainly bars 28-48, 49-58, 63-64 and 69-74). The skeleton proves
+   that every thematic statement, every joint and the written passages are clean. The exposition (fully written, clean) shows the standard
    those passages must meet.
 2. **Bimodality at 49-53.** S2 in F major (a, e natural) sounds over S1 in B-flat
    minor (des''). It is clean on paper (P10_CS2_S2Mu_S1, strict 0) and is meant as a

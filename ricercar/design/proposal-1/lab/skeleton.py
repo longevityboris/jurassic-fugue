@@ -67,6 +67,11 @@ put('soprano', 19, 'IC2 c-level (c\'\')', drop_landing(tr(IC2, 2, 1)))
 put('alto', 23, 'I1 f-minor (c\'\')', drop_landing(octave(tr(I1, 7, 4), -1)))
 put('tenor', 23, 'IC1 f-level (f\')', drop_landing(octave(tr(IC1, 7, 4), -2)))
 put('bass', 23, 'IC2 f-level (F,), its opening rest taken by the I1 landing f', shift(drop_landing(octave(tr(IC2, 7, 4), -3))[1:], F(-1, 4)), beat=2)
+# free voices of the mirror section, now written (sections.py M_mirror)
+put('alto', 19, 'free alto (M1): 6/4-5/3 then c\'-b over V4/2', parse("d'2 | ees'2. c'4~ | c'2 b4. d'8 | f'2. ees'4"), beat=3)
+put('soprano', 23, 'free soprano (M2)', parse("aes''2 g''2~ | g''2 f''4. e''8 | f''2 e''2 | f''4 g''4 bes''4 aes''4"))
+put('bass', 27, 'bass des (i6) under the first chain entry', parse("des2"))
+put('soprano', 27, 'CS1 over the chain (f\'\'), landing dropped', drop_landing(octave(CS1, 1)))
 # III stretto chain in descending fifths, bars 27-36
 put('alto', 27, 'S1 b-flat (bes\')', S1, beat=1)
 put('tenor', 29, 'S1 e-flat (ees\')', tr(S1, -7, -4))
@@ -98,7 +103,12 @@ put('soprano', 69, 'THEME B-flat MAJOR (bes\')', THEMEM)
 put('alto', 71, 'S1 major at the lower fifth (ees\')', tr(S1M, -7, -4))
 
 
-def build(stmts=STMT, total=TOTAL, name='SK_skeleton.ly', expo=True):
+# fully written passages (sections.py) that replace the skeleton in their windows:
+# (section name, first global bar, number of bars used)
+WRITTEN = [('M_mirror', 19, 8), ('X1_climax_exit', 65, 4), ('X2_coda', 75, 10)]
+
+
+def build(stmts=STMT, total=TOTAL, name='SK_skeleton.ly', expo=True, written=True):
     lines = {v: [] for v in VOX}
     if expo:
         e = sections.SEC['E1_exposition']
@@ -114,9 +124,24 @@ def build(stmts=STMT, total=TOTAL, name='SK_skeleton.ly', expo=True):
             if last > start:
                 raise SystemExit(f"overlap in {v} at bar {bar}: previous material ends at {last}")
         lines[v] += ev
+    if written:
+        for sec, bar0, nbars in WRITTEN:
+            lo, hi = B(bar0), B(bar0 + nbars)
+            d = sections.SEC[sec]
+            for v in VOX:
+                keep = []
+                for st, du, p in lines[v]:
+                    if st + du <= lo or st >= hi:
+                        keep.append((st, du, p))
+                    elif st < lo:                       # cut a note that runs into the window
+                        keep.append((st, lo - st, p))
+                    elif st + du > hi:                  # keep the part after the window
+                        keep.append((hi, st + du - hi, p))
+                w = [(a + lo, b, p) for a, b, p in trim(parse(d[v]), F(nbars))]
+                lines[v] = keep + w
     for v in VOX:
         lines[v] = sorted(lines[v], key=lambda e: e[0])
-    lab(name, lines, 'Thematic skeleton (free voices = rests)', F(total))
+    lab(name, lines, 'Thematic skeleton with the written passages (free voices = rests)', F(total))
     return name
 
 
