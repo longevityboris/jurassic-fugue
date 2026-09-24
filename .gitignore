@@ -2,3 +2,5 @@
 *.midi
 *.wav
 *.m4a
+__pycache__/
+*.pyc
