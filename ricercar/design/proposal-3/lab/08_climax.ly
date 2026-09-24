@@ -8,12 +8,12 @@
 soprano = \absolute {
   bes''2. bes''8 ces''' | bes''2. bes''8 ces''' | bes''4. aes''8 aes''4. f''8 | f''2. ges''8 aes'' |
   a''2. bes''4~ | bes''2. aes''4 | ges''2 f''2 | g''2 aes''4 c'''4 |
-  c'''2 a''2 |
+  c'''2 a''4 c''4 |
 }
 alto = \absolute {
   bes'2. bes'8 a' | bes'2. bes'8 a' | bes'4. c''8 c''4. ees''8 | ees''2. des''8 bes' |
   c''4. a'8 f'4 des''8 bes' | c''2. f''8 bes' | ees''4. des''8 des''4. c''8 | c''1 |
-  c''1 |
+  c''2 f'2 |
 }
 tenor = \absolute {
   r4 g'2 f'4~ | f'4 ees'2 des'4~ | des'4 c'2 bes4~ | bes4 a2 c'4 |

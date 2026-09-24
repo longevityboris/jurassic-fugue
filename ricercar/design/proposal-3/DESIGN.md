@@ -117,6 +117,7 @@ note; that is the normal pedal-point licence.
 | 11 | E7 (S2 stretto over the answer, bass tacet) + Episode 2 (bass re-enters f, and climbs g, aes, a, bes, b, c under the held g'') + the crisis chord, 4 voices, bars 28-34 | `12_stretto_to_crisis.ly` | errors 0, parallels 0, beat-par 0, unjustified 0 (one DIR: S2-F's leap g''-e'' against the answer's f-e, a hidden octave between two subject statements on a weak 8th) | clash 0; xrel 1 (tenor des' then alto d'', covered by the alto's own des''-d''); acc2 3 (bes''/c'' = the two subjects' 7-6 at 31.3; the tritones of the two diminished sevenths at 33.3 and 34.1) |
 | 14 | E5-E6: S2 with the answer (three voices) and S2-sub with S1 and the cascade plus a free alto, bars 20-28 | `13_second_subject.ly` | errors 0, parallels 0, beat-par 0, unjustified 0 | clash 0, xrel 0, acc 0, acc2 0 |
 | 15 | Episode 1 on the dominant pedal, in context (bars 17-20) | `14_episode1.ly` | errors 0, parallels 0, beat-par 0, unjustified 0 (one D4?: alto bes' over the F pedal at 19.1 = i6/4 over the pedal) | acc 5, all against the held F pedal (IV/V, i6/4, the seventh of V7) |
+| 16 | **The whole design spliced into one 62-bar file** (labs 01, 14, 13, 12, 10, 08, 09 joined by time; joins at 18, 20, 28, 34, 43, 52 checked) | `99_assembled.ly` (made by `assemble_check.py`) | **errors 0, parallels 0, beat-par 0, unjustified 0**; one D4? (19.1, 6/4 over the dominant pedal), one DIR (29.4.5, the hidden octave of row 11) | clash 0, xrel 1, acc 7, acc2 13: every item is one already explained in rows 3-15 |
 | 12 | Double counterpoint at the 10th and 12th: **CS1 against CS2 is invertible at the 8ve, 10th and 12th** | `11_cs1cs2_10th.ly`, `11_cs1cs2_12th.ly` (8ve: lab 03) | 0/0/0/0 both | clash 0, xrel 0, acc 0, acc2 0 both |
 | 13 | Negative result, kept on purpose: S1 against CS1 or CS2 is invertible **only at the octave**. Moved a 10th or 12th, each countersubject lands in another key and makes augmented-octave clashes (b' against bes', g against ges) | `11_s1cs1_*_fails.ly`, `11_s1cs2_*_fails.ly` | check.py passes 3 of 4 (it cannot see clashes); the 12th/CS2 case has a range error | clash 1-2 in all four: **not used** |
 
@@ -142,6 +143,10 @@ Additional verified facts, from searches run through the real checker (reproduce
 | 52-59 | Maestoso, luminoso | 63 | 32 | 30.5 |
 | 60-62 | coda, ritardando to about 52, final fermata | ~57 | 12+2 | 14.7 |
 | **total** | | | | **229.6 s = 3'50"** |
+
+Checked by rendering: `tools/perform.py lab/99_assembled.ly lab/plan_sketch.json` (tempo map above, with a
+ritardando in 33 and 50, fermatas at 34.3, 51.1 and 62.1, breaths before 20, 35, 43 and 52) gives
+**231.3 s** of MIDI.
 
 Bar count 62. Proportions: the first crisis falls at bar 34 (0.55 of the bars), the climax at bar 50.4
 (0.81), the apotheosis starts at 0.84: the late-Beethoven placement.
@@ -291,11 +296,10 @@ starts quietly and grows, so the brightest major sonority (57-58) is also the lo
 
 ## D. Risks (honest)
 
-1. **Coverage.** Bars 1-20 (labs 01, 14), 20-28 (lab 13), 28-34 (lab 12), 34-43 (lab 10), 43-51
-   (lab 08) and 52-62 (lab 09) are all written out and proven, so every bar of the 62 exists in a
-   checked lab. Joins between labs were checked by overlapping one bar (17, 20, 28, 34, 43, 52) or by
-   matching end and start notes, but the whole has not yet been run through `tools/assemble.py` as
-   one file. That is the composer's first step.
+1. **Coverage.** Every bar exists in a checked lab, and the spliced whole (`99_assembled.ly`, row 16)
+   passes the checker. It is a proof that the design closes, not a finished score. The inner voices
+   of 20-33 and 52-59 are plain, and the composer should enrich them (8th-note motion from S1's
+   neighbour cell) and re-run `lab/run.sh` and `lab/strict.py` after every change.
 2. **Three-voice stretches** (E5, E7, E8) are a deliberate choice. If a fuller sound is wanted, the fourth
    voice is the composer's to add and to re-check.
 3. **The checker is lenient.** check.py accepts any stepwise dissonance, even struck on the beat. The

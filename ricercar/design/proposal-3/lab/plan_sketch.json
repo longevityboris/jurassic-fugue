@@ -1,0 +1,24 @@
+{
+  "voices": ["soprano", "alto", "tenor", "bass"],
+  "measure": "1",
+  "tempo": [
+    {"at": "1:1", "bpm": 69, "unit": "quarter"},
+    {"at": "33:1", "until": "34:1", "to_bpm": 66},
+    {"at": "34:1", "bpm": 69, "unit": "quarter"},
+    {"at": "35:1", "bpm": 63, "unit": "quarter"},
+    {"at": "43:1", "bpm": 69, "unit": "quarter"},
+    {"at": "50:1", "until": "51:1", "to_bpm": 63},
+    {"at": "52:1", "bpm": 63, "unit": "quarter"},
+    {"at": "60:1", "until": "62:1", "to_bpm": 52}
+  ],
+  "fermatas": [{"at": "34:3", "extra_beats": 2}, {"at": "51:1", "extra_beats": 2}, {"at": "62:1", "extra_beats": 2}],
+  "breaths": [{"at": "20:1", "ms": 120}, {"at": "35:1", "ms": 600}, {"at": "43:1", "ms": 150}, {"at": "52:1", "ms": 500}],
+  "dynamics": [
+    {"at": "1:1", "level": "pp"}, {"at": "5:1", "level": "p"}, {"at": "10:1", "until": "14:1", "to": "mp"},
+    {"at": "20:1", "level": "mf"}, {"at": "28:1", "level": "f"}, {"at": "32:1", "until": "34:1", "to": "ff"},
+    {"at": "34:3", "level": "p"}, {"at": "35:1", "level": "pp"}, {"at": "39:1", "until": "43:1", "to": "mp"},
+    {"at": "43:1", "until": "47:1", "to": "f"}, {"at": "47:1", "until": "50:4", "to": "fff"},
+    {"at": "51:1", "until": "52:1", "to": "f"}, {"at": "52:1", "level": "p"}, {"at": "52:1", "until": "57:1", "to": "ff"},
+    {"at": "59:1", "until": "60:1", "to": "mf"}, {"at": "60:1", "until": "62:1", "to": "pp"}
+  ]
+}
