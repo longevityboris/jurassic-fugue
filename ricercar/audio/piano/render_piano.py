@@ -35,10 +35,14 @@ noise and string-resonance release samples, pedal noises) by Alexander Holm,
 CC-BY 3.0. The SFZ is re-derived by ``make_sfz.py``: attacks aligned to within
 0.2 ms across layers, velocity-to-loudness continuous and monotonic over about
 40 dB, keyboard evenness and intonation smoothed. It is played by sfizz
-(``sfizz_render``, sinc-72 resampling, 32-bit float output). Keys up to
-E6 have dampers: a lifted key stops with the recorded release (1 s exponential
-envelope plus the string-resonance and hammer release samples). Keys from
-F6 up ring on, as on a real grand.
+(``sfizz_render``, sinc-72 resampling, 32-bit float output), one instance per
+voice, each holding the samples its keys need in RAM (disk streaming in
+``sfizz_render`` can drop held notes; every stem is also checked for a note
+that stops dead while held, and is rendered again if one does). Keys up to E6
+have dampers: a lifted key fades with an exponential damper release of 0.35 s
+(0.5 s in the bottom octave, where the strings are heavy), plus the recorded
+string-resonance and hammer release samples. Keys from F6 up ring on, as on a
+real grand.
 
 Room: Detmold Konzerthaus, audience seat 163, coincident omni/figure-8 decoded
 to stereo (``make_ir.py``; CC-BY 4.0, Amengual Gari et al., AES 2020). Each
@@ -98,12 +102,22 @@ MIDI contract (for the performance script)
   Values >= 64 are down, < 64 up. Half-pedalling is not modelled. Pedal-down and
   pedal-up mechanism noises are played once. Bach needs none, but light
   syncopated pedalling works.
-* **One keyboard.** Voices share one physical piano. If a voice strikes a key
-  that another voice is still holding, the key is re-struck: the earlier note
-  is cut 15 ms before, and the key stays down as long as either voice holds it.
-  Unisons struck together (within 5 ms) become one note at the higher
-  velocity. Without this rule, unisons would be doubled 6 dB loud and
-  phase-locked. ``--no-key-sharing`` disables it.
+* **One keyboard.** Voices share one physical piano. Two voices striking the
+  same key less than 30 ms apart (a notated unison: perform.py's humanising and
+  melody lead spread those over 0-20 ms) play one hammer blow, at the earlier
+  onset and the stronger velocity, and the key is held while either voice holds
+  it. Without this rule, unisons would sound doubled and comb-filtered. A voice
+  striking a key that another voice has held for longer is a re-strike: the
+  earlier note is released 15 ms before (so it has sounded at least 15 ms), and
+  the key stays down as long as either voice holds it. ``--no-key-sharing``
+  disables both rules.
+* **Range.** Notes outside the 88 keys (A0-C8), for example after
+  ``--transpose``, are folded back by octaves with a warning, and counted as
+  ``folded_notes`` in the render report; ``--no-fold`` makes them an error.
+* **Odd note events.** A note-on and note-off on the same tick (a zero-length
+  note) is played as a 10 ms touch of the key: the hammer still strikes. A
+  note-on without a note-off sounds for 1 s. Both are warned about and counted
+  per voice in the report.
 * Anything else (program changes, pitch bend, CC10 pan ...) is ignored. The
   stereo image of a piano comes from the instrument itself, low strings left
   and high strings right, as heard from the keyboard.
@@ -144,8 +158,12 @@ from piano_paths import (  # noqa: E402
 STEM_TPB = 9600
 STEM_TEMPO = 500_000  # -> one tick = 52 us
 RESTRIKE_GAP = 0.015
-UNISON_WINDOW = 0.005
+# Two voices striking one key less than this apart play one hammer blow. perform.py's
+# humanising (+/-5-6 ms per note) and melody lead (8 ms) put notated unisons 0-20 ms
+# apart, and no pianist re-strikes a key within 30 ms.
+UNISON_WINDOW = 0.030
 MIN_NOTE = 0.010
+KEY_LO, KEY_HI = 21, 108  # A0..C8
 FADER_SMOOTH = 0.020
 
 
@@ -168,6 +186,8 @@ class Voice:
     name: str
     notes: list = field(default_factory=list)
     cc: dict = field(default_factory=dict)  # cc number -> list[(time, value)]
+    zero_length: int = 0  # note_on and note_off on the same tick: played as MIN_NOTE
+    unterminated: int = 0  # note_on without note_off: played for 1 s
 
 
 class TempoMap:
@@ -220,7 +240,10 @@ def load_midi(path: Path) -> dict[str, Voice]:
 
     voices: dict[str, Voice] = {}
     pending: dict[tuple, list] = {}
+    # At one tick, note-offs come first, so that a note ending where the same key starts
+    # again closes the old note, not the new one.
     abs_events.sort(key=lambda e: (e[0], 0 if e[2].type != "note_on" or e[2].velocity == 0 else 1))
+    orphan_off: dict[tuple, int] = {}  # (voice, key) -> tick of a note-off that closed nothing
     cc_events = []
     for tick, ti, msg in abs_events:
         t = tmap.seconds(tick)
@@ -231,15 +254,24 @@ def load_midi(path: Path) -> dict[str, Voice]:
         v = voices.setdefault(name, Voice(name))
         k = (name, msg.note)
         if msg.type == "note_on" and msg.velocity > 0:
-            pending.setdefault(k, []).append((t, msg.velocity))
+            if orphan_off.pop(k, None) == tick:
+                # note-on and note-off on the same tick (sorted off-first above): a
+                # zero-length note. A key pressed that briefly still throws the hammer.
+                v.notes.append(Note(name, msg.note, t, t + MIN_NOTE, msg.velocity))
+                v.zero_length += 1
+            else:
+                pending.setdefault(k, []).append((t, msg.velocity))
         else:
             if pending.get(k):
                 st, vel = pending[k].pop(0)
                 if t - st > 0:
                     v.notes.append(Note(name, msg.note, st, t, vel))
+            else:
+                orphan_off[k] = tick
     for (name, key), lst in pending.items():
         for st, vel in lst:  # unterminated notes: 1 s
             voices[name].notes.append(Note(name, key, st, st + 1.0, vel))
+            voices[name].unterminated += 1
     # Controllers go to every voice that lives on that (track, channel); CCs on
     # note-less channels of a track apply to all voices of that track.
     for t, ti, msg in cc_events:
@@ -339,12 +371,13 @@ def share_keyboard(notes: list[Note]) -> dict:
         for n in lst:
             if active is not None and n.start < active.end - 1e-6:
                 if n.start - active.start <= UNISON_WINDOW:
-                    # struck together: one key, one hammer -> keep the stronger
-                    keep, drop = (active, n) if active.vel_eff >= n.vel_eff else (n, active)
-                    keep.end = max(keep.end, drop.end)
-                    drop.dropped = True
+                    # struck together: one key, one hammer blow, at the earlier onset (the
+                    # voice that leads), with the stronger velocity, held while either
+                    # voice holds it
+                    active.vel_eff = max(active.vel_eff, n.vel_eff)
+                    active.end = max(active.end, n.end)
+                    n.dropped = True
                     stats["unisons_merged"] += 1
-                    active = keep
                     continue
                 # re-strike of a held key
                 held_until = active.end
@@ -383,9 +416,9 @@ def write_stem_midi(path: Path, notes: list[Note], pedal: list, transpose: int, 
         if n.dropped:
             continue
         key = n.key + transpose
-        while key < 21:  # fold notes outside the 88 keys back into range
+        while key < KEY_LO:  # main() has already folded (and reported) such notes
             key += 12
-        while key > 108:
+        while key > KEY_HI:
             key -= 12
         ev.append((n.start + lead_in, 2, mido.Message("note_on", note=key, velocity=n.vel_eff)))
         ev.append((n.end + lead_in, 1, mido.Message("note_off", note=key, velocity=64)))
@@ -417,7 +450,7 @@ def check_instrument() -> None:
                              "(it regenerates the derived instrument)")
 
 
-def prune_sfz(src: Path, keys: set[int], dst: Path) -> Path:
+def prune_sfz(src: Path, keys: set[int], dst: Path) -> Path | None:
     """Copy of the derived SFZ without the regions that no key of this stem can trigger.
 
     The derived SFZ loads every sample into RAM (hint_ram_based=1: sfizz_render's disk
@@ -445,13 +478,18 @@ def prune_sfz(src: Path, keys: set[int], dst: Path) -> Path:
                 if not any(int(lo) <= k <= int(hi) for k in keys):
                     continue
         out.append(line)
+    if not any(l.lstrip().startswith("<region>") for l in out):
+        return None  # nothing this stem can trigger (e.g. every note merged into another voice)
     if not any(l.startswith("<control> default_path=") for l in out):
         out.insert(0, f"<control> default_path={SALAMANDER_DIR}/")
     dst.write_text("\n".join(out))
     return dst
 
 
-def run_sfizz(sfz: Path, mid: Path, wav: Path, quality: int) -> None:
+def run_sfizz(sfz: Path | None, mid: Path, wav: Path, quality: int) -> None:
+    if sfz is None:  # a stem with nothing to play
+        sf.write(wav, np.zeros((SR, 2), dtype=np.float32), SR, subtype="FLOAT")
+        return
     cmd = [str(SFIZZ_RENDER), "--sfz", str(sfz), "--midi", str(mid), "--wav", str(wav),
            "-s", str(SR), "-q", str(quality), "-p", "512", "-b", "256"]
     r = subprocess.run(cmd, capture_output=True, text=True)
@@ -601,6 +639,8 @@ def main(argv=None) -> dict:
                     "--target strings files (their velocities already carry the dynamics), else velocity")
     ap.add_argument("--cc11-mode", choices=["velocity", "gain"], help=argparse.SUPPRESS)  # old name
     ap.add_argument("--no-key-sharing", action="store_true")
+    ap.add_argument("--no-fold", action="store_true",
+                    help="fail on notes outside A0-C8 instead of folding them back by octaves (with a warning)")
     ap.add_argument("--quality", type=int, default=10, help="sfizz resampling quality 1-10 (10 = sinc72)")
     ap.add_argument("--jobs", type=int, default=min(4, os.cpu_count() or 4),
                     help="parallel sfizz_render instances (default 4; each holds its voice's samples in RAM)")
@@ -640,6 +680,12 @@ def main(argv=None) -> dict:
     voices = {k: v for k, v in voices.items() if v.notes}
     if not voices:
         raise SystemExit("no notes found")
+    for v in voices.values():
+        if v.zero_length:
+            print(f"warning: {v.name}: {v.zero_length} zero-length note(s) (note-on and note-off on one tick) "
+                  f"played as {MIN_NOTE * 1000:.0f} ms", file=sys.stderr)
+        if v.unterminated:
+            print(f"warning: {v.name}: {v.unterminated} note(s) without note-off played for 1 s", file=sys.stderr)
     # Voice names match case-insensitively (perform.py writes "pedal", other files "Pedal").
     transpose = {}
     for name, semis in transpose_arg.items():
@@ -664,9 +710,28 @@ def main(argv=None) -> dict:
             n.vel_eff = curve.shift(vel, delta)
             all_notes.append(n)
 
-    # Key sharing works on sounding pitches.
+    # Key sharing works on sounding pitches. A note pushed off the keyboard (A0-C8), for
+    # example by --transpose, is folded back by octaves, with a warning, or refused with
+    # --no-fold.
+    folded: dict[str, dict] = {}
     for n in all_notes:
-        n.key = n.key + transpose.get(n.voice, 0)
+        k = n.key + transpose.get(n.voice, 0)
+        if not KEY_LO <= k <= KEY_HI:
+            f = folded.setdefault(n.voice, {"notes": 0, "requested_range": [k, k]})
+            f["notes"] += 1
+            f["requested_range"] = [min(f["requested_range"][0], k), max(f["requested_range"][1], k)]
+            while k < KEY_LO:
+                k += 12
+            while k > KEY_HI:
+                k -= 12
+        n.key = k
+    for name, f in folded.items():
+        lo, hi = f["requested_range"]
+        msg = (f"{name}: {f['notes']} note(s) outside the keyboard A0-C8 (MIDI {lo}..{hi}"
+               + (f", transpose {transpose[name]:+d}" if transpose.get(name) else "") + ")")
+        if args.no_fold:
+            raise SystemExit(f"{msg}; --no-fold refuses to fold them into range")
+        print(f"warning: {msg} folded back by octaves", file=sys.stderr)
     share = {"unisons_merged": 0, "restrikes": 0} if args.no_key_sharing else share_keyboard(all_notes)
     pedal = pedal_events(voices)
 
@@ -731,6 +796,9 @@ def main(argv=None) -> dict:
             "velocity_eff_range": [int(min(vel)), int(max(vel))] if vel else None,
             "rms_dbfs_prenorm": round(float(10 * np.log10(np.mean(s**2) + 1e-20)), 2),
             "transpose": transpose.get(name, 0),
+            "zero_length_notes": v.zero_length,
+            "unterminated_notes": v.unterminated,
+            "folded_notes": folded.get(name, {}).get("notes", 0),
         }
         if args.stems:
             args.stems.mkdir(parents=True, exist_ok=True)
@@ -773,6 +841,7 @@ def main(argv=None) -> dict:
         "duration_s": round(len(mix) / SR, 2),
         "voices": report_voices,
         "key_sharing": share,
+        "folded_notes": folded,
         "truncation_check": truncation,
         "pedal_changes": len(pedal),
         "wet_db": None if ir is None else args.wet_db,
