@@ -105,7 +105,7 @@ tenor = \absolute {
   g4. g16 fis g4. g16 fis |
   g8. a16 a8. c'16 c'4. bes16 g |
   % 18-19 (bass of the manuals-only passage)
-  g,8 d ees c g, b, g,4 |
+  g,4 ees8 c g, b, g,4 |
   aes,4 f, g, g8 f |
   % 20-21 countersubject (C minor, below alto)
   r8 ees aes g16 f ees8 c d4 |
