@@ -100,7 +100,7 @@ Checker = `tools/ck.sh` (project check.py with the four ranges). "0/0/0" = 0 PAR
 | P03_answer_CSb_CSa.ly | triple complex CSb / answer / CSa | errors 0, parallels 0, beat-par 0, unjustified 0 | 1:1 c''/bes = elision note (replaced by bes' in P11 when the soprano is not coming off S1); 4:1 des'' 7th over ees (lament passing) |
 | P04_stretto_chain_5ths.ly | stretto chain at the lower 5th, 2 bars apart, 3 voices: S1 b-flat (S), e-flat (A), a-flat (T) | errors 0, parallels 0, beat-par 0, unjustified 0 | only the followers' leading-tone neighbours (d, g) and the leader's escape tone |
 | P05_CB1_S2_over_answer.ly | S1+S2 combination: S2 (soprano) over the real answer (alto), simultaneous, with a free bass | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:1 V7 (ees'' over f, resolves to des''); 4:1 4-3 suspension bes'->aes' over f under S2's c'' |
-| P06_apotheosis_frame.ly | B-flat major apotheosis, 4 voices, 10 bars: complete tune (S) over its mirror (B 1-4) and the answer (B 5-8), c'' -> d'', plagal minor-iv close | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:3 V6/5 7th; 4:1, 7:1 V7; 8:1 ii4/2 (bass bes, is the 7th, resolves to a,); 10:1 minor iv6/4 neighbour chord |
+| P06_apotheosis_frame.ly | B-flat major apotheosis, 4 voices, 10 bars: complete tune (S) over its mirror (B 1-4); then the answer (B 5-8) against ITS mirror (T 5-8, f with upper neighbour g); c'' -> d'', plagal minor-iv close | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:3 V6/5 7th; 4:1, 7:1 V7; 6:1 alto e' = major 7th over the F pedal, resolving chromatically e'-ees'; 7:3 alto 4-3 (c''-bes') over g,; 8:1 C7/B-flat (V4/2 of F, alto bes' resolves to a'); 10:1 minor iv6/4 neighbour chord |
 | P07_chain_flatward_Dflat_major.ly | Part III chain (bars 37-46): S1 e-flat (S), a-flat (A), then the MAJOR form in D-flat (T), each a fifth lower, 2 bars apart | errors 0, parallels 0, beat-par 0, unjustified 0 | leading-tone neighbours and escape tones only |
 | P08_mirror_pair_Eflat.ly | S1 (alto, ees') and its diatonic mirror (bass, ees) simultaneously, two voices alone | errors 0, parallels 0, beat-par 0, unjustified 0 | 4:1 aes'/bes, = V7 of e-flat (7th held from 3:4.5, resolves) |
 | P09_dominant_pedal_augmentation_climax.ly | answer in 2x augmentation (bass, 8 bars) under S2 (S), the lament (T) and the answer at the top (S, f'' -> bes''); climax It6 - V (4-3) - VI; general pause | errors 0, parallels 0, beat-par 0, unjustified 0 | pedal dissonances (sus4 at 1:1, V7 at 3:1, lament passing tones over f,); 9:1 augmented sixth ges,/e'; 10:1 bes''/f, 4-3 suspension |
@@ -153,7 +153,7 @@ unless Part V is taken below quarter = 60.
 | 47-54 | IV Pedale | = P09: ANSWER IN 2x AUGMENTATION in the bass: F pedal 47-50 (f... f-e ...), rising f-g-bes 51-53, bes-aes-f 54. Above: S2 (soprano, c'') 47-50 with a breath (c''2. r4) before 51; lament CSa over the pedal (tenor 47-50: bes-a-aes-g-ges-f = sus4-3, then chromatic prolongation of V); the ANSWER at the top (soprano f'' 51-54, peak bes'' at 53-54); alto to be composed | b-flat: V | mf < ff |
 | 55-57 | | CLIMAX (= P09 bars 9-11): 55 ITALIAN sixth fff (ges, e' bes' bes''); 56 V (f, f' c'' bes''->a'': the subject's head as the 4-3 suspension of the dominant); 57 DECEPTIVE cadence to G-flat (ges, des' bes' bes''). An Italian, not German, sixth here because Ger6 -> V puts parallel fifths between bass and the fifth of the chord | | fff, allargando |
 | 58 | | general pause (fermata), then the lament's first two notes alone, pp | | pp |
-| 59-68 | V Apoteosi | = P06 (its bars 1-10): the COMPLETE TUNE in B-flat major as cantus firmus at its own tempo (soprano 59-66), over its own mirror (bass 59-62; the mirror's last pickup g,-bes, is replaced by d, to avoid fifths on successive beats) and the answer in F major (bass 63-66); 66 V (ii4/2 - V6/5 - V); 67 the tune's open ending c'' rises to d'' over I; 68 plagal shadow: minor iv6/4 (ges'/ees') -> I | B-flat major | f, largamente, cantabile; 68 mp |
+| 59-68 | V Apoteosi | = P06 (its bars 1-10): the COMPLETE TUNE in B-flat major as cantus firmus at its own tempo (soprano 59-66), over its own mirror (bass 59-62; the mirror's last pickup g,-bes, is replaced by d, to avoid fifths on successive beats) and the answer in F major (bass 63-66) sounding against its own mirror in the tenor (63-66: f2. f8 g8 | f2. f8 g8 | f4. e8 e4. c8 | c2. d8 f8); 66 V (ii4/2 - V6/5 - V); 67 the tune's open ending c'' rises to d'' over I; 68 plagal shadow: minor iv6/4 (ges'/ees') -> I | B-flat major | f, largamente, cantabile; 68 mp |
 | 69-70 | | final B-flat major chord held, d'' on top | B-flat | p < mf (fermata) |
 
 ### C3. Tonal plan and its logic
@@ -235,10 +235,10 @@ piece balances sharp-side tension (II) against flat-side darkness (III) around t
    (no motor countersubject survived: the solver's candidates were stepwise but harmonically aimless
    and cross-related with S2's a-natural, and CSb does not fit against S2); the episodes 29-32 and
    43-46; the upper voice(s) over the mirror pair 33-36 (CSb tested there: fails); the alto 47-54 in
-   P09 (it must avoid e/f octaves with the augmented bass's e,-f, neighbour notes); the inner voices of
-   P06 are free lines (the lament tried as the tenor there gave 2 BEAT against the mirror bass), so
-   "other voices weave the subjects" in the apotheosis is true for the bass (mirror, answer) and not
-   for the inner voices.
+   P09 (it must avoid e/f octaves with the augmented bass's e,-f, neighbour notes). In P06 the tenor
+   is thematic only in 63-66 (the answer's mirror) and the alto is free throughout; the lament tried
+   as the tenor there gave 2 BEAT against the mirror bass, so the lament does not return in the
+   apotheosis except as the chromatic e'-ees' inflection of the alto (64) and the minor iv (68).
 5. Part II states S2 three times in 10 bars (alto 19, tenor 21, soprano 25). Moving S2 below the
    answer in 25-28 is not an option (CB1 is only proven with S2 above). If the third S2 feels
    redundant, cut the episode 29-32 to 2 bars rather than dropping the combination (the budget has

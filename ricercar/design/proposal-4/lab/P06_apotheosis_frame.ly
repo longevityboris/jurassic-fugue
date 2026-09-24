@@ -1,4 +1,4 @@
-% P06 apotheosis (B-flat major): the complete tune as cantus firmus (S) over its own mirror (B, bars 1-4) and the answer (B, bars 5-8); free inner voices; c'' rises to d''
+% P06 apotheosis (B-flat major): the complete tune as cantus firmus (S) over its own mirror (B, bars 1-4) and the answer (B, bars 5-8), the answer's MIRROR in the tenor (bars 5-8); c'' rises to d''
 % plagal close bar 10 with the minor subdominant (ges) as the last shadow of the minor
 \version "2.24.0"
 soprano = \absolute {
@@ -17,11 +17,11 @@ alto = \absolute {
   d'4. ees'8 f'4 ees'4 |   % 1
   d'4 f'4 ees'4 f'8 ees'8 |   % 2
   f'4. ees'8 ees'4. f'8 |   % 3
-  a'2 g'4 f'4 |   % 4
-  f'4. f'8 d'4 f'8 g'8 |   % 5
-  a'2. a'8 g'8 |   % 6
-  a'4. bes'8 bes'4. g'8 |   % 7
-  g'2. f'4 |   % 8
+  a'2 g'4 f'4~ |   % 4
+  f'4 e'4 d'4 e'4~ |   % 5
+  e'4 ees'4 f'2 |   % 6
+  c''2. bes'4~ |   % 7
+  bes'4 a'4 g'2 |   % 8
   f'1 |   % 9
   ges'2 f'2 |   % 10
 }
@@ -30,10 +30,10 @@ tenor = \absolute {
   bes4 aes4 g4 f4 |   % 2
   f4 d'4 c'4. c'8 |   % 3
   c'2. f4 |   % 4
-  c'2 bes4 c'4 |   % 5
-  c'2 d'4 c'8 bes8 |   % 6
-  c'4. bes8 bes4. ees'8 |   % 7
-  ees'2. ees'4 |   % 8
+  f2. f8 g8 |   % 5
+  f2. f8 g8 |   % 6
+  f4. e8 e4. c8 |   % 7
+  c2. d8 f8 |   % 8
   d'1 |   % 9
   ees'2 d'2 |   % 10
 }
@@ -57,5 +57,5 @@ bass = \absolute {
     \new Staff \with { instrumentName = "B" } { \clef "bass" \key bes \minor \bass }
   >>
   \layout { }
-  \midi { \tempo 4 = 84 }
+  \midi { \tempo 4 = 66 }
 }
