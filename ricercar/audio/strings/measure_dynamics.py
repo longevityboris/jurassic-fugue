@@ -32,6 +32,14 @@ def a_weight(sr):
     return bilinear(nums, dens, sr)
 
 
+def k_weight(x, sr=48000):
+    """ITU-R BS.1770 K-weighting (48 kHz coefficients)."""
+    assert sr == 48000
+    y = lfilter([1.53512485958697, -2.69169618940638, 1.19839281085285],
+                [1.0, -1.69065929318241, 0.73248077421585], x)
+    return lfilter([1.0, -2.0, 1.0], [1.0, -1.99004745483398, 0.99007225036621], y)
+
+
 def stats(x, sr, aw):
     m = x.mean(axis=1) if x.ndim == 2 else x
     rms = 10 * np.log10(np.mean(m ** 2) + 1e-20)

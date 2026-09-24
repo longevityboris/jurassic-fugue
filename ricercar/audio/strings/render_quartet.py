@@ -364,7 +364,8 @@ def rescue_range(voices: list[Voice], jobs_out: list, log: list):
                     continue
 
                 def free(a, b, other=other):
-                    return not any(m.on < b + 0.25 and m.off > a - 0.25 for m in other.notes)
+                    # the lower player may still be finishing a note as the phrase begins (hand-off)
+                    return not any(m.on < b + 0.15 and m.off > a + 0.04 for m in other.notes)
                 if not free(n.on, n.off):
                     continue
                 # grow the phrase through connected notes while the lower instrument rests
@@ -401,6 +402,9 @@ def rel_cc(seconds: float) -> int:
     return int(np.clip(round((seconds - 0.03) / 1.2 * 127), 0, 127))
 
 
+SHORT_REL = float(os.environ.get("QUARTET_SHORT_REL", "0.09"))   # release of a short note into the next
+
+
 def shape_articulation(notes: list[Note], short_s: float, xfade_s: float, has_art: bool, has_rel: bool):
     """Infer CC20 (articulation) and CC21 (release) per note; extend slurred
     notes so the previous note fades out under the next one."""
@@ -429,8 +433,13 @@ def shape_articulation(notes: list[Note], short_s: float, xfade_s: float, has_ar
         if slur_out:
             n.off = max(n.off, nxt.on + xfade_s)
             rel = 0.12
+        elif gap < 0.08 and dur >= short_s and nxt is not None and (nxt.art or 0) >= 96:
+            # into a detached short note (a dotted figure, a run): lift the bow a
+            # moment early so the short note speaks instead of drowning in a release
+            n.off = max(n.on + 0.6 * dur, min(n.off, nxt.on - 0.025))
+            rel = SHORT_REL
         elif gap < 0.08:
-            rel = 0.18 if dur < short_s else 0.22
+            rel = SHORT_REL if dur < short_s else 0.22
         elif dur < short_s:
             rel = 0.25
         else:
@@ -704,7 +713,10 @@ def main(argv=None):
         rep = dict(midi=str(a.midi), lib=a.lib, hall=a.hall, wet_db=a.wet, c80_db=c80, duration_s=len(mix) / SR,
                    true_peak_dbtp=tp_post, offset_s=first / SR,
                    jobs=[dict(label=j.label, inst=j.inst, kind=j.kind, notes=len(j.notes),
-                              articulation=art_counts.get(j.label)) for j in jobs],
+                              articulation=art_counts.get(j.label),
+                              note_list=[(round(n.on, 4), round(n.off, 4), n.key, n.vel, n.art)
+                                         for n in j.notes]) for j in jobs],
+                   cc1={v.inst: [(round(t, 3), val) for t, val in v.cc.get(1, [])] for v in voices},
                    stem_rms_db_when_active=level_report, notes=log)
         a.report.write_text(json.dumps(rep, indent=1))
     if a.keep_temp:

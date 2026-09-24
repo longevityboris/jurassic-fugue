@@ -12,8 +12,8 @@ For every instrument (violin, viola, cello, bass) and every chromatic note it
   3. extends the sustain to SUSTAIN_S seconds by pitch-synchronous grain
      splicing (cross-correlation matched splice points, 70 ms crossfades, random
      grain order, slow level normalisation) so long notes never loop audibly;
-  4. measures the A-weighted steady level of each note, smooths the level across
-     the range, and calibrates the three layers to fixed loudness steps
+  4. measures the K-weighted (BS.1770) steady level of each note, smooths the
+     level across the range, and calibrates the three layers to fixed loudness steps
      (ff = 0 dB, mf = -6.5 dB, pp = -16 dB) so CC1 behaves predictably;
   5. writes <inst>.sfz with:
        CC1   dynamics on the perform.py scale (ppp 36, pp 49, p 62, mp 75, mf 88,
@@ -63,7 +63,8 @@ XF = {"pp": (0, 49, 49, 88), "mf": (49, 88, 88, 114), "ff": (88, 114, 114, 127)}
 # loudness of each layer at its anchor (dB re ff) = the CC1 target there, so the
 # compensation curve is 0 dB at the anchors and only evens out the crossfades
 LAYER_DB = {"pp": -16.0, "mf": -6.5, "ff": 0.0}
-REF_DB = -20.0          # A-weighted steady level of the ff layer mid-range (dBFS, before volume=-6)
+REF_DB = -20.0          # K-weighted steady level of the ff layer mid-range (dBFS, before volume=-6)
+REGISTER_SLOPE_DB = 2.0  # how much of an instrument's natural register slope is kept (+-dB)
 # CC1 -> target loudness (dB, relative to the ff layer); about 3.5 dB per dynamic step
 CC1_TARGET = [(0, -30.0), (20, -24.5), (36, -20.0), (49, -16.0), (62, -12.5), (75, -9.5), (88, -6.5),
               (101, -3.2), (114, 0.0), (127, 1.5)]
@@ -84,6 +85,30 @@ def a_weighting(fs: int):
 
 
 AW_B, AW_A = a_weighting(SR)
+
+
+def k_level_db(x: np.ndarray) -> float:
+    """ITU-R BS.1770 K-weighted level (the loudness proxy used for calibration:
+    A-weighting under-reads the cello's low register by ~5 dB against the violin)."""
+    m = x.mean(axis=1) if x.ndim == 2 else x
+    y = lfilter([1.53512485958697, -2.69169618940638, 1.19839281085285],
+                [1.0, -1.69065929318241, 0.73248077421585], m)
+    y = lfilter([1.0, -2.0, 1.0], [1.0, -1.99004745483398, 0.99007225036621], y)
+    return float(10 * np.log10(np.mean(y.astype(np.float64) ** 2) + 1e-20))
+
+
+def add_k_levels(meta: list[dict]) -> bool:
+    """Measure the K-weighted steady level of every built sample (older meta.json
+    files only carry the A-weighted one).  Returns True if anything changed."""
+    changed = False
+    for m in meta:
+        if "klevel_db" in m:
+            continue
+        y, _ = sf.read(str(QUARTET_DIR / m["path"]), dtype="float64", always_2d=True)
+        steady = y[m["s0"]: max(m["s0"] + int(0.3 * SR), m["s1"])]
+        m["klevel_db"] = k_level_db(steady) - m["norm_gain_db"]
+        changed = True
+    return changed
 
 
 def a_level_db(x: np.ndarray) -> float:
@@ -298,6 +323,7 @@ def process_one(job):
     y[:fi] *= np.linspace(0, 1, fi)[:, None]
     steady = y[s0: max(s0 + int(0.3 * fs), s1)]
     level = a_level_db(steady)
+    klevel = k_level_db(steady)
     peak = float(np.max(np.abs(y)))
     gain = 10 ** (-1.0 / 20) / peak                         # peak-normalise to -1 dBFS
     y *= gain
@@ -310,7 +336,7 @@ def process_one(job):
     short_off = max(0.0, t3 - SHORT_RISE) if t3 > 0.1 else 0.3 * t3
     legato_off = float(np.clip(max(t3 + 0.05, 0.12), 0.12, max(0.12, s1 / fs - 0.2)))
     return dict(inst=inst, dyn=dyn, midi=midi, file=c["file"], string=c["string"], cents=c["cents"],
-                path=str(out_path.relative_to(QUARTET_DIR)), level_db=level - 20 * np.log10(1.0),
+                path=str(out_path.relative_to(QUARTET_DIR)), level_db=level, klevel_db=klevel,
                 norm_gain_db=20 * np.log10(gain), attack_s=att, rise6_s=t6, rise3_s=t3,
                 normal_offset=int(normal_off * fs), legato_offset=int(legato_off * fs),
                 short_offset=int(short_off * fs), loop_start=int(loop_start), loop_end=int(loop_end),
@@ -337,7 +363,7 @@ def smooth_levels(meta: list[dict]) -> dict:
     by_dyn = defaultdict(dict)
     for m in meta:
         # level of the note as it will sound = measured level + normalisation gain
-        by_dyn[m["dyn"]][m["midi"]] = m["level_db"]
+        by_dyn[m["dyn"]][m["midi"]] = m["klevel_db"]
     out = {}
     curves = {}
     for d, lv in by_dyn.items():
@@ -352,17 +378,17 @@ def smooth_levels(meta: list[dict]) -> dict:
     k_mid = keys[len(keys) // 2]
     dev = defaultdict(list)                  # each note's deviation from its layer's smooth curve
     for m in meta:
-        dev[m["midi"]].append(m["level_db"] - float(np.polyval(curves[m["dyn"]], m["midi"])))
+        dev[m["midi"]].append(m["klevel_db"] - float(np.polyval(curves[m["dyn"]], m["midi"])))
     for m in meta:
         k = m["midi"]
-        # keep the instrument's natural register slope (clamped to +-6 dB), but pin
-        # the ff curve at the middle of the range to REF_DB for every instrument
-        slope = float(np.clip(np.polyval(ref, k) - np.polyval(ref, k_mid), -6, 6))
+        # keep a little of the instrument's natural register slope (+-REGISTER_SLOPE_DB),
+        # and pin the ff curve at the middle of the range to REF_DB for every instrument
+        slope = float(np.clip(np.polyval(ref, k) - np.polyval(ref, k_mid), -REGISTER_SLOPE_DB, REGISTER_SLOPE_DB))
         target = REF_DB + slope + LAYER_DB[m["dyn"]]
         # all layers of a key keep the same 30 % of that key's natural unevenness,
         # so the pp/mf/ff crossfade of one key never bulges or dips
         keep = 0.3 * float(np.clip(np.mean(dev[k]), -3, 3))
-        out[(m["dyn"], k)] = float(target + keep - m["level_db"])
+        out[(m["dyn"], k)] = float(target + keep - m["klevel_db"])
     return out
 
 
@@ -455,7 +481,7 @@ def write_sfz(inst: str, meta: list[dict]):
         (64, 95, "legato_offset", "ampeg_attack=0.07 ampeg_vel2attack=-0.03"),
         # short (detache / spiccato-like): crisp start and a small accent decay
         (96, 127, "short_offset", "ampeg_attack=0.004 ampeg_vel2attack=0 ampeg_hold=0.03 "
-                                   "ampeg_decay=0.16 ampeg_sustain=72"),
+                                   "ampeg_decay=0.12 ampeg_sustain=60"),
     ]
     for d in DYNAMICS:
         notes = by.get(d, {})
@@ -530,6 +556,8 @@ def main():
             meta_path.parent.mkdir(parents=True, exist_ok=True)
             meta_path.write_text(json.dumps(all_meta, indent=1))
         meta = all_meta[inst]
+        if add_k_levels(meta):
+            meta_path.write_text(json.dumps(all_meta, indent=1))
         path = write_sfz(inst, meta)
         cov = {d: len([m for m in meta if m["dyn"] == d]) for d in DYNAMICS}
         print(f"{inst}: {len(meta)} samples {cov} -> {path}")
