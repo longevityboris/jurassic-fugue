@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install, build and verify everything render_quartet.py needs.  Idempotent: whatever
 # is already present and verified is left alone.  A second run re-checks files and
-# hashes and renders a smoke test (about 10 s); the tuning verification (every key x
+# hashes and renders a smoke test (under 30 s); the tuning verification (every key x
 # layer, steady and attack, about 1 min) only reruns when the instruments changed.
 #
 #   ./setup_strings.sh              install what is missing, build, verify

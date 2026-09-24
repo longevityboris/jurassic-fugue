@@ -107,7 +107,10 @@ def main():
     lv_last = float(np.max(e[int((last_off - 1.0) / 0.05): int(last_off / 0.05)]))
     after = e[int(last_off / 0.05):]
     i60 = np.flatnonzero(after < lv_last - 60)
-    ir, _ = sf.read(str(LIB / "IR" / "Detmold-Konzerthaus-S1R163-MS-48k.wav"), always_2d=True)
+    ir_file, _ = sf.read(str(LIB / "IR" / "Detmold-Konzerthaus-S1R163-MS-48k.wav"), always_2d=True)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    import hall                                     # the response the renderer convolves with (tail continued)
+    ir = hall.Hall("detmold", SR).ir
     irm = (ir ** 2).sum(axis=1)
     sch = np.cumsum(irm[::-1])[::-1]
     sch_db = 10 * np.log10(sch / sch[0] + 1e-30)
@@ -115,7 +118,7 @@ def main():
                        last_note_level_db=round(lv_last, 1),
                        minus60_re_last_note_after_s=round(float(i60[0] * 0.05), 2) if len(i60) else None,
                        last_0p5s_before_fade_db_re_peak=round(db(m[-int(0.8 * SR): -int(0.3 * SR)]) - float(e.max()), 1),
-                       ir_length_s=round(len(ir) / SR, 2),
+                       ir_file_length_s=round(len(ir_file) / SR, 2), ir_length_s=round(len(ir) / SR, 2),
                        ir_energy_after_4s_db=round(float(sch_db[int(4 * SR)]), 1) if len(ir) > 4 * SR else None)
     # stereo
     L, R = x[:, 0], x[:, 1]

@@ -14,7 +14,8 @@ Anchors (49 / 88 / 114 = one layer alone) are the reference.
   python3 qa_layers.py [--inst violin,violin2,viola,cello,bass] [--every 3]
   python3 qa_layers.py --interference   # proof: each layer alone vs their sum
 
---interference renders a held note at CC1 62 and 101 three times, each time with
+--interference renders a held note at CC1 62, 68, 101 and 107 (68 and 107 lie in the
+SFZ's narrow crossfade zones, which render_quartet.py never parks in) three times, each time with
 only one layer's regions kept (pitch_random=0), then compares the level wander of
 each layer alone, of their actual sum, and of their power sum (what uncorrelated
 layers would give): if the sum wanders far more than the power sum, the layers
@@ -51,7 +52,7 @@ def interference():
         return 10 * np.log10(np.mean(s[: m * hop].reshape(m, hop) ** 2, axis=1) + 1e-20)
     for inst, key in (("violin2", 67), ("cello", 60), ("viola", 54)):
         src = (QUARTET / f"{inst}.sfz").read_text().splitlines()
-        for cc in (62, 101):
+        for cc in (62, 68, 101, 107):     # 68 / 107: inside the SFZ's narrow crossfade zones
             mf = mido.MidiFile(type=0, ticks_per_beat=960)
             tr = mido.MidiTrack()
             mf.tracks.append(tr)

@@ -244,7 +244,9 @@ def part_c(res):
                        check=True, capture_output=True)
         x = load(wav)
         from scipy.signal import hilbert
-        env = np.abs(hilbert(x[int(0.9 * SR): int(5.2 * SR)]))
+        # analytic envelope of a longer stretch, 0.1 s cut from each end (the Hilbert
+        # transform rings at a segment's edges: an 11 dB "step" in the first ms otherwise)
+        env = np.abs(hilbert(x[int(0.8 * SR): int(5.3 * SR)]))[int(0.1 * SR): -int(0.1 * SR)]
         e = 20 * np.log10(env + 1e-12)
         # per-millisecond level; the largest 1 ms change vs the median change
         ms = e[::48]

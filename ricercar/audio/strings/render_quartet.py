@@ -915,9 +915,10 @@ def main(argv=None):
     with ThreadPoolExecutor(min(6, os.cpu_count() or 4)) as ex:
         stems = list(ex.map(lambda t: run_sfizz(*t), tasks))
     sh = int(round(shift_s * SR))
-    if a.keep_temp:        # kept job WAVs start at MIDI time 0, like the MIDI files' notes minus the shift
-        for (_, _, wav_path), x in zip(tasks, stems):
+    if a.keep_temp:        # kept job files are in MIDI time (sfizz rendered them shift_s later)
+        for j, (_, mid_path, wav_path), x in zip(jobs, tasks, stems):
             sf.write(str(wav_path), x[sh:], SR, subtype="FLOAT")
+            job_midi(j, transpose=-12 if j.kind == "double" else 0, shift=0.0).save(str(mid_path))
 
     n = max(len(s) for s in stems) + int(4.0 * SR)
     reverb = None if a.hall == "none" else hall.Hall(a.hall, SR)

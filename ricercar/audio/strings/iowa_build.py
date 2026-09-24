@@ -139,6 +139,35 @@ def add_k_levels(meta: list[dict]) -> bool:
     return changed
 
 
+def hshelf(fs: int, f0: float, gain_db: float, bw_oct: float = 1.0):
+    """RBJ-cookbook high shelf (sfizz's eq_type=hshelf, bandwidth in octaves) -> (b, a)."""
+    A = 10 ** (gain_db / 40)
+    w0 = 2 * np.pi * f0 / fs
+    cw, sw = np.cos(w0), np.sin(w0)
+    alpha = sw * np.sinh(np.log(2) / 2 * bw_oct * w0 / sw)
+    b = [A * ((A + 1) + (A - 1) * cw + 2 * np.sqrt(A) * alpha), -2 * A * ((A - 1) + (A + 1) * cw),
+         A * ((A + 1) + (A - 1) * cw - 2 * np.sqrt(A) * alpha)]
+    a = [(A + 1) - (A - 1) * cw + 2 * np.sqrt(A) * alpha, 2 * ((A - 1) - (A + 1) * cw),
+         (A + 1) - (A - 1) * cw - 2 * np.sqrt(A) * alpha]
+    return np.array(b) / a[0], np.array(a) / a[0]
+
+
+def add_eq_k(meta: list[dict]) -> bool:
+    """Loudness change (K-weighted dB) per dB of the brightness shelf, per sample,
+    so the CC1 volume curve can keep loudness on target while the shelf moves."""
+    changed = False
+    b, a = hshelf(SR, EQ_FREQ, 3.0)
+    for m in meta:
+        if m.get("eq_k_freq") == EQ_FREQ:
+            continue
+        y, _ = sf.read(str(QUARTET_DIR / m["path"]), dtype="float64", always_2d=True)
+        steady = y[m["s0"]: max(m["s0"] + int(0.5 * SR), m["s1"])]
+        m["eq_k"] = round((k_level_db(lfilter(b, a, steady, axis=0)) - k_level_db(steady)) / 3.0, 4)
+        m["eq_k_freq"] = EQ_FREQ
+        changed = True
+    return changed
+
+
 def a_level_db(x: np.ndarray) -> float:
     y = lfilter(AW_B, AW_A, x.mean(axis=1) if x.ndim == 2 else x)
     return float(10 * np.log10(np.mean(y.astype(np.float64) ** 2) + 1e-20))
@@ -488,14 +517,18 @@ def smooth_levels(meta: list[dict]) -> dict:
     return out
 
 
-def cc1_curve() -> list[float]:
+def cc1_curve(eq_k: dict | None = None, eq_depth: float = 0.0) -> list[float]:
     """Volume (dB) to add at each CC1 value so loudness follows CC1_TARGET given
-    equal-power crossfades between layers calibrated to LAYER_DB."""
+    equal-power crossfades between layers calibrated to LAYER_DB, and net of the
+    brightness shelf's own loudness change (eq_k[layer] dB per dB of shelf)."""
     tx = [p[0] for p in CC1_TARGET]
     ty = [p[1] for p in CC1_TARGET]
+    ex = [p[0] for p in EQ_CURVE]
+    ey = [p[1] for p in EQ_CURVE]
     comp = []
     for v in range(128):
         p = 0.0
+        k = 0.0
         for d, (i0, i1, o0, o1) in XF.items():
             # same maths as sfizz crossfadeIn/crossfadeOut (power curve -> linear power)
             pin = 1.0 if (d == "pp" or v >= i1) else (0.0 if v < i0 else min(1.0, (v - i0) / (i1 - i0 - 1)))
@@ -504,8 +537,11 @@ def cc1_curve() -> list[float]:
             else:
                 pos = (v - o0) / (o1 - o0 - 1)
                 pout = 0.0 if pos > 1 else 1.0 - pos
-            p += pin * pout * 10 ** (LAYER_DB[d] / 10)
-        comp.append(float(np.interp(v, tx, ty) - 10 * np.log10(p)))
+            w = pin * pout * 10 ** (LAYER_DB[d] / 10)
+            p += w
+            k += w * (eq_k or {}).get(d, 0.0)
+        eq_db = (k / p) * eq_depth * float(np.interp(v, ex, ey)) if p > 0 else 0.0
+        comp.append(float(np.interp(v, tx, ty) - 10 * np.log10(p) - eq_db))
     return comp
 
 
@@ -540,7 +576,9 @@ def retune(verify_json: Path, only: set):
 def write_sfz(inst: str, meta: list[dict]):
     corr = load_corrections()
     cal = smooth_levels(meta)
-    comp = cc1_curve()
+    eq_k = {d: float(np.median([m["eq_k"] for m in meta if m["dyn"] == d and "eq_k" in m] or [0.0]))
+            for d in DYNAMICS}
+    comp = cc1_curve(eq_k, EQ_DEPTH.get(inst, 2.0))
     depth = 30.0
     by = defaultdict(dict)
     for m in meta:
@@ -661,7 +699,7 @@ def main():
             meta_path.parent.mkdir(parents=True, exist_ok=True)
             meta_path.write_text(json.dumps(all_meta, indent=1))
         meta = all_meta[inst]
-        if add_k_levels(meta) | add_rise_times(meta) | add_settle_times(meta, a.jobs):
+        if add_k_levels(meta) | add_rise_times(meta) | add_settle_times(meta, a.jobs) | add_eq_k(meta):
             meta_path.write_text(json.dumps(all_meta, indent=1))
         path = write_sfz(inst, meta)
         cov = {d: len([m for m in meta if m["dyn"] == d]) for d in DYNAMICS}
