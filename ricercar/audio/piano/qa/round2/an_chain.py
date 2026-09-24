@@ -21,7 +21,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
 from lib2 import (SR, band_power, db, f0_estimate, frame_energy, hp_energy_db, midi_hz, midi_notes,  # noqa: E402
-                  read, write_json)
+                  partial_peak_cents, read, write_json)
 
 LEAD = 0.3
 CAL = Path.home() / "Music/SampleLibraries/SalamanderGrandPiano/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/SalamanderGrandPiano-Ricercar.calibration.json"
@@ -112,7 +112,12 @@ def main():
             d = n["end"] - n["start"]
             if d >= 0.14:
                 w1 = t_on + 0.03 + min(d - 0.05, 0.45)
-                c, _ = f0_estimate(m, t_on + 0.03, w1, key, span_cents=40)
+                # partial 1 from A2 up (the harmonic sum trades f0 against inharmonicity in short
+                # windows and reads the treble up to 12 cents sharp); harmonic sum with B below
+                if key >= 45:
+                    c = partial_peak_cents(m, t_on + 0.03, w1, key, 1, span=40)
+                else:
+                    c, _ = f0_estimate(m, t_on + 0.03, w1, key, span_cents=40)
                 row["cents"] = round(c, 1)
                 f = midi_hz(key)
                 odd = band_power(m, t_on + 0.03, w1, [f, 3 * f, 5 * f])
