@@ -40,6 +40,5 @@ ANS_LO = tr(S1, '-4')          # f' f' e' f' ...  (the answer an octave below AN
 S2_2 = at(S2, 2)               # S2 delayed by two beats
 CS2F = tr(CS2, '-4')           # d' c' bes aes g f e g aes
 CS1M = CS1                                        # lament unchanged in major (ges = b6 mixture: the minor's shadow)
-CS1IM = mel("r2 a2 | aes2 bes2 | ces'2 bes2 | a2 bes2")   # placeholder (not used)
 S2M_2 = at(S2M, 2)
 CS2MF = tr(CS2M, '-4')                            # d' c' bes a g f e g | a
