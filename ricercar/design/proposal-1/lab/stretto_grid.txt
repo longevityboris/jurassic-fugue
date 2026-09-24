@@ -1,0 +1,40 @@
+
+S1 leader, S1 follower; columns = entry distance in quarter notes
+             1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+8ve below    .  +  #  .  #  +  +  +  #  +  #  +  #  #  #  +
+5th below    +  #  #  .  #  #  #  #  #  #  #  #  #  #  #  #
+4th below    .  #  #  +  +  +  .  +  #  #  #  #  #  #  #  #
+unison       .  +  #  .  #  +  +  +  #  +  #  +  #  #  #  +
+4th above    .  #  #  +  +  +  .  +  #  #  #  #  #  #  #  #
+5th above    .  +  #  .  #  +  +  +  #  +  #  +  #  #  #  +
+8ve above    .  +  #  .  #  +  +  +  #  +  #  +  #  #  #  +
+
+I1 leader, I1 follower; columns = entry distance in quarter notes
+             1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+8ve below    +  +  #  .  .  +  #  .  .  .  .  +  #  +  +  +
+5th below    #  +  #  .  .  .  .  .  .  .  .  +  #  +  +  +
+4th below    .  .  +  +  .  .  .  +  #  #  #  #  #  #  #  #
+unison       +  +  #  .  .  +  #  .  .  .  .  +  #  +  +  +
+4th above    .  .  +  +  .  .  .  +  .  .  .  #  #  #  #  #
+5th above    .  #  #  .  #  #  #  #  #  #  #  #  #  #  #  #
+8ve above    +  +  #  .  .  .  .  .  .  .  .  +  #  +  +  +
+
+S1 leader, I1 follower; columns = entry distance in quarter notes
+             1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+8ve below    +  +  +  +  #  +  +  +  .  #  #  #  #  #  #  #
+5th below    +  +  #  .  .  +  #  .  .  .  .  +  #  +  +  +
+4th below    .  +  +  +  .  .  .  +  .  #  #  #  #  #  #  #
+unison       +  +  +  +  #  +  +  +  .  #  #  #  #  #  #  #
+4th above    +  +  #  .  .  .  #  .  .  .  .  +  #  +  +  +
+5th above    .  +  +  +  +  +  .  +  .  #  #  #  #  #  #  #
+8ve above    +  +  #  .  .  +  #  .  .  .  .  +  #  +  +  +
+
+I1 leader, S1 follower; columns = entry distance in quarter notes
+             1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+8ve below    .  +  .  #  #  +  +  +  #  +  #  +  #  #  #  +
+5th below    .  +  #  +  +  +  .  +  #  #  #  #  #  #  #  #
+4th below    .  +  #  #  #  +  +  +  #  +  #  +  #  #  #  +
+unison       .  +  .  #  #  +  +  +  #  +  #  +  #  #  #  +
+4th above    .  +  #  +  +  +  .  +  #  #  #  #  #  #  #  #
+5th above    .  +  .  #  #  +  +  +  #  +  #  +  #  #  #  +
+8ve above    +  +  .  +  #  +  #  +  #  #  #  #  #  #  #  #
