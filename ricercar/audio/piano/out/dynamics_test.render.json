@@ -1,0 +1,46 @@
+{
+ "input": "out/dynamics_test.mid",
+ "wav": "out/dynamics_test.wav",
+ "m4a": "out/dynamics_test.m4a",
+ "duration_s": 73.97,
+ "voices": {
+  "Soprano": {
+   "notes": 161,
+   "velocity_in_mean": 69.2,
+   "velocity_eff_mean": 69.2,
+   "rms_dbfs_prenorm": -35.25,
+   "transpose": 0
+  },
+  "Bass": {
+   "notes": 30,
+   "velocity_in_mean": 72.3,
+   "velocity_eff_mean": 72.3,
+   "rms_dbfs_prenorm": -38.51,
+   "transpose": 0
+  },
+  "Alto": {
+   "notes": 122,
+   "velocity_in_mean": 117.0,
+   "velocity_eff_mean": 81.9,
+   "rms_dbfs_prenorm": -35.83,
+   "transpose": 0
+  },
+  "Tenor": {
+   "notes": 17,
+   "velocity_in_mean": 70.0,
+   "velocity_eff_mean": 70.0,
+   "rms_dbfs_prenorm": -47.85,
+   "transpose": 0
+  }
+ },
+ "key_sharing": {
+  "unisons_merged": 0,
+  "restrikes": 0
+ },
+ "pedal_changes": 2,
+ "wet_db": -4.0,
+ "c80_db": 8.4,
+ "normalise_gain_db": 1.07,
+ "true_peak_dbfs": -1.0,
+ "rms_dbfs": -23.48
+}
