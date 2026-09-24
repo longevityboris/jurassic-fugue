@@ -14,16 +14,18 @@ For every instrument (violin, viola, cello, bass) and every chromatic note it
      grain order, slow level normalisation) so long notes never loop audibly;
   4. measures the A-weighted steady level of each note, smooths the level across
      the range, and calibrates the three layers to fixed loudness steps
-     (ff = 0 dB, mf = -8 dB, pp = -18 dB) so CC1 behaves predictably;
+     (ff = 0 dB, mf = -6.5 dB, pp = -16 dB) so CC1 behaves predictably;
   5. writes <inst>.sfz with:
-       CC1   dynamics: equal-power crossfade pp (<=16) -> mf (64) -> ff (>=112),
-             plus a volume curve so loudness moves ~linearly in dB with CC1
-             (cc1 0 = ppp, 16 = pp, 40 = p, 64 = mf, 88 = f, 112 = ff, 127 = fff)
+       CC1   dynamics on the perform.py scale (ppp 36, pp 49, p 62, mp 75, mf 88,
+             f 101, ff 114, fff 127): equal-power crossfade of the recorded layers
+             pp (<=49) -> mf (88) -> ff (>=114) plus a volume curve so loudness
+             moves about 3.5 dB per dynamic step (CC1_TARGET)
        CC20  articulation (set by render_quartet.py before each note-on):
-             0-63 normal bow attack, 64-95 legato (slurred: starts after the
-             attack, 60 ms fade-in), 96-127 short (crisp onset for fast notes)
+             0-63 normal bow stroke (recorded attack, slow swells shortened),
+             64-95 legato (slurred: starts in the sustain, 40-70 ms fade-in),
+             96-127 short (crisp onset, small accent decay, for fast notes)
        CC21  release time: 0.03 s + 1.2 s * cc21/127
-       vel   attack softness (vel 127 = the recorded bite, vel 1 = 150 ms swell)
+       vel   attack softness (vel 127 = the recorded bite, vel 1 = 100 ms fade-in)
              and a gentle accent (amp_veltrack 30 %)
        pitch bend +-2 semitones.
      CC11/CC7 are applied by render_quartet.py as post-gain on each voice.
@@ -51,11 +53,25 @@ from iowa_common import (DYNAMICS, INSTRUMENTS, QUARTET_DIR, RAW_DIR, load_audio
 
 SR = 48000
 SUSTAIN_S = 10.0
-LAYER_DB = {"pp": -18.0, "mf": -8.0, "ff": 0.0}
+# CC1 scale = the one ricercar/tools/perform.py writes for --target strings:
+#   value = 36 + 13 * (level - 1), level ppp=1 pp=2 p=3 mp=4 mf=5 f=6 ff=7 fff=8
+#   -> ppp 36, pp 49, p 62, mp 75, mf 88, f 101, ff 114, fff 127
+# Each recorded layer plays alone at its anchor and is crossfaded (equal power)
+# with its neighbour in between: pp <= 49, pp->mf 49..88, mf->ff 88..114, ff >= 114.
+LAYER_CC1 = {"pp": 49, "mf": 88, "ff": 114}
+XF = {"pp": (0, 49, 49, 88), "mf": (49, 88, 88, 114), "ff": (88, 114, 114, 127)}
+# loudness of each layer at its anchor (dB re ff) = the CC1 target there, so the
+# compensation curve is 0 dB at the anchors and only evens out the crossfades
+LAYER_DB = {"pp": -16.0, "mf": -6.5, "ff": 0.0}
 REF_DB = -20.0          # A-weighted steady level of the ff layer mid-range (dBFS, before volume=-6)
-# CC1 anchor points -> target loudness (dB, relative to the ff layer)
-CC1_TARGET = [(0, -26.0), (16, -18.0), (40, -12.5), (64, -8.0), (88, -3.5), (112, 0.0), (127, 1.5)]
-XF = {"pp": (0, 16, 16, 64), "mf": (16, 64, 64, 112), "ff": (64, 112, 112, 127)}
+# CC1 -> target loudness (dB, relative to the ff layer); about 3.5 dB per dynamic step
+CC1_TARGET = [(0, -30.0), (20, -24.5), (36, -20.0), (49, -16.0), (62, -12.5), (75, -9.5), (88, -6.5),
+              (101, -3.2), (114, 0.0), (127, 1.5)]
+# articulation timing (s): 'normal' notes keep at most NORMAL_RISE of the recorded
+# rise before the note reaches steady-3 dB (Iowa players often swell into pp/mf
+# notes for 0.3-0.6 s, far too slow for eighth notes); 'short' notes keep SHORT_RISE
+NORMAL_RISE = 0.14
+SHORT_RISE = 0.035
 
 
 # --------------------------------------------------------------------------- DSP
@@ -288,11 +304,30 @@ def process_one(job):
     loop_start, loop_end = find_loop(y.mean(axis=1), fs, f0)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     sf.write(str(out_path), y, fs, subtype="PCM_24")
+    # rise times of the recorded attack (10 ms RMS frames, re the steady level)
+    t6, t3 = rise_times(y, fs, s0, s1)
+    normal_off = max(0.0, t3 - NORMAL_RISE)
+    short_off = max(0.0, t3 - SHORT_RISE) if t3 > 0.1 else 0.3 * t3
+    legato_off = float(np.clip(max(t3 + 0.05, 0.12), 0.12, max(0.12, s1 / fs - 0.2)))
     return dict(inst=inst, dyn=dyn, midi=midi, file=c["file"], string=c["string"], cents=c["cents"],
                 path=str(out_path.relative_to(QUARTET_DIR)), level_db=level - 20 * np.log10(1.0),
-                norm_gain_db=20 * np.log10(gain), attack_s=att, legato_offset=int(min(max(s0, int(0.08 * fs)), int(0.6 * fs))),
-                short_offset=int(min(att * 0.5, 0.05) * fs), loop_start=int(loop_start), loop_end=int(loop_end),
+                norm_gain_db=20 * np.log10(gain), attack_s=att, rise6_s=t6, rise3_s=t3,
+                normal_offset=int(normal_off * fs), legato_offset=int(legato_off * fs),
+                short_offset=int(short_off * fs), loop_start=int(loop_start), loop_end=int(loop_end),
                 s0=s0, s1=s1, frames=len(y))
+
+
+def rise_times(y: np.ndarray, fs: int, s0: int, s1: int) -> tuple[float, float]:
+    mono = y.mean(axis=1).astype(np.float64)
+    hop = int(0.01 * fs)
+    n = min(len(mono), int(2.0 * fs)) // hop
+    db = 10 * np.log10(np.mean(mono[: n * hop].reshape(n, hop) ** 2, axis=1) + 1e-20)
+    st = 10 * np.log10(np.mean(mono[s0:s1] ** 2) + 1e-20)
+
+    def first(th):
+        i = np.flatnonzero(db > st + th)
+        return float(i[0] * hop / fs) if len(i) else s0 / fs
+    return first(-6.0), first(-3.0)
 
 
 # ------------------------------------------------------------------- SFZ
@@ -351,7 +386,36 @@ def cc1_curve() -> list[float]:
     return comp
 
 
+CORR_PATH = QUARTET_DIR / "tuning_corrections.json"
+
+
+def load_corrections() -> dict:
+    return json.loads(CORR_PATH.read_text()) if CORR_PATH.exists() else {}
+
+
+def retune(verify_json: Path, only: set):
+    """Closed-loop tuning: fold the pitch errors measured by verify_tuning.py
+    (YIN through sfizz, per layer and sample key) into tuning_corrections.json."""
+    rep = json.loads(Path(verify_json).read_text())
+    corr = load_corrections()
+    meta = json.loads((QUARTET_DIR / "samples" / "meta.json").read_text())
+    n = 0
+    for inst, layers in rep.items():
+        if only and inst not in only:
+            continue
+        centres = {(m["dyn"], m["midi"]) for m in meta.get(inst, [])}
+        for dyn, rows in layers.items():
+            for r in rows:
+                if (dyn, r["key"]) in centres and r["cents"] is not None and abs(r["cents"]) < 60:
+                    key = f"{inst}/{dyn}/{r['key']}"
+                    corr[key] = round(corr.get(key, 0.0) - r["cents"], 1)
+                    n += 1
+    CORR_PATH.write_text(json.dumps(corr, indent=0, sort_keys=True))
+    print(f"retune: updated {n} corrections -> {CORR_PATH}")
+
+
 def write_sfz(inst: str, meta: list[dict]):
+    corr = load_corrections()
     cal = smooth_levels(meta)
     comp = cc1_curve()
     depth = 30.0
@@ -366,7 +430,8 @@ def write_sfz(inst: str, meta: list[dict]):
         "// CC1 = dynamics (timbre crossfade + loudness), CC20 = articulation, CC21 = release,",
         "// velocity = attack softness / accent.  CC7/CC11 are applied by render_quartet.py.",
         "<control>",
-        "set_cc1=64",
+        "hint_ram_based=1",      # load every sample into RAM: sfizz_render's disk streaming drops notes
+        "set_cc1=88",
         "set_cc20=0",
         "set_cc21=30",
         "<curve>curve_index=17 " + " ".join(f"v{v:03d}={comp[v] / depth:.4f}" for v in range(128)),
@@ -375,16 +440,21 @@ def write_sfz(inst: str, meta: list[dict]):
         "xf_cccurve=power",
         f"volume_oncc1={depth:g} volume_curvecc1=17",
         "amp_veltrack=30",
-        "ampeg_attack=0.15 ampeg_vel2attack=-0.15",
+        "ampeg_attack=0.10 ampeg_vel2attack=-0.09",
         "ampeg_release=0.03 ampeg_release_oncc21=1.2",
         "bend_up=200 bend_down=-200",
         "pitch_random=3",
         "volume=-6",
     ]
-    arts = [  # (locc20, hicc20, offset key, attack override)
-        (0, 63, None, None),
-        (64, 95, "legato_offset", "ampeg_attack=0.06 ampeg_vel2attack=0"),
-        (96, 127, "short_offset", "ampeg_attack=0.003 ampeg_vel2attack=0"),
+    arts = [  # (locc20, hicc20, offset key, envelope override)
+        # normal bow stroke: recorded attack, slow swells shortened to NORMAL_RISE;
+        # velocity 127 = the recorded bite, low velocity = up to 90 ms softer start
+        (0, 63, "normal_offset", None),
+        # slurred: enters in the sustain, fades in under the previous note's release
+        (64, 95, "legato_offset", "ampeg_attack=0.07 ampeg_vel2attack=-0.03"),
+        # short (detache / spiccato-like): crisp start and a small accent decay
+        (96, 127, "short_offset", "ampeg_attack=0.004 ampeg_vel2attack=0 ampeg_hold=0.03 "
+                                   "ampeg_decay=0.16 ampeg_sustain=72"),
     ]
     for d in DYNAMICS:
         notes = by.get(d, {})
@@ -412,9 +482,9 @@ def write_sfz(inst: str, meta: list[dict]):
             for k, (lo, hi) in zip(ks, bounds):
                 m = notes[k]
                 vol = cal[(d, k)] - m["norm_gain_db"]
-                tune = -m["cents"]
+                tune = -m["cents"] + corr.get(f"{inst}/{d}/{k}", 0.0)
                 reg = (f"<region> sample={m['path']} lokey={lo} hikey={hi} pitch_keycenter={k} "
-                       f"tune={tune:.0f} volume={vol:.2f} loop_start={m['loop_start']} loop_end={m['loop_end']}")
+                       f"tune={tune:.1f} volume={vol:.2f} loop_start={m['loop_start']} loop_end={m['loop_end']}")
                 if offk:
                     reg += f" offset={m[offk]}"
                 reg += f"  // {midi_name(k)} {m['string']} {m['file']}"
@@ -430,8 +500,14 @@ def main():
     ap.add_argument("--jobs", type=int, default=10)
     ap.add_argument("--sustain", type=float, default=SUSTAIN_S)
     ap.add_argument("--sfz-only", action="store_true", help="rewrite SFZ from samples/meta.json")
+    ap.add_argument("--retune", type=Path, metavar="VERIFY_JSON",
+                    help="fold the errors measured by verify_tuning.py --json into the tune corrections, "
+                         "then rewrite the SFZ files (implies --sfz-only)")
     a = ap.parse_args()
     only = set(a.only.split(",")) - {""}
+    if a.retune:
+        retune(a.retune, only)
+        a.sfz_only = True
     table = load_analysis()
     meta_path = QUARTET_DIR / "samples" / "meta.json"
     all_meta = json.loads(meta_path.read_text()) if meta_path.exists() else {}
