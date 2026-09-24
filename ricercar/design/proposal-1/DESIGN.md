@@ -317,10 +317,10 @@ and the fermatas as `{"at": "68:3", "extra_beats": 2}` and
 | § | bars | name | keys | content | dynamics |
 |---|---|---|---|---|---|
 | I | 1-18 (+19:1) | Exposition (VERIFIED, fully written) | b-flat, f, b-flat, f → c: i6/4 | S1 S · A1 A · codetta 9-10 · S1 T · A1 B, with CS1 and CS2 | p, growing to mp |
-| II | 19-26 (+27:1) | Counter-exposition by mirror inversion | c → f → b-flat | M1 19-22: I1 in the bass (c), IC1 T, IC2 S, free A. M2 23-26: I1 in the alto (f), IC1 T, IC2 B, free S | pp sotto voce |
+| II | 19-26 (+27:1) | Counter-exposition by mirror inversion (VERIFIED, fully written: `M_mirror`) | c → f → b-flat | M1 19-22: I1 in the bass (c), IC1 T, IC2 S, A written free part. M2 23-26: I1 in the alto (f), IC1 T, IC2 B, S written free part | pp sotto voce |
 | III | 27-36 (+37:1) | Stretto I: chain in descending fifths | b-flat → e-flat → a-flat → D-flat | S1 in A (27), T (29), B (31), then S (33, major form), each 2 bars apart | mp, cresc. to f at 35 |
 | IV | 37-48 (+49:1) | Second exposition (S2), dolce | D-flat → A-flat → b-flat | S 37: S2 in D-flat (the soprano's S1 from 33 continues, so the whole theme sounds in D-flat); A 41: answer in A-flat; T 45: S2 in minor at its original pitch; CS3 below each | subito p dolce, mp |
-| V | 49-58 | Combination | b-flat → e-flat → V | C1 49-53: B S1 (tonic pedal), A S2 in F major, S CS2, T free. C2 54-58: S S1 in e-flat, A CS2, T S2 at its original B-flat-major pitch, B free; 58:3 Neapolitan 6th | mf → f, animando |
+| V | 49-58 | Combination | b-flat → e-flat → V | C1 49-53: B S1 (tonic pedal), A S2 in F major, S CS2, T free. C2 54-58: S S1 in e-flat, A CS2, T S2 at its original B-flat-major pitch, B free; 58:3 Neapolitan 6th (planned; the bass is still free there) | mf → f, animando |
 | VI | 59-68 | Climax on the augmented answer | V pedal | 59-63: B A1aug, T S1, A S2, S I1 (quadruple combination). 63:3-67:3: S S1 per arsin et thesin over the rising augmented bass. 66:1 vii°7 over the tonic bass (fff); 67:1 IV6 → 67:3 French sixth; 68 V4-3 → V7, fermata, general pause (written: X1) | ff at 59, fff at 66 |
 | VII | 69-77 | Apotheosis: the whole theme in B-flat major | B-flat | S THEMEM · A S1M at the lower fifth (71) · T, B free chorale foundation | pp, cresc. to ff at 74 |
 | Coda | 78-84 | Deceptive cadence and plagal Amen (written: X2, from bar 75) | B-flat | 77 V7 → 78 bVI (G-flat), soprano c''→bes'; 79 V; 80-81 tonic pedal with iv6/4 then IV6/4; 82 S1 head resolved as 4-3; 83 I · iv6/4; 84 I | subito p, down to ppp |
@@ -400,7 +400,8 @@ The full grid of proven options is in B3.
 6. **b-flat → e-flat → V (bars 49-59).** The combination over S1 in the bass
    (a tonic pedal). Then S1 moves to e-flat (iv), while S2 is heard at its ORIGINAL
    major pitch (c'' a' f' d'' bes'), which here is V of e-flat. iv prepares V: the
-   Neapolitan sixth (58:3) resolves to i6/4 over the pedal F.
+   Neapolitan sixth (58:3; planned, since the bass of bars 54-58 is still free) resolves
+   to V over the pedal F, with the subject's own 4-3 (bes-a) at 59:1 (Fsus4).
 7. **V (bars 59-68).** The dominant pedal. The augmented answer rises to bes, where
    the diminished seventh sounds over the tonic bass (66:1, fff). The bass then
    descends chromatically g-ges-f: IV6 (the Dorian E-flat/G) → French sixth (the
@@ -460,7 +461,7 @@ Bars 33-36 are D-flat: I6/4 (33:1) · ... · V (36).
 | 52 | ii-V/V · V/V |
 | 53 | V/V → |
 | 54-58 | the same, a fifth lower (e-flat), landing on F (V of b-flat) at 58:1 |
-| 58:3 | N6 (ees-ges-ces) |
+| 58:3 | N6 (ees-ges-ces), planned; resolves to Fsus4 → F at 59 |
 
 **Climax (59-68):**
 
@@ -510,7 +511,7 @@ Bars 33-36 are D-flat: I6/4 (33:1) · ... · V (36).
 | 36-37 | first major-key cadence (D-flat) | the first light in the piece |
 | 45 | 4-3 suspension bes'-a' pivots A-flat → b-flat | the light dims |
 | 49-51 | tonic pedal (S1 in the bass) under C7/B-flat → F/A | the combination begins as dominant against tonic |
-| 58:3 | Neapolitan 6th → i6/4 | prepares the climax pedal |
+| 58:3 | Neapolitan 6th (planned) → V with 4-3 (Fsus4 at 59:1) | prepares the climax pedal |
 | 59-62 | dominant pedal = A1 augmented; sus4-3 and b9-8 at once | rectus and inversus heads are the two classic dominant appoggiaturas |
 | 66-67 | diminished 7th over the tonic bass (fff) → v7 → IV6 → French sixth, with a chromatic bass slide g-ges-f | the peak; the subject's own landing is the third of the augmented sixth |
 | 68 | V4-3 → V7, fermata, general pause | the Beethoven silence |
@@ -552,7 +553,7 @@ model:
 | 41-48 | S (from 41:3) | a descant built on S2's leap figure (f''8 bes' → aes''8 des'') | mp at most |
 | 45 | A | the answer's landing bes' held as a 4-3 suspension → a' over F | the pivot back to b-flat |
 | 49-53 | T | from c' (the seventh of C7/B-flat) a slow lament: c'-b-bes-a-aes-g in halves | the CS1 fall at half speed |
-| 54-58 | B | bass of the e-flat combination: ees ... ending f (58:1) - ees (58:3, N6 bass) - f (59:1) | N6 → i6/4 over the pedal |
+| 54-58 | B | bass of the e-flat combination: ees ... ending f (58:1) - ees (58:3, N6 bass) - f (59:1) | N6 → Fsus4 → F over the pedal; to be written and checked |
 | 63-64 | A, T | CS1 and IC1 as a chromatic wedge in contrary motion, reaching the written X1 voicing at 65 | cresc. to fff |
 | 65-69 | all | WRITTEN: lab `X1_climax_exit.ly` | checker clean |
 | 69-77 | T, B | chorale foundation: tonic pedal bes (69-70), ees (IV, 71-72), then half-note root motion per C5; the tenor in CS1-shaped steps | the bass may double in octaves on the piano at ff |
@@ -578,6 +579,13 @@ model:
 5. **Register limits.** The soprano reaches c''' (84) in the free CS1 at bar 28 and
    bes'' in IC2 (bar 22). The apotheosis theme stays at bes' (its top note f'' = 77),
    so the ff at bar 74 must come from the full texture below, not from register.
+5b. **Keyboard spans in the mirror section, bars 23-26 (M2).** IC2 sits at F, in the bass
+   under IC1 at f' in the tenor, so the lower-staff spans are 15-24 semitones (for
+   example f'/f, at 23:2). The right hand cannot take the tenor either: aes'' to f'
+   is 15. The quartet is unaffected. For the piano, use the verified order
+   P07_I1-IC2-IC1 instead: tenor IC2 around f, bass IC1 at the f level (bes,-ges).
+   That keeps the lower staff within a tenth, and the trio is clean with strict 0.
+   The written free soprano of M2 must then be re-checked against it.
 6. **Exposition length.** The exposition is 18 bars (47 s). The four solo bars (10 s)
    are deliberate: the theme is heard at its original pitch before anything else.
 7. **Checker leniency.** tools/check.py accepts accented passing dissonance and
