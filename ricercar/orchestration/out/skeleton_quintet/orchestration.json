@@ -1,0 +1,428 @@
+{
+ "spec": "orchestration/quintet_skeleton.json",
+ "score": "design/final-lab/SK_final.ly",
+ "plan": "design/final-lab/plan.json",
+ "duration_s": 227.26,
+ "groups": {
+  "quartet": {
+   "renderer": "quartet",
+   "midi": "quartet.mid",
+   "parts": {
+    "vn1": {
+     "track": "Violin I",
+     "channel": 0,
+     "program": 40,
+     "instrument": "vn1",
+     "notes": 137,
+     "range": [
+      65,
+      82
+     ],
+     "windows": [
+      {
+       "kind": "line",
+       "voice": "soprano",
+       "at": "1:1",
+       "until": "35:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 0.0,
+       "t1_s": 122.128
+      },
+      {
+       "kind": "line",
+       "voice": "soprano",
+       "at": "42:1",
+       "until": "63:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 147.225,
+       "t1_s": 227.26
+      }
+     ]
+    },
+    "vn2": {
+     "track": "Violin II",
+     "channel": 1,
+     "program": 40,
+     "instrument": "vn2",
+     "notes": 156,
+     "range": [
+      57,
+      77
+     ],
+     "windows": [
+      {
+       "kind": "line",
+       "voice": "alto",
+       "at": "1:1",
+       "until": "9:4",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 0.0,
+       "t1_s": 28.378
+      },
+      {
+       "kind": "line",
+       "voice": "alto",
+       "at": "13:1",
+       "until": "30:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 38.919,
+       "t1_s": 98.751
+      },
+      {
+       "kind": "line",
+       "voice": "alto",
+       "at": "30:1",
+       "until": "35:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "detache",
+       "t0_s": 98.751,
+       "t1_s": 122.128
+      },
+      {
+       "kind": "line",
+       "voice": "alto",
+       "at": "42:1",
+       "until": "63:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 147.225,
+       "t1_s": 227.26
+      }
+     ]
+    },
+    "va": {
+     "track": "Viola",
+     "channel": 2,
+     "program": 41,
+     "instrument": "va",
+     "notes": 164,
+     "range": [
+      48,
+      65
+     ],
+     "windows": [
+      {
+       "kind": "line",
+       "voice": "alto",
+       "at": "9:4",
+       "until": "13:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 28.378,
+       "t1_s": 38.919
+      },
+      {
+       "kind": "line",
+       "voice": "tenor",
+       "at": "13:1",
+       "until": "35:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 38.919,
+       "t1_s": 122.128
+      },
+      {
+       "kind": "line",
+       "voice": "tenor",
+       "at": "37:1",
+       "until": "44:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 129.847,
+       "t1_s": 153.541
+      },
+      {
+       "kind": "line",
+       "voice": "tenor",
+       "at": "46:1",
+       "until": "63:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 159.857,
+       "t1_s": 227.26
+      }
+     ]
+    },
+    "vc": {
+     "track": "Cello",
+     "channel": 3,
+     "program": 42,
+     "instrument": "vc",
+     "notes": 107,
+     "range": [
+      36,
+      51
+     ],
+     "windows": [
+      {
+       "kind": "line",
+       "voice": "bass",
+       "at": "1:1",
+       "until": "35:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 0.0,
+       "t1_s": 122.128
+      },
+      {
+       "kind": "line",
+       "voice": "bass",
+       "at": "42:1",
+       "until": "63:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 147.225,
+       "t1_s": 227.26
+      }
+     ]
+    }
+   }
+  },
+  "piano": {
+   "renderer": "piano",
+   "midi": "piano.mid",
+   "parts": {
+    "soprano": {
+     "track": "soprano",
+     "channel": 0,
+     "program": 0,
+     "instrument": null,
+     "notes": 30,
+     "range": [
+      69,
+      79
+     ],
+     "windows": [
+      {
+       "kind": "line",
+       "voice": "soprano",
+       "at": "35:1",
+       "until": "42:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 122.128,
+       "t1_s": 147.225
+      },
+      {
+       "kind": "line",
+       "voice": "soprano",
+       "at": "46:1",
+       "until": "48:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 159.857,
+       "t1_s": 166.173
+      },
+      {
+       "kind": "line",
+       "voice": "soprano",
+       "at": "59:1",
+       "until": "63:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 208.439,
+       "t1_s": 227.26
+      }
+     ]
+    },
+    "alto": {
+     "track": "alto",
+     "channel": 1,
+     "program": 0,
+     "instrument": null,
+     "notes": 59,
+     "range": [
+      60,
+      76
+     ],
+     "windows": [
+      {
+       "kind": "line",
+       "voice": "alto",
+       "at": "35:1",
+       "until": "42:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 122.128,
+       "t1_s": 147.225
+      },
+      {
+       "kind": "line",
+       "voice": "alto",
+       "at": "46:1",
+       "until": "63:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 159.857,
+       "t1_s": 227.26
+      }
+     ]
+    },
+    "tenor": {
+     "track": "tenor",
+     "channel": 2,
+     "program": 0,
+     "instrument": null,
+     "notes": 52,
+     "range": [
+      48,
+      63
+     ],
+     "windows": [
+      {
+       "kind": "line",
+       "voice": "tenor",
+       "at": "44:1",
+       "until": "63:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 153.541,
+       "t1_s": 227.26
+      }
+     ]
+    },
+    "bass": {
+     "track": "bass",
+     "channel": 3,
+     "program": 0,
+     "instrument": null,
+     "notes": 58,
+     "range": [
+      36,
+      57
+     ],
+     "windows": [
+      {
+       "kind": "line",
+       "voice": "bass",
+       "at": "35:1",
+       "until": "42:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 122.128,
+       "t1_s": 147.225
+      },
+      {
+       "kind": "line",
+       "voice": "bass",
+       "at": "46:1",
+       "until": "63:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 159.857,
+       "t1_s": 227.26
+      }
+     ]
+    },
+    "soprano_8va": {
+     "track": "soprano_8va",
+     "channel": 4,
+     "program": 0,
+     "instrument": null,
+     "notes": 31,
+     "range": [
+      77,
+      94
+     ],
+     "windows": [
+      {
+       "kind": "line",
+       "voice": "soprano",
+       "at": "48:1",
+       "until": "59:1",
+       "octave": 12,
+       "level": -1.0,
+       "articulation": "auto",
+       "t0_s": 166.173,
+       "t1_s": 208.439
+      }
+     ]
+    },
+    "bass_8vb": {
+     "track": "bass_8vb",
+     "channel": 5,
+     "program": 0,
+     "instrument": null,
+     "notes": 23,
+     "range": [
+      24,
+      34
+     ],
+     "windows": [
+      {
+       "kind": "line",
+       "voice": "bass",
+       "at": "46:1",
+       "until": "51:1",
+       "octave": -12,
+       "level": -0.5,
+       "articulation": "auto",
+       "t0_s": 159.857,
+       "t1_s": 180.613
+      },
+      {
+       "kind": "line",
+       "voice": "bass",
+       "at": "55:1",
+       "until": "59:1",
+       "octave": -12,
+       "level": -0.5,
+       "articulation": "auto",
+       "t0_s": 194.526,
+       "t1_s": 208.439
+      }
+     ]
+    },
+    "pedal_8vb": {
+     "track": "pedal_8vb",
+     "channel": 6,
+     "program": 0,
+     "instrument": null,
+     "notes": 1,
+     "range": [
+      29,
+      29
+     ],
+     "windows": [
+      {
+       "kind": "pedal",
+       "voice": "bass",
+       "at": "42:1",
+       "until": "46:1",
+       "octave": -12,
+       "level": -0.5,
+       "articulation": "auto",
+       "t0_s": 147.225,
+       "t1_s": 159.857
+      }
+     ]
+    }
+   },
+   "pedal_changes": 34
+  }
+ }
+}

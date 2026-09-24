@@ -1,0 +1,180 @@
+{
+ "ok": true,
+ "errors": [],
+ "warnings": [
+  "va: 1 note(s) held across a hand-off shortened to the next note"
+ ],
+ "onset_tolerance_ticks": 60,
+ "tempo_changes": 209,
+ "parts": {
+  "vn1": {
+   "track": "Violin I",
+   "expected": 137,
+   "matched": 137,
+   "pedal_notes": 0,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    65,
+    82
+   ]
+  },
+  "vn2": {
+   "track": "Violin II",
+   "expected": 156,
+   "matched": 156,
+   "pedal_notes": 0,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    57,
+    77
+   ]
+  },
+  "va": {
+   "track": "Viola",
+   "expected": 164,
+   "matched": 164,
+   "pedal_notes": 0,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    48,
+    65
+   ]
+  },
+  "vc": {
+   "track": "Cello",
+   "expected": 107,
+   "matched": 107,
+   "pedal_notes": 0,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    36,
+    51
+   ]
+  },
+  "soprano": {
+   "track": "soprano",
+   "expected": 30,
+   "matched": 30,
+   "pedal_notes": 0,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    69,
+    79
+   ]
+  },
+  "alto": {
+   "track": "alto",
+   "expected": 59,
+   "matched": 59,
+   "pedal_notes": 0,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    60,
+    76
+   ]
+  },
+  "tenor": {
+   "track": "tenor",
+   "expected": 52,
+   "matched": 52,
+   "pedal_notes": 0,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    48,
+    63
+   ]
+  },
+  "bass": {
+   "track": "bass",
+   "expected": 58,
+   "matched": 58,
+   "pedal_notes": 0,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    36,
+    57
+   ]
+  },
+  "soprano_8va": {
+   "track": "soprano_8va",
+   "expected": 31,
+   "matched": 31,
+   "pedal_notes": 0,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    77,
+    94
+   ]
+  },
+  "bass_8vb": {
+   "track": "bass_8vb",
+   "expected": 23,
+   "matched": 23,
+   "pedal_notes": 0,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    24,
+    34
+   ]
+  },
+  "pedal_8vb": {
+   "track": "pedal_8vb",
+   "expected": 0,
+   "matched": 0,
+   "pedal_notes": 1,
+   "missing": 0,
+   "extra": 0,
+   "shortened": 0,
+   "range": [
+    29,
+    29
+   ]
+  }
+ },
+ "coverage": {
+  "soprano": {
+   "notes": 161,
+   "covered": 161,
+   "allowed_gaps": 0,
+   "uncovered": []
+  },
+  "alto": {
+   "notes": 180,
+   "covered": 180,
+   "allowed_gaps": 0,
+   "uncovered": []
+  },
+  "tenor": {
+   "notes": 162,
+   "covered": 162,
+   "allowed_gaps": 0,
+   "uncovered": []
+  },
+  "bass": {
+   "notes": 128,
+   "covered": 128,
+   "allowed_gaps": 0,
+   "uncovered": []
+  }
+ }
+}
