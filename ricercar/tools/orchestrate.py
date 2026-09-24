@@ -71,13 +71,26 @@ CC_MIN = 20                  # perform.py's floor for CC1/CC11
 TIMING_KEYS = {"tempo", "fermatas", "breaths", "measure", "voices", "humanize", "beat_unit"}
 OCTAVES = (-24, -12, 0, 12, 24)
 ART_CC20 = {"detache": 32, "normal": 32, "legato": 80, "slur": 80, "short": 112, "spiccato": 112}
-ART_ALL = {"auto", "detache", "normal", "legato", "slur", "short", "spiccato", "staccato", "tenuto"}
+ART_ALL = {"auto", "detache", "normal", "legato", "slur", "short", "spiccato", "staccato", "tenuto", "roll", "stroke"}
+ART_CC20.update({"staccato": 112, "tenuto": 32, "roll": 100, "stroke": 20})
 QUARTET_SHORT_S = 0.26       # render_quartet.py --short-ms default (auto articulation, CC20)
 
 
 # ------------------------------------------------------------------------------ renderers
 QUARTET_INSTR = {"vn1": ("Violin I", 40), "vn2": ("Violin II", 40), "va": ("Viola", 41),
                  "vc": ("Cello", 42), "cb": ("Contrabass", 43)}
+# orchestra: audio/orchestra/CONTRACT.md section 2 (part id, sounding compass); the renderer's own
+# table (orch_common.PARTS) is used when it is importable
+ORCH_PARTS = {"fl": (60, 96), "ob": (58, 91), "cl": (50, 91), "bn": (34, 75), "hn": (34, 77), "tpt": (54, 84),
+              "tbn": (40, 72), "btbn": (31, 67), "tba": (26, 65), "timp": (38, 57), "vn1": (55, 100),
+              "vn2": (55, 96), "va": (48, 88), "vc": (36, 81), "cb": (24, 67)}
+ORCH_GM = {"fl": 73, "ob": 68, "cl": 71, "bn": 70, "hn": 60, "tpt": 56, "tbn": 57, "btbn": 57, "tba": 58,
+           "timp": 47, "vn1": 40, "vn2": 40, "va": 41, "vc": 42, "cb": 43}
+ORCH_SIDECAR_KEYS = ("gain_db", "players", "pan", "depth_m", "width", "part")
+PLAYERS_CC16 = {"solo": 20, "a2": 64, "a4": 110}
+# organ: audio/organ/CONTRACT.md section 2 (divisions and key compass)
+ORGAN_DIVISIONS = {"HW": (36, 89), "POS": (36, 89), "PED": (36, 65)}
+ORGAN_DEFAULT_DIV = {"soprano": "HW", "alto": "HW", "tenor": "POS", "bass": "PED", "pedal": "PED"}
 
 
 def quartet_compass() -> dict:
@@ -91,23 +104,62 @@ def quartet_compass() -> dict:
         return {"vn1": (53, 100), "vn2": (53, 100), "va": (46, 91), "vc": (34, 81), "cb": (22, 67)}
 
 
+def orchestra_parts() -> tuple[dict, object]:
+    """(part id -> compass, track-name parser) from the orchestra renderer, else from its contract."""
+    try:
+        sys.path.insert(0, str(RICERCAR / "audio" / "orchestra"))
+        import orch_common as oc  # noqa: E402
+        return {k: (v["lo"], v["hi"]) for k, v in oc.PARTS.items()}, lambda n: oc.part_of_name(n)[0]
+    except Exception:
+        import re
+        rx = re.compile(r"^(" + "|".join(sorted(ORCH_PARTS, key=len, reverse=True)) + r")(?:[.:_\- ](\S.*))?$", re.I)
+        return dict(ORCH_PARTS), lambda n: (rx.match(n.strip()).group(1).lower() if rx.match(n.strip()) else None)
+
+
 RENDERERS = {
-    # target: which perform.py target supplies velocities / CCs; mono: parts are single lines
-    "piano": dict(target="piano", mono=False, doc="audio/piano/README.md"),
-    "quartet": dict(target="strings", mono=True, doc="audio/strings/README.md"),
+    # target: the perform.py target that supplies velocities / CCs
+    # mono: parts are single lines (a hand-off that meets a held note shortens it)
+    # cc: which of perform.py's controllers are written to the group's tracks
+    "piano": dict(target="piano", mono=False, cc=(), doc="audio/piano/README.md"),
+    "quartet": dict(target="strings", mono=True, cc=(1, 11), doc="audio/strings/README.md"),
+    "orchestra": dict(target="strings", mono=True, cc=(1, 11), doc="audio/orchestra/CONTRACT.md"),
+    # the organ ignores velocity; with options.swell the strings envelope drives the swell box (CC11)
+    "organ": dict(target="piano", mono=False, cc=(), doc="audio/organ/CONTRACT.md"),
 }
 
 
 def renderer_of(name: str) -> dict:
     if name not in RENDERERS:
-        extra = ""
-        for eng in ("organ", "orchestra"):
-            if name == eng:
-                c = RICERCAR / "audio" / eng / "CONTRACT.md"
-                extra = (f" ({c} {'exists but is not wired in yet' if c.exists() else 'does not exist yet'}; "
-                         "see ORCHESTRATION.md)")
-        raise SystemExit(f"unknown renderer {name!r}{extra}; known: {', '.join(RENDERERS)}")
+        raise SystemExit(f"unknown renderer {name!r}; known: {', '.join(RENDERERS)}")
     return RENDERERS[name]
+
+
+def part_track(rname: str, part: str, popts: dict) -> dict:
+    """How a part appears in its group's MIDI: track name, GM program, instrument id, compass."""
+    popts = popts or {}
+    if rname == "quartet":
+        inst = popts.get("instrument", part)
+        if inst not in QUARTET_INSTR:
+            raise SystemExit(f"quartet part {part!r}: instrument {inst!r} is not one of {', '.join(QUARTET_INSTR)} "
+                             "(give {\"instrument\": ...})")
+        return {"track": QUARTET_INSTR[inst][0], "program": QUARTET_INSTR[inst][1], "instrument": inst,
+                "compass": quartet_compass().get(inst)}
+    if rname == "orchestra":
+        tname = popts.get("track", part)
+        comp, parse = orchestra_parts()
+        inst = popts.get("part") or parse(tname)
+        if inst not in comp:
+            raise SystemExit(f"orchestra part {part!r}: track name {tname!r} is not a part id "
+                             f"({', '.join(comp)}, optionally with a tag: 'hn.1', 'fl:oct'); give {{\"part\": ...}}")
+        return {"track": tname, "program": ORCH_GM.get(inst, 0), "instrument": inst, "compass": comp[inst]}
+    if rname == "organ":
+        tname = popts.get("track", part).strip().lower()      # the organ lower-cases track names
+        div = popts.get("division") or ORGAN_DEFAULT_DIV.get(tname, "HW")
+        if div not in ORGAN_DIVISIONS:
+            raise SystemExit(f"organ part {part!r}: division {div!r} is not one of {', '.join(ORGAN_DIVISIONS)}")
+        return {"track": tname, "program": 19, "instrument": div, "compass": ORGAN_DIVISIONS[div]}
+    return {"track": popts.get("track", part), "program": int(popts.get("program", 0)), "instrument": None,
+            "compass": (21, 108)}
 
 
 # ------------------------------------------------------------------------------ spec
@@ -126,6 +178,7 @@ class Window:
     level: float = 0.0         # dynamic steps (1 = p -> mp); piano: hammer velocity, bowed: CC1/CC11
     accent: float = 0.0        # velocity offset (perform.py units)
     articulation: str = "auto"
+    players: str | None = None  # orchestra winds/brass: solo | a2 | a4 (CC16)
     pedal: dict = field(default_factory=dict)
 
 
@@ -165,11 +218,11 @@ def load_spec(spec_path: Path, plan: perform.Plan, end: F) -> Spec:
                 raise SystemExit(f"part {p!r} is declared in groups {part_group[p]!r} and {g!r}; part names "
                                  "must be unique")
             part_group[p] = g
-            if gd.get("renderer", g) == "quartet":
-                inst = (po or {}).get("instrument", p)
-                if inst not in QUARTET_INSTR:
-                    raise SystemExit(f"quartet part {p!r}: instrument {inst!r} is not one of "
-                                     f"{', '.join(QUARTET_INSTR)} (give {{\"instrument\": ...}})")
+            part_track(gd.get("renderer", g), p, po)          # validates the part for its renderer
+        tracks = [part_track(gd.get("renderer", g), p, po)["track"] for p, po in parts.items()]
+        dup = {t for t in tracks if tracks.count(t) > 1}
+        if dup:
+            raise SystemExit(f"group {g!r}: parts share the track name(s) {sorted(dup)}")
         bad = TIMING_KEYS & set(gd.get("plan_overrides", {}))
         if bad:
             raise SystemExit(f"group {g!r}: plan_overrides may not change {sorted(bad)}: every group shares one "
@@ -212,6 +265,9 @@ def load_spec(spec_path: Path, plan: perform.Plan, end: F) -> Spec:
         art = x.get("articulation", "auto")
         if art not in ART_ALL:
             raise SystemExit(f"{kind} #{i}: articulation {art!r} not in {sorted(ART_ALL)}")
+        pl = x.get("players")
+        if pl is not None and pl not in PLAYERS_CC16:
+            raise SystemExit(f"{kind} #{i}: players {pl!r} not in {sorted(PLAYERS_CC16)}")
         ped = {}
         if kind == "pedal":
             ped = {"mode": x.get("mode", "sustain"), "bridge": F(str(x.get("bridge", 1))) / 4,
@@ -220,7 +276,7 @@ def load_spec(spec_path: Path, plan: perform.Plan, end: F) -> Spec:
             if ped["mode"] not in ("sustain", "repeat"):
                 raise SystemExit(f"pedal point #{i}: mode {ped['mode']!r} (sustain | repeat)")
         windows.append(Window(i, kind, v, p, part_group[p], a, u, fmt_pos(plan, a), fmt_pos(plan, u), octv,
-                              float(x.get("level", 0.0)), float(x.get("accent", 0.0)), art, ped))
+                              float(x.get("level", 0.0)), float(x.get("accent", 0.0)), art, pl, ped))
     # One part plays one window at a time (a hand-off is two windows that touch).
     for p in part_group:
         ws = sorted([w for w in windows if w.part == p], key=lambda w: w.a)
@@ -379,7 +435,10 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
     # one perform.py run per (target, plan variant)
     perf_cache, group_perf = {}, {}
     for g, gd in spec.groups.items():
-        r = renderer_of(gd["renderer"])
+        r = dict(renderer_of(gd["renderer"]))
+        if gd["renderer"] == "organ" and gd["options"].get("swell"):
+            r["target"] = "strings"          # its CC11 envelope drives the swell box of enclosed divisions
+        gd["target"] = r["target"]
         variant = copy.deepcopy(plan_d)
         variant.update(copy.deepcopy(gd["plan_overrides"]))
         if gd["renderer"] == "piano":
@@ -445,11 +504,9 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
         for pi, (part, popts) in enumerate(gd["parts"].items()):
             ch = next(ch_iter)
             popts = popts or {}
-            if rname == "quartet":
-                inst = popts.get("instrument", part)
-                tname, prog = QUARTET_INSTR[inst]
-            else:
-                inst, tname, prog = None, popts.get("track", part), int(popts.get("program", 0))
+            pt = part_track(rname, part, popts)
+            inst, tname, prog = pt["instrument"], pt["track"], pt["program"]
+            mono = RENDERERS[rname]["mono"] and not popts.get("divisi")
             tr = mido.MidiTrack()
             tr.append(mido.MetaMessage("track_name", name=tname, time=0))
             tr.append(mido.Message("program_change", channel=ch, program=prog, time=0))
@@ -492,7 +549,7 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
                 elif w.articulation in ("legato", "slur", "tenuto") and rname == "piano" and nxt is not None \
                         and nxt[4] is w and 0 <= nxt[0] - x[1] < TPQ // 2:
                     x[1] = nxt[0] + 40
-            if RENDERERS[rname]["mono"]:
+            if mono:
                 for i in range(len(notes_out) - 1):
                     x, y = notes_out[i], notes_out[i + 1]
                     if y[0] < x[1] and y[4] is x[4]:
@@ -505,44 +562,50 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
                         x[1] = y[0] - 1
                 if trunc:
                     warnings.append(f"{part}: {trunc} note(s) held across a hand-off shortened to the next note")
-            # quartet articulation: CC20 per note (if any window gives one, every note needs a value)
-            cc20 = {}
-            if rname == "quartet" and any(x[4].articulation != "auto" for x in notes_out):
+            # bowed / wind articulation: CC20 per note (once any window gives one, every note needs a
+            # value, because the renderers stop inferring as soon as a track carries CC20)
+            cc20, cc16 = {}, {}
+            if rname in ("quartet", "orchestra") and any(x[4].articulation != "auto" for x in notes_out):
                 prev = None
                 for x in notes_out:
                     art = x[4].articulation
+                    dur = tmap.sec(x[1]) - tmap.sec(x[0])
                     if art in ART_CC20:
                         val = ART_CC20[art]
-                    elif art == "staccato":
-                        val = 112
-                    elif art == "tenuto":
-                        val = 32
-                    else:      # render_quartet.py's own inference
-                        dur = tmap.sec(x[1]) - tmap.sec(x[0])
+                    elif inst == "timp":   # render_orchestra.py: 0.9 s or longer is a roll
+                        val = 100 if dur >= 0.9 else 20
+                    else:                  # the renderers' own inference
                         conn = prev is not None and tmap.sec(x[0]) - tmap.sec(prev[1]) < 0.06 and prev[2] != x[2]
                         val = 112 if dur < QUARTET_SHORT_S else 80 if conn else 0
                     cc20[x[0]] = val
                     prev = x
+            # winds and brass: players (CC16) per note once any window names them
+            if rname == "orchestra" and any(x[4].players for x in notes_out):
+                for x in notes_out:
+                    cc16[x[0]] = PLAYERS_CC16[x[4].players or popts.get("players", "solo")]
             for x in notes_out:
                 evs.append((x[0], 1, "on", x[2], x[3]))
                 evs.append((x[1], 0, "off", x[2], 0))
             for t, val in cc20.items():
                 evs.append((t, -1, "cc", 20, val))
+            for t, val in cc16.items():
+                evs.append((t, -1, "cc", 16, val))
             # bowed parts: the dynamic envelope (CC1 + CC11) of whichever voice the part plays,
             # plus the window's level; while the part rests, the envelope of its next window
             pw = spec.part_windows(part)
-            if RENDERERS[rname]["target"] == "strings" and pw:
+            ccs = RENDERERS[rname]["cc"] or ((11,) if gd["target"] == "strings" else ())
+            if ccs and pw:
                 grid = sorted({t for v in plan.voices for t, _ in perf["voices"][v]["cc"].get(1, [])})
                 look = {}
                 for v in plan.voices:
                     for c in (1, 11):
                         look[(v, c)] = dict(perf["voices"][v]["cc"].get(c, []))
-                last = {1: None, 11: None}
+                last = {c: None for c in ccs}
                 for t in grid:
                     x = F(round(t / (TPQ // 4)), 16)      # CC events sit on perform.py's 16th grid
                     w = next((w for w in pw if w.a <= x < w.u), None) or next((w for w in pw if w.a > x), None) \
                         or pw[-1]
-                    for c in (1, 11):
+                    for c in ccs:
                         v0 = look[(w.voice, c)].get(t)
                         if v0 is None:
                             continue
@@ -578,6 +641,9 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
         path = outdir / f"{g}.mid"
         mid.save(str(path))
         group_files[g] = path
+        side = write_sidecar(g, gd, plan_d, outdir)
+        if side:
+            ginfo["sidecar"] = side.name
         if rname == "piano":
             ginfo["pedal_changes"] = len(pedal_pairs)
         resolved["groups"][g] = ginfo
@@ -590,6 +656,41 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
     if not quiet:
         print_summary(resolved, rep)
     return rep
+
+
+def write_sidecar(g: str, gd: dict, plan_d: dict, outdir: Path) -> Path | None:
+    """Per-group sidecar files the renderers read (always rewritten, so no stale one is picked up).
+    orchestra: <group>.orchestra.json next to the MIDI (render_orchestra.py reads x.orchestra.json);
+    organ: <group>.registration.json (render_organ.py --registration)."""
+    rname, opts = gd["renderer"], gd["options"]
+    if rname == "orchestra":
+        side = copy.deepcopy(opts.get("sidecar", {}))
+        for part, popts in gd["parts"].items():
+            popts = popts or {}
+            extra = {k: popts[k] for k in ORCH_SIDECAR_KEYS if k in popts}
+            if extra:
+                side.setdefault("tracks", {}).setdefault(part_track(rname, part, popts)["track"], {}).update(extra)
+        path = outdir / f"{g}.orchestra.json"
+        path.write_text(json.dumps(side, indent=1))
+        return path
+    if rname == "organ":
+        reg = copy.deepcopy(opts.get("registration", {}))
+        reg.setdefault("measure", str(plan_d.get("measure", "1")))
+        plan = perform.Plan(plan_d)
+        for key in ("changes", "manual_changes"):
+            for ch in reg.get(key, []):
+                if "at" in ch:
+                    plan.pos(ch["at"])       # raises on a malformed position
+        manuals = reg.setdefault("manuals", {})
+        for part, popts in gd["parts"].items():
+            pt = part_track(rname, part, popts)
+            manuals.setdefault(pt["track"], pt["instrument"])
+        if opts.get("swell") and "enclosed" not in reg:
+            reg["enclosed"] = ["POS"]
+        path = outdir / f"{g}.registration.json"
+        path.write_text(json.dumps(reg, indent=1))
+        return path
+    return None
 
 
 def sec_to_tick(tmap: TempoMap, s: float) -> int:
@@ -661,7 +762,6 @@ def check(score: Path, plan_path: Path, spec_path: Path, outdir: Path) -> dict:
     parts_rep = {}
     covered = {v: [False] * len(ns) for v, ns in sounding.items()}
     tempo_ref, tpq_ref = None, None
-    compass = quartet_compass()
     for g, gd in spec.groups.items():
         path = outdir / f"{g}.mid"
         if not path.exists():
@@ -676,11 +776,8 @@ def check(score: Path, plan_path: Path, spec_path: Path, outdir: Path) -> dict:
             errors.append(f"{g}: ticks per quarter {tpq}, expected {TPQ}")
         for part, popts in gd["parts"].items():
             popts = popts or {}
-            if gd["renderer"] == "quartet":
-                inst = popts.get("instrument", part)
-                tname = QUARTET_INSTR[inst][0]
-            else:
-                inst, tname = None, popts.get("track", part)
+            pt = part_track(gd["renderer"], part, popts)
+            inst, tname = pt["instrument"], pt["track"]
             got = tracks.get(tname, {"notes": [], "hanging": 0, "overlaps": 0})
             actual = list(got["notes"])
             used = [False] * len(actual)
@@ -757,7 +854,7 @@ def check(score: Path, plan_path: Path, spec_path: Path, outdir: Path) -> dict:
                               f"{pr['extra'][:5]}")
             if pr["shortened"]:
                 warnings.append(f"{part}: {pr['shortened']} note(s) sound less than half their notated length")
-            if RENDERERS[gd["renderer"]]["mono"]:
+            if RENDERERS[gd["renderer"]]["mono"] and not popts.get("divisi"):
                 # perform.py lets a bowed note overlap the next by its humanising (under 20 ms)
                 poly = sum(1 for a, b in zip(actual, actual[1:]) if b[0] < a[1] - tol)
                 if poly:
@@ -765,7 +862,7 @@ def check(score: Path, plan_path: Path, spec_path: Path, outdir: Path) -> dict:
             keys = [k for _, _, k in actual]
             if keys:
                 pr["range"] = [min(keys), max(keys)]
-                lo, hi = (21, 108) if gd["renderer"] == "piano" else compass.get(inst, (0, 127))
+                lo, hi = pt["compass"] or (0, 127)
                 out_of = [k for k in keys if not lo <= k <= hi]
                 if out_of:
                     warnings.append(f"{part}: {len(out_of)} note(s) outside the {inst or gd['renderer']} compass "
