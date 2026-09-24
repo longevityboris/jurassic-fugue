@@ -21,6 +21,9 @@ PLAN keys (all optional except voices):
   "roles":    [{"voice": "alto", "at": "1:1", "until": "5:1", "role": "subject"}]
               roles: subject | answer | cf (cantus firmus) | cs (countersubject) | free (default)
   "role_boost": {"subject": 9, "answer": 9, "cf": 8, "cs": 2, "free": -4}   velocity offsets (piano)
+  "role_level": {"subject": 0.7, "answer": 0.7, "cs": 0.2, "free": -0.2}    optional, strings target:
+              dynamic-level offsets per role added to the CC1/CC11 envelope (default: none), so
+              entries are brought out by bow pressure/timbre, not only by the note-on accent
   "pedal":    [{"at": "90:1", "until": "96:1", "every": "harmony"|"bar"|"half"}]   CC64 re-pedalled
   "humanize": {"ms": 6, "vel": 2}
 
@@ -235,9 +238,10 @@ def build(score_path, plan_path, out_path, target='piano', cues=False):
             evs.append((on_s, 1, ('on', n.midi, vel)))
             evs.append((off_s, 0, ('off', n.midi, 0)))
         if target == 'strings':
+            role_level = plan.d.get('role_level', {})
             tcur = F(0)
             while tcur < end:
-                L = lf(tcur)
+                L = lf(tcur) + role_level.get(rf(tcur), 0.0)
                 # swell inside long notes
                 sw = 0.0
                 for n in sounding:
