@@ -211,19 +211,22 @@ The checker reports two remaining flags, both harmless:
 - `DIR 74:4.5`: a direct fifth between soprano and alto. It exists only because the
   bass is still a rest in the skeleton, and disappears once the bass is composed.
 
-Strict items in the skeleton, all deliberate:
+Strict items in the skeleton (`lab/proofs_skeleton.txt`), all deliberate:
 
 | position | what it is |
 |---|---|
 | 19:1 (exposition lab) | the cadential 6/4 of C minor over G |
-| 23:3 | a passing 6/4 |
+| 21:3 | the alto's b over the bass f: the tritone of the diminished seventh (V4/2 of c) |
+| 23:3 | a passing 6/4 (IC2's g under the held c'') |
+| 26:3 | bes'' = the seventh of C7, resolving to aes'' |
 | 33:1 | soprano entry on des'' over a passing aes |
 | 49:1 | c' over bes,: the C7/B-flat that opens the combination |
 | 55:3, 57:1, 58:1 | the tenor's S2 is the lowest voice only because the bass is still a rest there |
-| 59:1, 61:1, 63:3 | S1's bes over the F pedal: the subject's head *is* the 4-3 over the dominant |
-| 61:1, 63:1 | the free seventh of V7 over the pedal |
-| 67:3 | the landing c'' over ges: it is the third of the French sixth (X1) |
-| 75:1 | the alto's landing f' under the theme's ees'' |
+| 59:1, 60:1, 61:1, 63:3 | S1's bes over the F pedal: the subject's head *is* the 4-3 over the dominant; S2's c against it is Fsus4 |
+| 61:1, 63:1 | the free seventh of V7 over the pedal (and root against seventh, f''/ees'') |
+| 67:3 | the French sixth's own tritone (c''/ges) and seventh (e'/ges) |
+| 68:3, 76:3 | the seventh of V7 |
+| 80:3, 81:3, 83:3 | iv6/4 and IV6/4 over the tonic pedal (the plagal Amen) |
 
 ### B3. Device proofs (`lab/build_core.py`, rows P08-P13 of `lab/proofs_core.txt`)
 
