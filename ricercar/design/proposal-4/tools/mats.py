@@ -24,3 +24,16 @@ CSA_ANS = real(CSA, -3, -5)   # answer context (bes -> c), same octave band (ten
 CSB_ANS = ly("c''4 des''8 ees''8 f''8 ees''8 des''8 c''8 | aes''4 g''8 f''8 ees''8 des''8 c''8 bes'8 |"
              " a'4 bes'4 c''4 des''4~ | des''4 ees''4 f''2 | e''2")
 CSB = real(CSB_ANS, -4, -7)   # subject context (a fifth lower)
+
+# ---- B-flat MAJOR forms (apotheosis) ----
+S1M_CORE = ly("bes'2. bes'8 a' | bes'2. bes'8 a' | bes'4. c''8 c''4. ees''8 | ees''2. d''8 bes'")
+S2M = ly("c''4. a'8 f'4 d''8 bes' | c''2. f''8 bes' | ees''4. d''8 d''4. c''8 | c''1")
+THEME_M = cat(S1M_CORE, S2M)   # the complete tune (8 bars; the final c'' is a whole note here)
+
+# mirror (diatonic inversion) of S1 around its first note
+def S1_MIRROR(key='bes-harm', core=None):
+    core = core or cat(S1_CORE, ly("c''2"))
+    return mirror(core, ly("bes'4")[0][0], mode='key', key=key)
+
+# apotheosis cantus firmus: the complete tune in B-flat major; its open ending c'' rises to d''
+CF_APO = cat(S1M_CORE, ly("c''4. a'8 f'4 d''8 bes' | c''2. f''8 bes' | ees''4. d''8 d''4. c''8 | c''1 | d''1~ | d''1"))
