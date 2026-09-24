@@ -142,5 +142,19 @@
     "pedal": []
    }
   }
- ]
+ ],
+ "first_session_render": {
+  "truncations": 1,
+  "cut": [
+   [
+    "soprano",
+    100.696,
+    {
+     "key": 75,
+     "after_on_ms": 170.8,
+     "before_off_ms": 1185.3
+    }
+   ]
+  ]
+ }
 }

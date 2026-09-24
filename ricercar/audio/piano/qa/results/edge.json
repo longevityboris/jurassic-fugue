@@ -265,7 +265,7 @@
   }
  },
  "zero_length": {
-  "input": "C4 zero-length at 1.0 s; E4 1.1-1.4 s; C4 2.0-2.25 s",
+  "input": "C4 zero-length at 0.5 s; E4 0.6-0.9 s; C4 1.4-1.65 s (tpb 480, 120 bpm)",
   "stem_events": [
    [
     0.5,
@@ -329,11 +329,6 @@
   "cc7_click_db": 9.3
  },
  "transpose_fold": {
-  "stdout_warnings": [
-   " \"input\": \"/tmp/pianoqa/fold.mid\",",
-   " \"wav\": \"/tmp/pianoqa/fold.wav\",",
-   " \"temp\": \"/var/folders/qh/7w8n7nzn5ns_qjyyllhjxnt40000gn/T/piano_render_urq5tbj8\","
-  ],
   "stem_keys": [
    30,
    22
@@ -342,7 +337,9 @@
    18,
    10
   ],
-  "note2_partial2_hz": 57.49
+  "note2_partial2_hz": 57.49,
+  "warning_printed": false,
+  "warnings": []
  },
  "strings_target": {
   "velocity_scale": "perform",

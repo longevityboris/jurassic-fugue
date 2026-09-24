@@ -122,7 +122,7 @@ def zero_length() -> dict:
         t += m.time
         if m.type in ("note_on", "note_off"):
             ev.append((round(t - LEAD_IN, 3), m.type, m.note))
-    return dict(input="C4 zero-length at 1.0 s; E4 1.1-1.4 s; C4 2.0-2.25 s", stem_events=ev,
+    return dict(input="C4 zero-length at 0.5 s; E4 0.6-0.9 s; C4 1.4-1.65 s (tpb 480, 120 bpm)", stem_events=ev,
                 notes=rep["voices"]["solo"]["notes"])
 
 
@@ -182,7 +182,8 @@ def transpose_fold() -> dict:
                         "--json", str(TMP / "fold.render.json")], capture_output=True, text=True)
     rep = json.loads((TMP / "fold.render.json").read_text())
     x = read(TMP / "fold_stems" / "pedal.wav")
-    out = {"stdout_warnings": [l for l in r.stdout.splitlines() + r.stderr.splitlines() if "warn" in l.lower() or "fold" in l.lower()]}
+    warn = [l for l in r.stdout.splitlines() + r.stderr.splitlines() if "warn" in l.lower()]
+    out = {"warning_printed": bool(warn), "warnings": warn}
     stem = mido.MidiFile(Path(rep["temp"]) / "stem00.mid")
     out["stem_keys"] = [m.note for m in stem if m.type == "note_on"]
     out["requested_keys"] = [30 - 12, 22 - 12]
