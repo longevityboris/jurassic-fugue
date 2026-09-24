@@ -23,7 +23,7 @@ tenor = \absolute {
   % 10-14 CS1 (B-flat minor) under alto S1
   des4 r2 des'8 ees'8 | ges'8 f'8 ees'4 des'4. c'8 | des'4. f'8 ees'2 ~ | ees'4 c'2 bes8 g8 |
   % 14 CS1 end, then free voice
-  a4. f8 ~ f4 c'4 | des'2 c'2 | c'4 aes8 g8 g4 f4 | f2 g4 aes4 | g2. r4 |
+  a4. f8 ~ f4 c'4 | des'2 c'2 | c'4 aes8 g8 g4 f4 | f2 g4 d4 | g2. r4 |
 }
 bass = \absolute {
   % 1-5 S1 (B-flat minor)
