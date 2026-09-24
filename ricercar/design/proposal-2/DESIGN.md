@@ -90,6 +90,25 @@ B 36-62). Every file below: errors 0, parallels 0, beat-par 0, unjustified 0.
 Entry 3 of L02 is the sixth permutation [S1, CS1, CS2], so all six orderings of S1/CS1/CS2 pass:
 triple invertible counterpoint at the octave.
 
-## 3. Architecture (TODO)
+## 3. Architecture (DRAFT: bar numbers fixed, sections being proven one by one)
+
+Meter 4/4 throughout (the tools' default). 60 bars.
+
+### Duration arithmetic
+
+| part | bars | tempo (quarter) | seconds |
+|---|---|---|---|
+| I Fuga (B-flat minor) | 1-29 (29) | 72 | 96.7 + 2.0 fermata/GP |
+| II Arioso dolente | 30-34 (5) | 52 | 23.1 |
+| III Fuga inversa (A minor -> D minor -> F) | 35-41 (7) | 66 -> 76 poi a poi | 23.8 |
+| IV Pedal: inversion in augmentation, combination, climax | 42-50 (9) | 76 | 28.4 + 1.5 breath |
+| V Apotheosis (B-flat major) | 51-60 (10) | 60 | 40.0 + 3.0 final fermata |
+| total | 60 | | about 218 s (window 210-240) |
+
+Tempo at the joins is written as a change of motion, not a ritardando lottery: the arioso is a new
+tempo after the Part I fermata; Part III begins at the arioso's pulse and accelerates to 76 over
+bars 35-41; Part V is a new, broader tempo after the Part IV breath.
+
+### Form table (TODO: filled in per section as each lab is proven)
 
 ## 4. Risks (TODO)
