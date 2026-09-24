@@ -80,7 +80,7 @@ tenor = \absolute {
   % 17
   c2. e4 | f2 des'2 | ees'2 c'2 | bes4 r2. |
   % 21
-  bes8 a8 bes8 c'8 des'8 c'8 ees'8 ges8 | des'4 c'8 f'8 ~ f'2 | ees'8 f'8 ees'8 des'8 ces'4 des'4 | ees'2 aes2 |
+  bes8 a8 bes8 c'8 des'8 c'8 ees'8 ges8 | des'4 c'8 f'8 ~ f'2 | ees'8 f'8 ees'8 des'8 ces'4 aes4 | ees'2 aes2 |
   % 25
   aes2 bes2 | bes1 | g2. g8 ges8 | ges1 ~ |
   % 29

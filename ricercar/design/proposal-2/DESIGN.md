@@ -160,12 +160,15 @@ flag (D4?, DIR or MEL).
 | L07_partI_episode_stretto_climax.ly | bars 17-29: episode; **stretto** bass S1 (b-flat) + soprano S1 (e-flat, 4th + 2 octaves above, 2 bars later) with CS1/CS2; **liquidation stretto** of the head at half-bar distances on a diminished 7th; climax | none |
 | L08_partI_complete.ly | Part I joined, bars 1-29 (seam at 17) | the bar-15 diminished 4th only |
 | L10_arioso.ly | bars 29-35: A°7 fermata; S2 arioso; **German-sixth pivot** B-flat to A minor | MEL 32:1 bass D to G-flat, a diminished 4th (lament figure) |
-| L09_partIII_inversa.ly | bars 34-42: INV alone in the bass; **mirror trio** (INV + CS1 inverted + CS2 inverted = exposition entry 3 upside down); **INV stretto at the 5th above**, 2 bars; B7-C deceptive; seam into bar 42 | DIR 37:2.5, a hidden 5th inside the motor figure (weak 8th, soprano leap within the running line); D4? 42:4.5 = the alto's B-flat over the F pedal (sus4) |
+| L09_partIII_inversa.ly | bars 34-42: INV alone in the bass; **mirror trio** (INV + CS1 inverted + CS2 inverted = exposition entry 3 upside down, with three soprano notes altered from the strict tonal mirror: G for G# at 36:4.5 and D for D# at 38:3 to avoid augmented 2nds, and B at 37:4 to avoid a 7th against the bass's anticipation); **INV stretto at the 5th above**, 2 bars; B7-C deceptive; seam into bar 42 | DIR 37:2.5, a hidden 5th inside the motor figure (weak 8th, soprano leap within the running line); D4? 42:4.5 = the alto's B-flat over the F pedal (sus4) |
 | L04_partIV_pedal.ly | bars 42-51: **INV in augmentation** as the dominant pedal; S2 over it; **S1 + S2 combined** (bars 44-45: S2's sigh E-flat, D-flat, C over S1's B-flat, A in parallel 3rds, with the augmented inversion below: three thematic forms at once); soprano wedge to the V fermata | D4? 47:1 = A over E-flat inside V4/2 (a chord tritone) |
 | L05_apotheosis.ly | bars 50-62: IV-iv6-I entry; **the whole theme in major over its own mirror** (S1-major + INV with the minor b6, starting together); final PAC; coda: INV over a tonic pedal, soprano on the major third | D4? 53:3 = E-flat over A inside V6/5 |
 | L06_seam_IV_V.ly | Parts IV-V joined, bars 42-62 | the two chord tritones above |
 | **L11_full_skeleton.ly** | **the whole piece, bars 1-62**, assembled from L08 + L10 + L09 + L06; also compiles in LilyPond 2.26 without warnings | 2 D4? (chord tritones), 1 DIR, 2 deliberate diminished-4th bass leaps; nothing else |
+| L12_S2_over_S1_iv.ly | resource, 2 voices only: S2 over S1 in the subdominant (E-flat minor) in the bass, starting together, full length (the S1 head's E-flat turns S2's C-A-F into V4/2) | DIR 3:1 (the theme's own B-flat to E-flat leap over the bass step); a false relation D-flat (S2, 1:4) then D (bass, 1:4.5), not simultaneous. Not used in the skeleton |
 | L01_exposition.ly, t_*.ly | superseded drafts from the interrupted session (L01: codetta version, fixed and clean) | kept for reference |
+
+Cross relations: `scan.cross_rel` finds 0 simultaneous cross relations in every file above.
 
 Search aids, not proofs: `scan.py` (every interval and distance for two forms, run through the real
 checker plus a cross-relation and quality score), `view.py`, `combo4.py` (thematic forms over a fixed
@@ -358,10 +361,13 @@ third of the piece, and the release, the apotheosis, is earned by it.
   slides. It is heard as a glimpse of light but could sound accidental. The composer can shade it with
   dynamics (it falls inside the crescendo).
 * **Checker leniency.** The checker justifies many weak-eighth dissonances as passing, neighbour or
-  anticipation notes. The scanner found at least one class it misses: cross relations such as E natural
-  against E-flat in a subject/answer stretto. Every lab here was also read by grid for such clashes. The
-  stretto intervals were chosen to avoid them, which is why the stretto is at the 4th/11th and not at the
-  5th above.
+  anticipation notes, and it does not detect cross relations (E natural against E-flat, say). These are
+  checked by script: `scan.cross_rel` over all six voice pairs finds **0 simultaneous cross relations in
+  every lab, including L11**. One was found at 23:4.5 (soprano D against tenor D-flat) and fixed (tenor
+  A-flat). Non-simultaneous false relations remain where the stretto's keys overlap (for example the
+  bass subject's D-flat at 23:4 and the E-flat-minor soprano's D at 23:4.5); these are standard in
+  minor-mode stretto. The stretto is at the 4th/11th, not the 5th above, because the answer-type stretto
+  puts E natural against E-flat simultaneously.
 * **Tails in stretto are modified** (minor-dominant tails; the C-A-B-flat break-off at 48). This is
   standard stretto practice, and each change is listed in the tweak table.
 * **Two expressive diminished-4th bass leaps** (15:2.5 and 32:1) are flagged MEL by the checker and kept
