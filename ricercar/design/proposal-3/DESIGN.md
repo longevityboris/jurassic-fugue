@@ -19,7 +19,7 @@ moving round it. All the chromaticism grows from one cell, **the semitone neighb
 The large form is a descent and a return, and the tonal plan is itself a mirror. The first half sinks
 flatward (B-flat minor, E-flat minor) to a crisis on the Neapolitan C-flat chord. The mirror section
 climbs back note by note, like the inverted fugue of Op. 110 ("nach und nach wieder auflebend"). The
-augmented answer in the bass then becomes the dominant pedal; the French sixth on its G-flat is the
+augmented answer in the bass then becomes the dominant pedal; the augmented sixth on its G-flat is the
 climax; and the theme returns whole and untweaked, in B-flat major, over the combination proven
 earlier. The last melodic motion of the piece is the lament's ges-f, sounded under a B-flat major chord.
 
@@ -59,7 +59,8 @@ LilyPond `\absolute`, c' = middle C. All materials are defined once, in `lab/mat
    augmented triad F-A-D-flat (III+ of the harmonic minor): the darkest colour the tune can take without
    changing a single rhythm.
 3. **AUG, last beat: `aes,4 g,4` becomes `aes,4 ges,4`.** The augmented answer's final descent becomes
-   the Phrygian tetrachord bes-aes-ges-f, so the climax sounds a French sixth (ges-c-e) resolving to the
+   the Phrygian tetrachord bes-aes-ges-f, so the climax sounds an augmented sixth (French type, ges-c-e,
+   third omitted) resolving to the
    dominant. This is one note of an eight-bar bass. The ear follows the augmentation by its long F
    pedal, not by that beat.
 
@@ -106,13 +107,16 @@ note; that is the normal pedal-point licence.
 | 1 | S1/CS1/CS2 triple invertible counterpoint at the octave, **all 6 vertical orders** | `03_triple_*.ly` (6) | 0/0/0/0 in all six | clash 0, xrel 0 in all; ACC2 0,1,0,2,1,2: only where S1 or CS1 is the lowest line (4/2 passing chord on 3:1, passing 6/4 on 3:3) |
 | 2 | Mirror texture S1I/CS1I/CS2I (Contrapunctus-12 style rectus/inversus), **all 6 orders** | `04_mirror_*.ly` (6) | 0/0/0/0 in all six | clash 0, xrel 0; ACC2 0,2,0,1,2,1 |
 | 3 | Whole exposition, 4 voices, bars 1-18 (answer, CS1, CS2, codetta, free bass) | `01_exposition.ly` | errors 0, parallels 0, beat-par 0, unjustified 0 | clash 0, xrel 0, acc 0, acc2 1 (7:1, tritone f'/b in two voices = vii7/V of F minor) |
-| 4 | S1 (answer form) + S2 entering two beats later a fourth above + CS2: **triple counterpoint, all 6 orders** (the S1+S2 combination) | `05_combo_*.ly` (6) | 0/0/0/0 in all six | clash 0, xrel 0; ACC 0,2,0,0,2,0 (a 4th over S2 only when S2 is the lowest line) |
+| 4 | S1 (answer form, f') + S2 entering two beats later a fifth above it (c'') + CS2: **triple counterpoint, all 6 orders** (the S1+S2 combination) | `05_combo_*.ly` (6) | 0/0/0/0 in all six | clash 0, xrel 0; ACC 0,2,0,0,2,0 (a 4th over S2 only when S2 is the lowest line) |
 | 5 | The same combination in B-flat major (apotheosis) and S1M/CS1/CS2-M in major, all 12 orders | `09_combomaj_*.ly`, `09_triplemaj_*.ly` | 0/0/0/0 in all twelve | clash 0, xrel 0; max ACC2 2 |
 | 6 | S2 stretto at the upper fifth, one bar apart, over the answer in the bass (entry E7) | `06_stretto_S2.ly` | 0/0/0/0 | ACC2 1 (4:3: S2's final c' against S2-F's bes', a 9th over the bass b-flat; it becomes consonant when the bass moves to a-flat on the next beat) |
 | 7 | S1 half-bar stretto (answer a fourth below, two beats later) | `07_stretto_S1.ly` | 0/0/0/0 | 0 / 0 / 0 / 0 |
 | 8 | Crisis (vii7 -> Neapolitan) and mirror section in 4 voices, bars 34-43 | `10_crisis_mirror.ly` | 0/0/0/0 | acc 1, acc2 6, all explained in C.6 (dim7 over its bass, Gb7/Fb = V4/2 of the Neapolitan, a passing 6/4, leading tone over tonic pedal, Db7 upper-neighbour seventh, 6/4 over the dominant pedal) |
-| 9 | Climax bars 43-51: augmented answer (= dominant pedal) + S1 + its mirror on the same B-flat (rectus/inversus wedge) + CS2; then the whole theme in the alto under a descant; French sixth | `08_climax.ly` | 0/0/0/0 | acc2 5: four are the i6/4 over the F pedal, one is a passing 6/4 over the bass g, (bar 48.1) |
+| 9 | Climax bars 43-51: augmented answer (= dominant pedal) + S1 + its mirror on the same B-flat (rectus/inversus wedge) + CS2; then the whole theme in the alto under a descant; augmented sixth on the bass g-flat | `08_climax.ly` | 0/0/0/0 | acc2 5: four are the i6/4 over the F pedal, one is a passing 6/4 over the bass g, (bar 48.1) |
 | 10 | Apotheosis + coda, 4 voices, B-flat major, bars 52-62 | `09_apotheosis.ly` | 0/0/0/0 | acc 1 (iv6/4 over the tonic pedal), acc2 1 (passing seventh f'-ees'-d' of V7) |
+| 11 | E7 (S2 stretto over the answer, bass tacet) + Episode 2 (bass re-enters f, and climbs g, aes, a, bes, b, c under the held g'') + the crisis chord, 4 voices, bars 28-34 | `12_stretto_to_crisis.ly` | errors 0, parallels 0, beat-par 0, unjustified 0 (one DIR: S2-F's leap g''-e'' against the answer's f-e, a hidden octave between two subject statements on a weak 8th) | clash 0; xrel 1 (tenor des' then alto d'', covered by the alto's own des''-d''); acc2 3 (bes''/c'' = the two subjects' 7-6 at 31.3; the tritones of the two diminished sevenths at 33.3 and 34.1) |
+| 12 | Double counterpoint at the 10th and 12th: **CS1 against CS2 is invertible at the 8ve, 10th and 12th** | `11_cs1cs2_10th.ly`, `11_cs1cs2_12th.ly` (8ve: lab 03) | 0/0/0/0 both | clash 0, xrel 0, acc 0, acc2 0 both |
+| 13 | Negative result, kept on purpose: S1 against CS1 or CS2 is invertible **only at the octave**. Moved a 10th or 12th, each countersubject lands in another key and makes augmented-octave clashes (b' against bes', g against ges) | `11_s1cs1_*_fails.ly`, `11_s1cs2_*_fails.ly` | check.py passes 3 of 4 (it cannot see clashes); the 12th/CS2 case has a range error | clash 1-2 in all four: **not used** |
 
 Additional verified facts, from searches run through the real checker (reproduce with `lab/p3.py`,
 `pair_search2`):
@@ -152,13 +156,13 @@ Bar count 62. Proportions: the first crisis falls at bar 34 (0.55 of the bars), 
 | 18-19 | Episode 1 | first running 8ths: S1's 4-3-2-1 tail in 8ths, imitated at one beat between S and A; tenor CS2 fragment; bass f bes, ees f | f -> V of b-flat |
 | 20-24 | **II. Second subject** E5 | alto S2 from 20.3; tenor ANS from 20.1; bass CS2-F from 20.2; free soprano in 8ths | b-flat (on its dominant) |
 | 24-28 | E6 | soprano S2-sub from 24.3; bass S1 from 24.1; tenor CS2 from 24.2; free alto in 8ths | e-flat (on its dominant) |
-| 28-33 | E7 = S2 stretto | tenor ANS on f from 28.1; alto S2 from 28.3; soprano S2-F from 29.3 (one bar later, upper fifth); free bass | b-flat / f |
-| 32-33 | Episode 2 | bass rises chromatically in quarters f, ges, g, aes, a, bes, ces c; the upper voices pass S1's head (x x x-1 x, in quarter + two 8ths) in stretto at one beat, climbing by step; cresc. molto | -> |
+| 28-31 | E7 = S2 stretto | tenor ANS on f from 28.1; alto S2 from 28.3; soprano S2-F from 29.3 (one bar later, upper fifth; its last note g'' is held 32.3-33.3); **bass tacet** (three voices) | b-flat / f |
+| 32-33 | Episode 2 | the bass re-enters on f, (32.1) and climbs in quarters g, aes, a, bes, b, to c (34.1), under the soprano's held g'' (starting on g, so that no ges sounds against it); quarter-note chords Eb/G, Ab maj7, A half-dim7, b-flat m6, B dim7; cresc. molto | -> |
 | 34 | **Crisis** | 34.1 vii7 over c (c ees ges a), ff; 34.3 C-flat major in root position (the Neapolitan), subito p, fermata, G.P. | b-flat: N |
 | 35-38 | **III. Mirror** E8 | tenor S1I-sub (bes-ces-bes), alto CS2I-sub, bass CS1I-sub (des, d, ees, fes, ...); soprano tacet | e-flat |
 | 39-42 | E9 | soprano S1I (f''-ges''-f''), alto CS1I, tenor CS2I; bass tonic pedal, then des, ees, f, ges, -> f, | b-flat |
 | 43-46 | **IV. Dominant pedal** | bass AUG (F pedal); alto S1 on bes' + soprano S1I on bes'' (rectus and inversus from one note); tenor CS2 | V of b-flat |
-| 47-50 | climax | bass AUG rises f g bes then falls bes aes ges; alto S2 with the theme's original pickup (the whole theme, minor); soprano descant peaking on c''' at 50.4 | V -> Fr+6 |
+| 47-50 | climax | bass AUG rises f g bes then falls bes aes ges; alto S2 with the theme's original pickup (the whole theme, minor); soprano descant peaking on c''' at 50.4 | V -> aug. 6th |
 | 51 | | V (F major), fermata | V |
 | 52-55 | **V. Apotheosis** | soprano THEME-M bars 1-4; alto CS2-M (cascade) cut at 55.2; bass tonic pedal, IV, V7, I6 | **B-flat major** |
 | 55-59 | | soprano THEME-M bars 5-8 (= S2M, from 56.1); alto ANS-M from 55.3; bass CS2-M in the answer frame (d c bes a g f e g a) from 55.4; tenor free | B-flat |
@@ -175,7 +179,7 @@ Bar count 62. Proportions: the first crisis falls at bar 34 (0.55 of the bars), 
   as its neighbour, so C-flat is the one chord that literally "is" the inverted subject. The tenor's
   c-flat falls to b-flat and so begins the mirror section.
 - C-flat is VI of E-flat minor, which is why the mirror section can begin in e-flat with no modulation.
-- The climax chord (French sixth on g-flat) is the same b6-5 as the lament's turn and the S1 mirror's
+- The climax chord (an augmented sixth over g-flat) is the same b6-5 as the lament's turn and the S1 mirror's
   neighbour. Its G-flat7 colour is enharmonically the dominant of C-flat, so the climax reinterprets
   the crisis.
 - The B-flat major triad is never a goal before bar 52. D natural appears only as a passing Dorian
@@ -210,12 +214,13 @@ Complete subject statements: S1 family 14 (including mirror, augmentation and ma
 - **E3** (10-13), bass CS2 = chain of bass suspensions: `i | vi6-ish (g) 4/2->5/3 (f -> ees) iv | i6 4/2 (c) V/V (e in tenor) | V 4/3 ... iv6 V7 | i`.
 - **E4** (14-17): `i(b-flat) IV(Bb, Dorian of f) V4/2 | VI7 (c suspended) iv6 V-sus4 v(4-3) | vii7/V (d) V/V V | iv V4/2 V7 | i (f)`.
 - **E5-E6**: S2's bar 1 = V with the augmented triad (a-f-des) resolving to i/VI; bar 3 = iv -> i6 -> V; each S2 entry ends on V (half cadence) as the theme does. E6 = the same a fifth lower (e-flat).
-- **E7**: over ANS in the bass line the harmony alternates V and i of b-flat, then drifts to f; Episode 2 intensifies it over the rising chromatic bass.
+- **E7** (28-31, three voices, ANS lowest): `V (4-3 in the answer's f-e) | i6 V/V(sus4-3) | v(f) iv | Eb7 (V7/iv) F-sus4 v`.
+- **Episode 2** (32-33): `v | Eb/G Abmaj7 | A half-dim7 b-flat-m6 | B dim7` -> 34.1 C dim7: every voice rises a semitone into the crisis.
 - **34**: `vii7 (c ees ges a) -> bII (ces ees ges, root position)`; the fermata sits on bII.
 - **E8** (35-38, e-flat): the mirror's harmony is the lament's harmony read upward. At 37.1 comes Gb7/F-flat (V4/2 of C-flat, the crisis chord's own dominant), resolving fes -> ees.
-- **E9** (39-42): i pedal (leading tone over the pedal) | Db7 (V7 of VI) -> iv | V (42.1) -> ges,-bes-c-ees (Fr+6 colour) -> V pedal at 43.
+- **E9** (39-42): i pedal (leading tone over the pedal) | Db7 (V7 of VI) -> iv | V (42.1) -> ges,-bes-c-ees (augmented-sixth colour) -> V pedal at 43.
 - **43-46**: over the F pedal: i6/4 | IV/V (the "eleventh") | the wedge sounds V7 with lowered fifth at every 4.5 (a' against ces'''); vii7/V over the pedal's e,; F7 at 46.2.
-- **47-51**: `V | vii7/V (bass g) | V/V 6/4 (C/G) | i (bass bes) | iv6/4 i | V4/2/V (C7/B-flat) | F-minor 6 (aes) | Fr+6 (ges c e) | V`.
+- **47-51**: `V | vii7/V (bass g) | V/V 6/4 (C/G) | i (bass bes) | iv6/4 i | V4/2/V (C7/B-flat) | F-minor 6 (aes) | aug. 6th, French type without its third (ges c e) | V`.
 - **52-55**: `I | vi6/5 IV6/4 (Williams) | I sus2 V | IV V4/2 V7 I6`.
 - **56-59**: the descending cascade bass under S2M: `iii7 V6/4 | I V6 | ii IV6 I6/4 V/V6/5 | V6`.
 - **60-62**: `V7 I | I iv6/4(minor) vii7-over-I | I`.
@@ -232,7 +237,7 @@ Complete subject statements: S1 family 14 (including mirror, augmentation and ma
 | 37 | Gb7/F-flat, V4/2 of the Neapolitan | the crisis chord is recalled inside the mirror |
 | 39-40 | leading tone over the tonic pedal | rebirth from the tonic: the mirror texture starts on a pedal as the exposition started on a held note |
 | 43-46 | rectus and inversus from one B-flat over the augmented answer: V7 with lowered fifth at each 4.5 | four forms of the subject at once (rectus, inversus, augmentation, plus CS2) |
-| 50.4 | French sixth, soprano c''' (apex of the piece) | the climax; ges = the lament's b6 in the bass |
+| 50.4 | augmented sixth over g-flat (French type, third omitted), soprano c''' (apex of the piece) | the climax; ges = the lament's b6 in the bass |
 | 51 | V with fermata, caesura | Beethovenian breath before the major |
 | 52-53 | Williams's own IV6/4 over the tonic pedal | the film harmony, once, at the moment the tune becomes itself |
 | 61 | minor iv6/4 over the tonic pedal, then vii7 over the pedal | the minor's shadow; the tenor's ges -> f is the last melodic step of the piece |
@@ -251,14 +256,14 @@ Complete subject statements: S1 family 14 (including mirror, augmentation and ma
 | 35-38 | pp, dolente, three voices |
 | 39-42 | p, poco a poco cresc. |
 | 43-46 | mp -> f |
-| 47-50 | f -> ff; 50.4 fff (French sixth) |
+| 47-50 | f -> ff; 50.4 fff (augmented sixth) |
 | 51 | ff, dim. on the fermata |
 | 52-55 | **subito p**, dolce luminoso, cresc. |
 | 56-58 | f -> ff (S2M's f'' and ees'' peaks) |
 | 59 | dim. |
 | 60-62 | p -> pp, final chord pp |
 
-Two waves: the first peaks at the crisis (34), the second at the French sixth (50.4). The apotheosis
+Two waves: the first peaks at the crisis (34), the second at the augmented sixth (50.4). The apotheosis
 starts quietly and grows, so the brightest major sonority (57-58) is also the loudest.
 
 ### C.8 Notes for the composer (free parts)
@@ -269,7 +274,8 @@ starts quietly and grows, so the brightest major sonority (57-58) is also the lo
 - **Free 8th-note voices in E5-E7**: stepwise, sequential, made from S1's neighbour cell (x x-1 x x+1).
   They must avoid `g` against `ges`: S2 and CS1 must never sound together, because CS1's ges clashes with
   S2-F's g (verified CLASH). Use CS2 with S2, never CS1.
-- **Episode 2 (32-33)**: chromatic bass in quarters f,->c; upper voices S1 head in stretto at one beat.
+- **Episode 2 (32-33)**: written out and proven in `12_stretto_to_crisis.ly`; the composer may add
+  inner-voice 8ths (S1's neighbour cell) as long as the lab stays clean.
 - **Keyboard**: upper staff S+A, lower T+B, except in 10-13 where the soprano rests and the right hand
   takes alto and tenor. In 43-46, 39-40, 52-53 and 61-62 the pedal notes are caught with the sostenuto
   pedal, so that the left hand is free for the tenor line. In the quartet everything is literal: violin
@@ -282,10 +288,11 @@ starts quietly and grows, so the brightest major sonority (57-58) is also the lo
 
 ## D. Risks (honest)
 
-1. **Free voices are not all written.** Episodes 1-2 and the free 8th-note voices of E5-E7 exist only as
+1. **Free voices are not all written.** Episode 1 and the free 8th-note voices of E5-E6 exist only as
    specifications (C.8). Their cores (the subject combinations) are proven; the fillers can still
    introduce parallels. The composer must run `lab/run.sh` and `lab/strict.py` on every section.
-2. **E5-E7 in four voices are not yet a single lab**: the three-voice cores are proven (rows 4 and 6).
+2. **E5-E6 in four voices are not yet a lab.** The three-voice cores are proven (row 4, and E6 is an
+   exact transposition of a proven order). E7 to the crisis is proven in four voices (row 11).
 3. **The checker is lenient.** check.py accepts any stepwise dissonance, even struck on the beat. The
    strict script catches that, and every residual ACC2 is explained above. Its cross-relation test is
    heuristic, so the ear should still review 20-33.
@@ -299,3 +306,6 @@ starts quietly and grows, so the brightest major sonority (57-58) is also the lo
    tempi are part of the design, not decoration.
 7. **The mirror tweak des <-> des** makes the inversion tonal, not exact. This is standard practice, but
    the chromatic mirror (with d natural) would sound wrong in minor, so the mirror table in A is the rule.
+8. **Invertibility is at the octave only for S1 with its countersubjects** (row 13). The 10th/12th
+   devices of the Art of Fugue are therefore confined to the pair CS1/CS2 (row 12). If the composer
+   wants a 12th inversion in an episode, use CS1 over CS2 raised a twelfth (lab 11), not S1.
