@@ -5,6 +5,11 @@ sfizz_render runs of the same stem MIDIs using a copy of the derived SFZ with
 <control> hint_ram_based=1. Counts truncations (qa_truncation.detect) per run.
 
     python3 qa/qa_truncation_repro.py [N]      # writes qa/results/truncation_repro.json
+
+Historical: written before the fix. The derived SFZ now starts with <control>
+hint_ram_based=1, so the "stream" arm loads samples into RAM as well and the
+stream-vs-RAM comparison no longer applies. render_piano.py runs the same detector on
+every stem (truncation_check in the render report); see results/truncation_after_fix.json.
 """
 from __future__ import annotations
 

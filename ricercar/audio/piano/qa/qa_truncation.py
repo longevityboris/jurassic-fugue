@@ -13,6 +13,11 @@ a truncation: it clicks and the rest of the note is missing. The detector runs o
    loaded in RAM instead of streamed; what the strings renderer does), 3 times.
 
     python3 qa/qa_truncation.py      # writes qa/results/truncation.json
+
+Historical: written before the fix. The derived SFZ now starts with <control>
+hint_ram_based=1, so the "stream" arm loads samples into RAM as well and the
+stream-vs-RAM comparison no longer applies. render_piano.py runs the same detector on
+every stem (truncation_check in the render report); see results/truncation_after_fix.json.
 """
 from __future__ import annotations
 
