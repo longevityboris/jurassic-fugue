@@ -73,8 +73,8 @@ Useful options (all in `python3 render_piano.py --help`):
   would shrink to about 16 dB. `--velocity-scale perform` maps its anchors
   piecewise-linearly onto the calibrated ones. perform.py now tags its files
   with a text meta event `perform.py target=piano|strings`, so `auto` does
-  this by itself. (This one-line marker is the only change made to perform.py;
-  other consumers ignore it.)
+  this by itself. (This one-line marker is the only change the piano renderer
+  needed in perform.py; other consumers ignore it.)
 * **CC1 / CC11** = dynamics envelope: the lower of the two at each note-on
   becomes a different hammer velocity (40·log10(cc/127) dB), not a fader
   (unless `--cc-dynamics gain`), so the timbre follows. perform.py's `--target strings` files carry the
