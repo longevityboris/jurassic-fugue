@@ -5,7 +5,7 @@ export const meta = {
     { title: 'Compose', detail: 'one composer per section, checker-clean, two reviewers, reviser' },
     { title: 'Join', detail: 'assemble, fix seams, whole-piece checker' },
     { title: 'Review', detail: 'whole-piece panel (rigor, arc, beauty, idiom), fixers per section, up to 2 rounds' },
-    { title: 'Render', detail: 'engrave scores, performance plans, piano and quartet renders, audio QA' },
+    { title: 'Render', detail: 'four versions (Bach organ, Beethoven piano, symphonic, piano+quartet) plus bonus quartet, each with listening QA' },
     { title: 'Final', detail: 'completeness critic' },
   ],
 }
@@ -117,35 +117,45 @@ ROLE: INTEGRATOR (round ${round}). Section fixers just edited section files. Re-
 }
 
 // ---------------- RENDER ----------------
+// Four versions requested by the user (all from the same 4-voice score), plus the quartet as a bonus.
 phase('Render')
 const RENDER_SCHEMA = {
   type: 'object',
-  properties: { plan: { type: 'string' }, midi: { type: 'string' }, wav: { type: 'string' }, m4a: { type: 'string' }, duration_sec: { type: 'number' }, notes: { type: 'string' } },
-  required: ['plan', 'midi', 'wav', 'm4a', 'duration_sec', 'notes'],
+  properties: { version: { type: 'string' }, specs: { type: 'array', items: { type: 'string' } }, wav: { type: 'string' }, m4a: { type: 'string' }, duration_sec: { type: 'number' }, notes: { type: 'string' } },
+  required: ['version', 'specs', 'wav', 'm4a', 'duration_sec', 'notes'],
 }
-const renderLane = async (target, dir, script) => {
+const CHAIN = `ENGINES (read each one's docstring/README/CONTRACT.md first): piano ${R}/audio/piano/render_piano.py; string quartet ${R}/audio/strings/render_quartet.py; pipe organ ${R}/audio/organ/ (render_organ.py, registration plans); orchestra ${R}/audio/orchestra/ (render_orchestra.py); orchestration + ensemble mixing ${R}/tools/orchestrate.py and ${R}/tools/mix.py (spec format in ${R}/tools/ORCHESTRATION.md; demo specs for the skeleton in ${R}/orchestration/). Performance logic: ${R}/tools/perform.py.`
+const VERSIONS = [
+  { key: 'bach_organ', text: 'BACH: pipe organ. Write the performance plan and a REGISTRATION plan (terraced: registration changes at section joins, not hairpins; distinct manuals so the voices separate; pedal 16+8 for the bass, plenum with pedal reed for the climax and apotheosis; tempo a touch steadier, baroque articulation: slight detachment of repeated notes and leaps, legato stepwise lines).' },
+  { key: 'beethoven_piano', text: 'BEETHOVEN: solo piano, performed like the fugue of Op. 110 which this design follows: wide dynamic arc, bring out every subject entry (roles), expressive rubato at the arioso, sudden pianos, the long crescendo into the climax, a glowing, broadening major apotheosis with light pedal only where the texture is chordal.' },
+  { key: 'beethoven_quartet', text: 'BONUS: string quartet (Grosse Fuge / Op. 131 spirit): the same interpretation for vn1, vn2, va, vc; sustained swells on long notes, clear detache on fast notes.' },
+  { key: 'symphonic', text: 'SYMPHONIC: orchestra. Write a real ORCHESTRATION spec (Webern Ricercar-style colour hand-offs at phrase joins in the fugue, strings as the backbone, woodwind choir in the lament/arioso, horns on pedal points, brass and timpani saved for the climax and the apotheosis, octave doublings only in tuttis so the counterpoint stays clear) and a performance plan; render through orchestrate.py + mix.py.' },
+  { key: 'quintet', text: 'ENSEMBLE: piano + string quartet (Shostakovich Op. 57 fugue as a model): strings alone for the exposition and lament, piano entering for the inverted fugue, both together with doublings for the climax and the major apotheosis. Write the orchestration spec and performance plan; render through orchestrate.py + mix.py.' },
+]
+const renderVersion = async v => {
   let r = await agent(`${CONTEXT}
-ROLE: PERFORMER (${target}). Write a performance plan ${R}/performance/${target}.json (with "measure": "${MEASURE}") for ${R}/score/music-voices.ly following perform.py's docstring and the blueprint's performance sketch: tempo map (with the final broadening), dynamics arc with hairpins and subito effects, roles for EVERY subject/answer/cantus-firmus entry (from the section comments) so entries are brought out, breaths at cadences, fermata at the end${target === 'piano' ? ', light pedal only where the texture is chordal (apotheosis)' : ''}. Then run \`python3 ${R}/tools/perform.py ${R}/score/music-voices.ly ${R}/performance/${target}.json ${R}/performance/${target}.mid --target ${target}\` and render with ${dir}/${script} (read its usage) to ${R}/performance/ricercar_${target}.wav/.m4a. Check the duration is 210-240 s; adjust tempo if not. Never play audio. Commit the plan (not audio).`,
-    { label: `perform ${target}`, phase: 'Render', schema: RENDER_SCHEMA })
+${CHAIN}
+ROLE: PERFORMER/ORCHESTRATOR for the ${v.key} version. ${v.text}
+Base everything on the final score ${R}/score/music-voices.ly (and the entry comments in ${R}/score/sections/), the blueprint's performance sketch, and "measure": "${MEASURE}". Write your specs under ${R}/performance/${v.key}/ (plan JSON, plus registration or orchestration spec as needed), render to ${R}/performance/${v.key}/ricercar_${v.key}.wav and .m4a, and copy the m4a to ${R}/preview/final_${v.key}.m4a. Check the duration is 210-250 s and that every note of the score is present in the render chain (for orchestrated versions, run the integrity check of orchestrate.py). Never play audio. Commit specs, not audio.`,
+    { label: `render ${v.key}`, phase: 'Render', schema: RENDER_SCHEMA })
   for (let round = 1; round <= 2 && r; round++) {
     const qa = await agent(`${CONTEXT}
-ROLE: LISTENING QA (${target}, round ${round}) for ${r.wav} (MIDI ${r.midi}, plan ${r.plan}). You cannot hear, so measure: loudness envelope over time vs the planned dynamics arc (is the climax the loudest point? are subito pianos audible?), per-voice balance (render stems if the renderer supports it), whether subject entries are louder than surrounding voices, onset timing vs MIDI, clipping, clicks, stuck notes, tempo plausibility, total duration. Report defects with evidence and fixes (in the plan or render options). Do not modify files.`,
-      { label: `listen ${target} r${round}`, phase: 'Render', schema: REVIEW_SCHEMA })
+${CHAIN}
+ROLE: LISTENING QA (${v.key}, round ${round}) for ${r.wav} (specs: ${r.specs.join(', ')}). ${v.text}
+You cannot hear, so measure: loudness envelope vs the planned arc (is the climax the loudest point? are subito pianos audible? does the apotheosis bloom rather than just get louder?), per-part/voice balance (stems), whether subject entries stand out, clarity of the four lines in tuttis (masking by doublings), onset timing, tuning, clipping, clicks, stuck notes, duration. Check that the version's concept is realised (e.g. organ registration really terraced; orchestral colours as specified). Report defects with evidence and concrete fixes in the specs or render options. Do not modify files.`,
+      { label: `listen ${v.key} r${round}`, phase: 'Render', schema: REVIEW_SCHEMA })
     if (!qa || !qa.issues.length || (qa.verdict === 'ready' && !qa.issues.some(x => x.severity === 'major'))) break
     r = await agent(`${CONTEXT}
-ROLE: PERFORMER (${target}) revision ${round}. Fix these listening-QA findings in ${R}/performance/${target}.json or render options, re-run perform.py and the renderer (${dir}/${script}) to the same outputs, commit the plan.
-${fmtIssues(qa.issues)}`, { label: `perform ${target} r${round}`, phase: 'Render', schema: RENDER_SCHEMA }) || r
+${CHAIN}
+ROLE: PERFORMER/ORCHESTRATOR (${v.key}) revision ${round}. Fix these listening-QA findings in your specs under ${R}/performance/${v.key}/ or render options, re-render to the same outputs (and ${R}/preview/final_${v.key}.m4a), commit specs.
+${fmtIssues(qa.issues)}`, { label: `render ${v.key} r${round}`, phase: 'Render', schema: RENDER_SCHEMA }) || r
   }
   return r
 }
-const [piano, strings] = await parallel([
-  () => renderLane('piano', `${R}/audio/piano`, 'render_piano.py'),
-  () => renderLane('strings', `${R}/audio/strings`, 'render_quartet.py'),
-])
-
+const renders = await parallel(VERSIONS.map(v => () => renderVersion(v)))
 // ---------------- FINAL ----------------
 phase('Final')
 const final = await agent(`${CONTEXT}
-ROLE: COMPLETENESS CRITIC. Compare the finished work (score/music-voices.ly, score/out/*.pdf, performance/*.json and renders) against BLUEPRINT.md and the user's request. What is missing or unverified: a device promised but absent, a section below the quality bar, a render defect, missing analysis notes? Also write ${R}/NOTES.md: a concise analytical guide for the listener (form table with bar numbers and timings in the piano render, each device and where to hear it, the tune tweaks and why), in plain English. Commit NOTES.md. Return the list of remaining gaps (empty if none).`,
+ROLE: COMPLETENESS CRITIC. Compare the finished work (score/music-voices.ly, score/out/*.pdf, performance/*/ specs and the five renders: Bach organ, Beethoven piano, bonus quartet, symphonic, piano+quartet) against BLUEPRINT.md and the user's request. What is missing or unverified: a device promised but absent, a section below the quality bar, a render defect, missing analysis notes? Also write ${R}/NOTES.md: a concise analytical guide for the listener (form table with bar numbers and timings in the piano render, a short paragraph on each of the four versions and what to listen for in it, each device and where to hear it, the tune tweaks and why), in plain English. Commit NOTES.md. Return the list of remaining gaps (empty if none).`,
   { label: 'completeness critic', phase: 'Final', schema: { type: 'object', properties: { gaps: { type: 'array', items: { type: 'string' } }, notes_path: { type: 'string' } }, required: ['gaps', 'notes_path'] } })
-return { composed: composed.map((c, i) => c ? { sec: SECS[i].id, checker: c.checker_summary } : null), join, piano, strings, final }
+return { composed: composed.map((c, i) => c ? { sec: SECS[i].id, checker: c.checker_summary } : null), join, renders: renders.map((r, i) => r ? { version: VERSIONS[i].key, m4a: r.m4a, duration: r.duration_sec } : null), final }
