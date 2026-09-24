@@ -6,3 +6,4 @@ __pycache__/
 *.pyc
 ricercar/preview/*.mid
 .DS_Store
+.claude/tsc-cache/
