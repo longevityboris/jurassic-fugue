@@ -104,6 +104,7 @@ Checker = `tools/ck.sh` (project check.py with the four ranges). "0/0/0" = 0 PAR
 | P07_chain_flatward_Dflat_major.ly | Part III chain (bars 37-46): S1 e-flat (S), a-flat (A), then the MAJOR form in D-flat (T), each a fifth lower, 2 bars apart | errors 0, parallels 0, beat-par 0, unjustified 0 | leading-tone neighbours and escape tones only |
 | P08_mirror_pair_Eflat.ly | S1 (alto, ees') and its diatonic mirror (bass, ees) simultaneously, two voices alone | errors 0, parallels 0, beat-par 0, unjustified 0 | 4:1 aes'/bes, = V7 of e-flat (7th held from 3:4.5, resolves) |
 | P09_dominant_pedal_augmentation_climax.ly | answer in 2x augmentation (bass, 8 bars) under S2 (S), the lament (T) and the answer at the top (S, f'' -> bes''); climax It6 - V (4-3) - VI; general pause | errors 0, parallels 0, beat-par 0, unjustified 0 | pedal dissonances (sus4 at 1:1, V7 at 3:1, lament passing tones over f,); 9:1 augmented sixth ges,/e'; 10:1 bes''/f, 4-3 suspension |
+| P11_exposition_bars1-18.ly | the complete 4-voice exposition 1-18 as it should be written: S1, answer+CSb, codetta, S1 in bass + CSb (alto) + soprano descant, answer in tenor + lament + CSb + free alto, Phrygian half cadence | errors 0, parallels 0, beat-par 0, unjustified 0 | as P01-P03, plus 11:1-13:1 soprano 5-4 suspensions over the alto's eighths; 15:4.5 German sixth; 16:4.5 dim7; 17:1 Eb-minor 7th over the lament's passing ees, |
 | P10_S2_stretto_4th.ly | S2 (alto, g') and S2 at the lower 4th (tenor, d') 2 bars later | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:3 aes'/g 9-8 suspension; 4:1 g'/d' 4th needs the bass below it (form table note) |
 
 Search evidence (not proofs, kept for the composer): `tools/stretto_ck.py s1` lists every S1 stretto
@@ -138,9 +139,9 @@ unless Part V is taken below quarter = 60.
 |---|---|---|---|---|
 | 1-4 | I Esposizione | S1 alone, soprano | b-flat | p, dolce |
 | 5-8 | | answer (alto) + CSb (soprano) = P02 | f / b-flat | p < |
-| 9 | | codetta: C -> F7 -> i (link, 1 bar) | | mp |
-| 10-13 | | S1 in the BASS (bes,), CSb in alto (subject form), soprano free descant (held notes, suspensions) | b-flat | mp |
-| 14-17 | | answer in TENOR (f), CSa lament in bass (bes, -> c,), CSb in soprano, alto free = P03 + alto | f / b-flat | mf < f |
+| 9 | | codetta (= P11): S e''2 ees''2 / A g'2 a'2: C -> F7 -> i | | mp |
+| 10-13 | | = P11: S1 in the BASS (bes,), CSb in alto (subject form, f'4 ges'8 aes'8 ...), soprano descant f''1 / f''2. ees''4 / f''2 ees''2~ / ees''2 des''4 c''4 (a slow line of 5-4 sighs above the busy alto) | b-flat | mp |
+| 14-17 | | = P11: answer in TENOR (f), CSa lament in bass (bes, -> c,; S1's pickup bes, is tied into it), CSb in soprano (head bes'), alto des'2 c'2 / c'2 des'2~ / des'4 c'4 c'4 bes8 des'8~ / des'4 ges'4 f'2 (completes the German sixth at 15:4.5 and the full dim7 e-g-bes-des at 16:4.5) | f / b-flat | mf < f |
 | 18 | | Phrygian half cadence on C (des -> c), the lament's goal | f: V | f > p |
 | 19-22 | II Il conseguente | S2 (theme bars 5-8) enters, ALTO on g' (f-minor form; continues the C chord of bar 18), free motor bass in eighths (not lab-proven) | f | p, poco piu mosso |
 | 21-24 | | = P10: S2 stretto at the lower 4th: TENOR on d' (c-minor form), 2 bars after the alto; the bass must sit below the tenor at 22:1 (e.g. g or bes) because alto g'/tenor d' is a 4th | c | mp |
@@ -230,9 +231,7 @@ piece balances sharp-side tension (II) against flat-side darkness (III) around t
 3. Elision at the start of CSb: the first quarter c'' is the end of the preceding S1. Where the
    soprano is not coming off S1 (bar 14) it must start des'' instead (P03 1:1 shows c''/bes as an
    appoggiatura against the lament).
-4. Free voices not lab-proven (to be composed and checked by the composer): the soprano descant
-   10-13 and the alto 14-17 in the exposition (the combinations under them are proven pairwise and
-   as the triple complex P03, by exact transposition); the codetta bar 9; the motor bass 19-24
+4. Free voices not lab-proven (to be composed and checked by the composer): the motor bass 19-24
    (no motor countersubject survived: the solver's candidates were stepwise but harmonically aimless
    and cross-related with S2's a-natural, and CSb does not fit against S2); the episodes 29-32 and
    43-46; the upper voice(s) over the mirror pair 33-36 (CSb tested there: fails); the alto 47-54 in
