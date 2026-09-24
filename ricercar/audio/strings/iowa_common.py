@@ -33,6 +33,12 @@ INSTRUMENTS = {
     # The 2012 viola files are 24-bit recordings whose AIFF headers say 44.1 kHz
     # although the audio is 96 kHz (pitches come out 1.35 octaves low and every
     # note lasts 2.18x too long); true_sr overrides the header.
+    # Second violin: the same Iowa violin recordings, but each note taken from the next
+    # lower string where it was recorded there (a G/D-string colour, as inner-voice
+    # players often choose), so Violin I and II are two distinct sounds, never one
+    # sample set played twice.
+    "violin2": dict(page="MISviolin2012.html", strings={"G": 55, "D": 62, "A": 69, "E": 76}, lo=55, hi=100,
+                    variant_of="violin", string_shift=1),
     "viola": dict(page="MISviola2012.html", strings={"C": 48, "G": 55, "D": 62, "A": 69}, lo=48, hi=91,
                   true_sr=96000),
     "cello": dict(page="MIScello2012.html", strings={"C": 36, "G": 43, "D": 50, "A": 57}, lo=36, hi=81),
@@ -72,6 +78,11 @@ def parse_iowa_name(fname: str):
     lo = note_to_midi("".join(notes[0]))
     hi = note_to_midi("".join(notes[-1]))
     return dict(dyn=dyn, string=string, lo=lo, hi=hi)
+
+
+def base_of(inst: str) -> str:
+    """Recording set an instrument is built from (violin2 -> violin)."""
+    return INSTRUMENTS[inst].get("variant_of", inst)
 
 
 def load_iowa(inst: str, path: Path) -> tuple[np.ndarray, int]:

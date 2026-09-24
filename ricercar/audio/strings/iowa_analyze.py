@@ -136,7 +136,7 @@ def main():
     only = set(a.only.split(",")) - {""}
     jobs = []
     for inst in INSTRUMENTS:
-        if only and inst not in only:
+        if (only and inst not in only) or "variant_of" in INSTRUMENTS[inst]:
             continue
         for p in sorted((RAW_DIR / inst).glob("*.aif")):
             if ".stereo." in p.name and ".arco." in p.name:

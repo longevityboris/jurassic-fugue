@@ -12,7 +12,8 @@
 #
 #   IowaMIS/raw/{violin,viola,cello,bass}/*.aif   131 arco stereo recordings (2.2 GB)
 #   IowaMIS/quartet/analysis.json                 note segmentation + pitch (iowa_analyze.py)
-#   IowaMIS/quartet/samples/, {violin,viola,cello,bass}.sfz   built instruments (iowa_build.py)
+#   IowaMIS/quartet/samples/, {violin,violin2,viola,cello,bass}.sfz   built instruments (iowa_build.py;
+#                                                 violin2 = Violin II, next lower string where recorded)
 #   IowaMIS/quartet/tuning_corrections.json       closed-loop tuning (verify_tuning.py + retune)
 #   tools/sfizz/build/library/bin/sfizz_render    pinned sfizz + float patch, shared with the piano
 #   IR/Detmold-Konzerthaus-S1R163-MS-48k.wav      hall IR, shared with the piano (make_ir.py)
@@ -205,7 +206,7 @@ if [[ "$MODE" == "install" && "$FAILED" == 0 ]]; then
     (cd "$HERE" && python3 iowa_analyze.py --jobs "$(ncpu)" >/dev/null)
   fi
   need_build=0
-  for i in violin viola cello bass; do [[ -f "$Q/$i.sfz" ]] || need_build=1; done
+  for i in violin violin2 viola cello bass; do [[ -f "$Q/$i.sfz" ]] || need_build=1; done
   grep -q "hint_ram_based=1" "$Q/violin.sfz" 2>/dev/null || need_build=1
   python3 -c "import json,sys; m=json.load(open(sys.argv[1])); sys.exit(0 if all('normal_offset' in x for v in m.values() for x in v) else 1)" \
     "$Q/samples/meta.json" 2>/dev/null || need_build=1
@@ -216,15 +217,15 @@ if [[ "$MODE" == "install" && "$FAILED" == 0 ]]; then
   fi
   if [[ ! -f "$Q/tuning_corrections.json" ]]; then
     doing "closed-loop tuning: measure every key and layer through sfizz, fold the errors into the SFZ"
-    (cd "$HERE" && python3 verify_tuning.py violin viola cello bass --json "$Q/tuning_pass1.json" >/dev/null || true)
+    (cd "$HERE" && python3 verify_tuning.py violin violin2 viola cello bass --json "$Q/tuning_pass1.json" >/dev/null || true)
     (cd "$HERE" && python3 iowa_build.py --retune "$Q/tuning_pass1.json" >/dev/null)
   fi
 fi
-for i in violin viola cello bass; do
+for i in violin violin2 viola cello bass; do
   [[ -f "$Q/$i.sfz" ]] && ok "$i.sfz ($(grep -c '<region>' "$Q/$i.sfz") regions)" || fail "missing $Q/$i.sfz"
 done
 if [[ "$FAILED" == 0 ]]; then
-  if (cd "$HERE" && python3 verify_tuning.py violin viola cello bass --tol 15 --json "$Q/tuning_verify.json" >/dev/null); then
+  if (cd "$HERE" && python3 verify_tuning.py violin violin2 viola cello bass --tol 15 --json "$Q/tuning_verify.json" >/dev/null); then
     ok "tuning: every key x layer within 15 cents through sfizz ($(python3 -c "
 import json,sys; r=json.load(open(sys.argv[1])); c=[abs(x['cents']) for i in r.values() for l in i.values() for x in l]
 print(f'max {max(c):.1f} c, median {sorted(c)[len(c)//2]:.1f} c')" "$Q/tuning_verify.json"))"

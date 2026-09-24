@@ -108,7 +108,7 @@ def level_to_cc1(L: float) -> int:
 # id: sfz, display name, stage azimuth (deg, + = left), depth (m), trim (dB), compass lo/hi
 INSTR = {
     "vn1": dict(sfz="violin.sfz", name="Violin I", az=30.0, depth=0.0, trim=0.0, lo=55, hi=100),
-    "vn2": dict(sfz="violin.sfz", name="Violin II", az=10.0, depth=0.4, trim=0.0, lo=55, hi=100),
+    "vn2": dict(sfz="violin2.sfz", name="Violin II", az=10.0, depth=0.4, trim=0.0, lo=55, hi=100),
     "va": dict(sfz="viola.sfz", name="Viola", az=-10.0, depth=0.4, trim=0.0, lo=48, hi=91),
     "vc": dict(sfz="cello.sfz", name="Cello", az=-28.0, depth=0.0, trim=0.0, lo=36, hi=81),
     "cb": dict(sfz="bass.sfz", name="Contrabass", az=-36.0, depth=1.2, trim=0.0, lo=28, hi=67),
@@ -573,7 +573,8 @@ def sfz_for(lib: str, inst: str, sfz_dir: Path) -> Path:
     if lib == "vpo3":
         import vpo3
         return vpo3.VPO3_SFZ[vpo3.INST_PATCH[inst]]
-    return sfz_dir / INSTR[inst]["sfz"]
+    p = sfz_dir / INSTR[inst]["sfz"]
+    return p if p.exists() else sfz_dir / "violin.sfz" if inst == "vn2" else p
 
 
 def main(argv=None):
