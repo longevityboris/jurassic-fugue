@@ -51,6 +51,19 @@ counterpoint. This script fixes them without touching the audio files:
    octave to 0.35 s from F2 upwards (per region), which separates successive 16ths
    by about 17 dB. The undamped keys F6-C8 keep their 5 s.
 
+5. **Stereo.** The samples were recorded with a spaced pair, and for many notes
+   one channel arrives up to 3 ms after the other. Summed to mono such notes
+   partly cancel (C5: L/R correlation -0.82, 8 dB lost in mono; A3, A4, D#5,
+   D#6, A6, D#7 also negative), and in the hall's L-to-L / R-to-R convolution
+   the image of a line jumps with the phase of each sample. Every note gets one
+   inter-channel delay, the same for its 16 layers, from the L/R
+   cross-correlation of the first 400 ms averaged over the layers (the smallest
+   lag within 0.03 of the best one, up to 3 ms), and aligned copies are written
+   to ``samples-aligned/`` (FLAC, lossless shift). The level difference between
+   the channels, which carries the low-left/high-right image, is untouched.
+   Correlation per note and mono loss before and after are in the calibration
+   JSON. Copies are only rewritten when a note's lag changes.
+
 The release groups (string-resonance releases harmL/harmS/harmV3, hammer-noise
 releases rel1..88) and the pedal-noise group are copied verbatim. Both derived
 files start with ``<control> hint_ram_based=1``: sfizz then holds every sample in
@@ -63,6 +76,7 @@ stems of a multi-stem render, so that the noise sounds once and not once per
 voice.
 
 Outputs (next to the original SFZ, see piano_paths.py):
+    samples-aligned/*.flac, samples-aligned/alignment.json
     SalamanderGrandPiano-Ricercar.sfz
     SalamanderGrandPiano-Ricercar-nopedalnoise.sfz
     SalamanderGrandPiano-Ricercar.calibration.json   (velocity -> dB curve used by render_piano.py)
@@ -100,6 +114,11 @@ EVEN_CLIP_DB = 4.0
 TUNE_CLIP_CENTS = 8.0
 TUNE_LAYERS = (8, 10, 12)  # median over three layers
 P1_FROM_KEY = 60  # below C4 a note's pitch is judged by partials 2-3, as a tuner sets octaves
+ALIGNED_DIR = SALAMANDER_DIR / "samples-aligned"  # L/R time-aligned copies of the 480 note samples
+ALIGN_MAX_MS = 3.0  # largest inter-channel delay corrected
+ALIGN_TOL = 0.03  # correlation tolerance when preferring the smallest lag
+ALIGN_WIN = int(0.400 * SR)
+ALIGN_METHOD = "xcorr400ms-mean16-max3ms-tol0.03-v1"  # change when the alignment rule changes
 # Damper release (ampeg_release, s) of the damped keys A0-E6. The stock 1 s lets the
 # previous note of a fast passage sound only 8-10 dB under the current one. Real dampers
 # stop the treble within a few tenths of a second and the heavy bass strings more slowly,
@@ -188,9 +207,8 @@ def kweight(x: np.ndarray) -> np.ndarray:
     return ss.lfilter(K2_B, K2_A, ss.lfilter(K1_B, K1_A, x, axis=0), axis=0)
 
 
-def analyse_region(r: Region) -> None:
-    x, sr = sf.read(SALAMANDER_DIR / r.sample, dtype="float64", always_2d=True)
-    assert sr == SR, f"{r.sample}: expected {SR} Hz, got {sr}"
+def analyse_audio(r: Region, x: np.ndarray) -> None:
+    """Attack position, playback offset and K-weighted loudness of one (aligned) sample."""
     a = np.abs(x).max(axis=1)
     peak = a.max()
     t20 = int(np.argmax(a > peak * 0.1))
@@ -229,23 +247,106 @@ def partial_cents(m: np.ndarray, key: int, k: int) -> float | None:
     return float(1200 * np.log2(f / fk))
 
 
-def measure_tuning(root: str, key: int) -> float:
+def measure_tuning(layers: dict[int, np.ndarray], key: int) -> float:
     """Cents deviation of the sampled note from 12-TET (A4 = 440 Hz): partial 1 from C4
     up, the mean of partials 2 and 3 below (the fundamental of a wound bass string is
     weak and pulled by the soundboard; a tuner sets those octaves by the partials).
-    Median over layers 8, 10, 12, 0.3-2.3 s after the attack."""
+    Median over layers 8, 10, 12 (aligned audio), 0.3-2.3 s after the attack."""
     vals = []
     for layer in TUNE_LAYERS:
-        x, sr = sf.read(SALAMANDER_DIR / "samples" / f"{root}v{layer}.flac", dtype="float64", always_2d=True)
-        m = x.mean(axis=1)
+        m = layers[layer].mean(axis=1)
         on = int(np.argmax(np.abs(m) > 0.1 * np.abs(m).max()))
-        seg = m[on + int(0.3 * sr) : on + int(2.3 * sr)]
+        seg = m[on + int(0.3 * SR) : on + int(2.3 * SR)]
         parts = [1] if key >= P1_FROM_KEY else [2, 3]
         c = [partial_cents(seg, key, k) for k in parts]
         c = [v for v in c if v is not None]
         if c:
             vals.append(float(np.mean(c)))
     return float(np.median(vals))
+
+
+def lr_xcorr(x: np.ndarray, maxlag: int) -> np.ndarray:
+    """Normalised L/R cross-correlation over the first ALIGN_WIN after the attack, for
+    lags -maxlag..maxlag (positive: the right channel arrives later)."""
+    a = np.abs(x).max(axis=1)
+    on = int(np.argmax(a > 0.1 * a.max()))
+    seg = x[on : on + ALIGN_WIN]
+    L, R = seg[:, 0], seg[:, 1]
+    n = len(L)
+    xc = np.fft.irfft(np.conj(np.fft.rfft(L, 2 * n)) * np.fft.rfft(R, 2 * n), 2 * n)
+    return np.concatenate([xc[-maxlag:], xc[: maxlag + 1]]) / np.sqrt(np.sum(L * L) * np.sum(R * R) + 1e-30)
+
+
+def shift_lr(x: np.ndarray, lag: int) -> np.ndarray:
+    """Advance the later channel by |lag| samples (the file gets |lag| samples shorter)."""
+    if lag > 0:
+        return np.stack([x[: len(x) - lag, 0], x[lag:, 1]], axis=1)
+    if lag < 0:
+        return np.stack([x[-lag:, 0], x[: len(x) + lag, 1]], axis=1)
+    return x
+
+
+def corr_mono(x: np.ndarray) -> tuple[float, float]:
+    """L/R correlation and mono fold-down level re stereo (dB) over the first ALIGN_WIN."""
+    a = np.abs(x).max(axis=1)
+    on = int(np.argmax(a > 0.1 * a.max()))
+    L, R = x[on : on + ALIGN_WIN, 0], x[on : on + ALIGN_WIN, 1]
+    c = float(np.sum(L * R) / np.sqrt(np.sum(L * L) * np.sum(R * R) + 1e-30))
+    mono = 10 * np.log10(np.mean(((L + R) / 2) ** 2) / np.mean((L * L + R * R) / 2) + 1e-30)
+    return c, float(mono)
+
+
+def align_root(layers: list[Region], sidecar: dict) -> dict:
+    """Time-align the two channels of every layer of one sampled note, write the aligned
+    copies (unless the sidecar says they exist with this lag), analyse the aligned audio.
+
+    Salamander was recorded with a spaced pair, so for many notes the right channel
+    arrives up to a few ms after the left (or before it). Summed to mono, and in the
+    L/R correlation, such notes partly cancel: C5 had correlation -0.82 and lost 8 dB in
+    mono. One lag per note (the same for all 16 layers, so the image does not jump with
+    velocity) is chosen from the L/R cross-correlation averaged over the layers, within
+    +/-ALIGN_MAX_MS; among lags within ALIGN_TOL of the best correlation the smallest is
+    taken, because on a periodic tone every period gives an equally good match.
+    """
+    root = layers[0].root
+    raw = {}
+    for r in layers:
+        data, sr = sf.read(SALAMANDER_DIR / r.sample, dtype="int32", always_2d=True)
+        assert sr == SR, f"{r.sample}: expected {SR} Hz, got {sr}"
+        raw[r.layer] = data
+    maxlag = int(ALIGN_MAX_MS / 1000 * SR)
+    acc = np.mean([lr_xcorr(d / 2.0**31, maxlag) for d in raw.values()], axis=0)
+    lags = np.arange(-maxlag, maxlag + 1)
+    ok = np.nonzero(acc >= acc.max() - ALIGN_TOL)[0]
+    lag = int(lags[ok[np.argmin(np.abs(lags[ok]))]])
+    reuse = sidecar.get(root) == lag
+    before, after, aligned = [], [], {}
+    for r in layers:
+        name = Path(r.sample).name
+        dst = ALIGNED_DIR / name
+        y = shift_lr(raw[r.layer], lag)
+        if not (reuse and dst.exists()):
+            tmp = dst.with_name(f".{name}.tmp{os.getpid()}.flac")
+            sf.write(tmp, y, SR, subtype="PCM_24", format="FLAC")
+            os.replace(tmp, dst)
+        x0 = raw[r.layer] / 2.0**31
+        yf = y / 2.0**31
+        before.append(corr_mono(x0))
+        after.append(corr_mono(yf))
+        r.sample = f"{ALIGNED_DIR.name}/{name}"
+        analyse_audio(r, yf)
+        aligned[r.layer] = yf
+    tuning = measure_tuning(aligned, layers[0].key)
+    return {
+        "lag_samples": lag,
+        "lag_ms": round(lag / SR * 1000, 3),
+        "corr_before": round(float(np.median([b[0] for b in before])), 3),
+        "corr_after": round(float(np.median([a[0] for a in after])), 3),
+        "mono_db_before": round(float(np.median([b[1] for b in before])), 2),
+        "mono_db_after": round(float(np.median([a[1] for a in after])), 2),
+        "tuning_cents": tuning,
+        "rewritten": not reuse,
+    }
 
 
 def isotonic(y: np.ndarray) -> np.ndarray:
@@ -295,18 +396,26 @@ def main() -> None:
     args = ap.parse_args()
 
     regions, release_text, pedal_text = read_sfz_sections(SALAMANDER_SFZ)
-    print(f"analysing {len(regions)} note samples ...")
-    for r in regions:
-        analyse_region(r)
-
     roots = {}
     for r in regions:
         roots.setdefault(r.root, []).append(r)
     root_keys = sorted({(r.key, r.root) for r in regions})
 
+    # --- stereo alignment + per-sample analysis ---------------------------------------------
+    ALIGNED_DIR.mkdir(exist_ok=True)
+    side_path = ALIGNED_DIR / "alignment.json"
+    side = json.loads(side_path.read_text()) if side_path.exists() else {}
+    known = side.get("lags", {}) if side.get("method") == ALIGN_METHOD else {}
+    print(f"aligning and analysing {len(regions)} note samples ...")
+    align = {root: align_root(sorted(roots[root], key=lambda r: r.layer), known) for _, root in root_keys}
+    write_atomic(side_path, json.dumps({"method": ALIGN_METHOD,
+                                        "lags": {root: a["lag_samples"] for root, a in align.items()}}, indent=1))
+    rewritten = sum(a["rewritten"] for a in align.values())
+    print(f"aligned copies in {ALIGNED_DIR} ({rewritten} of {len(align)} notes rewritten)")
+
     # --- tuning ---------------------------------------------------------------------------
     keys = np.array([k for k, _ in root_keys], dtype=float)
-    cents = np.array([measure_tuning(root, k) for k, root in root_keys])
+    cents = np.array([align[root]["tuning_cents"] for k, root in root_keys])
     coef = np.polyfit(keys, cents, 4)
     smooth = np.polyval(coef, keys)
     slope = np.polyval(np.polyder(coef), keys)  # cents per key of the stretch curve
@@ -416,6 +525,8 @@ def main() -> None:
         "tuning_cents_measured": {root: round(float(c), 1) for (_, root), c in zip(root_keys, cents)},
         "tuning_cents_applied": tune,
         "pitch_keytrack_applied": keytrack,
+        "stereo_alignment": {root: {k: v for k, v in a.items() if k not in ("tuning_cents", "rewritten")}
+                             for root, a in align.items()},
         "level_fix_db": {k: {str(v): round(f, 2) for v, f in d.items()} for k, d in level_fix.items()},
         "onset_ms": {f"{r.root}v{r.layer}": round(r.attack20 / SR * 1000, 2) for r in regions},
         "layer_loudness_db": {f"{r.root}v{r.layer}": round(r.loud_db, 2) for r in regions},
@@ -434,6 +545,11 @@ def main() -> None:
             lf = "/".join(f"{level_fix[root][v]:+.1f}" for v in (20, 50, 80, 110))
             print(f"{root:4s} {k:4d}  {calib['tuning_cents_measured'][root]:+6.1f} -> {tune[root]:+5.1f} "
                   f"{keytrack[root]:7.2f}  {lf:>22s}   {ls}")
+        print("\nstereo alignment: note  lag(ms)  corr before -> after  mono dB before -> after")
+        for k, root in root_keys:
+            a = align[root]
+            print(f"  {root:4s} {a['lag_ms']:+6.2f}  {a['corr_before']:+.2f} -> {a['corr_after']:+.2f}   "
+                  f"{a['mono_db_before']:+5.1f} -> {a['mono_db_after']:+5.1f}")
         print("\nvelocity -> dB (rel. v127):")
         print(" ".join(f"{v}:{rel[v]:.1f}" for v in range(1, 128, 6)))
 

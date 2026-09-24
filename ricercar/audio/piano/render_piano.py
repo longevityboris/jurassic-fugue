@@ -44,10 +44,19 @@ have dampers: a lifted key fades with an exponential damper release of 0.35 s
 string-resonance and hammer release samples. Keys from F6 up ring on, as on a
 real grand.
 
+The samples were recorded with a spaced pair; ``make_sfz.py`` time-aligns the
+two channels of each note (one delay per note, up to 3 ms), so that no note is
+anti-phase: per-note L/R correlation is +0.23 to +0.96 (it was -0.82 to +0.74,
+and C5 lost 8 dB in mono). The render report gives L/R correlation and mono
+fold-down for each stem, the dry sum and the mix.
+
 Room: Detmold Konzerthaus, audience seat 163, coincident omni/figure-8 decoded
 to stereo (``make_ir.py``; CC-BY 4.0, Amengual Gari et al., AES 2020). Each
-dry channel feeds its own side of the IR (L to L, R to R). A mono feed would
-cancel partly, because on some notes the close AB pair is out of phase.
+dry channel feeds its own side of the IR (L to L, R to R).
+
+Output files carry the attribution the licences require (WAV INFO chunk:
+title, artist, comment, copyright, software; M4A tags written by ffmpeg with
+the audio stream copied).
 
 MIDI contract (for the performance script)
 ------------------------------------------
@@ -599,12 +608,50 @@ def measure_file(path: Path) -> dict | None:
     return out or None
 
 
+# Attribution carried inside every render (CC-BY requires crediting the sample and IR authors).
+CREDIT = (
+    "Piano: Salamander Grand Piano V3 (Yamaha C5) by Alexander Holm, CC-BY 3.0 "
+    "(https://creativecommons.org/licenses/by/3.0/), FLAC/SFZ packaging by FreePats. "
+    "Hall: Detmold Konzerthaus impulse response from the Open Database of Spatial Room Impulse "
+    "Responses at Detmold University of Music, S. V. Amengual Gari, B. Sahin, D. Eddy, M. Kob "
+    "(AES 149th Convention, 2020), CC-BY 4.0 (https://zenodo.org/records/4116247). "
+    "Rendered with sfizz (BSD-2-Clause) by ricercar/audio/piano/render_piano.py."
+)
+COPYRIGHT = ("Samples: Salamander Grand Piano V3, Alexander Holm, CC-BY 3.0. "
+             "Impulse response: Detmold SRIR database, Amengual Gari et al., CC-BY 4.0.")
+SOFTWARE = "ricercar render_piano.py + sfizz"
+
+
+def tag_m4a(m4a: Path, title: str) -> bool:
+    """Write the credit into the .m4a (remux with ffmpeg, audio stream copied untouched)."""
+    if shutil.which("ffmpeg") is None:
+        return False
+    tmp = m4a.with_name(m4a.stem + ".tagging.m4a")
+    r = subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(m4a), "-map", "0",
+                        "-c", "copy", "-map_metadata", "0", "-metadata", f"title={title}",
+                        "-metadata", "artist=Salamander Grand Piano V3 (Alexander Holm), rendered by render_piano.py",
+                        "-metadata", f"comment={CREDIT}", "-metadata", f"copyright={COPYRIGHT}",
+                        "-metadata", f"encoder={SOFTWARE}", str(tmp)], capture_output=True, text=True)
+    if r.returncode != 0 or not tmp.exists():
+        tmp.unlink(missing_ok=True)
+        return False
+    os.replace(tmp, m4a)
+    return True
+
+
 def write_outputs(x: np.ndarray, out: Path, make_m4a: bool) -> dict:
     wav = out.with_suffix(".wav")
     # TPDF dither to 24 bit
     lsb = 2.0 ** -23
     d = (np.random.default_rng(0).random(x.shape) - np.random.default_rng(1).random(x.shape)) * lsb
-    sf.write(wav, np.clip(x + d, -1, 1 - lsb), SR, subtype="PCM_24")
+    # RIFF INFO chunk (INAM/IART/ICMT/ICOP/ISFT); libsndfile needs the strings before the data.
+    with sf.SoundFile(wav, "w", SR, x.shape[1], subtype="PCM_24", format="WAV") as f:
+        f.title = out.name
+        f.artist = "Salamander Grand Piano V3 (Alexander Holm), rendered by render_piano.py"
+        f.comment = CREDIT
+        f.copyright = COPYRIGHT
+        f.software = SOFTWARE
+        f.write(np.clip(x + d, -1, 1 - lsb))
     res = {"wav": str(wav)}
     if make_m4a:
         m4a = out.with_suffix(".m4a")
@@ -612,7 +659,32 @@ def write_outputs(x: np.ndarray, out: Path, make_m4a: bool) -> dict:
             m4a.unlink()
         subprocess.run(["afconvert", "-f", "m4af", "-d", "aac", "-b", "256000", str(wav), str(m4a)], check=True)
         res["m4a"] = str(m4a)
+        res["m4a_tagged"] = tag_m4a(m4a, out.name)
     return res
+
+
+def stereo_stats(x: np.ndarray) -> dict:
+    """L/R correlation, mono fold-down level re stereo (overall, and the worst 1 s window
+    within 30 dB of the loudest one), and balance (R minus L, dB)."""
+    L, R = x[:, 0], x[:, 1]
+    eL, eR = float(np.sum(L * L)), float(np.sum(R * R))
+    if eL <= 0 or eR <= 0:
+        return {}
+    w = SR
+    nw = len(L) // w
+    worst = None
+    if nw:
+        Lw, Rw = L[: nw * w].reshape(nw, w), R[: nw * w].reshape(nw, w)
+        st = np.mean((Lw**2 + Rw**2) / 2, axis=1) + 1e-30
+        mo = np.mean(((Lw + Rw) / 2) ** 2, axis=1) + 1e-30
+        loud = st > st.max() * 1e-3
+        worst = round(float(np.min(10 * np.log10(mo[loud] / st[loud]))), 2)
+    return {
+        "lr_correlation": round(float(np.sum(L * R) / math.sqrt(eL * eR)), 3),
+        "mono_fold_db": round(float(10 * np.log10(np.mean(((L + R) / 2) ** 2) / np.mean((L * L + R * R) / 2))), 2),
+        "mono_fold_worst_1s_db": worst,
+        "balance_r_minus_l_db": round(10 * math.log10(eR / eL), 2),
+    }
 
 
 def main(argv=None) -> dict:
@@ -799,17 +871,18 @@ def main(argv=None) -> dict:
             "zero_length_notes": v.zero_length,
             "unterminated_notes": v.unterminated,
             "folded_notes": folded.get(name, {}).get("notes", 0),
+            "stereo": stereo_stats(s[:n]),
         }
         if args.stems:
             args.stems.mkdir(parents=True, exist_ok=True)
             sf.write(args.stems / f"{name.replace('/', '_')}.wav", s[:n].astype(np.float32), SR, subtype="FLOAT")
 
+    stereo_dry = stereo_stats(dry[:n])
     mix = dry.copy()
     c80 = None
     if ir is not None:
         g = 10 ** (args.wet_db / 20)
-        # L->L, R->R: the close AB pair of the samples is partly anti-phase on some
-        # notes, so a mono sum would starve those notes of reverb.
+        # L->L, R->R: each side of the piano excites its own side of the hall IR.
         wet = np.stack([ss.fftconvolve(dry[:n, c], ir[:, c]) for c in range(2)], axis=1)
         mix[: len(wet)] += g * wet[: len(mix)]
         c80 = c80_of(ir, g)
@@ -849,6 +922,7 @@ def main(argv=None) -> dict:
         "normalise_gain_db": round(20 * math.log10(gain), 2),
         "true_peak_dbfs": args.peak_db,
         "rms_dbfs": round(float(10 * np.log10(np.mean(mix**2))), 2),
+        "stereo": {"dry": stereo_dry, "mix": stereo_stats(mix)},
         "measured": {k: measure_file(Path(files[k])) for k in ("wav", "m4a") if k in files},
     }
     print(json.dumps(report, indent=1))

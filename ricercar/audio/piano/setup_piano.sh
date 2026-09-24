@@ -10,6 +10,7 @@
 #
 #   SalamanderGrandPiano/SalamanderGrandPiano-SFZ+FLAC-V3+20200602/   samples + stock SFZ
 #       + SalamanderGrandPiano-Ricercar*.sfz, *.calibration.json      (make_sfz.py)
+#       + samples-aligned/  L/R time-aligned copies of the note samples (make_sfz.py, 670 MB)
 #   IR/DetmoldSRIR/SetC_DenseKH_LSOrchestra/Data/{Omni,Fig8,DummyHead}/S1R163.wav
 #   IR/Detmold-Konzerthaus-S1R163-MS-48k.{wav,json}                  (make_ir.py)
 #   tools/sfizz/  (source at a pinned commit + sfizz_render_float32.patch)
@@ -71,6 +72,7 @@ PATCH="$HERE/sfizz_render_float32.patch"
 DERIVED_SFZ="$SAL_DIR/SalamanderGrandPiano-Ricercar.sfz"
 DERIVED_SFZ_NP="$SAL_DIR/SalamanderGrandPiano-Ricercar-nopedalnoise.sfz"
 CALIB="$SAL_DIR/SalamanderGrandPiano-Ricercar.calibration.json"
+ALIGNED="$SAL_DIR/samples-aligned"
 
 ok()   { printf '  ok    %s\n' "$*"; }
 doing(){ printf '  ....  %s\n' "$*"; }
@@ -199,9 +201,10 @@ echo "[5/6] derived instrument (make_sfz.py) and hall IR (make_ir.py)"
 # make_sfz.py (a newer checkout) means the instrument on disk is stale.
 GEN_SHA="$(sha256 "$HERE/make_sfz.py")"
 current() { [[ -f "$1" ]] && head -20 "$1" | grep -q "make_sfz.py sha256=$GEN_SHA"; }
+n_aligned() { find "$ALIGNED" -maxdepth 1 -name '*.flac' 2>/dev/null | wc -l | tr -d ' '; }
 if [[ "$MODE" == "install" && -f "$SAL_SFZ" ]]; then
-  if [[ "$FORCE" == 1 || ! -f "$CALIB" ]] || ! current "$DERIVED_SFZ" || ! current "$DERIVED_SFZ_NP"; then
-    doing "make_sfz.py (analyses all 480 note samples, about 30 s)"
+  if [[ "$FORCE" == 1 || ! -f "$CALIB" || "$(n_aligned)" != 480 ]] || ! current "$DERIVED_SFZ" || ! current "$DERIVED_SFZ_NP"; then
+    doing "make_sfz.py (aligns and analyses the 480 note samples; about 1 min when it writes the aligned copies, 30 s otherwise)"
     (cd "$HERE" && python3 make_sfz.py >/dev/null)
   fi
   if [[ "$FORCE" == 1 || ! -f "$HALL_IR" ]]; then
@@ -214,9 +217,10 @@ for f in "$DERIVED_SFZ" "$DERIVED_SFZ_NP"; do
   elif [[ -f "$f" ]]; then fail "$(basename "$f") was written by another make_sfz.py (run ./setup_piano.sh)"
   else fail "missing $f (run ./setup_piano.sh)"; fi
 done
-for f in "$CALIB" "$HALL_IR"; do
+for f in "$CALIB" "$HALL_IR" "$ALIGNED/alignment.json"; do
   [[ -f "$f" ]] && ok "$(basename "$f")" || fail "missing $f (run ./setup_piano.sh)"
 done
+[[ "$(n_aligned)" == 480 ]] && ok "480 L/R-aligned note samples" || fail "$(n_aligned) aligned samples in $ALIGNED, expected 480 (run ./setup_piano.sh)"
 
 # ---------------------------------------------------------------------------------------
 echo "[6/6] end-to-end smoke test"
