@@ -100,7 +100,13 @@ def main():
                 continue
             on, slope = _onset(hp, t_on)
             parts = [midi_hz(key) * p for p in range(1, 9)]
-            rise = db(band_power(m, t_on + 0.01, t_on + 0.08, parts)) - db(band_power(m, t_on - 0.08, t_on - 0.01, parts))
+            # audibility: rise of this note's partials that the previous note of the voice does not share
+            prev = [s for s in sounding_keys if s[0] < t_on - 0.001 and s[1] > t_on - 0.45]
+            pp = [midi_hz(s[2]) * q for s in prev for q in range(1, 21)]
+            own = [f for f in [midi_hz(key) * q for q in range(1, 11)] if all(abs(f / g - 1) > 0.02 for g in pp)] or parts
+            W = max(0.06, min(0.2, n["end"] - n["start"] - 0.03))
+            rise = db(band_power(m, t_on + 0.02, t_on + 0.02 + W, own, rel_bw=0.006)) - \
+                db(band_power(m, t_on - 0.02 - W, t_on - 0.02, own, rel_bw=0.006))
             row = dict(voice=nm, key=key, t=round(t_on, 3), dur=round(n["end"] - n["start"], 3), vel=n["vel"],
                        onset_ms=round((on - t_on) * 1000, 1), hp_slope_db=round(slope, 1), partial_rise_db=round(float(rise), 1))
             d = n["end"] - n["start"]
@@ -169,7 +175,7 @@ def _onset(hp, t):
 def _summ(rows):
     if not rows:
         return {}
-    on = np.array([r["onset_ms"] for r in rows])
+    on = np.array([r["onset_ms"] for r in rows if r["key"] >= 36] or [0.0])
     rise = np.array([r["partial_rise_db"] for r in rows])
     c = np.array([r["cents"] for r in rows if "cents" in r])
     oe = np.array([r["odd_re_even_db"] for r in rows if "odd_re_even_db" in r])
@@ -179,10 +185,13 @@ def _summ(rows):
         n=len(rows),
         onset_ms=dict(median=float(np.median(on)), p95_abs=float(np.percentile(np.abs(on), 95)), max_abs=float(np.abs(on).max()),
                       n_over_20ms=int((np.abs(on) > 20).sum()),
+                      note="keys >= C2 only: the >1.5 kHz attack slope of soft bass notes in legato is too weak to time",
                       worst=[{k: r[k] for k in ("voice", "key", "t", "onset_ms", "hp_slope_db", "partial_rise_db")}
-                             for r in sorted(rows, key=lambda r: -abs(r["onset_ms"]))[:4]]),
+                             for r in sorted([r for r in rows if r["key"] >= 36], key=lambda r: -abs(r["onset_ms"]))[:4]]),
         partial_rise_db=dict(min=float(rise.min()), p5=float(np.percentile(rise, 5)), median=float(np.median(rise)),
-                             n_below_3db=int((rise < 3).sum())),
+                             n_below_3db=int((rise < 3).sum()),
+                             weakest=[{k: r[k] for k in ("voice", "key", "t", "vel", "partial_rise_db")}
+                                      for r in sorted(rows, key=lambda r: r["partial_rise_db"])[:4]]),
         cents=dict(n=len(c), median=float(np.median(c)) if len(c) else None,
                    p5=float(np.percentile(c, 5)) if len(c) else None, p95=float(np.percentile(c, 95)) if len(c) else None,
                    n_abs_over_15=int((np.abs(c) > 15).sum())) if len(c) else {},
