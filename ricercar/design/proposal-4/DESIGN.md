@@ -94,9 +94,111 @@ Checker = `tools/ck.sh` (project check.py with the four ranges). "0/0/0" = 0 PAR
 | P01_S1_CSa.ly | S1 + CSa (lament) below it; answer context is the exact transposition | errors 0, parallels 0, beat-par 0, unjustified 0 | 2:3 accented passing c'; 2:4.5 aug-6th ces'/a' -> 8ve; 3:4.5 vii(o) over a (lament); 4:4 escape tone des'' over g |
 | P02_answer_CSb.ly | answer + CSb as a duet (answer is the bass: 4ths count) | errors 0, parallels 0, beat-par 0, unjustified 0 | only passing tones and the answer's own e' neighbour |
 | P03_answer_CSb_CSa.ly | triple complex CSb / answer / CSa | errors 0, parallels 0, beat-par 0, unjustified 0 | 1:1 c''/bes = elision note (replaced by des'' when the soprano is not coming off S1); 4:1 des'' 7th over ees (lament passing) |
+| P04_stretto_chain_5ths.ly | stretto chain at the lower 5th, 2 bars apart, 3 voices: S1 b-flat (S), e-flat (A), a-flat (T) | errors 0, parallels 0, beat-par 0, unjustified 0 | only the followers' leading-tone neighbours (d, g) and the leader's escape tone |
+| P05_CB1_S2_over_answer.ly | S1+S2 combination: S2 (soprano) over the real answer (alto), simultaneous, with a free bass | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:1 V7 (ees'' over f, resolves to des''); 4:1 4-3 suspension bes'->aes' over f under S2's c'' |
+| P06_apotheosis_frame.ly | B-flat major apotheosis, 4 voices, 10 bars: complete tune (S) over its mirror (B 1-4) and the answer (B 5-8), c'' -> d'', plagal minor-iv close | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:3 V6/5 7th; 4:1, 7:1 V7; 8:1 ii4/2 (bass bes, is the 7th, resolves to a,); 10:1 minor iv6/4 neighbour chord |
 
 ## C. Architecture
-(pending: meter 4/4, quarter = 76-84 with a tempo map; target ~72-76 bars)
+
+### C1. Meter, tempo, duration
+
+4/4 throughout (the tune's own metre; every entry keeps the tune's metric placement: dotted half on
+beat 1, pickup eighths on beat 4). 70 bars.
+
+| span | tempo | bars | seconds |
+|---|---|---|---|
+| Part I, bars 1-18 | Grave e sostenuto, quarter = 72 | 18 | 18 x 4 x 60/72 = 60.0 |
+| Parts II-IV, bars 19-58 | Poco piu mosso, quarter = 80 | 40 | 40 x 4 x 60/80 = 120.0 |
+| allargando 55-57 + fermata/general pause 58 | | | + 4.0 |
+| Part V, bars 59-70 | Largamente, quarter = 66 | 12 | 12 x 4 x 60/66 = 43.6 |
+| final ritardando + fermata | | | + 4.0 |
+| **total** | | **70** | **231.6 s (3'52")** |
+
+Slack: 210 s is reached even without the fermatas at a uniform quarter = 80; 240 s is not exceeded
+unless Part V is taken below quarter = 60.
+
+### C2. Form table
+
+| bars | part | what happens | key | dynamics |
+|---|---|---|---|---|
+| 1-4 | I Esposizione | S1 alone, soprano | b-flat | p, dolce |
+| 5-8 | | answer (alto) + CSb (soprano) = P02 | f / b-flat | p < |
+| 9 | | codetta: C -> F7 -> i (link, 1 bar) | | mp |
+| 10-13 | | S1 in the BASS (bes,), CSb in alto (subject form), soprano free descant (held notes, suspensions) | b-flat | mp |
+| 14-17 | | answer in TENOR (f), CSa lament in bass (bes, -> c,), CSb in soprano, alto free = P03 + alto | f / b-flat | mf < f |
+| 18 | | Phrygian half cadence on C (des -> c), the lament's goal | f: V | f > p |
+| 19-22 | II Il conseguente | S2 (theme bars 5-8) enters, ALTO on g' (f-minor form), motor bass in eighths | f | p, poco piu mosso |
+| 21-24 | | S2 stretto at the lower 4th: TENOR on d' (c-minor form), 2 bars after the alto | c | mp |
+| 25-28 | | FIRST COMBINATION CB1 = P05: S2 (soprano, c'') over the answer (alto, f'); both halves of the tune at once | b-flat (on V) | mf |
+| 29-32 | | episode: CSb head in sequence down by fifths, lament fragments in bass -> e-flat minor | -> e-flat | mf > p |
+| 33-36 | III Inversio | S1 (alto, ees') with its MIRROR (tenor, ees) simultaneously, CSb above | e-flat | p subito, misterioso |
+| 37-42 | | STRETTO CHAIN at the lower fifth, 2 bars apart = P04 transposed: S ees'' (e-flat), A aes' (a-flat), T des' (D-FLAT MAJOR: the tune's first, false, glimpse of major) | e-flat -> a-flat -> D-flat | p < f |
+| 43-46 | | bass lament in half notes on the flat side: G-flat -> C-flat (NEAPOLITAN region) -> German sixth ges-bes-des-e | G-flat -> C-flat -> (b-flat: Ger6) | f > mp < |
+| 47-54 | IV Pedale | ANSWER IN AUGMENTATION in the bass: F pedal 47-50 (f... f-e ...), rising f-g-bes 51-53, bes-aes-f 54. Above: S2 (soprano, c'') 47-50; lament CSa over the pedal (tenor: bes-a-aes-g-ges-f = sus4-3, then chromatic prolongation of V); S1 (soprano) 51-54 | b-flat: V | mf < ff |
+| 55-57 | | CLIMAX: 55 German sixth fff (ges in bass); 56 V (F major) with the subject's head bes''-a'' in the soprano as the 4-3 suspension of the dominant; 57 DECEPTIVE cadence to G-flat (VI) | | fff, allargando |
+| 58 | | general pause (fermata), then the lament's first two notes alone, pp | | pp |
+| 59-68 | V Apoteosi | = P06: the COMPLETE TUNE in B-flat major as cantus firmus (soprano), over its own mirror (bass 59-62) and the answer (bass 63-66); c'' (the tune's open ending) rises to d'' (bar 67), the one note that separates minor from major | B-flat major | f, largamente, cantabile |
+| 67-68 | | plagal close with the MINOR subdominant (ges) as the last shadow | B-flat | f > mp |
+| 69-70 | | final B-flat major chord, d'' on top | B-flat | p < mf (fermata) |
+
+### C3. Tonal plan and its logic
+
+b-flat (i) -> f (v, the answer's key; exposition ends on its dominant C) -> Part II climbs the SHARP
+side by S2's stretto at the lower 4th (f, c: tension) -> back to b-flat for the first combination ->
+Part III falls the FLAT side by the stretto chain at the lower 5th (e-flat, a-flat, D-flat,
+G-flat, C-flat = darkness, the Neapolitan region) -> the German sixth on G-flat pivots to the dominant
+pedal (Part IV) -> climax on V, deceptive cadence to VI (G-flat, the last flat-side key) -> B-flat MAJOR.
+The two strettos are mirror images of each other (up-by-fourths vs down-by-fifths), and the whole
+piece balances sharp-side tension (II) against flat-side darkness (III) around the dominant.
+
+### C4. Entry table
+
+| bar | voice | form | key | first note |
+|---|---|---|---|---|
+| 1 | S | S1 | b-flat | bes' |
+| 5 | A | answer (real) | f | f' |
+| 10 | B | S1 | b-flat | bes, |
+| 14 | T | answer | f | f |
+| 19 | A | S2 (f-minor form) | f | g' |
+| 21 | T | S2 stretto, lower 4th | c | d' |
+| 25 | S + A | S2 + answer (CB1) | b-flat on V | c'' + f' |
+| 33 | A + T | S1 + mirror (simultaneous, octave) | e-flat | ees' + ees |
+| 37 | S | S1 (chain 1) | e-flat | ees'' |
+| 39 | A | S1 (chain 2, lower 5th) | a-flat | aes' |
+| 41 | T | S1 major form (chain 3, lower 5th) | D-flat | des' |
+| 47 | B | answer in 2x augmentation (pedal) | b-flat: V | f, |
+| 47 | S | S2 over the pedal | b-flat: V | c'' |
+| 51 | S | S1 over the moving augmentation | b-flat | bes' |
+| 59 | S | cantus firmus: complete tune (S1M + S2M) | B-flat | bes' |
+| 59 | B | mirror of S1M (2 octaves below) | B-flat | bes, |
+| 63 | B | answer (F major, real) | B-flat: V | f, |
+
+### C5. Harmonic outline (per half bar; subject context numerals in b-flat unless noted)
+
+- 1-4 (S1 alone, implied): i | i (V on a') | i ii(o) | iv | (V at 5)
+- 5-8 (= P03 without bass: answer + CSb): i V6 | v6 vi(o)7->Ger6 | (f:) i V6 | iv IV6 -> iv6 | (f:) V
+- 10-13 (bass S1, alto CSb, soprano descant): i (pedal) ... | VI6/4 - vii(o)7 | i - ii(o)6/5 - iv | iv - VI | V
+- 14-17 (= P03 + alto): i V6 | v6 vi(o)7 - Ger6 | V(=f: I) V6/5 of f | iv of f (Eb/D) | f: Phrygian HC (des -> c) at 18
+- 25-28 (= P05): V | V6 vii(o)7/V | V7 vii(o)7/V | v with 4-3 | (f: V) 
+- 43-46: G-flat (VI) | C-flat (N, root position) | N6 (ees bass) | Ger6 (ges bass)
+- 47-50: V pedal: V(sus4) V v V9 V(b9) V ... | (lament over the pedal)
+- 55-58: Ger6 | V (4-3 = bes''-a'') | VI (deceptive) | fermata
+- 59-68 (= P06, B-flat major): I | I (IV6/4 neighbour) | I V6 V6/5 V7 | V7 I6 | V (C7/E = V6/5 of V) | V | V7 vi | ii4/2 V6/5 V | I | iv6/4 (minor) I
+
+### C6. Special harmonic events (where they sit and why)
+
+- AUGMENTED SIXTHS built into the countersubject: every CSa cell ends with the lament's chromatic
+  eighth forming an augmented sixth with the subject's leading-tone neighbour (2:4.5 of every entry
+  that has CSa); the big German sixth returns structurally at 46 and 55.
+- NEAPOLITAN: implicit in CSa (ces, bar 2 of the lament) and structural at 44-45 (C-flat region).
+- DIMINISHED SEVENTHS: vii(o)7 of F under CSb's des'' (exposition bars 5-8 and 14-17: e-g-bes-des).
+- LAMENT BASS: 14-17 (full chromatic descent bes, -> c,), 43-46, and over the dominant pedal 47-50.
+- PEDAL POINTS: dominant pedal 47-50 that IS the subject (answer in augmentation); tonic pedal 59-60
+  that is the subject's mirror.
+- DECEPTIVE CADENCE: 57 (V -> VI, G-flat), the last flat-side sonority before the major.
+- MODAL MIXTURE at the very end: minor iv (ges) in the plagal close, 68.
+- THE LAST NOTE: the tune's open ending c'' rises to d'' (67): the one scale degree that the whole
+  piece has been withholding (des in minor, d in major).
 
 ## D. Risks
 (pending)
