@@ -13,8 +13,8 @@ Segments, all using the ricercar theme (bars 1-4, B-flat major) or material
 derived from it:
 
 1. ``pp``, 2. ``mf``, 3. ``ff``: the same phrase (theme in the soprano over a
-   bass line), note velocities 29 / 86 / 115. These are the calibrated pp, mf
-   and ff of make_sfz.py.
+   bass line), at the calibrated pp, mf and ff velocities of make_sfz.py
+   (``suggested_velocities`` in the calibration JSON: 30 / 86 / 115).
 4. ``cresc_velocity``: a B-flat chord (F3 B-flat3 D4 F4) repeated 29 times
    in eighths. The velocity rises 18 -> 120 and falls back. A piano cannot
    swell a held note, so this is how a pianist makes a crescendo. Repeating
@@ -51,6 +51,23 @@ CHORD = [53, 58, 62, 65]  # F3 B-flat3 D4 F4, repeated so that pitch does not co
 HITS = 29
 
 
+def calibrated_marks() -> dict:
+    """pp/mf/ff velocities of the derived instrument (make_sfz.py's calibration JSON)."""
+    marks = {"pp": 29, "mf": 86, "ff": 115}
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from piano_paths import CALIBRATION_JSON
+        marks.update({k: v for k, v in json.loads(CALIBRATION_JSON.read_text())["suggested_velocities"].items()
+                      if k in marks})
+    except (OSError, KeyError, ImportError):
+        pass
+    return marks
+
+
+MARKS = calibrated_marks()
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="write the dynamics test MIDI")
     ap.add_argument("-o", "--out", type=Path, default=Path(__file__).resolve().parent / "out" / "dynamics_test.mid")
@@ -71,7 +88,7 @@ def main() -> None:
         ev[voice].append((at, 0, mido.Message("control_change", channel=names.index(voice), control=num, value=val)))
 
     # 1-3: same phrase at pp, mf, ff
-    for label, vel in [("pp", 29), ("mf", 86), ("ff", 115)]:
+    for label, vel in [("pp", MARKS["pp"]), ("mf", MARKS["mf"]), ("ff", MARKS["ff"])]:
         s = t
         x = t
         for key, d in THEME:
