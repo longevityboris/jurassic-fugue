@@ -103,7 +103,8 @@ def build(stmts=STMT, total=TOTAL, name='SK_skeleton.ly', expo=True):
     if expo:
         e = sections.SEC['E1_exposition']
         for v in VOX:
-            lines[v] = trim(parse(e[v]), F(18))
+            # the alto's tied ees' (third of the cadential 6/4 at 19:1) is kept
+            lines[v] = trim(parse(e[v]), F(37, 2) if v == 'alto' else F(18))
     for v, bar, beat, label, line in sorted(stmts, key=lambda x: B(x[1], x[2])):
         start = B(bar, beat)
         ev = shift(line, start)

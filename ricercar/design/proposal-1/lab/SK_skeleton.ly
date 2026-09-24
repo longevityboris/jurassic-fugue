@@ -108,8 +108,8 @@ alto = \absolute {
   r4 c''4 bes'4 aes'8 g'8 |
   f'4 g'4 aes'4 bes'4 |
   aes'4 g'4 bes'4. aes'8 |
-  g'2 f'4. ees'8 |
-  r1 |
+  g'2 f'4. ees'8~ |
+  ees'2 r2 |
   r1 |
   r1 |
   r1 |
