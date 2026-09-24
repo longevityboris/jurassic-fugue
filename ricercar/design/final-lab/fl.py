@@ -113,6 +113,30 @@ def report(path, bars=None, show=True):
     return lines, slines
 
 
+
+_NOTE = re.compile(r"(?<![a-zA-Z\\])([a-g](?:isis|eses|is|es)?)([',]*)(?=[\d~\s|.]|$)")
+
+
+def octave(s, k):
+    """shift every note of a LilyPond \\absolute string by k octaves."""
+    def f(m):
+        name, marks = m.group(1), m.group(2)
+        n = marks.count("'") - marks.count(',') + k
+        return name + ("'" * n if n > 0 else ',' * (-n))
+    return _NOTE.sub(f, s)
+
+
+def bars(s):
+    return [b.strip() for b in s.replace('\n', ' ').split('|') if b.strip()]
+
+
+def lab(voices, n=None):
+    """voices: dict voice -> string (bars separated by |); missing voices become rests."""
+    sc = {v: bars(voices[v]) if v in voices else None for v in VOICES}
+    n = n or max(len(x) for x in sc.values() if x)
+    return {v: (sc[v] if sc[v] else ['r1'] * n) for v in VOICES}
+
+
 if __name__ == '__main__':
     for p in sys.argv[1:]:
         report(p)
