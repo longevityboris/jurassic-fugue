@@ -18,9 +18,10 @@ This writes ``OUT.wav`` (48 kHz, 24-bit stereo, true peak normalised to -1 dBFS)
 and ``OUT.m4a`` (AAC 256 kb/s via ``afconvert``). It plays nothing through the
 speakers. Run ``setup_piano.sh`` once first (samples, impulse response, sfizz).
 
-Options: ``--wet-db`` (reverb energy relative to the dry piano, default
--4 dB, C80 of about +8 dB: clear enough for counterpoint, with the hall
-audible), ``--no-reverb``, ``--ir PATH``,
+Options: ``--wet-db`` (the hall's energy relative to the dry piano, calibrated
+on the piano's long-term spectrum; default 0 dB, the hall as loud as the dry
+piano: C80 +4.9 dB on the demo, clear enough for counterpoint with the hall
+audible; the report gives both as measured on the render), ``--no-reverb``, ``--ir PATH``,
 ``--peak-db``, ``--lead-in``, ``--dyn-db`` (global dynamic offset realised
 through velocity), ``--transpose VOICE=N``, ``--stems DIR``,
 ``--velocity-scale auto|raw|perform``, ``--cc-dynamics auto|velocity|cc11|gain|off``
@@ -28,7 +29,8 @@ through velocity), ``--transpose VOICE=N``, ``--stems DIR``,
 ``--quality`` (sfizz resampler, 10 = sinc72), ``--jobs`` (parallel sfizz
 instances, default 4), ``--keep-temp``, ``--no-m4a``, ``--json PATH`` (render
 report: per-voice velocities, levels and stereo, key sharing, folded notes,
-truncation check, C80, loudness, true peak, stereo of the dry sum and the mix).
+truncation check, hall-to-dry and C80 measured on the render, loudness, true
+peak, stereo of the dry sum and the mix, warnings).
 
 Instrument
 ----------
@@ -53,8 +55,16 @@ and C5 lost 8 dB in mono). The render report gives L/R correlation and mono
 fold-down for each stem, the dry sum and the mix.
 
 Room: Detmold Konzerthaus, audience seat 163, coincident omni/figure-8 decoded
-to stereo (``make_ir.py``; CC-BY 4.0, Amengual Gari et al., AES 2020). Each
-dry channel feeds its own side of the IR (L to L, R to R).
+to stereo (``make_ir.py``; CC-BY 4.0, Amengual Gari et al., AES 2020); the
+1.44 s measurement is continued per octave band at its own decay rate to 3.1 s,
+because the bass reverberates longer than the file. Each dry channel feeds its
+own side of the IR (L to L, R to R). The IR is stored at unit energy, which on
+piano material is a gain of +9.4 dB (the hall's energy sits at 60-1000 Hz,
+where the piano's does); ``--wet-db`` is set against that gain, measured on
+the piano's long-term spectrum from the calibration JSON, so it is the hall's
+energy relative to the dry piano. The report measures it on the render
+(``hall.hall_re_dry_db``, within 0.2 dB of ``--wet-db`` on the demo) together
+with C80 (dry plus the first 80 ms of the hall, against the rest of the hall).
 
 Output files carry the attribution the licences require (WAV INFO chunk:
 title, artist, comment, copyright, software; M4A tags written by ffmpeg with
@@ -645,12 +655,45 @@ def true_peak(x: np.ndarray) -> float:
     return float(np.abs(up).max())
 
 
-def c80_of(ir: np.ndarray, g: float) -> float:
-    e = np.sum(ir**2, axis=1) / 2
-    n80 = int(0.080 * SR)
-    early = 1.0 + g * g * e[:n80].sum()
-    late = g * g * e[n80:].sum()
-    return 10 * math.log10(early / late)
+WET_DB_DEFAULT = 0.0  # hall energy = dry piano energy; the demo measures C80 +4.9 dB (see README)
+IR_DIRECT = 48  # make_ir.py starts the IR 1 ms before the (removed) direct sound
+
+
+def hall_gain_on_piano_db(ir: np.ndarray) -> float | None:
+    """Energy gain of the IR (L->L, R->R) on the piano's long-term spectrum, in dB.
+
+    The IR is scaled to unit energy, which is a gain of 0 dB for white noise. A piano puts
+    most of its energy at 60-1000 Hz, where this hall's reverberation is strongest, so on
+    piano material the same IR is about 9 dB louder. --wet-db is set against this gain, so
+    that it is the hall's energy relative to the dry piano. The spectrum (1/3 octaves) is the
+    one make_sfz.py measured on the samples (calibration JSON, "piano_ltas")."""
+    if not CALIBRATION_JSON.exists():
+        return None
+    lt = json.loads(CALIBRATION_JSON.read_text()).get("piano_ltas")
+    if not lt:
+        return None
+    centres = np.array(lt["centres_hz"])
+    p = 10 ** (np.array(lt["energy_db"]) / 10)
+    nfft = 1 << int(math.ceil(math.log2(len(ir))))
+    h = (np.abs(np.fft.rfft(ir, nfft, axis=0)) ** 2).mean(axis=1)  # mean |H|^2 of white noise = IR energy
+    f = np.fft.rfftfreq(nfft, 1 / SR)
+    hb = np.array([h[(f >= c * 2 ** (-1 / 6)) & (f < c * 2 ** (1 / 6))].mean() for c in centres])
+    return float(10 * np.log10(np.sum(p * hb) / np.sum(p)))
+
+
+def hall_program_stats(dry: np.ndarray, wet: np.ndarray, ir: np.ndarray, g: float) -> dict:
+    """Measured on this render: hall energy relative to the dry sum, and clarity C80 (dry
+    sum plus the first 80 ms of the hall against the rest of the hall), broadband."""
+    n80 = IR_DIRECT + int(0.080 * SR)
+    early = np.stack([ss.fftconvolve(dry[:, c], ir[:n80, c]) for c in range(2)], axis=1)
+    e_dry = float(np.sum(dry**2))
+    e_wet = g * g * float(np.sum(wet**2))
+    e_early_total = float(np.sum((np.pad(dry, ((0, len(early) - len(dry)), (0, 0))) + g * early) ** 2))
+    late = wet.copy()
+    late[: len(early)] -= early
+    e_late = g * g * float(np.sum(late**2))
+    return {"hall_re_dry_db": round(10 * math.log10(e_wet / e_dry), 1),
+            "c80_db": round(10 * math.log10(e_early_total / e_late), 1)}
 
 
 def measure_file(path: Path) -> dict | None:
@@ -756,7 +799,9 @@ def main(argv=None) -> dict:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("midi", type=Path)
     ap.add_argument("-o", "--out", type=Path, help="output path without extension (default: next to the MIDI)")
-    ap.add_argument("--wet-db", type=float, default=-4.0, help="reverb energy relative to dry (default -4 dB, C80 ~ +8 dB)")
+    ap.add_argument("--wet-db", type=float, default=WET_DB_DEFAULT,
+                    help=f"hall energy relative to the dry piano, on the piano's long-term spectrum (default "
+                    f"{WET_DB_DEFAULT:g} dB; the render report gives the value and C80 measured on the render)")
     ap.add_argument("--no-reverb", action="store_true")
     ap.add_argument("--ir", type=Path, default=HALL_IR)
     ap.add_argument("--peak-db", type=float, default=-1.0, help="true-peak target (default -1 dBFS)")
@@ -935,9 +980,14 @@ def main(argv=None) -> dict:
     stems = [sf.read(j[2], dtype="float64", always_2d=True)[0] for j in jobs]
     n = max(len(s) for s in stems)
     ir = None
+    hall_gain = None
     if not args.no_reverb:
         ir, ir_sr = sf.read(args.ir, dtype="float64", always_2d=True)
         assert ir_sr == SR, "IR must be 48 kHz"
+        hall_gain = hall_gain_on_piano_db(ir)
+        if hall_gain is None:
+            warn("no piano spectrum in the calibration JSON: --wet-db is taken against the IR's white-noise gain")
+            hall_gain = 0.0
     tail = 0 if ir is None else len(ir)
     dry = np.zeros((n + tail, 2))
     report_voices = {}
@@ -973,13 +1023,15 @@ def main(argv=None) -> dict:
 
     stereo_dry = stereo_stats(dry[:n])
     mix = dry.copy()
-    c80 = None
+    hall = None
     if ir is not None:
-        g = 10 ** (args.wet_db / 20)
+        g = 10 ** ((args.wet_db - hall_gain) / 20)
         # L->L, R->R: each side of the piano excites its own side of the hall IR.
         wet = np.stack([ss.fftconvolve(dry[:n, c], ir[:, c]) for c in range(2)], axis=1)
         mix[: len(wet)] += g * wet[: len(mix)]
-        c80 = c80_of(ir, g)
+        hall = {"wet_db": args.wet_db, "ir_gain_on_piano_spectrum_db": round(hall_gain, 2),
+                "ir_scale_db": round(20 * math.log10(g), 2), **hall_program_stats(dry[:n], wet, ir, g)}
+        del wet
 
     # Remove DC/rumble, trim the silent tail, normalise the true peak.
     mix = ss.sosfilt(ss.butter(2, 18, "high", fs=SR, output="sos"), mix, axis=0)
@@ -1015,7 +1067,8 @@ def main(argv=None) -> dict:
         "truncation_check": truncation,
         "pedal_changes": len(pedal),
         "wet_db": None if ir is None else args.wet_db,
-        "c80_db": None if c80 is None else round(c80, 1),
+        "c80_db": None if hall is None else hall["c80_db"],
+        "hall": hall,
         "normalise_gain_db": round(20 * math.log10(gain), 2),
         "true_peak_dbfs": args.peak_db,
         "rms_dbfs": round(float(10 * np.log10(np.mean(mix**2))), 2),

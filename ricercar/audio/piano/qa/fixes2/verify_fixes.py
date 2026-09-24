@@ -255,6 +255,71 @@ def release() -> None:
     save("release_timing", res)
 
 
+def clarity(path: Path, midi: Path, transpose: dict) -> dict:
+    """QA round 2's articulation measure (qa/round2/an_demo_clarity.py) on one final file: for
+    each note, the rise of its own partials (not shared with the previous notes of its voice)
+    from the 150 ms before its onset to the 150 ms after."""
+    from lib2 import band_power, db, midi_hz, midi_notes
+    byv = {}
+    for nt in midi_notes(midi):
+        byv.setdefault(nt["name"], []).append(nt)
+    m = read(path).mean(axis=1)
+    res = {}
+    for v, lst in byv.items():
+        r = []
+        for i, nt in enumerate(lst):
+            k = nt["key"] + transpose.get(v, 0)
+            t = nt["start"] + 0.3
+            prev = [q for q in lst[:i] if q["end"] > nt["start"] - 0.45]
+            pp = [midi_hz(q["key"] + transpose.get(v, 0)) * h for q in prev for h in range(1, 21)]
+            own = [x for x in (midi_hz(k) * h for h in range(1, 11)) if all(abs(x / y - 1) > 0.02 for y in pp)]
+            if not own:
+                continue
+            r.append(float(db(band_power(m, t + 0.01, t + 0.16, own, rel_bw=0.006)) -
+                           db(band_power(m, t - 0.16, t - 0.01, own, rel_bw=0.006))))
+        r = np.array(r)
+        res[v] = {"n": len(r), "median_db": round(float(np.median(r)), 1), "p10_db": round(float(np.percentile(r, 10)), 1),
+                  "n_below_3db": int((r < 3).sum())}
+    return res
+
+
+def hall() -> None:
+    """--wet-db is now the hall's energy re the dry piano on the piano's long-term spectrum.
+    Demo (out/fugue_jp.mid, pedal -12): what the render report measures at the default, per-band
+    hall-to-dry and C80 on the program (QA round 2's an_hall.program), and articulation in the
+    final file without reverb, at the default and at the old default's level (hall +5.4 dB re
+    dry: the old -4 on the white-noise scale). fast16 probe: 16th-note runs, the same three."""
+    import an_hall
+    import soundfile as sf
+    sys.path.insert(0, str(PIANO))
+    import render_piano as rp
+    old_equiv = round(-4.0 + rp.hall_gain_on_piano_db(read(rp.HALL_IR)), 1)
+    mid = PIANO / "out/fugue_jp.mid"
+    tr = ("--transpose", "pedal=-12")
+    reps = {"default": render(mid, "demo", *tr, stems=True),
+            "no_reverb": render(mid, "demo_dry", *tr, "--no-reverb"),
+            "old_default_level": render(mid, "demo_old", *tr, "--wet-db", str(old_equiv))}
+    res = {"wet_db_default": reps["default"]["wet_db"], "old_default_equivalent_wet_db": old_equiv,
+           "render_report_hall": {k: r["hall"] for k, r in reps.items()}}
+    ir, _ = sf.read(rp.HALL_IR, always_2d=True)
+    g = 10 ** ((reps["default"]["wet_db"] - reps["default"]["hall"]["ir_gain_on_piano_spectrum_db"]) / 20)
+    res["demo_program_per_band_at_default"] = an_hall.program(P / "demo_stems", list(reps["default"]["voices"]), ir, g)
+    res["demo_articulation_final_file"] = {k: clarity(P / f"{f}.wav", mid, {"pedal": -12})
+                                           for k, f in (("no_reverb", "demo_dry"), ("default", "demo"),
+                                                        ("old_default_level", "demo_old"))}
+    an_hall.P = P
+    render(P / "fast16.mid", "fast16")
+    render(P / "fast16.mid", "fast16_dry", "--no-reverb")
+    render(P / "fast16.mid", "fast16_old", "--wet-db", str(old_equiv))
+    res["fast16_articulation_rise_db"] = {"no_reverb": an_hall.articulation(P / "fast16_dry.wav"),
+                                          "default": an_hall.articulation(P / "fast16.wav"),
+                                          "old_default_level": an_hall.articulation(P / "fast16_old.wav")}
+    res["before_fix_qa_round2"] = ("default -4 (white-noise scale): hall +5.2 dB re dry, program C80 +2.1 dB, while the "
+                                   "report said C80 8.4; articulation medians alto 25.4->22.1, tenor 18.3->15.4, pedal "
+                                   "14.5->10.6 dB from no reverb to the default (qa/round2/results/hall.json, demo_clarity.json)")
+    save("hall", res)
+
+
 def main() -> None:
     P.mkdir(exist_ok=True)
     what = sys.argv[1:] or ["contract"]

@@ -52,7 +52,7 @@ Useful options (all in `python3 render_piano.py --help`):
 
 | option | default | meaning |
 |---|---|---|
-| `--wet-db` | -4 | hall energy relative to the dry piano; -4 gives C80 of about +8 dB, clear enough for counterpoint with the hall audible. -7 is drier, -2 more distant |
+| `--wet-db` | 0 | hall energy relative to the dry piano, calibrated on the piano's long-term spectrum (the unit-energy IR is +9.4 dB louder on piano than on white noise). 0 = the hall as loud as the dry piano: C80 +4.9 dB on the demo, counterpoint clear with the hall audible. -4 is drier (C80 +7.8), +2 more distant (+3.7). The report measures both on every render (`hall`) |
 | `--transpose VOICE=N` | | shift one voice (name matched case-insensitively) |
 | `--dyn-db` | 0 | global dynamic offset, realised as hammer velocity, so timbre follows |
 | `--velocity-scale` | auto | `perform` for perform.py files (see below), else `raw` |
