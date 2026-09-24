@@ -57,7 +57,12 @@ soprano = \absolute {
   bes'8. c''16 c''8. ees''16 ees''4. d''16 bes' |
   % 29 free (theme bar 7 cell)
   f''8. ees''16 ees''8. d''16 c''4. bes'8 |
-  R1*8 |
+  % 30 descending bass
+  d''4 ees''8 d'' c'' bes' r4 |
+  % 31-32 subject over dominant pedal
+  bes'4. bes'16 a' bes'4. bes'16 a' |
+  bes'8. c''16 c''8. ees''16 ees''4. d''16 bes' |
+  R1*5 |
 }
 
 %% ALTO (upper manual, stems down)
@@ -105,7 +110,12 @@ alto = \absolute {
   % 28-29 stretto: subject (one bar after soprano, octave below)
   bes4. bes16 a bes4. bes16 a |
   bes8. c'16 c'8. ees'16 ees'4. d'16 bes |
-  R1*8 |
+  % 30
+  f'4 g'2. |
+  % 31-32 countersubject (below soprano)
+  r8 d' g' f'16 ees' d'8 bes c'4 |
+  d'4 ees' f'8 ees'16 d' c'8 bes16 d' |
+  R1*5 |
 }
 
 %% TENOR (lower manual)
@@ -144,7 +154,12 @@ tenor = \absolute {
   % 28-29 free
   d4 ees2 ~ ees8 f8 |
   d4 g a4. f8 |
-  R1*8 |
+  % 30
+  bes1 ~ |
+  % 31-32
+  bes4 g f2 |
+  f4 a8 c' a4 f |
+  R1*5 |
 }
 
 %% PEDAL
@@ -177,7 +192,12 @@ pedal = \absolute {
   bes,4 ees8 f ees4. bes,8 |
   g,4 c2 ~ c8 bes,8 |
   bes,4 ees f4. bes,8 |
-  R1*8 |
+  % 30 descending bass to the dominant
+  bes,8 a, g, f, ees, d, c, e, |
+  % 31-32 dominant pedal
+  f,1 ~ |
+  f,1 |
+  R1*5 |
 }
 
 marks = {
