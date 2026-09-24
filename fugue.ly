@@ -62,7 +62,13 @@ soprano = \absolute {
   % 31-32 subject over dominant pedal
   bes'4. bes'16 a' bes'4. bes'16 a' |
   bes'8. c''16 c''8. ees''16 ees''4. d''16 bes' |
-  R1*5 |
+  % 33-34 countersubject (above pedal entry)
+  r8 d'' g'' f''16 ees'' d''8 bes' c''4 |
+  d''4 ees'' f''8 ees''16 d'' c''8 bes'16 d'' |
+  % 35-37 free, final cadence
+  f''4 ees''8 d'' ees''4 d''8 c'' |
+  d''4 c''2. |
+  bes'1 |
 }
 
 %% ALTO (upper manual, stems down)
@@ -115,7 +121,13 @@ alto = \absolute {
   % 31-32 countersubject (below soprano)
   r8 d' g' f'16 ees' d'8 bes c'4 |
   d'4 ees' f'8 ees'16 d' c'8 bes16 d' |
-  R1*5 |
+  % 33-34 free
+  d'8 f' g'4 f'4 g'8. f'16 |
+  bes'4 g' a'4. f'8 |
+  % 35-37 free
+  d'4 g' f'2 |
+  bes'4 g' a'2 |
+  f'1 |
 }
 
 %% TENOR (lower manual)
@@ -158,8 +170,14 @@ tenor = \absolute {
   bes1 ~ |
   % 31-32
   bes4 g f2 |
-  f4 a8 c' a4 f |
-  R1*5 |
+  f4 a8 c' a2 |
+  % 33-34 free
+  bes4 d' d' ees' |
+  d'4 g f r4 |
+  % 35-36 final subject over tonic pedal, cadential ending adapted
+  bes4. bes16 a bes4. bes16 a |
+  bes8. c'16 c'8. ees'16 ees'2 |
+  d'1 |
 }
 
 %% PEDAL
@@ -197,7 +215,13 @@ pedal = \absolute {
   % 31-32 dominant pedal
   f,1 ~ |
   f,1 |
-  R1*5 |
+  % 33-34 final pedal entry, ending on low B-flat
+  bes,4. bes,16 a, bes,4. bes,16 a, |
+  bes,8. c16 c8. ees16 ees4. d16 bes, ~ |
+  % 35-37 tonic pedal, then V-I
+  bes,1 ~ |
+  bes,2 f, |
+  bes,1 |
 }
 
 marks = {
