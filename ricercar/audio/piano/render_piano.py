@@ -70,11 +70,12 @@ MIDI contract (for the performance script)
   bright and percussive) and sets the level along a calibrated curve. Measured
   levels relative to velocity 127, averaged over C2-C6::
 
-      velocity   12   29   42   64   86  103  115  127
+      velocity   13   30   42   63   86  103  115  127
       dB        -33  -27  -21  -15  -10   -6   -3    0
       marking   ppp   pp    p   mp   mf    f   ff  fff
 
-  (exact curve: ``velocity_db`` in the calibration JSON). To bring out a
+  (exact curve: ``velocity_db``, and these velocities: ``suggested_velocities``,
+  in the calibration JSON). To bring out a
   voice, raise its velocities by about 8-15 (+3 to +5 dB, brighter).
   A piano cannot swell a held note, so a crescendo means successive notes
   struck harder.
@@ -82,8 +83,9 @@ MIDI contract (for the performance script)
   p 44, mp 56, mf 68, f 82, ff 98, fff 112). Played raw, its "f" would be this
   piano's mf- and its pp->ff span 18 dB instead of 24. ``--velocity-scale
   perform`` maps it piecewise-linearly onto the calibrated markings above
-  (22->12, 32->29, 44->42, 56->64, 68->86, 82->103, 98->115, 112->127);
-  accents and voicing offsets between anchors scale with the local slope.
+  (22->13, 32->30, 44->42, 56->63, 68->86, 82->103, 98->115, 112->127, read
+  from the calibration JSON); accents and voicing offsets between anchors
+  scale with the local slope.
   perform.py marks its files with a ``text`` meta event ``perform.py
   target=piano|strings`` in the tempo track, and the default ``auto`` picks
   ``perform`` for such files and ``raw`` for everything else.
@@ -339,12 +341,24 @@ def cc_db(value: int) -> float:
 
 
 # perform.py (ricercar/tools) maps its dynamic levels ppp..fff to velocities 22..112
-# (VEL_AT). The calibrated markings of this instrument are 12..127. "--velocity-scale
+# (VEL_AT). The calibrated markings of this instrument are 13..127. "--velocity-scale
 # perform" maps one onto the other, piecewise linear between the level anchors, so that
 # perform.py's "f" is this piano's f (velocity 103, -6 dB) and not mf- (82, -11 dB).
 # Accent and voicing offsets that perform.py adds on top of a level are scaled with the
 # local slope, so a voice brought out stays brought out.
-PERFORM_VEL_MAP = [(0, 0), (22, 12), (32, 29), (44, 42), (56, 64), (68, 86), (82, 103), (98, 115), (112, 127)]
+PERFORM_VEL_AT = {"ppp": 22, "pp": 32, "p": 44, "mp": 56, "mf": 68, "f": 82, "ff": 98, "fff": 112}  # perform.py VEL_AT
+
+
+def perform_vel_map() -> list[tuple[int, int]]:
+    """perform.py's level anchors -> this piano's calibrated markings, read from the
+    calibration JSON that make_sfz.py writes (so a recalibration moves the map with it)."""
+    marks = {"ppp": 12, "pp": 29, "p": 42, "mp": 64, "mf": 86, "f": 103, "ff": 115, "fff": 127}
+    if CALIBRATION_JSON.exists():
+        marks.update(json.loads(CALIBRATION_JSON.read_text()).get("suggested_velocities", {}))
+    return [(0, 0)] + [(PERFORM_VEL_AT[k], int(marks[k])) for k in PERFORM_VEL_AT]
+
+
+PERFORM_VEL_MAP = perform_vel_map()
 
 
 def perform_velocity(v: int) -> int:
