@@ -44,6 +44,44 @@ g2
 """)
 
 
+# --------------------------------------------------------------------------
+# X1  Climax exit, GLOBAL bars 65-69 (fully voiced).  Soprano = end of S1 per arsin
+#     (entered 63:3); bass = end of A1 augmented, its landing g cut to a half note.
+#  65  i (tonic pedal bes,)          66:1 vii°7 over the pedal (a-c-ees-ges), fff
+#  66:3 v6/5 (Fm7/A-flat)  66:4 v7   67:1 IV6 (E-flat/G, Dorian)   67:3 French sixth
+#      (ges-bes-c-e; the subject's landing c'' is its third)   68:1 V with 4-3 (bes'-a')
+#  68:3 V7 (fermata), general pause    69:1 I, B-flat MAJOR: soprano c''-bes' (2-1) =
+#      first note of the transfigured theme; the minor third becomes d' in the tenor.
+SEC['X1_climax_exit'] = dict(title='X1 climax exit, bars 65-69', soprano="""
+bes'4 bes'8 a'8 bes'4. c''8 | c''4. ees''8 ees''2~ | ees''4 des''8 bes'8 c''2~ | c''1 | bes'1
+""", alto="""
+f'2 f'2 | a'2 aes'2 | bes'2 bes'2 | bes'4 a'4 a'2 | f'1
+""", tenor="""
+des'2 des'2 | ges'2 f'4 ees'4 | ees'2 e'2 | f'2 ees'2 | d'1
+""", bass="""
+bes,1 | bes,2 aes,4 f,4 | g,2 ges,2 | f,2 f,2 | bes,1
+""")
+
+# --------------------------------------------------------------------------
+# X2  End of the apotheosis and coda, GLOBAL bars 75-84 (fully voiced).
+#  75  iv (e-flat MINOR inside the major theme) · I    76 V · V7    77 V7
+#  78  bVI (G-flat): DECEPTIVE; the theme's c'' falls to bes' over G-flat
+#  79  V      80 I · iv6/4 over the tonic pedal, alto f'-ges'-f' (the inverted sigh)
+#  81  I · IV6/4 (ges' becomes g': minor turns major)
+#  82  S1 head in the soprano, bes'2. bes'8 a'8: I · IV · V7 with 4-3
+#  83  I · iv6/4 (last lament sigh)    84  I, ppp, fermata
+#  (The alto's S1M-at-the-fifth lands on ges' at 75:1 instead of f': a modal inflection.)
+SEC['X2_coda'] = dict(title='X2 apotheosis end and coda, bars 75-84', soprano="""
+ees''4. d''8 d''4. c''8 | c''1 | c''1 | bes'1 | c''1 | d''2 ees''2 | d''2 ees''2 | bes'2. bes'8 a'8 | bes'1 | bes'1
+""", alto="""
+ges'2 f'2 | f'2 ees'2 | ees'1 | des'1 | f'1 | f'2 ges'2 | f'2 g'2 | f'2 g'4 f'4 | f'2 ges'2 | f'1
+""", tenor="""
+bes2 bes2 | a2 a2 | a1 | bes1 | a1 | bes1 | bes1 | d'2 ees'4 ees'4 | d'2 ees'2 | d'1
+""", bass="""
+ees2 bes,2 | f,1 | f,1 | ges,1 | f,1 | bes,1 | bes,1 | bes,2 ees4 f4 | bes,1 | bes,1
+""")
+
+
 def build(name):
     d = SEC[name]
     p = lab(name + '.ly', {v: d[v] for v in ('soprano', 'alto', 'tenor', 'bass') if v in d}, d['title'])

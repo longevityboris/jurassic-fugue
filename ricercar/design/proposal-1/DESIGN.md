@@ -4,7 +4,8 @@ A double fugue in B-flat minor, alla breve, 84 bars, about 3'44".
 
 All proofs are reproducible:
 - `python3 lab/build_core.py` builds the material proofs (P01-P13).
-- `python3 lab/sections.py` builds the fully written exposition.
+- `python3 lab/sections.py` builds the fully written passages: the exposition (bars
+  1-19), the climax exit (65-69) and the end of the apotheosis with the coda (75-84).
 - `python3 lab/skeleton.py --table` builds the whole-piece thematic skeleton.
 
 A lab counts as VERIFIED when `tools/check.py` reports 0 PAR!, 0 BEAT, 0 DIS! and 0 D4?.
@@ -214,7 +215,7 @@ Strict items in the skeleton, all deliberate:
 | 55:3, 57:1, 58:1 | the tenor's S2 is the lowest voice only because the bass is still a rest there |
 | 59:1, 61:1, 63:3 | S1's bes over the F pedal: the subject's head *is* the 4-3 over the dominant |
 | 61:1, 63:1 | the free seventh of V7 over the pedal |
-| 67:3 | the landing c'' over g, cut to a quarter by the dim7 |
+| 67:3 | the landing c'' over ges: it is the third of the French sixth (X1) |
 | 75:1 | the alto's landing f' under the theme's ees'' |
 
 ### B3. Device proofs (`lab/build_core.py`, rows P08-P13 of `lab/proofs_core.txt`)
@@ -232,7 +233,9 @@ Strict items in the skeleton, all deliberate:
 | P11_S2_CS3_bass | S2 in D-flat + CS3 + its bass (bars 37-41) | 0/0/0/0 | **0** |
 | P11b_CS3_over_S2_15th | CS3 inverted at two octaves | 0/0/0/0 (ERR: des''' above the soprano's range) | 1: so CS3 stays below S2 |
 | P12_climax_quadruple | I1 (S) + S2 (A) + S1 (T) over A1 augmented (B), bars 59-63 | 0/0/0/0 | 7: all are pedal events. S1's bes = sus4 over F; S2's c against it = the fifth of Fsus4; the free seventh ees'' of V7 (61:1, 63:1); f''/ees'' at 61:1 = root and seventh of V7 |
-| P13_apotheosis_stretto | the whole theme (B-flat major) + S1M at the lower 5th, 2 bars later | 0/0/0/0 | 1: the alto's landing f' under ees'' (flexible) |
+| P13_apotheosis_stretto | the whole theme (B-flat major) + S1M at the lower 5th, 2 bars later | 0/0/0/0 | 1: the alto's landing f' under ees'' (flexible; X2 turns it into ges') |
+| X1_climax_exit | bars 65-69 fully voiced: dim7 over the tonic bass → v7 → IV6 → Fr+6 → V4-3 → V7 → I | 0/0/0/0 | 3: the French sixth's own tritone and seventh; the seventh of V7 |
+| X2_coda | bars 75-84 fully voiced: minor iv inside the theme, V7 → bVI deceptive, plagal Amen over the tonic pedal | 0/0/0/0 | 4: the passing seventh of V7 (76:3); iv6/4 and IV6/4 over the pedal (80:3, 81:3, 83:3) |
 
 **Stretto grid, VERIFIED cell by cell (`python3 lab/stretto_grid.py`, table in
 `lab/stretto_grid.txt`).** Each cell is a two-voice lab in `lab/stretto/`
@@ -308,9 +311,9 @@ and the fermatas as `{"at": "68:3", "extra_beats": 2}` and
 | III | 27-36 (+37:1) | Stretto I: chain in descending fifths | b-flat → e-flat → a-flat → D-flat | S1 in A (27), T (29), B (31), then S (33, major form), each 2 bars apart | mp, cresc. to f at 35 |
 | IV | 37-48 (+49:1) | Second exposition (S2), dolce | D-flat → A-flat → b-flat | S 37: S2 in D-flat (the soprano's S1 from 33 continues, so the whole theme sounds in D-flat); A 41: answer in A-flat; T 45: S2 in minor at its original pitch; CS3 below each | subito p dolce, mp |
 | V | 49-58 | Combination | b-flat → e-flat → V | C1 49-53: B S1 (tonic pedal), A S2 in F major, S CS2, T free. C2 54-58: S S1 in e-flat, A CS2, T S2 at its original B-flat-major pitch, B free; 58:3 Neapolitan 6th | mf → f, animando |
-| VI | 59-68 | Climax on the augmented answer | V pedal | 59-63: B A1aug, T S1, A S2, S I1 (quadruple combination). 63:3-67:3: S S1 per arsin et thesin over the rising augmented bass. 67 dim7 → Ger+6. 68 i6/4 → V7, fermata, general pause | ff at 59, fff at 67 |
+| VI | 59-68 | Climax on the augmented answer | V pedal | 59-63: B A1aug, T S1, A S2, S I1 (quadruple combination). 63:3-67:3: S S1 per arsin et thesin over the rising augmented bass. 66:1 vii°7 over the tonic bass (fff); 67:1 IV6 → 67:3 French sixth; 68 V4-3 → V7, fermata, general pause (written: X1) | ff at 59, fff at 66 |
 | VII | 69-77 | Apotheosis: the whole theme in B-flat major | B-flat | S THEMEM · A S1M at the lower fifth (71) · T, B free chorale foundation | pp, cresc. to ff at 74 |
-| Coda | 78-84 | Deceptive cadence and plagal Amen | B-flat | 77:3 V7 → 78 bVI (G-flat); 79-80 iv (e-flat minor) over a tonic pedal; 81-83 S1 head resolved; 84 I | subito p, down to ppp |
+| Coda | 78-84 | Deceptive cadence and plagal Amen (written: X2, from bar 75) | B-flat | 77 V7 → 78 bVI (G-flat), soprano c''→bes'; 79 V; 80-81 tonic pedal with iv6/4 then IV6/4; 82 S1 head resolved as 4-3; 83 I · iv6/4; 84 I | subito p, down to ppp |
 
 ### C3. Entry table (the skeleton; every row is proven in `SK_skeleton.ly`)
 
@@ -388,8 +391,12 @@ The full grid of proven options is in B3.
    (a tonic pedal). Then S1 moves to e-flat (iv), while S2 is heard at its ORIGINAL
    major pitch (c'' a' f' d'' bes'), which here is V of e-flat. iv prepares V: the
    Neapolitan sixth (58:3) resolves to i6/4 over the pedal F.
-7. **V (bars 59-68).** The dominant pedal. The bass descends chromatically g-ges-f:
-   dim7 → German sixth (only the bass moves) → i6/4 → V7, then a fermata and silence.
+7. **V (bars 59-68).** The dominant pedal. The augmented answer rises to bes, where
+   the diminished seventh sounds over the tonic bass (66:1, fff). The bass then
+   descends chromatically g-ges-f: IV6 (the Dorian E-flat/G) → French sixth (the
+   subject's landing c'' is its third) → V with 4-3 → V7, then a fermata and silence.
+   At 69 the soprano's c'' falls to bes', the first note of the transfigured theme,
+   and the minor third becomes d' in the tenor.
 8. **I (B-flat major, bars 69-84).** The deceptive V7 → bVI (G-flat) at 78, then the
    plagal close through the minor iv.
 
@@ -450,9 +457,12 @@ Bars 33-36 are D-flat: I6/4 (33:1) · ... · V (36).
 | bars | harmony |
 |---|---|
 | 59-62 | pedal F: sus4-3 (S1's bes-a) and 8-b9-8 (I1's f-ges-f) together, with S2 arpeggiating V; V7 at 61 and 63 |
-| 63-66 | bass f-g-bes-aes-f: V · V/V7 · i6/4 · iv6-V6/5 (S1 above, displaced) |
-| 67 | vii°7/V over g · Ger+6 over ges |
-| 68 | i6/4 · V7 (fermata), general pause |
+| 63-64 | bass f-g-g-bes: V · V/V7 · (S1 enters above at 63:3, displaced) |
+| 65 | i over bes (the augmented answer's bes = tonic) |
+| 66 | vii°7 over the tonic bass (fff) · v6/5-v7 (bass aes-f) |
+| 67 | IV6 (E-flat/G, Dorian) · French sixth over ges |
+| 68 | V with 4-3 · V7 (fermata), general pause |
+| 69 | I, B-flat major |
 
 **Apotheosis (69-77):**
 
@@ -464,18 +474,19 @@ Bars 33-36 are D-flat: I6/4 (33:1) · ... · V (36).
 | 74 | V · I6 (theme peak f'') |
 | 75 | iv (minor, e-flat-g-flat) · I6 (d'') |
 | 76 | V7 |
-| 77 | V7 · (78) bVI |
+| 76-77 | V · V7 · V7 (the theme's long c'') |
 
-**Coda (78-84):**
+**Coda (78-84), as written in X2:**
 
 | bars | harmony |
 |---|---|
-| 78 | G-flat (bVI) |
-| 79 | e-flat minor (iv) |
-| 80-81 | tonic pedal: iv6/4-I twice |
-| 82 | IV-I |
-| 83 | ii6/5-V7 (or plagal IV-I) |
-| 84 | I |
+| 78 | bVI (G-flat), deceptive; the theme's c'' falls to bes' (1^) over it |
+| 79 | V |
+| 80 | I · iv6/4 over the tonic pedal; the alto sings f'-ges'-f', the inverted sigh |
+| 81 | I · IV6/4; ges' becomes g', minor turns major |
+| 82 | the soprano sings S1's head bes'2. bes'8 a'8: I · IV · V7 with bes'-a' as 4-3 |
+| 83 | I · iv6/4, the last lament sigh (tenor ees') |
+| 84 | I, ppp, fermata |
 
 ### C6. Special harmonic events (where and why)
 
@@ -491,8 +502,8 @@ Bars 33-36 are D-flat: I6/4 (33:1) · ... · V (36).
 | 49-51 | tonic pedal (S1 in the bass) under C7/B-flat → F/A | the combination begins as dominant against tonic |
 | 58:3 | Neapolitan 6th → i6/4 | prepares the climax pedal |
 | 59-62 | dominant pedal = A1 augmented; sus4-3 and b9-8 at once | rectus and inversus heads are the two classic dominant appoggiaturas |
-| 67 | diminished 7th (fff) → German sixth by chromatic bass slide g-ges | the peak |
-| 68 | i6/4 → V7, fermata, general pause | the Beethoven silence |
+| 66-67 | diminished 7th over the tonic bass (fff) → v7 → IV6 → French sixth, with a chromatic bass slide g-ges-f | the peak; the subject's own landing is the third of the augmented sixth |
+| 68 | V4-3 → V7, fermata, general pause | the Beethoven silence |
 | 75 | minor iv inside the major theme (theme bar 7) | the major carries the memory of the minor |
 | 78 | deceptive cadence V7 → bVI | withholds the final tonic once more |
 | 79-81 | plagal iv(minor) → I over a tonic pedal, with the inverted sigh f-ges-f in an inner voice | "Amen" with a lament in it |
@@ -505,8 +516,8 @@ Bars 33-36 are D-flat: I6/4 (33:1) · ... · V (36).
   arrival in D-flat.
 - **IV:** subito p dolce. The lyrical plateau, never above mp.
 - **V:** mf → f, poco a poco animando.
-- **VI:** ff at 59, where all four voices are thematic. fff at 67 on the dim7.
-  Fermata, then silence.
+- **VI:** ff at 59, where all four voices are thematic. fff at 66 on the dim7; the
+  French sixth at 67:3 is the harshest chord. Fermata, then silence.
 - **VII:** pp; the theme begins sotto voce in B-flat major. Crescendo to ff at 74
   (the theme's high f'').
 - **Coda:** subito p at the deceptive cadence (78), diminuendo to ppp.
@@ -532,10 +543,10 @@ model:
 | 45 | A | the answer's landing bes' held as a 4-3 suspension → a' over F | the pivot back to b-flat |
 | 49-53 | T | from c' (the seventh of C7/B-flat) a slow lament: c'-b-bes-a-aes-g in halves | the CS1 fall at half speed |
 | 54-58 | B | bass of the e-flat combination: ees ... ending f (58:1) - ees (58:3, N6 bass) - f (59:1) | N6 → i6/4 over the pedal |
-| 63-67 | A, T | CS1 and IC1 as a chromatic wedge in contrary motion, reaching e and des for the dim7 at 67:1 | fff |
-| 68 | all | i6/4 (bes-des-f over F) → V7 (f-a-c-ees), fermata | general pause afterwards |
+| 63-64 | A, T | CS1 and IC1 as a chromatic wedge in contrary motion, reaching the written X1 voicing at 65 | cresc. to fff |
+| 65-69 | all | WRITTEN: lab `X1_climax_exit.ly` | checker clean |
 | 69-77 | T, B | chorale foundation: tonic pedal bes (69-70), ees (IV, 71-72), then half-note root motion per C5; the tenor in CS1-shaped steps | the bass may double in octaves on the piano at ff |
-| 78-84 | all | 78 Gb (V7 → bVI, deceptive: soprano c''→des''); 79 e-flat minor; 80-81 tonic pedal bes with iv6/4-I and the inner sigh f'-ges'-f'; 82-83 soprano bes'2. bes'8 a'8 \| bes'1 (the head, resolved in major), bass IV-I; 84 B-flat major chord, fermata | subito p → ppp |
+| 75-84 | all | WRITTEN: lab `X2_coda.ly` (the theme's last bars, the deceptive cadence, the plagal Amen) | checker clean |
 
 ## D. Risks and honest caveats
 
