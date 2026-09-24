@@ -104,8 +104,8 @@ note; that is the normal pedal-point licence.
 
 | # | claim | lab file(s) | check.py | strict (explained) |
 |---|---|---|---|---|
-| 1 | S1/CS1/CS2 triple invertible counterpoint at the octave, **all 6 vertical orders** | `03_triple_*.ly` (6) | 0/0/0/0 in all six | clash 0, xrel 0 in all; ACC2 0,1,0,2,1,2: only where S1 or CS1 is the lowest line (4/2 passing chord on 3:1, passing 6/4 on 3:3) |
-| 2 | Mirror texture S1I/CS1I/CS2I (Contrapunctus-12 style rectus/inversus), **all 6 orders** | `04_mirror_*.ly` (6) | 0/0/0/0 in all six | clash 0, xrel 0; ACC2 0,2,0,1,2,1 |
+| 1 | S1/CS1/CS2 triple invertible counterpoint at the octave, **all 6 vertical orders** | `03_triple_*.ly` (6) | 0/0/0/0 in all six | clash 0, xrel 0, acc 0 in all; acc2 0 (S1>CS1>CS2, CS1>S1>CS2), otherwise 1-2, only where S1 or CS1 is the lowest line (4/2 passing chord on 3:1, passing 6/4 on 3:3) |
+| 2 | Mirror texture S1I/CS1I/CS2I (Contrapunctus-12 style rectus/inversus), **all 6 orders** | `04_mirror_*.ly` (6) | 0/0/0/0 in all six | clash 0, xrel 0 in all; acc 0-1, acc2 0-2 (0/0 for S1I>CS1I>CS2I and CS1I>S1I>CS2I); the rest are the mirrored 4/2 and 6/4 passing chords |
 | 3 | Whole exposition, 4 voices, bars 1-18 (answer, CS1, CS2, codetta, free bass) | `01_exposition.ly` | errors 0, parallels 0, beat-par 0, unjustified 0 | clash 0, xrel 0, acc 0, acc2 1 (7:1, tritone f'/b in two voices = vii7/V of F minor) |
 | 4 | S1 (answer form, f') + S2 entering two beats later a fifth above it (c'') + CS2: **triple counterpoint, all 6 orders** (the S1+S2 combination) | `05_combo_*.ly` (6) | 0/0/0/0 in all six | clash 0, xrel 0; ACC 0,2,0,0,2,0 (a 4th over S2 only when S2 is the lowest line) |
 | 5 | The same combination in B-flat major (apotheosis) and S1M/CS1/CS2-M in major, all 12 orders | `09_combomaj_*.ly`, `09_triplemaj_*.ly` | 0/0/0/0 in all twelve | clash 0, xrel 0; max ACC2 2 |
