@@ -2,21 +2,21 @@
  "render": {
   "duration_s": 128.24,
   "key_sharing": {
-   "unisons_merged": 0,
-   "restrikes": 1
+   "unisons_merged": 1,
+   "restrikes": 0
   },
   "c80_db": 8.4,
-  "normalise_gain_db": 3.03,
-  "rms_dbfs": -22.7,
+  "normalise_gain_db": 1.86,
+  "rms_dbfs": -23.05,
   "measured": {
    "wav": {
-    "integrated_lufs": -18.1,
-    "lra_lu": 22.5,
+    "integrated_lufs": -18.4,
+    "lra_lu": 22.8,
     "true_peak_dbtp": -1.0
    },
    "m4a": {
-    "integrated_lufs": -18.1,
-    "lra_lu": 22.5,
+    "integrated_lufs": -18.5,
+    "lra_lu": 22.8,
     "true_peak_dbtp": -1.0
    }
   }
@@ -28,66 +28,64 @@
    "stem_unterminated": 0,
    "midi_missing_in_stem": [],
    "midi_onset_shift_ms_maxabs": 0.026,
-   "durations_changed": [
-    [
-     67,
-     56.246,
-     0.381,
-     0.01
-    ]
-   ],
+   "durations_changed": [],
    "audio_onsets_found": 200,
    "audio_onsets_missing": [],
    "flux_peak_offset_ms": {
-    "median": 0.13,
-    "p05": -1.1,
-    "p95": 2.1,
-    "max_abs_dev_from_median": 6.05
+    "median": -0.09,
+    "p05": -1.34,
+    "p95": 1.55,
+    "max_abs_dev_from_median": 17.97
    },
    "harmonic_rise_db": {
-    "median": 40.2,
-    "min": 3.8
+    "median": 38.3,
+    "min": 6.6
    },
    "weak_onsets": [],
    "release_drop_db": {
     "n": 161,
-    "median": -30.0,
-    "worst": 6.7
+    "median": -35.0,
+    "worst": 5.9
    },
    "stem_seconds": 128.59,
    "last_note_off_s": 126.84
   },
   "soprano": {
    "midi_notes_in": 206,
-   "stem_notes": 206,
+   "stem_notes": 205,
    "stem_unterminated": 0,
-   "midi_missing_in_stem": [],
-   "midi_onset_shift_ms_maxabs": 0.026,
-   "durations_changed": [
+   "midi_missing_in_stem": [
     [
      67,
-     56.253,
-     0.166,
-     0.374
+     56.253
     ]
    ],
+   "midi_onset_shift_ms_maxabs": 0.026,
+   "durations_changed": [],
    "audio_onsets_found": 206,
    "audio_onsets_missing": [],
    "flux_peak_offset_ms": {
-    "median": -0.18,
-    "p05": -1.16,
-    "p95": 1.66,
-    "max_abs_dev_from_median": 3.71
+    "median": -0.43,
+    "p05": -1.36,
+    "p95": 1.26,
+    "max_abs_dev_from_median": 3.36
    },
    "harmonic_rise_db": {
-    "median": 41.7,
-    "min": 3.4
+    "median": 44.0,
+    "min": -9.0
    },
-   "weak_onsets": [],
+   "weak_onsets": [
+    {
+     "key": 67,
+     "t": 56.253,
+     "rise_db": -9.0,
+     "vel": 38
+    }
+   ],
    "release_drop_db": {
     "n": 153,
-    "median": -30.2,
-    "worst": 6.2
+    "median": -34.5,
+    "worst": 16.7
    },
    "stem_seconds": 128.59,
    "last_note_off_s": 126.84
@@ -102,27 +100,27 @@
    "audio_onsets_found": 141,
    "audio_onsets_missing": [],
    "flux_peak_offset_ms": {
-    "median": 0.22,
-    "p05": -1.31,
-    "p95": 3.82,
-    "max_abs_dev_from_median": 15.62
+    "median": 0.16,
+    "p05": -1.89,
+    "p95": 2.89,
+    "max_abs_dev_from_median": 4.98
    },
    "harmonic_rise_db": {
-    "median": 22.6,
-    "min": -0.1
+    "median": 21.8,
+    "min": 0.7
    },
    "weak_onsets": [
     {
      "key": 43,
      "t": 56.665,
-     "rise_db": -0.1,
+     "rise_db": 0.7,
      "vel": 42
     }
    ],
    "release_drop_db": {
     "n": 103,
-    "median": -23.7,
-    "worst": 16.1
+    "median": -27.7,
+    "worst": 16.6
    },
    "stem_seconds": 128.59,
    "last_note_off_s": 126.84
@@ -137,75 +135,39 @@
    "audio_onsets_found": 101,
    "audio_onsets_missing": [],
    "flux_peak_offset_ms": {
-    "median": -0.45,
-    "p05": -2.37,
-    "p95": 2.35,
-    "max_abs_dev_from_median": 5.87
+    "median": -0.54,
+    "p05": -2.43,
+    "p95": 2.67,
+    "max_abs_dev_from_median": 15.22
    },
    "harmonic_rise_db": {
-    "median": 10.3,
-    "min": 1.0
+    "median": 12.0,
+    "min": -1.4
    },
    "weak_onsets": [
     {
      "key": 28,
      "t": 24.782,
-     "rise_db": 1.0,
+     "rise_db": -1.4,
      "vel": 38
     },
     {
      "key": 28,
      "t": 26.455,
-     "rise_db": 1.2,
+     "rise_db": 0.4,
      "vel": 36
-    },
-    {
-     "key": 29,
-     "t": 26.659,
-     "rise_db": 3.0,
-     "vel": 42
-    },
-    {
-     "key": 31,
-     "t": 27.28,
-     "rise_db": 1.6,
-     "vel": 38
-    },
-    {
-     "key": 31,
-     "t": 27.496,
-     "rise_db": 2.6,
-     "vel": 39
-    },
-    {
-     "key": 33,
-     "t": 29.576,
-     "rise_db": 2.0,
-     "vel": 38
-    },
-    {
-     "key": 26,
-     "t": 98.752,
-     "rise_db": 2.7,
-     "vel": 59
     },
     {
      "key": 33,
      "t": 108.111,
-     "rise_db": 2.8,
+     "rise_db": 2.4,
      "vel": 78
-    },
-    {
-     "key": 36,
-     "t": 110.827,
-     "rise_db": 2.8,
-     "vel": 87
     }
    ],
    "release_drop_db": {
     "n": 83,
-    "median": -3.8,
-    "worst": 20.8
+    "median": -4.4,
+    "worst": 20.0
    },
    "stem_seconds": 128.59,
    "last_note_off_s": 126.84

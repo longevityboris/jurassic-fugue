@@ -163,19 +163,22 @@ It opens pp with the alto subject alone and grows as the voices enter. The
 episodes ease back, Episode 4 (bars 22-25, pedal returns) crescendos to f at
 the three-voice stretto (bar 26), and the final pedal entry rises to ff. There
 is a rit. into the last bar and a fermata. Subject and answer entries are
-voiced +9 (perform.py units), countersubjects +3, the theme quotation in
-Episode 3 +5, free voices -4. In the stretto each entry is voiced +9 for its
-first bar only and then steps back to +3, so that every new head is heard
-over the tail of the previous one. Quarter = 66, 141 s.
+voiced +12 (perform.py units), countersubjects +3, the theme quotation in
+Episode 3 +5, free voices -5. In the stretto each entry is a subject for its
+first bar only and its tail then recedes with the free voices, so that every
+new head is heard over the previous one. Quarter = 66, 141 s.
 
-Measured (`out/fugue_jp_piano.render.json`): -18.8 LUFS integrated, loudness
-range 22.4 LU (the pp opening sits near -40 LUFS, the close near -14.5),
+Measured (`out/fugue_jp_piano.render.json`): -19.0 LUFS integrated, loudness
+range 22.1 LU (the pp opening sits near -40 LUFS, the close near -14.5),
 true peak -1.0 dBTP in both WAV and M4A, C80 +8.4 dB. The four stems sit
 within 0.7 dB of each other in RMS. Stereo: L/R correlation +0.47 in the mix
 (+0.56 dry), mono fold-down -1.4 dB (worst second -2.3 dB). The soprano sits
 7.3 dB to the right and the pedal 2.7 dB to the left: the treble-right,
 bass-left image of the recording, heard from the keyboard. No stem needed a
-second render (`truncation_check`).
+second render (`truncation_check`). Each of the 13 subject and answer entries
+sits 0.4-6.6 dB above the loudest other voice and 2.5-9.8 dB above their mean
+during its first bar (`qa/results/mix.json`; with the earlier +9/-4 voicing
+some entries were 0.2-0.3 dB above, and the stretto 1.3 dB).
 
 `out/fugue_organmidi.json` is the earlier render of LilyPond's own flat MIDI
 (every note velocity 90, no plan), kept for comparison.
