@@ -89,6 +89,56 @@ Checked alone with the answer (answer = bass: P02) and in the full triple comple
     A : answer     f'2. f'8 e' | f'2. f'8 e' | f'4. g'8 g'4. bes'8 | bes'2. aes'8 f' | g'2
     T : CSa        bes2 a2 | aes2 g4. ges8 | f2 e2 | ees2 d4. des8 | c2
 
+### A6. Subject II (S2) = theme bars 5-8, real rhythm (minor)
+
+    S2 (home form, on the dominant of b-flat):  c''4. a'8 f'4 des''8 bes'8 | c''2. f''8 bes'8 | ees''4. des''8 des''4. c''8 | c''1
+    S2 f-minor form (Part II, alto, bar 19):     g'4. e'8 c'4 aes'8 f'8 | g'2. c''8 f'8 | bes'4. aes'8 aes'4. g'8 | g'1
+    S2 c-minor form (stretto at the lower 4th):  d'4. b8 g4 ees'8 c'8 | d'2. g'8 c'8 | f'4. ees'8 ees'4. d'8 | d'1
+
+S2 lives ON a dominant (its first three notes arpeggiate the major triad a fifth below its first
+note), which is why it combines with the answer (which lives IN the dominant key: CB1, P05) and sits
+over the dominant pedal (P09). Its stretto partner is itself at the lower 4th, 2 bars later (P10).
+Termination: the final c''1 is the tune's own open ending; in Part IV it is shortened to c''2. r4
+(a breath before the answer enters at the top, which also removes a direct octave with the bass).
+
+### A7. Inversion: the diatonic MIRROR of S1 (around its first note)
+
+    mirror (b-flat harmonic minor): bes'2. bes'8 c''8 | bes'2. bes'8 c''8 | bes'4. a'8 a'4. f'8 | f'2. ges'8 bes'8 | a'2
+    mirror (B-flat major):          bes'2. bes'8 c''8 | bes'2. bes'8 c''8 | bes'4. a'8 a'4. f'8 | f'2. g'8 bes'8 | a'2
+    mirror of the ANSWER (major, P06 tenor 63-66): f2. f8 g8 | f2. f8 g8 | f4. e8 e4. c8 | c2. d8 f8
+
+The lower neighbour becomes an upper neighbour, the rise bes-c-ees becomes the fall bes-a-f, and the
+mirror ends on the leading tone a' (elided into the tonic). Sounded WITH S1 at the octave (P08, P06)
+the two neighbours meet as a dominant sonority and the voices open from the octave into a wedge.
+
+### A8. Augmentation: the answer at 2x as the dominant pedal (P09 bass, bars 47-54)
+
+    f,1~ | f,2 f,4 e,4 | f,1~ | f,2 f,4 e,4 | f,2. g,4 | g,2. bes,4 | bes,1~ | bes,2 aes,4 f,4 |  (then ges,1 It6 | f,1 V | ges,1 VI)
+
+The augmented answer is a four-bar F pedal whose only motion is the E-natural neighbour (the
+leading tone of F), then rises f-g-bes and falls bes-aes-f: the pedal point IS the subject.
+
+### A9. Major forms and the cantus firmus
+
+    S1M:  bes'2. bes'8 a'8 | bes'2. bes'8 a'8 | bes'4. c''8 c''4. ees''8 | ees''2. d''8 bes'8
+    S2M:  c''4. a'8 f'4 d''8 bes'8 | c''2. f''8 bes'8 | ees''4. d''8 d''4. c''8 | c''1
+    CF (Part V, soprano, bars 59-68):
+          bes'2. bes'8 a'8 | bes'2. bes'8 a'8 | bes'4. c''8 c''4. ees''8 | ees''2. d''8 bes'8 |
+          c''4. a'8 f'4 d''8 bes'8 | c''2. f''8 bes'8 | ees''4. d''8 d''4. c''8 | c''1 | d''1~ | d''1
+    S1M on D-flat (Part III chain, tenor 41): des'2. des'8 c'8 | des'2. des'8 c'8 | des'4. ees'8 ees'4. ges'8 | ges'2. f'8 des'8 | ees'2
+
+### A10. Tune tweaks, each justified
+
+| where | tweak | why |
+|---|---|---|
+| everywhere before bar 59 | scale degree 3 lowered (d -> des) | the agreed B-flat-minor setting (THEME.md); keeps every other note of the tune |
+| bar 67 (end of the CF) | the tune's final c'' (open, on V) moves up to d'' over I | the tune ends on a question in the original; here the answer is the one pitch that separates minor from major |
+| S1 terminations | (e) c'' / (t) tied bes / (c) c''4. a'8 bes'2 | the subject never stops on the pickup; (c) reuses the tune's own bar-5 figure |
+| bar 14 (CSb head) | bes' instead of the elision c'' | c'' would be an unprepared 9th against the lament's bes, |
+| bar 50 (S2 in Part IV) | final c''1 shortened to c''2. r4 | breath before the climactic entry; removes a direct octave with the bass |
+| bar 62 (mirror in the bass) | the mirror's pickup g,8 bes,8 replaced by d,4 | avoids fifths on successive beats with the CF's d''-bes' -> c'' |
+| bar 41 | S1 in its MAJOR form (D-flat) inside the minor chain | a deliberate false dawn before the Neapolitan; see risk 7 |
+
 ## B. Proof table
 
 Checker = `tools/ck.sh` (project check.py with the four ranges). "0/0/0" = 0 PAR!, 0 BEAT, 0 DIS!.
