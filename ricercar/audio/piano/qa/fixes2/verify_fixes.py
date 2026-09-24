@@ -111,6 +111,150 @@ def tail() -> None:
     save("tail_truncation", out)
 
 
+def layer_bounds(key: int) -> list[int]:
+    """Lower velocity bound of each layer's own (timbre) range, from the calibration JSON."""
+    sys.path.insert(0, str(PIANO))
+    from piano_paths import CALIBRATION_JSON
+    cal = json.loads(CALIBRATION_JSON.read_text())
+    roots = {"A": 9, "C": 0, "D#": 3, "F#": 6}
+    for root, lay in cal["velocity_layers"]["layout"].items():
+        k = 12 * (int(root[-1]) + 1) + roots[root[:-1]]
+        if k - 1 <= key <= k + 1:
+            return sorted(v[0] for v in lay.values()), lay
+    raise KeyError(key)
+
+
+def velsweep() -> None:
+    """C2, C4, C6 struck at velocity 1, 3, ... 127 (the round-2 probe): level and HF ratio
+    (energy above 2 kHz) of the first 300 ms, largest steps, steps at the layer bounds."""
+    import an_velsweep as av
+    from lib2 import midi_notes
+    render(P / "velsweep.mid", "velsweep", stems=True)
+    res = {}
+    for nm in ("c2", "c4", "c6"):
+        m = read(P / f"velsweep_stems/{nm}.wav").mean(axis=1)
+        notes = [n for n in midi_notes(P / "velsweep.mid") if n["name"] == nm]
+        key = notes[0]["key"]
+        rows = []
+        for n in notes:
+            t = n["start"] + 0.3
+            a, b = int(t * SR), int((t + 0.3) * SR)
+            c, hf = av.spec_stats(m, t, t + 0.3)
+            rows.append((n["vel"], 10 * np.log10(np.mean(m[a:b] ** 2) + 1e-30), hf, c))
+        vel = np.array([r[0] for r in rows])
+        lv = np.array([r[1] for r in rows])
+        hf = np.array([r[2] for r in rows])
+        bounds, lay = layer_bounds(key)
+        dl, dh = np.diff(lv), np.diff(hf)
+        at_b = [i for i in range(len(vel) - 1) if any(vel[i] < bb <= vel[i + 1] for bb in bounds[1:])]
+        res[nm] = {
+            "key": int(key), "layer_lo": bounds, "crossfade_widths": {k: v[2] for k, v in lay.items()},
+            "level_span_db": round(float(lv.max() - lv.min()), 1),
+            "level_non_monotonic_steps": [(int(vel[i]), int(vel[i + 1]), round(float(dl[i]), 2)) for i in range(len(dl)) if dl[i] < -0.3],
+            "max_level_step_db": round(float(dl.max()), 2),
+            "corr_level_vs_velocity": round(float(np.corrcoef(vel, lv)[0, 1]), 4),
+            "max_hf_step_db_per_2_velocities": round(float(np.abs(dh).max()), 2),
+            "max_hf_step_at": [int(vel[int(np.argmax(np.abs(dh)))]), int(vel[int(np.argmax(np.abs(dh))) + 1])],
+            "hf_steps_over_3db": [(int(vel[i + 1]), round(float(dh[i]), 2), round(float(dl[i]), 2)) for i in range(len(dh)) if abs(dh[i]) > 3],
+            "hf_step_at_layer_bounds_db": [(int(vel[i + 1]), round(float(dh[i]), 2)) for i in at_b],
+            "hf_span_db": round(float(hf.max() - hf.min()), 1),
+            "rows_vel_level_hf_centroid": [(int(r[0]), round(float(r[1]), 2), round(float(r[2]), 2), round(float(r[3]), 1)) for r in rows],
+        }
+    res["before_fix_qa_round2"] = ("C2 HF +7.2 dB at v35 and +7.3 dB at v37 (level +1.1/+0.8 dB); C4 +5.0/+4.9 dB; C6 +5.0 dB "
+                                   "at v51 and +4.8 dB at v65 (qa/round2/results/velsweep.json)")
+    save("velsweep", res)
+
+
+def hf_env_db(m: np.ndarray, lo: float = 4000.0, hi: float = 16000.0) -> np.ndarray:
+    """Energy of the lo-hi band in 1 ms frames, 3 ms smoothing, dB."""
+    y = ss.sosfilt(ss.butter(4, [lo, hi], "band", fs=SR, output="sos"), m)
+    fr = SR // 1000
+    n = len(y) // fr
+    e = (y[: n * fr] ** 2).reshape(n, fr).mean(axis=1)
+    return 10 * np.log10(np.convolve(e, np.ones(3) / 3, mode="same") + 1e-30)
+
+
+def hammer_only(sfz_text: str, dst: Path) -> Path:
+    """An SFZ holding only the hammer-noise release group of a derived SFZ."""
+    sys.path.insert(0, str(PIANO))
+    from piano_paths import SALAMANDER_DIR
+    lines = sfz_text.splitlines()
+    i = next(k for k, l in enumerate(lines) if l.startswith("//HammerNoise"))
+    j = next((k for k in range(i + 1, len(lines)) if lines[k].startswith("//pedalAction")), len(lines))
+    # rt_dead=1: sfizz plays a trigger=release region only while an attack voice of its key
+    # sounds, and this file has none (release_key regions play regardless)
+    body = [l.replace("trigger=release ", "trigger=release rt_dead=1 ") for l in lines[i:j]]
+    dst.write_text(f"<control> default_path={SALAMANDER_DIR}/\n" + "\n".join(body) + "\n")
+    return dst
+
+
+def sfizz(sfz: Path, mid: Path, wav: Path) -> np.ndarray:
+    sys.path.insert(0, str(PIANO))
+    from piano_paths import SFIZZ_RENDER
+    subprocess.run([str(SFIZZ_RENDER), "--sfz", str(sfz), "--midi", str(mid), "--wav", str(wav), "-s", str(SR),
+                    "-q", "10", "-p", "512", "-b", "256"], check=True, capture_output=True)
+    return read(wav)
+
+
+def events_after(x: np.ndarray, times: list[float], win: float = 0.45) -> list[dict]:
+    """For each time: onset (first 1 ms frame within 20 dB of the event's loudest frame) and
+    loudest frame of the signal x in [t, t + win], in ms after t."""
+    fr = SR // 1000
+    n = len(x) // fr
+    e = 10 * np.log10((x[: n * fr] ** 2).sum(axis=1).reshape(n, fr).mean(axis=1) + 1e-30)
+    out = []
+    for t in times:
+        a = int(t * 1000)
+        seg = e[a: a + int(win * 1000)]
+        if not len(seg) or seg.max() < -150:
+            out.append({"t": round(t, 3), "event": False})
+            continue
+        pk = int(np.argmax(seg))
+        on = int(np.argmax(seg > seg[pk] - 20))
+        out.append({"t": round(t, 3), "onset_ms": on, "peak_ms": pk, "peak_dbfs": round(float(seg[pk]), 1)})
+    return out
+
+
+def release() -> None:
+    """Hammer-noise release samples (rel*): delay from key-up to the noise.
+
+    Only the hammer-noise group of the derived SFZ is rendered (sfizz_render, the render's own
+    stem MIDI), so the signal is the release noise alone: its onset (first 1 ms within 20 dB of
+    its loudest) and its loudest 1 ms after each key-up, for the SFZ before the fix (saved copy)
+    and after. iso probe: A0..E6 (damped keys), velocity 80, 1 s held. pedal_rel probe: three
+    keys lifted under the pedal (pedal up at 3.0 s), then three without pedal."""
+    sys.path.insert(0, str(PIANO))
+    from piano_paths import DERIVED_SFZ
+    from lib2 import midi_notes
+    old = P / "old_Ricercar.sfz"  # copy of the derived SFZ taken before make_sfz.py was changed
+    res = {}
+    for probe in ("iso", "pedal_rel"):
+        rep = render(P / f"{probe}.mid", probe, "--keep-temp", "--no-reverb")
+        stem_mid = Path(rep["temp"]) / "stem00.mid"
+        ups = sorted({round(nt["end"] + 0.3, 4) for nt in midi_notes(P / f"{probe}.mid") if nt["key"] <= 88})
+        for lab, src in (("before", old), ("after", DERIVED_SFZ)):
+            if not src.exists():
+                continue
+            x = sfizz(hammer_only(src.read_text(), P / f"hammer_{lab}.sfz"), stem_mid, P / f"hammer_{probe}_{lab}.wav")
+            ev = events_after(x, ups)
+            if probe == "iso":
+                on = np.array([e["onset_ms"] for e in ev if "onset_ms" in e])
+                pk = np.array([e["peak_ms"] for e in ev if "onset_ms" in e])
+                res[f"iso_{lab}"] = {"keyups": len(ups), "events": int(len(on)),
+                                     "onset_after_keyup_ms": {"median": float(np.median(on)), "range": [int(on.min()), int(on.max())]},
+                                     "loudest_after_keyup_ms": {"median": float(np.median(pk)), "range": [int(pk.min()), int(pk.max())]}}
+            else:
+                meta = json.loads((P / "pedal_rel.meta.json").read_text())
+                pu = meta["pedal"][1] + 0.3
+                res[f"pedal_rel_{lab}"] = {"keyups_under_pedal": ev[:3], "keyups_without_pedal": ev[3:],
+                                           "at_pedal_up": events_after(x, [pu], 0.3)[0]}
+        import shutil
+        shutil.rmtree(rep["temp"], ignore_errors=True)
+    res["note"] = ("QA round 2 measured the high-frequency event after key-up in the full mix at a median 110 ms "
+                   "(75-190 ms); here the noise is rendered alone")
+    save("release_timing", res)
+
+
 def main() -> None:
     P.mkdir(exist_ok=True)
     what = sys.argv[1:] or ["contract"]

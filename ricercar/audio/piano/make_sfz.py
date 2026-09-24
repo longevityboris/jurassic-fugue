@@ -64,16 +64,49 @@ counterpoint. This script fixes them without touching the audio files:
    Correlation per note and mono loss before and after are in the calibration
    JSON. Copies are only rewritten when a note's lag changes.
 
-The release groups (string-resonance releases harmL/harmS/harmV3, hammer-noise
-releases rel1..88) and the pedal-noise group are copied verbatim. Both derived
-files start with ``<control> hint_ram_based=1``: sfizz then holds every sample in
-RAM. Streamed from disk, ``sfizz_render`` (which renders about 30 times faster
-than real time) can overrun the 8192-frame preload, and the note stops dead
-160-180 ms after its onset while the key is still held. Note regions
-also get ``note_polyphony=2`` so that re-struck keys under the pedal do not
-pile up. A second SFZ without the pedal-noise group is written for the extra
-stems of a multi-stem render, so that the noise sounds once and not once per
-voice.
+6. **Velocity layers.** The stock file gives layers 3 and 5 only two and three
+   velocities (35-36 and 44-46), so a crescendo through v33-38 changed
+   brightness twice within two velocities (C2: energy above 2 kHz +7.2 dB at
+   v35 and +7.3 dB at v37, for 1-2 dB of level). Layers 2-7 are re-spread over
+   the same velocities 27-56, five each (the loudness curve stays anchored on
+   the stock ranges, so velocity-to-loudness and the suggested velocities do not
+   change). Adjacent layers are then crossfaded over 4 velocities (6 from
+   layer 8 up, where layers are 8 wide), with linear weights: two layers of one
+   note are coherent (aligned attacks, same strings; median correlation 0.995
+   over the first 400 ms), and the level of the mix at each
+   crossfade velocity is corrected to L(v) from its measured K-weighted
+   loudness. Where the two recordings have a partial in opposite phase, a
+   crossfade would notch it out (the 50/50 mix loses a 1/3-octave band by 7 to
+   37 dB against the weaker layer); those pairs (80 of 450, two thirds of them
+   below C3) keep a hard switch. Layers alternate between polyphony groups 10 and 11, so that
+   ``note_polyphony=2`` still counts strikes, not the two layers of one strike.
+   The layout, per-pair correlation and notch are in the calibration JSON.
+
+7. **Release samples.** The string-resonance (harm*) and hammer-noise (rel*)
+   release samples start with their recorded pre-roll: the hammer noise
+   reached -20 dB 15-180 ms into the file and so sounded 20-160 ms after
+   key-up (median 65 ms; its loudest part 155 ms). Each release region gets an
+   ``offset=`` 10 ms before the sample first comes within 20 dB of its loudest
+   5 ms (rel*: median 51 ms cut; harm*: 0-26 ms). The hammer-noise group is
+   ``trigger=release_key``: the action sounds when a key is lifted, pedal or
+   not. (With ``trigger=release`` sfizz holds every release back while the
+   sustain pedal is down and fires them together at pedal-up; the
+   string-resonance releases keep that, since the dampers fall at pedal-up.)
+
+8. **Long-term spectrum.** The calibration JSON also carries the piano's
+   long-term spectrum in 1/3 octaves (the first second of layer 10, mf, of
+   every sampled note C2-C6 at equal K-weighted loudness). render_piano.py
+   calibrates ``--wet-db`` on it, so that the number is the hall's energy
+   relative to the dry piano on piano material, not on a white impulse.
+
+The pedal-noise group is copied verbatim. Both derived files start with
+``<control> hint_ram_based=1``: sfizz then holds every sample in RAM. Streamed
+from disk, ``sfizz_render`` (which renders about 30 times faster than real
+time) can overrun the 8192-frame preload, and the note stops dead 160-180 ms
+after its onset while the key is still held. Note regions also get
+``note_polyphony=2`` so that re-struck keys under the pedal do not pile up. A
+second SFZ without the pedal-noise group is written for the extra stems of a
+multi-stem render, so that the noise sounds once and not once per voice.
 
 Outputs (next to the original SFZ, see piano_paths.py):
     samples-aligned/*.flac, samples-aligned/alignment.json
@@ -126,6 +159,32 @@ ALIGN_METHOD = "xcorr400ms-mean16-max3ms-tol0.03-v1"  # change when the alignmen
 # The recorded string-resonance and hammer release samples still sound on top. The
 # undamped keys F6-C8 keep the stock 5 s.
 DAMPED_RELEASE = ((24, 0.50), (42, 0.35))  # (sample root key, release s), linear between
+
+# Velocity layers. The stock file gives layers 3 and 5 only two and three velocities
+# (35-36, 44-46), so a crescendo through v33-38 changes brightness twice within two
+# velocities (C2: +7.2 dB above 2 kHz at v35 and +7.3 dB at v37). Layers 2-7 are
+# re-spread over the same velocities 27-56, five each; the loudness curve L(v) is still
+# anchored on the stock ranges, so velocity-to-loudness does not change.
+RESPREAD_LAYERS = (2, 7)  # first and last layer re-spread evenly between their outer bounds
+# Adjacent layers are crossfaded over XF_MAX velocities (fewer where a layer is narrow):
+# linear amplitude weights, because two layers of one note are coherent (aligned attacks,
+# same strings: correlation 0.95-1.00 over the first 400 ms for most pairs), and the mix
+# level at each crossfade velocity is corrected to L(v) from the measured K-weighted
+# loudness of that mix. A pair whose 50/50 mix loses a 1/3-octave band by more than
+# XF_MAX_NOTCH_DB against the weaker layer (some bass pairs have a partial in opposite
+# phase) keeps a hard switch instead.
+XF_MAX = 6
+XF_MAX_NOTCH_DB = -6.0
+XF_WEIGHTS = tuple(sorted({(i + 0.5) / w for w in (2, 4, 6) for i in range(w)}))
+THIRD_OCT = 1000.0 * 2.0 ** (np.arange(-16, 14) / 3.0)  # 25 Hz .. 20 kHz band centres
+LTAS_LAYER = 10  # the piano's long-term spectrum is taken at mf (layer 10, velocities 73-80)
+LTAS_KEYS = (36, 84)  # C2..C6, like the velocity calibration
+LTAS_WIN = int(1.0 * SR)
+# Release samples (string resonance harm*, hammer noise rel*) start with a recorded
+# pre-roll: the hammer-noise event sits 15-180 ms into the file, so it sounded 75-190 ms
+# after key-up. Each release region now starts REL_PREROLL before the point where the
+# sample first comes within 20 dB of its loudest 5 ms, as the note regions do.
+REL_PREROLL = int(0.010 * SR)
 
 NOTE_RE = re.compile(r"samples/([A-G]#?)(\d)v(\d+)\.flac")
 PC = {"C": 0, "D#": 3, "F#": 6, "A": 9}
@@ -296,6 +355,44 @@ def corr_mono(x: np.ndarray) -> tuple[float, float]:
     return c, float(mono)
 
 
+def band_energy(x: np.ndarray, centres=THIRD_OCT, nfft: int = 1 << 16) -> np.ndarray:
+    """Energy per 1/3-octave band (both channels, Hann window)."""
+    w = np.hanning(len(x))[:, None]
+    sp = (np.abs(np.fft.rfft(x * w, nfft, axis=0)) ** 2).sum(axis=1)
+    f = np.fft.rfftfreq(nfft, 1 / SR)
+    return np.array([sp[(f >= c * 2 ** (-1 / 6)) & (f < c * 2 ** (1 / 6))].sum() for c in centres])
+
+
+def pair_mix(a: np.ndarray, b: np.ndarray, ra: Region, rb: Region) -> dict:
+    """Two adjacent layers of one note, each at its onset and scaled to the same K-weighted
+    loudness: loudness of their linear mix (1-w)A + wB for each crossfade weight w (dB, 0 =
+    each layer alone), and the deepest 1/3-octave notch of the 50/50 mix against the weaker
+    layer (a partial in opposite phase shows up as a notch far below the -3 dB that
+    uncorrelated components give)."""
+    n = PREROLL + LOUD_WIN
+    xa = a[ra.onset : ra.onset + n] * 10 ** (-ra.loud_db / 20)
+    xb = b[rb.onset : rb.onset + n] * 10 ** (-rb.loud_db / 20)
+    m = min(len(xa), len(xb))
+    xa, xb = xa[:m], xb[:m]
+    ka, kb = kweight(xa), kweight(xb)
+    mix_db = {w: float(10 * np.log10(np.mean(np.sum(((1 - w) * ka + w * kb) ** 2, axis=1)) + 1e-20))
+              for w in XF_WEIGHTS}
+    ea, eb, em = band_energy(xa), band_energy(xb), band_energy(0.5 * (xa + xb))
+    valid = np.maximum(ea, eb) > 1e-4 * np.max(ea + eb)  # bands within 40 dB of the strongest
+    dev = 10 * np.log10(em[valid] / np.minimum(ea, eb)[valid])
+    i = int(np.argmin(dev))
+    rho = float(np.sum(xa * xb) / np.sqrt(np.sum(xa * xa) * np.sum(xb * xb)))
+    return {"mix_db": mix_db, "notch_db": round(float(dev[i]), 1),
+            "notch_hz": round(float(THIRD_OCT[valid][i])), "corr": round(rho, 3),
+            "accept": bool(dev[i] >= XF_MAX_NOTCH_DB)}
+
+
+def ltas(x: np.ndarray, r: Region) -> np.ndarray:
+    """1/3-octave energy of the first LTAS_WIN after the attack, at unit K-weighted loudness."""
+    seg = x[r.onset : r.onset + LTAS_WIN] * 10 ** (-r.loud_db / 20)
+    return band_energy(seg, nfft=1 << 17)
+
+
 def align_root(layers: list[Region], sidecar: dict) -> dict:
     """Time-align the two channels of every layer of one sampled note, write the aligned
     copies (unless the sidecar says they exist with this lag), analyse the aligned audio.
@@ -337,7 +434,11 @@ def align_root(layers: list[Region], sidecar: dict) -> dict:
         analyse_audio(r, yf)
         aligned[r.layer] = yf
     tuning = measure_tuning(aligned, layers[0].key)
+    pairs = {lo.layer: pair_mix(aligned[lo.layer], aligned[hi.layer], lo, hi) for lo, hi in zip(layers[:-1], layers[1:])}
+    spectrum = next((ltas(aligned[r.layer], r) for r in layers if r.layer == LTAS_LAYER), None)
     return {
+        "pairs": pairs,
+        "ltas": spectrum,
         "lag_samples": lag,
         "lag_ms": round(lag / SR * 1000, 3),
         "corr_before": round(float(np.median([b[0] for b in before])), 3),
@@ -388,6 +489,86 @@ def loudness_curve(layers: list[Region]) -> np.ndarray:
     curve = np.interp(v, anchors_v, anchors_db)
     curve[0] = curve[1]
     return curve
+
+
+def layer_layout(layers: list[Region], pairs: dict) -> dict:
+    """Velocity ranges (timbre) and crossfades of one sampled note.
+
+    Returns {layer: (lo, hi, xf_lo, xf_hi)}: the layer sounds alone on lo..hi minus the
+    crossfade zones; xf_lo / xf_hi are the widths (velocities) of the zones centred on its
+    lower and upper boundary (0 = hard switch)."""
+    layers = sorted(layers, key=lambda r: r.layer)
+    lo = [r.lovel for r in layers]
+    hi = [r.hivel for r in layers]
+    a, b = RESPREAD_LAYERS
+    ia, ib = a - 1, b  # indices of the first re-spread layer and of the layer after the last
+    if len(layers) == 16 and ib < len(lo):
+        span, n = lo[ib] - lo[ia], ib - ia
+        for i in range(ia, ib):
+            lo[i] = lo[ia] + round(span * (i - ia) / n)
+        hi = [lo[i + 1] - 1 for i in range(len(lo) - 1)] + [hi[-1]]
+    widths = [h - l + 1 for l, h in zip(lo, hi)]
+    xf = [0] * (len(layers) + 1)  # xf[i] = zone width at the lower boundary of layer i
+    for i in range(1, len(layers)):
+        w = min(XF_MAX, widths[i - 1] - 1, widths[i] - 1)
+        w -= w % 2
+        xf[i] = w if (w >= 2 and pairs[layers[i - 1].layer]["accept"]) else 0
+    return {r.layer: (lo[i], hi[i], xf[i], xf[i + 1]) for i, r in enumerate(layers)}
+
+
+def region_gains(r: Region, curve: np.ndarray, layout: dict, pairs: dict) -> dict[int, float]:
+    """Linear gain per velocity for one region: maps the sample onto L(v), times its
+    crossfade weight, with the mix-loudness correction inside crossfade zones."""
+    lo, hi, xlo, xhi = layout[r.layer]
+    out = {}
+    for v in range(max(1, lo - xlo // 2), min(127, hi + xhi // 2) + 1):
+        fade, comp = 1.0, 0.0
+        if xlo and v < lo + xlo // 2:  # fading in: zone around this layer's lower bound
+            w = (v - (lo - xlo // 2) + 0.5) / xlo
+            fade, comp = w, -pairs[r.layer - 1]["mix_db"][w]
+        elif xhi and v > hi - xhi // 2:  # fading out: zone around the next layer's lower bound
+            w = (v - (hi + 1 - xhi // 2) + 0.5) / xhi
+            fade, comp = 1 - w, -pairs[r.layer]["mix_db"][w]
+        out[v] = fade * 10 ** ((curve[v] - r.loud_db + comp) / 20)
+    return out
+
+
+def release_onset(path: Path) -> int:
+    """Samples before a release sample first comes within 20 dB of its loudest 5 ms, minus
+    REL_PREROLL (1 ms frames, 5 ms smoothing, both channels)."""
+    x, sr = sf.read(path, dtype="float64", always_2d=True)
+    assert sr == SR
+    fr = SR // 1000
+    n = len(x) // fr
+    e = (x[: n * fr] ** 2).sum(axis=1).reshape(n, fr).mean(axis=1)
+    e = np.convolve(e, np.ones(5) / 5, mode="same") + 1e-30
+    i20 = int(np.argmax(e > e.max() * 10 ** (-20 / 10)))
+    return max(0, i20 * fr - REL_PREROLL)
+
+
+def trim_releases(text: str) -> tuple[str, dict]:
+    """Release section of the stock SFZ with an offset= per region (recorded pre-roll cut),
+    and the hammer-noise group switched to trigger=release_key: the action noise of a
+    lifted key sounds at key-up, pedal or not. (With trigger=release sfizz holds every
+    release back while the sustain pedal is down and fires them all at pedal-up; the
+    string-resonance releases keep that behaviour, which is where the dampers fall.)"""
+    out, offs, hammer = [], {"harm": [], "rel": []}, False
+    for line in text.split("\n"):
+        st = line.strip()
+        if st.startswith("//HammerNoise"):
+            hammer = True
+        elif st.startswith("<group>") and hammer:
+            line = line.replace("trigger=release ", "trigger=release_key ")
+        elif st.startswith("<region>"):
+            sample = parse_opcodes(st[len("<region>"):])["sample"]
+            off = release_onset(SALAMANDER_DIR / sample)
+            offs["rel" if Path(sample).name.startswith("rel") else "harm"].append(off)
+            line = f"{line.rstrip()} offset={off}"
+        out.append(line)
+    stats = {k: {"n": len(v), "offset_ms_median": round(float(np.median(v)) / SR * 1000, 1),
+                 "offset_ms_range": [round(min(v) / SR * 1000, 1), round(max(v) / SR * 1000, 1)]}
+             for k, v in offs.items() if v}
+    return "\n".join(out), stats
 
 
 def main() -> None:
@@ -450,6 +631,9 @@ def main() -> None:
     for root in curves:
         curves[root] = curves[root] - (top - raw_top)
 
+    # --- velocity layers: timbre ranges and crossfades --------------------------------------
+    layouts = {root: layer_layout(roots[root], align[root]["pairs"]) for _, root in root_keys}
+
     # --- write SFZ ------------------------------------------------------------------------
     header = [
         "//=====================================================================",
@@ -457,7 +641,8 @@ def main() -> None:
         "// FLAC/SFZ packaging: FreePats (roberto@zenvoid.org), V3+20200602",
         "// Derived by ricercar/audio/piano/make_sfz.py: onset-aligned offsets,",
         "// continuous velocity->loudness calibration, keyboard evenness, tuning",
-        "// smoothing. DO NOT EDIT -- regenerate with make_sfz.py.",
+        "// smoothing, velocity-layer crossfades, trimmed release samples.",
+        "// DO NOT EDIT -- regenerate with make_sfz.py.",
         f"// {GENERATOR_TAG}{generator_sha256()}",
         "//=====================================================================",
         "",
@@ -478,17 +663,18 @@ def main() -> None:
             release = f"{DAMPED_RELEASE[-1][1]:g}" if damped else g.get("ampeg_release", "5")
             body.append("")
             body.append(f"<group> amp_veltrack=100 ampeg_attack=0.001 ampeg_release={release} note_polyphony=2")
-        curve = curves[r.root]
-        vels = np.arange(r.lovel, r.hivel + 1)
-        gain_db = curve[vels] - r.loud_db
-        vol = float(gain_db.max())
-        lin = 10 ** ((gain_db - vol) / 20)
+        gains = region_gains(r, curves[r.root], layouts[r.root], align[r.root]["pairs"])
+        vels = np.array(sorted(gains))
+        g = np.array([gains[v] for v in vels])
+        vol = float(20 * np.log10(g.max()))
+        lin = g / g.max()
         ops = [
             f"sample={r.sample}",
             f"lokey={r.opcodes['lokey']}",
             f"hikey={r.opcodes['hikey']}",
-            f"lovel={r.lovel}",
-            f"hivel={r.hivel}",
+            f"lovel={vels[0]}",
+            f"hivel={vels[-1]}",
+            f"group={10 + r.layer % 2}",
             f"pitch_keycenter={r.key}",
             f"offset={r.onset}",
             f"tune={tune[r.root]:g}",
@@ -498,9 +684,10 @@ def main() -> None:
         if damped and r.key < DAMPED_RELEASE[-1][0]:
             (k0, r0), (k1, r1) = DAMPED_RELEASE
             ops.append(f"ampeg_release={np.interp(r.key, [k0, k1], [r0, r1]):.3f}")
-        ops += [f"amp_velcurve_{v}={g_:.5f}" for v, g_ in zip(vels, lin)]
+        ops += [f"amp_velcurve_{v}={g_:.6g}" for v, g_ in zip(vels, lin)]
         body.append("<region> " + " ".join(ops))
 
+    release_text, release_offsets = trim_releases(release_text)
     common = "\n".join(header + body) + "\n\n" + release_text
     # Atomic writes: a render that starts while this runs sees the old or the new file,
     # never a half-written instrument.
@@ -514,6 +701,9 @@ def main() -> None:
     # four-voice keyboard piece actually uses (C2..C6).
     use = [root for k, root in root_keys if 36 <= k <= 84]
     rel = np.mean([curves[r] - curves[r][127] for r in use], axis=0)
+    lt = np.mean([align[root]["ltas"] for k, root in root_keys
+                  if LTAS_KEYS[0] <= k <= LTAS_KEYS[1] and align[root]["ltas"] is not None], axis=0)
+    ltas_db = 10 * np.log10(lt / lt.sum() + 1e-30)
     marks = {}
     for name, db in [("ppp", -33), ("pp", -27), ("p", -21), ("mp", -15), ("mf", -10), ("f", -6), ("ff", -3), ("fff", 0)]:
         marks[name] = int(np.clip(np.searchsorted(rel, db), 1, 127))
@@ -525,8 +715,26 @@ def main() -> None:
         "tuning_cents_measured": {root: round(float(c), 1) for (_, root), c in zip(root_keys, cents)},
         "tuning_cents_applied": tune,
         "pitch_keytrack_applied": keytrack,
-        "stereo_alignment": {root: {k: v for k, v in a.items() if k not in ("tuning_cents", "rewritten")}
+        "stereo_alignment": {root: {k: v for k, v in a.items() if k not in ("tuning_cents", "rewritten", "pairs", "ltas")}
                              for root, a in align.items()},
+        "velocity_layers": {
+            "description": "timbre range per layer [lo, hi] and crossfade widths (velocities) at its lower and "
+            "upper boundary, 0 = hard switch; pairs: adjacent layers' correlation over the first 400 ms and "
+            "deepest 1/3-octave notch of their 50/50 mix re the weaker layer",
+            "layout": {root: {str(k): list(v) for k, v in layouts[root].items()} for _, root in root_keys},
+            "pairs": {root: {f"{k}/{k + 1}": {x: y for x, y in pr.items() if x != "mix_db"}
+                             for k, pr in align[root]["pairs"].items()} for _, root in root_keys},
+            "crossfaded_boundaries": sum(1 for _, root in root_keys for k, v in layouts[root].items() if v[2]),
+            "hard_boundaries": sum(1 for _, root in root_keys for k, v in layouts[root].items() if k > 1 and not v[2]),
+        },
+        "release_offsets": release_offsets,
+        "piano_ltas": {
+            "description": "long-term spectrum of the piano: 1/3-octave energy (dB, total 0 dB) of the first "
+            "second of layer 10 (mf) of every sampled note C2..C6, each at unit K-weighted loudness; "
+            "render_piano.py calibrates --wet-db (hall energy re the dry piano) on it",
+            "centres_hz": [round(float(c), 1) for c in THIRD_OCT],
+            "energy_db": [round(float(x), 2) for x in ltas_db],
+        },
         "level_fix_db": {k: {str(v): round(f, 2) for v, f in d.items()} for k, d in level_fix.items()},
         "onset_ms": {f"{r.root}v{r.layer}": round(r.attack20 / SR * 1000, 2) for r in regions},
         "layer_loudness_db": {f"{r.root}v{r.layer}": round(r.loud_db, 2) for r in regions},
@@ -538,6 +746,10 @@ def main() -> None:
     print(f"attack (-20 dB) position in the raw files: {on.min():.1f}..{on.max():.1f} ms "
           f"(spread {on.max() - on.min():.1f} ms) -> aligned to {PREROLL / SR * 1000:.1f} ms by offset=")
     print("suggested velocities:", marks)
+    vl = calib["velocity_layers"]
+    print(f"velocity layers: {vl['crossfaded_boundaries']} boundaries crossfaded, {vl['hard_boundaries']} hard "
+          f"(a partial in opposite phase between the two layers)")
+    print("release offsets:", release_offsets)
     if args.report:
         print("\nnote  key  tune(meas->applied) keytrack  level_fix v20/v50/v80/v110  layer loudness v1..v16 (dB)")
         for k, root in root_keys:
