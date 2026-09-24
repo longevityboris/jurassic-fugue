@@ -153,10 +153,10 @@ Checker = `tools/ck.sh` (project check.py with the four ranges). "0/0/0" = 0 PAR
 | P06_apotheosis_frame.ly | B-flat major apotheosis, 4 voices, 10 bars: complete tune (S) over its mirror (B 1-4); then the answer (B 5-8) against ITS mirror (T 5-8, f with upper neighbour g); c'' -> d'', plagal minor-iv close | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:3 V6/5 7th; 4:1, 7:1 V7; 6:1 alto e' = major 7th over the F pedal, resolving chromatically e'-ees'; 7:3 alto 4-3 (c''-bes') over g,; 8:1 C7/B-flat (V4/2 of F, alto bes' resolves to a'); 10:1 minor iv6/4 neighbour chord |
 | P07_chain_flatward_Dflat_major.ly | Part III chain (bars 37-46): S1 e-flat (S), a-flat (A), then the MAJOR form in D-flat (T), each a fifth lower, 2 bars apart | errors 0, parallels 0, beat-par 0, unjustified 0 | leading-tone neighbours and escape tones only |
 | P08_mirror_pair_Eflat.ly | S1 (alto, ees') and its diatonic mirror (bass, ees) simultaneously, two voices alone | errors 0, parallels 0, beat-par 0, unjustified 0 | 4:1 aes'/bes, = V7 of e-flat (7th held from 3:4.5, resolves) |
-| P09_dominant_pedal_augmentation_climax.ly | answer in 2x augmentation (bass, 8 bars) under S2 (S), the lament (T) and the answer at the top (S, f'' -> bes''); climax It6 - V (4-3) - VI; general pause | errors 0, parallels 0, beat-par 0, unjustified 0 | pedal dissonances (sus4 at 1:1, V7 at 3:1, lament passing tones over f,); 9:1 augmented sixth ges,/e'; 10:1 bes''/f, 4-3 suspension |
+| P09_dominant_pedal_augmentation_climax.ly | answer in 2x augmentation (bass, 8 bars) under S2 (S), the lament (T) and the answer at the top (S, f'' -> bes''); climax It6 - V (4-3) - VI; general pause, then the alto's lament head ees'-d' alone (bar 58) | errors 0, parallels 0, beat-par 0, unjustified 0 | pedal dissonances (sus4 at 1:1, V7 at 3:1, lament passing tones over f,); 9:1 augmented sixth ges,/e'; 10:1 bes''/f, 4-3 suspension |
+| P10_S2_stretto_4th.ly | S2 (alto, g') and S2 at the lower 4th (tenor, d') 2 bars later | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:3 aes'/g 9-8 suspension; 4:1 g'/d' 4th needs the bass below it (form table note) |
 | P11_exposition_bars1-18.ly | the complete 4-voice exposition 1-18 as it should be written: S1, answer+CSb, codetta, S1 in bass + CSb (alto) + soprano descant, answer in tenor + lament + CSb + free alto, Phrygian half cadence | errors 0, parallels 0, beat-par 0, unjustified 0 | as P01-P03, plus 11:1-13:1 soprano 5-4 suspensions over the alto's eighths; 15:4.5 German sixth; 16:4.5 dim7; 17:1 Eb-minor 7th over the lament's passing ees, |
 | P12_neapolitan_episode_43-48.ly | episode 43-46 into Part IV: lament bass des -> f, Neapolitan in root position (44), vii(o)7, G half-dim7, Italian sixth -> V pedal; bars 47-48 = Part IV's first two bars in 4 voices | errors 0, parallels 0, beat-par 0, unjustified 0 | 43:3 A-flat7/C 7th; 45:1 vii(o)7; 46:1 half-dim 7th; 46:3 aug-6th e'/ges,; 47:1 sus4 over the pedal; 49:1 V7 |
-| P10_S2_stretto_4th.ly | S2 (alto, g') and S2 at the lower 4th (tenor, d') 2 bars later | errors 0, parallels 0, beat-par 0, unjustified 0 | 3:3 aes'/g 9-8 suspension; 4:1 g'/d' 4th needs the bass below it (form table note) |
 
 Search evidence (not proofs, kept for the composer): `tools/stretto_ck.py s1` lists every S1 stretto
 the checker accepts (best: lower 12th/5th at +8 beats, strict 0/1; lower 5th +12; 1-bar stretto only
@@ -203,7 +203,7 @@ unless Part V is taken below quarter = 60.
 | 43-46 | | = P12: the D-flat-major entry (tenor) finishes over the LAMENT's fourth statement, now a bass descent des-c-ces-bes-a-aes-g-ges (-> f at 47); 44 NEAPOLITAN C-flat in root position (bass ces); soprano echoes the subject head (ges''2. ges''8 f''8); 45 vii(o)7; 46 G half-dim 7 -> ITALIAN sixth (ges, bes e' bes') -> V pedal at 47 | D-flat -> C-flat (N) -> b-flat: It6 | f > mp < |
 | 47-54 | IV Pedale | = P09: ANSWER IN 2x AUGMENTATION in the bass: F pedal 47-50 (f... f-e ...), rising f-g-bes 51-53, bes-aes-f 54. Above: S2 (soprano, c'') 47-50 with a breath (c''2. r4) before 51; lament CSa over the pedal (tenor 47-50: bes-a-aes-g-ges-f = sus4-3, then chromatic prolongation of V); the ANSWER at the top (soprano f'' 51-54, peak bes'' at 53-54); alto to be composed | b-flat: V | mf < ff |
 | 55-57 | | CLIMAX (= P09 bars 9-11): 55 ITALIAN sixth fff (ges, e' bes' bes''); 56 V (f, f' c'' bes''->a'': the subject's head as the 4-3 suspension of the dominant); 57 DECEPTIVE cadence to G-flat (ges, des' bes' bes''). An Italian, not German, sixth here because Ger6 -> V puts parallel fifths between bass and the fifth of the chord | | fff, allargando |
-| 58 | | general pause (fermata), then the lament's first two notes alone, pp | | pp |
+| 58 | | general pause (fermata), then the lament's first two notes alone in the alto, ees'2 d'2, pp (P09 bar 12): the d' natural is heard before the chord it belongs to, and is the alto's first note in bar 59 | | pp |
 | 59-68 | V Apoteosi | = P06 (its bars 1-10): the COMPLETE TUNE in B-flat major as cantus firmus at its own tempo (soprano 59-66), over its own mirror (bass 59-62; the mirror's last pickup g,-bes, is replaced by d, to avoid fifths on successive beats) and the answer in F major (bass 63-66) sounding against its own mirror in the tenor (63-66: f2. f8 g8 | f2. f8 g8 | f4. e8 e4. c8 | c2. d8 f8); 66 V (ii4/2 - V6/5 - V); 67 the tune's open ending c'' rises to d'' over I; 68 plagal shadow: minor iv6/4 (ges'/ees') -> I | B-flat major | f, largamente, cantabile; 68 mp |
 | 69-70 | | final B-flat major chord held, d'' on top | B-flat | p < mf (fermata) |
 
@@ -238,6 +238,7 @@ piece balances sharp-side tension (II) against flat-side darkness (III) around t
 | 59 | S | cantus firmus: complete tune (S1M + S2M) | B-flat | bes' |
 | 59 | B | mirror of S1M (2 octaves below) | B-flat | bes, |
 | 63 | B | answer (F major, real) | B-flat: V | f, |
+| 63 | T | mirror of the answer (upper neighbour g) | B-flat: V | f |
 
 ### C5. Harmonic outline (per half bar; subject context numerals in b-flat unless noted)
 
@@ -290,7 +291,9 @@ piece balances sharp-side tension (II) against flat-side darkness (III) around t
 4. Free voices not lab-proven (to be composed and checked by the composer): the motor bass 19-24
    (no motor countersubject survived: the solver's candidates were stepwise but harmonically aimless
    and cross-related with S2's a-natural, and CSb does not fit against S2); the episode 29-32; the upper voice(s) over the mirror pair 33-36 (CSb tested there: fails); the alto 47-54 in
-   P09 (it must avoid e/f octaves with the augmented bass's e,-f, neighbour notes). In P06 the tenor
+   P09 (it must avoid e/f octaves with the augmented bass's e,-f, neighbour notes; P12 supplies
+   47-48; `tools/gen_alto_p09.py` now solves against P09's real voices, but its candidates oscillate
+   chromatically (e'/ees', a'/aes') and should be taken only as a map of legal pitches, not as music). In P06 the tenor
    is thematic only in 63-66 (the answer's mirror) and the alto is free throughout; the lament tried
    as the tenor there gave 2 BEAT against the mirror bass, so the lament does not return in the
    apotheosis except as the chromatic e'-ees' inflection of the alto (64) and the minor iv (68).
@@ -302,6 +305,8 @@ piece balances sharp-side tension (II) against flat-side darkness (III) around t
    the tenor at c (48) is the viola's lowest note; the soprano peak bes'' (53-56) is high for a sung
    line but ordinary for violin I and piano. Left-hand span at 14-17 (tenor f-bes over bass bes,-c,)
    is up to 2 octaves: fine on cello/viola, needs the tenor taken by the right hand on piano.
+   The final chord's hairpin (69-70) is for the strings; on piano the chord is struck p and let ring
+   (pedal). 25-28 (CB1) is proven in three voices (S, A, B); the tenor there is free or silent.
 7. D-flat MAJOR at 41 uses the major form of S1 in the middle of flat-side minor keys; it is meant
    as a false dawn. If it sounds too bright, the tenor can take the minor form (des'-ces'-... with
    fes), at the cost of an ugly spelling.

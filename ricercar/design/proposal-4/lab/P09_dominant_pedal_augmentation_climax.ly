@@ -1,4 +1,4 @@
-% P09 Part IV (bars 47-58): answer in 2x AUGMENTATION as the dominant pedal (bass); S2 (47-50) and the answer at the top (51-54, peak bes''); lament over the pedal (tenor 47-50); climax It6 - V (4-3: the subject head bes''-a'') - VI deceptive; general pause
+% P09 Part IV (bars 47-58): answer in 2x AUGMENTATION as the dominant pedal (bass); S2 (47-50) and the answer at the top (51-54, peak bes''); lament over the pedal (tenor 47-50); climax It6 - V (4-3: the subject head bes''-a'') - VI deceptive; bar 58 after the general pause: the lament's first two notes alone (alto ees'-d', the d' becoming the major third of bar 59)
 % alto 47-54 left free in the lab (to be composed; must avoid the aug bass e,-f, neighbour octaves)
 \version "2.24.0"
 soprano = \absolute {
@@ -27,7 +27,7 @@ alto = \absolute {
   bes'1 |   % 9
   c''1 |   % 10
   bes'1 |   % 11
-  r1 |   % 12
+  ees'2 d'2 |   % 12
 }
 tenor = \absolute {
   bes2 a2 |   % 1
@@ -65,5 +65,5 @@ bass = \absolute {
     \new Staff \with { instrumentName = "B" } { \clef "bass" \key bes \minor \bass }
   >>
   \layout { }
-  \midi { \tempo 4 = 84 }
+  \midi { \tempo 4 = 80 }
 }
