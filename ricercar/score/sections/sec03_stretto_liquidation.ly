@@ -58,9 +58,14 @@
 %   seventh (twice against SK_final's tenor, once in the assembled score), 22:1 and 24:1 soprano S1 over
 %   the lament, 26:3 and 29:1 the dim7 keeps). splice_check PASS against SK_final and against the
 %   assembled score (delivered sec02/sec04). New strict ACC
-%   24:1 soprano Gb5 / alto Ab4: the seventh of A-flat7/C (rule 4, a chord seventh). New check.py weak
-%   DIS: 20:1.5 alto Gb4 (M7 under the soprano's F5, 4th over the pedal), passing Ab-Gb-F, the late
-%   resolution of 19:3's seventh; 25:4.5 alto Cb5 (4th over Gb2), the passing 6/4 C-flat over G-flat.
+%   24:1 soprano Gb5 / alto Ab4: the seventh of A-flat7/C (rule 4, a chord seventh). check.py DIS, all
+%   changes against the previous version: strong DIS down from 3 (21:1 Bb4/F3; 24:1 Db5/Eb4, Db5/C3) to
+%   1 (24:1 Gb5/Ab4, the same chord seventh). New weak DIS, all of them: 20:1.5 alto Gb4 (M7 under the
+%   soprano's F5, 4th over the pedal), passing Ab-Gb-F, the late resolution of 19:3's seventh; 21:2.5
+%   alto Bb4 (4th over F3), the sigh's upper neighbour; 22:3.5 Gb5/Ab4 m7, the 7-6's resolution under the
+%   soprano's held Gb (A-flat minor 7 = IV add6); 23:4 Gb5/Ab4 m7, A-flat7; 25:3.5 alto Db5 (m7 under
+%   the soprano's suspended Cb6, m7 over the tenor's Eb4), the seventh of E-flat minor 7 arriving early;
+%   25:4.5 alto Cb5 (4th over Gb2), the passing 6/4 C-flat over G-flat.
 % Idiom (9): 25:1-25:2.5 lies in one left hand (Eb3 under the tenor's Gb4 F4, 14-15 semitones) except the
 %   tenor's Ab4 at 25:1.5 (17), which the right hand takes under its held Cb6/Eb5 (a tenth). 25:3-26:2.5:
 %   the tenor's Eb4 over Gb2/F2 needs 19-22 semitones in the left hand and 17-20 in the right, so on the
