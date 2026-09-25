@@ -10,6 +10,13 @@ Per note of every part (read from the group MIDI with mido, not from orchestrate
     re equal temperament (A4 = 440), in the steady part of the note (60 ms after the onset, up to
     400 ms); a note whose partials are no stronger than their surroundings counts as dropped;
   * onset: peak of the stem's onset envelope within -30..+60 ms of the note-on;
+  * body level: the median of 20 ms RMS frames over the note's body (60 ms after the onset to
+    20 ms before the note-off, at most 1.5 s), in dB re the stem's peak. A note is flagged as cut
+    (silent) when its body is below -80 dB re peak, or more than 20 dB under both the previous and
+    the next note on the same stem. The pitch check looks at the first 400 ms, where the previous
+    note's release may still ring at the same pitch: a note the renderer cuts (a same-key note-off
+    arriving after the new note-on) passed it. Comparing with both neighbours keeps a subito or a
+    hairpin's first note from counting.
 Per part: silence where it rests for over 1.5 s (a stuck or misrouted note would sound there) and
 after its last note (2 s after the note-off).
 Final files: format, true peak and loudness by ffmpeg (ebur128, independent of mix.py), m4a vs
@@ -106,6 +113,40 @@ def pitch_cents(x: np.ndarray, key: int) -> tuple:
     return best[1], best[2], best[3]
 
 
+BODY_FRAME_S = 0.02
+BODY_FLOOR_DB = -80.0       # re the stem's peak
+BODY_DROP_DB = 20.0         # under both neighbours
+
+
+def body_levels(mono: np.ndarray, lst: list, lead: float) -> list:
+    """Per note: median 20 ms RMS frame level over its body, dB re the stem's sample peak."""
+    hop = int(BODY_FRAME_S * SR)
+    nfr = len(mono) // hop
+    fr = np.sqrt(np.mean(mono[:nfr * hop].reshape(nfr, hop) ** 2, axis=1))
+    peak = np.max(np.abs(mono)) + 1e-12
+    out = []
+    for on, off, _ in lst:
+        a, b = on + 0.06, min(off - 0.02, on + 1.5)
+        if b - a < 2 * BODY_FRAME_S:
+            a, b = on + 0.02, max(off, on + 0.06)
+        i, j = int((a + lead) / BODY_FRAME_S), max(int((b + lead) / BODY_FRAME_S), int((a + lead) / BODY_FRAME_S) + 1)
+        seg = fr[i:j]
+        lv = 20 * math.log10(float(np.median(seg)) / peak + 1e-12) if len(seg) else -240.0
+        out.append(round(lv, 1))
+    return out
+
+
+def body_flags(lst: list, lv: list) -> list:
+    """Notes whose body is silent or far under both neighbours: [(on_s, key, dB, prev dB, next dB)]."""
+    flags = []
+    for i, (on, _, key) in enumerate(lst):
+        nb = [lv[k] for k in (i - 1, i + 1) if 0 <= k < len(lv)]
+        cut = lv[i] < BODY_FLOOR_DB or (nb and all(lv[i] < x - BODY_DROP_DB for x in nb))
+        if cut:
+            flags.append((round(on, 2), key, lv[i], lv[i - 1] if i else None, lv[i + 1] if i + 1 < len(lv) else None))
+    return flags
+
+
 def main():
     outdir = Path(sys.argv[1]).resolve()
     res_path = Path(sys.argv[sys.argv.index("--out") + 1]) if "--out" in sys.argv else \
@@ -149,6 +190,8 @@ def main():
                 if len(seg) == 90 and seg.max() > 0:
                     lagl.append(int(np.argmax(seg)) - 30)
             cents = np.array(cents)
+            body = body_levels(mono, lst, lead)
+            cut = body_flags(lst, body)
             # silence in long rests and after the end
             peak = np.max(np.abs(mono)) + 1e-12
             rests, loud = 0, []
@@ -164,10 +207,13 @@ def main():
                     lv = 20 * math.log10(np.sqrt(np.mean(seg ** 2)) / peak + 1e-12)
                     if lv > -60:
                         loud.append((round(a, 1), round(lv, 1)))
-            ok = len(drops) == 0 and (len(cents) == 0 or np.percentile(np.abs(cents), 95) < 35) and not loud
+            ok = len(drops) == 0 and (len(cents) == 0 or np.percentile(np.abs(cents), 95) < 35) and not loud \
+                and not cut
             all_ok &= ok
             results["parts"][f"{g}/{track}"] = {
                 "notes": len(lst), "pitched": int(len(cents)), "dropped": drops[:10],
+                "body_cut": [list(c) for c in cut[:10]],
+                "body_db_re_peak_min_median": [min(body), round(float(np.median(body)), 1)] if body else None,
                 "cents_median": round(float(np.median(cents)), 1) if len(cents) else None,
                 "cents_abs_p95": round(float(np.percentile(np.abs(cents), 95)), 1) if len(cents) else None,
                 "cents_worst": round(float(cents[np.argmax(np.abs(cents))]), 1) if len(cents) else None,
@@ -175,7 +221,7 @@ def main():
                 "onset_lag_ms_median": float(np.median(lagl)) if lagl else None,
                 "onset_lag_ms_p10_p90": [float(np.percentile(lagl, 10)), float(np.percentile(lagl, 90))] if lagl else None,
                 "rests_checked": rests, "sound_in_rests_dB_re_peak": loud[:5], "pass": bool(ok)}
-            print(f"{g}/{track:12s} {len(lst):4d} notes  drops {len(drops)}  cents med "
+            print(f"{g}/{track:12s} {len(lst):4d} notes  drops {len(drops)}  cut {cut[:3]}  cents med "
                   f"{results['parts'][f'{g}/{track}']['cents_median']} p95 {results['parts'][f'{g}/{track}']['cents_abs_p95']}"
                   f"  onset med {results['parts'][f'{g}/{track}']['onset_lag_ms_median']} ms  rests {rests} loud {loud[:2]}")
     # final files
