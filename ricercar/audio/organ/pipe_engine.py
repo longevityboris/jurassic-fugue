@@ -14,7 +14,11 @@ GrandOrgue plays a pipe, offline and deterministically:
    the loops that wrap cleanly, preferring long ones) repeated with a 4 ms crossfade at every wrap.
    The sustain is built at the source rate and resampled once (soxr, very high quality), so the
    retuning never breaks a loop.
-3. **Release.** The release sample is chosen by how long the key was held, as the ODF prescribes
+3. **Stereo.** The samples are spaced-pair recordings; some pipes are nearly anti-phase between the
+   channels. The right channel of each pipe (sustain and releases alike) is delayed by the lag,
+   measured on its steady tone (<= 1.5 ms), that maximises the L/R correlation, so no pipe drops out
+   in mono. The shift is applied after the loops are built, so their seams are untouched.
+4. **Release.** The release sample is chosen by how long the key was held, as the ODF prescribes
    (``rel00150`` <= 150 ms, ``rel00500`` <= 500 ms, else the recorded release that follows the cue in
    the main file). Release samples begin with steady tone before their cue; the renderer crossfades
    from the sustain into that steady tone at the phase that matches best (search over one period, so
@@ -134,6 +138,20 @@ class SampleCache:
                 self._d.pop(r, None)
 
 
+def shift_right(x, lag):
+    """delay the right channel by `lag` samples (advance if negative), zero-filled."""
+    if not lag:
+        return x
+    y = x.copy()
+    if lag > 0:
+        y[lag:, 1] = x[:-lag, 1]
+        y[:lag, 1] = 0.0
+    else:
+        y[:lag, 1] = x[-lag:, 1]
+        y[lag:, 1] = 0.0
+    return y
+
+
 def resample(x, sr_in, ratio):
     """play x (at sr_in) faster by `ratio` and return it at SR."""
     return soxr.resample(x, sr_in * ratio, SR, quality='VHQ').astype(np.float32)
@@ -197,15 +215,15 @@ class ReleaseCache:
             for k in [k for k in self._d if k[0] in rels]:
                 del self._d[k]
 
-    def get(self, rel, ratio):
-        k = (rel, round(ratio, 7))
+    def get(self, rel, ratio, lag=0):
+        k = (rel, round(ratio, 7), lag)
         with self._lock:
             if k in self._d:
                 return self._d[k]
         s = self.samples.get(rel)
         cue = s.cue if s.cue is not None else int(len(s.audio) * 0.6)
         pre = min(cue, int(0.12 * s.sr))
-        seg = s.audio[cue - pre:]
+        seg = shift_right(s.audio[cue - pre:], lag)
         y = resample(seg, s.sr, ratio)
         c = int(round(pre * SR / (s.sr * ratio)))
         # trim the recorded tail where it has decayed below -90 dB of its steady part
@@ -238,7 +256,8 @@ def render_event(bank: PipeBank, pc: PipeChoice, hold_s: float, samples: SampleC
     need = p + W + int(0.02 * SR)
     n_src = int(math.ceil(need * s.sr * ratio / SR)) + 64
     loop = choose_loop(info, rng)
-    sus = resample(build_sustain(s, loop, n_src), s.sr, ratio)
+    lag = int(bank.files[pc.file].get('lr_lag', 0))          # the pipe's L/R alignment (main sample)
+    sus = resample(shift_right(build_sustain(s, loop, n_src), lag), s.sr, ratio)
     fade_in = min(48, len(sus))
     sus[:fade_in] *= np.linspace(0, 1, fade_in, dtype=np.float32)[:, None]
     if rel is None:                                                 # no release recorded: 60 ms fade
@@ -246,7 +265,7 @@ def render_event(bank: PipeBank, pc: PipeChoice, hold_s: float, samples: SampleC
         out = sus[:p + f].copy()
         out[p:] *= np.linspace(1, 0, len(out) - p, dtype=np.float32)[:, None]
         return out * pc.gain, 0
-    R, c = rels.get(rel[0], ratio)
+    R, c = rels.get(rel[0], ratio, lag)
     if p < D + W // 2 + 1:                                          # very short note: shrink the joint
         D = max(8, int(p * 0.6))
         X = max(4, D - int(0.001 * SR))

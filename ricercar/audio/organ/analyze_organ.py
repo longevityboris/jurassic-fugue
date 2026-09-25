@@ -16,6 +16,9 @@ For every sample file used by a sounding stop (main pipes, attack alternates, su
   that follow the loop end and the loop's first samples, relative to the loop's RMS (0 = seamless).
 * ``cue`` (release start), ``rms_db`` of the steady tone, ``onset_ms`` (first sample within 40 dB of
   the steady level) and ``speech_ms`` (time to within 6 dB of it).
+* ``lr_lag``: the delay (source samples, <= 1.5 ms) of the right channel that maximises the L/R
+  correlation of the steady tone, with the mono fold-down before and after it (the samples are
+  spaced-pair recordings; the renderer applies the lag so that no pipe is anti-phase in mono).
 
 The renderer (render_organ.py) retunes each pipe from its measured f8 to the target temperament, so
 the organ's own 1/4-comma meantone at about a semitone above A=440 (hoher Chorton) plays in equal
@@ -145,6 +148,19 @@ def analyse_file(args):
     mono = a.mean(axis=1)
     for (ls, le) in loops:
         lerr.append(round(loop_error(mono, ls, le), 5))
+    # inter-channel alignment: the spaced microphones put some pipes nearly anti-phase in the mono
+    # sum; the lag (<= 1.5 ms) that maximises the L/R correlation of the steady tone is applied to the
+    # right channel by the renderer (as the piano lane does per note)
+    L, R = seg[:, 0].astype(np.float64), seg[:, 1].astype(np.float64)
+    nn = len(L)
+    cc = np.fft.irfft(np.fft.rfft(L, 2 * nn) * np.conj(np.fft.rfft(R, 2 * nn)))
+    ml = int(0.0015 * sr)
+    cc = np.concatenate([cc[-ml:], cc[:ml + 1]])
+    lr_lag = int(np.arange(-ml, ml + 1)[int(np.argmax(cc))])
+    ps = np.mean((L ** 2 + R ** 2) / 2) + 1e-24
+    mono0 = 10 * math.log10(np.mean(((L + R) / 2) ** 2) / ps + 1e-24)
+    R2 = np.roll(R, lr_lag)
+    mono1 = 10 * math.log10(np.mean(((L + R2) / 2) ** 2) / ps + 1e-24)
     rel_decay = None
     if s.cue and n - s.cue > int(0.5 * sr):
         tail = mono2[s.cue:]
@@ -161,6 +177,7 @@ def analyse_file(args):
         f8=round(f8, 5), f8_cents_vs_key_et=round(cents(f8, f_of_midi(key)), 2), comb_peak=round(sharp, 2),
         rms_db=round(20 * math.log10(steady + 1e-12), 2), onset_ms=round(onset / sr * 1000, 1),
         speech_ms=round(speech / sr * 1000, 1), release_T20=rel_decay, flag=flag,
+        lr_lag=lr_lag, mono_folddown_db=round(mono0, 2), mono_folddown_aligned_db=round(mono1, 2),
         secs=round(time.time() - t0, 2))
 
 

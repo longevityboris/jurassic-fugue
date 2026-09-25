@@ -1,46 +1,46 @@
 {
  "registration_ladder_HW": {
   "flute8": {
-   "k_level_db": -13.6,
-   "centroid_hz": 220,
-   "energy_above_2k_db": -42.3
+   "k_level_db": -13.1,
+   "centroid_hz": 230,
+   "energy_above_2k_db": -42.6
   },
   "flute8+4": {
-   "k_level_db": -11.5,
-   "centroid_hz": 386,
-   "energy_above_2k_db": -32.6
+   "k_level_db": -11.1,
+   "centroid_hz": 390,
+   "energy_above_2k_db": -32.5
   },
   "principal8": {
-   "k_level_db": -9.7,
-   "centroid_hz": 378,
-   "energy_above_2k_db": -32.5
+   "k_level_db": -8.8,
+   "centroid_hz": 392,
+   "energy_above_2k_db": -31.0
   },
   "principal8+4": {
    "k_level_db": -8.4,
-   "centroid_hz": 457,
-   "energy_above_2k_db": -22.6
+   "centroid_hz": 571,
+   "energy_above_2k_db": -21.3
   },
   "principal8+4+2": {
-   "k_level_db": -6.9,
-   "centroid_hz": 528,
-   "energy_above_2k_db": -13.2
+   "k_level_db": -5.1,
+   "centroid_hz": 696,
+   "energy_above_2k_db": -12.8
   },
   "plenum": {
-   "k_level_db": -4.7,
-   "centroid_hz": 952,
-   "energy_above_2k_db": -8.6
+   "k_level_db": -3.1,
+   "centroid_hz": 1082,
+   "energy_above_2k_db": -7.3
   },
   "plenum_reed": {
-   "k_level_db": -3.8,
-   "centroid_hz": 960,
-   "energy_above_2k_db": -9.1
+   "k_level_db": -1.7,
+   "centroid_hz": 1044,
+   "energy_above_2k_db": -8.7
   }
  },
  "registration_ladder_PED": {
   "pedal8": {
-   "k_level_db": -22.1,
-   "centroid_hz": 118,
-   "energy_above_2k_db": -58.6
+   "k_level_db": -21.9,
+   "centroid_hz": 117,
+   "energy_above_2k_db": -58.4
   },
   "pedal16": {
    "k_level_db": -16.7,
@@ -48,38 +48,38 @@
    "energy_above_2k_db": -68.1
   },
   "pedal16+8": {
-   "k_level_db": -15.6,
+   "k_level_db": -15.5,
    "centroid_hz": 105,
-   "energy_above_2k_db": -64.2
+   "energy_above_2k_db": -63.9
   },
   "pedal16+8+4": {
-   "k_level_db": -13.9,
-   "centroid_hz": 142,
-   "energy_above_2k_db": -40.6
+   "k_level_db": -13.7,
+   "centroid_hz": 144,
+   "energy_above_2k_db": -44.1
   },
   "pedal_reed": {
-   "k_level_db": -13.7,
-   "centroid_hz": 227,
-   "energy_above_2k_db": -36.5
+   "k_level_db": -13.4,
+   "centroid_hz": 234,
+   "energy_above_2k_db": -37.2
   },
   "pedal_plenum_reed": {
-   "k_level_db": -12.1,
-   "centroid_hz": 307,
-   "energy_above_2k_db": -29.1
+   "k_level_db": -11.1,
+   "centroid_hz": 342,
+   "energy_above_2k_db": -30.1
   }
  },
  "ladder_levels_rise": true,
  "ladder_brightness_rises_flute_to_plenum": true,
  "swell": {
-  "open_db": -12.4,
-  "closed_db": -32.3,
-  "reopened_db": -12.0,
-  "open_centroid": 1208,
-  "closed_centroid": 769,
-  "open_above_2k_db": -5.5,
-  "closed_above_2k_db": -10.7,
-  "closed_minus_open_db": -19.9,
-  "not_enclosed_level_change_db": 0.4
+  "open_db": -9.1,
+  "closed_db": -30.1,
+  "reopened_db": -10.0,
+  "open_centroid": 1255,
+  "closed_centroid": 870,
+  "open_above_2k_db": -7.5,
+  "closed_above_2k_db": -12.0,
+  "closed_minus_open_db": -20.9,
+  "not_enclosed_level_change_db": -0.6
  },
  "text_events": {
   "HW_timeline": [

@@ -458,6 +458,24 @@ def edc_decay(x, t0, t_end):
     return float(-60 / np.polyfit(tt, db[i5:i25], 1)[0])
 
 
+def stereo_stats(x):
+    """L/R correlation and mono fold-down (mean of L and R, power re the stereo power): overall and
+    the worst 1 s window among windows within 30 dB of the loudest."""
+    L, R = x[:, 0].astype(np.float64), x[:, 1].astype(np.float64)
+    ps = float(np.mean((L ** 2 + R ** 2) / 2)) + 1e-24
+    out = {'lr_correlation': round(float(np.corrcoef(L, R)[0, 1]), 3),
+           'mono_folddown_db': round(10 * math.log10(float(np.mean(((L + R) / 2) ** 2)) / ps + 1e-24), 2)}
+    w = SR
+    n = len(L) // w
+    if n:
+        P = ((L[:n * w] ** 2 + R[:n * w] ** 2) / 2).reshape(n, w).mean(axis=1)
+        M = (((L[:n * w] + R[:n * w]) / 2) ** 2).reshape(n, w).mean(axis=1)
+        ok = P > P.max() * 1e-3
+        if ok.any():
+            out['mono_folddown_worst_1s_db'] = round(float(10 * np.log10(M[ok] / P[ok]).min()), 2)
+    return out
+
+
 def measure_file(path):
     if shutil.which('ffmpeg') is None:
         return None
@@ -725,7 +743,8 @@ def main(argv=None):
             'notes': len(voices[v]['notes']),
             'divisions': [(round(t, 3) if t > -1e8 else 0.0, d) for t, d in div_tl.get(v, [])],
             'rms_dbfs_when_sounding': round(20 * math.log10(rms + 1e-12), 2),
-            'peak_dbfs': round(20 * math.log10(float(np.abs(seg).max()) + 1e-12), 2)}
+            'peak_dbfs': round(20 * math.log10(float(np.abs(seg).max()) + 1e-12), 2),
+            'stereo': stereo_stats(seg)}
     report['registration'] = {d: [{'t': round(t, 3) if t > -1e8 else 0.0,
                                    'stops': [bank.stops[s]['name'] for s in stops]}
                                   for t, stops in reg_tl[d]] for d in DIVS}
@@ -746,6 +765,7 @@ def main(argv=None):
             'keyup_shift_ms_max_abs': round(float(np.abs(rs[:, 1]).max()), 2),
             'level_match_db_range': [round(float(rs[:, 2].min()), 2), round(float(rs[:, 2].max()), 2)]},
         'hall': hall, 'final_decay_T20_s': None if decay is None else round(decay, 2),
+        'stereo_mix': stereo_stats(mix), 'stereo_dry_sum': stereo_stats(dry[:n_used] * norm),
         'normalisation_gain_db': round(20 * math.log10(norm), 2), 'true_peak_dbtp': a.peak_db,
         'loudness': measure_file(wav), 'render_seconds': round(time.time() - t_start, 1),
         'pipe_render_seconds': round(t_render, 1)})
