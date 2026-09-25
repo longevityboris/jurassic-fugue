@@ -12,8 +12,8 @@ Registration can also travel inside the MIDI as text events (section 4).
 * Standard MIDI file, type 0 or 1, any `ticks_per_beat`. The tempo map is the `set_tempo` meta
   events (any track, usually track 0). Rubato can be written as a tempo map or as note timing.
 * Time zero is tick 0. The output begins with `--lead-in` seconds of silence (default 0.5 s)
-  and ends when the reverberation has decayed (about -66 dB re the peak, at most 6 s after the
-  last pipe stops).
+  and ends when the reverberation has decayed (80 dB below the loudest moment, at most 8 s after
+  the last pipe stops).
 * **Bar:beat positions** in the sidecar are converted with the file's own tick grid:
   quarter-note position `q = (bar - 1) * measure * 4 + (beat - 1)`, tick `= q * ticks_per_beat`.
   `beat` is a 1-based quarter-note beat and can be fractional (`"12:2.5"`); `measure` is the bar

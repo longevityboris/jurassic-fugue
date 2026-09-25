@@ -22,6 +22,8 @@ Options: ``--stems DIR`` (dry stem per voice, same length and gain as the mix), 
 ``--wet-db`` (the church's added reverberation, energy relative to the dry organ, measured on the
 render; default -4 dB), ``--ir PATH``, ``--lead-in`` (s, default 0.5), ``--peak-db`` (-1),
 ``--temperament equal|vallotti|werckmeister3`` (default equal), ``--a4`` (440), ``--jobs`` (8),
+``--anticipate`` (keys are played early by this fraction of the median speech time of the pipes
+they open, at most 40 ms, as an organist does for slow pipes; default 0.5, 0 = off),
 ``--seed``, ``--no-fold``, ``--no-m4a``, ``--json PATH`` (render report), ``--list-stops``,
 ``--list-registrations``.
 
@@ -68,7 +70,10 @@ DEFAULT_DIVISION = {'soprano': 'HW', 'alto': 'HW', 'tenor': 'POS', 'bass': 'PED'
 COMPASS = {'HW': (36, 85), 'POS': (36, 85), 'OW': (36, 85), 'PED': (36, 64)}
 SNAP_S = 0.030        # a note starting this little before a change starts with the new setting
 MIN_PIECE_S = 0.080   # a stop change reaches a held key only if the key stays down this long after it
+HANDOVER_S = 0.050    # a key taken over by another voice this close to its release is re-struck
 WET_DB_DEFAULT = -4.0
+ANTICIPATE_DEFAULT = 0.5    # fraction of the pipes' speech time (to -6 dB) by which keys are played early
+ANTICIPATE_MAX_S = 0.040
 
 CREDIT = ("Organ: Norrfjärden Church Baroque Replica (Grönlunds Orgelbyggeri 1997, after the 1684 organ "
           "of the German Church in Stockholm), sample set by Lars Palo, CC BY-SA 4.0 "
@@ -328,14 +333,22 @@ def key_intervals(voices, div_tl, allow_fold, warn):
             div = division_of(div_tl, v, n['on'])
             k = fold(n['key'], div, allow_fold, warn, folded)
             per[(div, k)].append((n['on'], n['off'], v))
-    merged, shared = [], 0
+    merged, shared, handovers = [], 0, 0
     for (div, k), lst in per.items():
         lst.sort()
         cur = None
         for on, off, v in lst:
-            if cur and on < cur[1] - 1e-6:          # key already down: same pipes
+            if cur and on < cur[1] - 1e-6:          # key already down
+                if v != cur[2] and cur[1] - on < HANDOVER_S and on - cur[0] > HANDOVER_S:
+                    # one voice lets go as the other takes the key (humanised timing overlaps by a
+                    # few ms): a re-strike, as an organist passing a key between hands plays it
+                    handovers += 1
+                    cur[1] = max(cur[0] + 0.03, on - 0.02)
+                    merged.append((div, k, *cur))
+                    cur = [on, off, v]
+                    continue
                 if v != cur[2]:
-                    shared += 1
+                    shared += 1                     # both hold it: one set of pipes
                 cur[1] = max(cur[1], off)
             else:
                 if cur:
@@ -345,11 +358,11 @@ def key_intervals(voices, div_tl, allow_fold, warn):
             merged.append((div, k, *cur))
     for div, c in folded.items():
         warn(f'{c} notes folded by octaves into the {div} compass {COMPASS[div]}')
-    return merged, shared, dict(folded)
+    return merged, shared, handovers, dict(folded)
 
 
 def pipe_events(merged, reg_tl):
-    """split held keys at registration changes -> [(owner, stop, key, t0, t1)]."""
+    """split held keys at registration changes -> [(owner, stop, key, t0, t1, starts_at_key_down)]."""
     out = []
     for div, k, on, off, v in merged:
         tl = reg_tl[div]
@@ -361,12 +374,13 @@ def pipe_events(merged, reg_tl):
             stops = set(at(tl, a + SNAP_S)) if i == 0 else set(at(tl, a))
             for s in list(active):
                 if s not in stops:
-                    out.append((v, s, k, active.pop(s), a))
+                    t0 = active.pop(s)
+                    out.append((v, s, k, t0, a, t0 == on))
             for s in stops:
                 if s not in active:
                     active[s] = a
         for s, a in active.items():
-            out.append((v, s, k, a, off))
+            out.append((v, s, k, a, off, a == on))
     return out
 
 
@@ -499,6 +513,7 @@ def main(argv=None):
     ap.add_argument('--a4', type=float, default=440.0)
     ap.add_argument('--jobs', type=int, default=8)
     ap.add_argument('--seed', type=int, default=1)
+    ap.add_argument('--anticipate', type=float, default=ANTICIPATE_DEFAULT)
     ap.add_argument('--no-fold', action='store_true')
     ap.add_argument('--no-m4a', action='store_true')
     ap.add_argument('--json')
@@ -536,23 +551,49 @@ def main(argv=None):
     if not voices:
         raise SystemExit('no notes in the MIDI file')
     div_tl, reg_tl, side, enclosed = build_timelines(a.registration, voices, tmap, texts, bank, warn)
-    merged, shared, folded = key_intervals(voices, div_tl, not a.no_fold, warn)
+    merged, shared, handovers, folded = key_intervals(voices, div_tl, not a.no_fold, warn)
     events = pipe_events(merged, reg_tl)
+    # reconciliation: every key press must open at least one pipe (unless its division is "off")
+    with_pipes = {(e[0], e[2], round(e[3], 6)) for e in events if e[5]}
+    silent = [(div, k, on, v) for div, k, on, off, v in merged if (v, k, round(on, 6)) not in with_pipes]
+    for div, k, on, v in silent[:10]:
+        if at(reg_tl[div], on + SNAP_S):
+            warn(f'{v}: key {k} at {on:.3f} s opened no pipe')
     # pipe choice, grouped by sample for cache locality
     groups = defaultdict(list)
     borrowed = defaultdict(int)
     missing = defaultdict(int)
-    for v, sk, k, t0, t1 in events:
+    chosen = []
+    for v, sk, k, t0, t1, kd in events:
         pc = bank.choose(sk, k)
         if pc is None:
             missing[f'{sk} key {k}'] += 1
             continue
         if abs(pc.shift_cents) > 50:
             borrowed[f'{sk} key {k}'] += 1
+        chosen.append([v, sk, k, t0, t1, pc, kd])
+    # anticipation: an organist plays a key a little early for slow-speaking pipes; the whole key
+    # (all its ranks) moves by a fraction of the median speech time of the pipes it opens
+    antic = []
+    if a.anticipate > 0:
+        presses = defaultdict(list)
+        for e in chosen:
+            if e[6]:
+                presses[(e[0], e[2], round(e[3], 6))].append(e)
+        for es in presses.values():
+            sp = float(np.median([bank.files[e[5].file]['speech_ms'] for e in es])) / 1000.0
+            d = min(a.anticipate * sp, ANTICIPATE_MAX_S)
+            antic.append(d * 1000)
+            for e in es:
+                e[3] -= d
+    for v, sk, k, t0, t1, pc, kd in chosen:
         groups[pc.file].append((v, sk, k, t0, t1, pc))
     for m, c in missing.items():
         warn(f'no pipe for {m} ({c} events)')
     last = max(e[4] for e in events) if events else 0.0
+    first = min((e[3] for g in groups.values() for e in g), default=0.0)
+    if first + a.lead_in < 0:
+        raise SystemExit(f'--lead-in {a.lead_in} is shorter than the anticipation of the first key')
     n_total = int((a.lead_in + last + 4.0) * SR)
     vnames = sorted(voices)
     stems = {v: np.zeros((n_total, 2), np.float32) for v in vnames}
@@ -622,12 +663,13 @@ def main(argv=None):
         hall = {'ir': str(a.ir), 'wet_db': a.wet_db, 'gain': g,
                 'hall_re_dry_db': round(10 * math.log10(g * g * float(np.sum(wet ** 2)) / e_dry), 2),
                 'c80_added_db': round(10 * math.log10(e_early / (g * g * float(np.sum(late ** 2)))), 2)}
-    # trim tail: 60 dB below the peak level of the last second of music, at most 6 s after it
+    # trim the tail where it has decayed 80 dB below the loudest moment (at most 8 s after the last
+    # pipe stops), then a 0.2 s fade: below the 24-bit dither of a quiet final chord's reverberation
     env = np.abs(mix).max(axis=1)
-    thr = env.max() * 10 ** (-66 / 20)
+    thr = env.max() * 10 ** (-80 / 20)
     idx = np.nonzero(env > thr)[0]
     end = min(len(mix), int(idx[-1]) + int(0.2 * SR)) if len(idx) else len(mix)
-    end = min(end, n_used + int(6.0 * SR))
+    end = min(end, n_used + int(8.0 * SR))
     mix = mix[:end]
     fade = min(int(0.2 * SR), end // 4)
     mix[-fade:] *= np.linspace(1, 0, fade)[:, None]
@@ -677,7 +719,13 @@ def main(argv=None):
     report.update({
         'output': res, 'duration_s': round(len(mix) / SR, 3), 'lead_in_s': a.lead_in,
         'temperament': a.temperament, 'a4': a.a4, 'pipe_events': sum(len(g) for g in groups.values()),
-        'pipes_used': len(groups), 'shared_keys': shared, 'folded_notes': folded,
+        'notes_in': sum(len(d['notes']) for d in voices.values()), 'key_presses': len(merged),
+        'key_presses_without_pipes': len(silent),
+        'pipes_used': len(groups), 'shared_keys': shared, 'handover_restrikes': handovers,
+        'folded_notes': folded,
+        'anticipation_ms': None if not antic else {
+            'fraction_of_speech': a.anticipate, 'median': round(float(np.median(antic)), 1),
+            'p95': round(float(np.percentile(antic, 95)), 1), 'max': round(float(np.max(antic)), 1)},
         'borrowed_pipe_events': dict(borrowed), 'missing': dict(missing),
         'release_join': None if not len(rs) else {
             'corr_median': round(float(np.median(rs[:, 0])), 4), 'corr_p5': round(float(np.percentile(rs[:, 0], 5)), 4),

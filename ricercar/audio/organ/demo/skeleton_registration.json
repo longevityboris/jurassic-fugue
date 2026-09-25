@@ -16,7 +16,7 @@
   {"at": "20:1", "HW": "principal8+4",    "POS": "principal8+4"},
   {"at": "24:1", "HW": "principal8+4+2",  "POS": "principal8+4+2",  "PED": "pedal16+8+4"},
   {"at": "26:3", "HW": "plenum",          "POS": "plenum",          "PED": "pedal_plenum_reed"},
-  {"at": "30:1", "POS": "sesquialtera",   "OW": "flute8",           "PED": "pedal16+8"},
+  {"at": "30:1", "POS": "sesquialtera",   "OW": "flute8",           "PED": "pedal8"},
   {"at": "35:1", "HW": "flute8",          "POS": "flute8",          "PED": "pedal8"},
   {"at": "39:1", "HW": "flute8+4",        "POS": "flute8+4",        "PED": "pedal16+8"},
   {"at": "41:1", "HW": "principal8",      "POS": "principal8"},
@@ -29,7 +29,7 @@
   {"at": "54:1", "HW": "principal8+4",    "POS": "principal8",      "PED": "pedal16+8"},
   {"at": "55:1", "HW": "principal8+4",    "POS": "principal8"},
   {"at": "57:1", "HW": "principal8+4+2",  "POS": "principal8+4",    "PED": "pedal16+8+4"},
-  {"at": "59:1", "HW": "plenum",          "POS": "plenum",          "PED": "pedal_plenum_reed"},
+  {"at": "59:1", "HW": "plenum_reed",     "POS": "plenum",          "PED": "pedal_plenum_reed"},
   {"at": "61:3", "HW": "principal8+4+2",  "POS": "principal8+4",    "PED": "pedal16+8+4"},
   {"at": "63:1", "HW": "principal8",      "POS": "principal8",      "PED": "pedal16+8"}
  ]
