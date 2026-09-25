@@ -6,6 +6,7 @@
 #     -> articulate.py      baroque touch (key-ups only), integrity check again on the result
 #     -> render_organ.py    ricercar_bach_organ.wav/.m4a (+ render report), with the church
 #     -> qa_organ.py        measured on the audio: pitch, dropped and stuck notes, clicks, terraces
+#     -> presence.py        every MIDI note on its stem (partials over their surroundings), ffmpeg loudness
 #     -> preview/final_bach_organ.m4a
 #
 # Stems go to a scratch folder (default /tmp) and are deleted after the QA. Nothing is played.
@@ -30,6 +31,8 @@ python3 "$R/audio/organ/render_organ.py" "$B/organ.mid" --registration "$B/organ
   -o "$OUT" --stems "$SCRATCH/stems" --json "$HERE/ricercar_bach_organ.render.json"
 python3 "$R/audio/organ/qa/qa_organ.py" "$B/organ.mid" "$HERE/ricercar_bach_organ.render.json" \
   "$SCRATCH/stems" "$OUT.wav" -o "$HERE/ricercar_bach_organ.qa.json"
+python3 "$HERE/presence.py" "$B/organ.mid" "$SCRATCH/stems" "$OUT.wav" "$OUT.m4a" \
+  -o "$HERE/ricercar_bach_organ.presence.json"
 
 cp "$OUT.m4a" "$R/preview/final_bach_organ.m4a"
 rm -rf "$SCRATCH/stems" "$SCRATCH/organ_perform.mid"

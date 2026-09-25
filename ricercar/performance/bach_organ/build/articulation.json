@@ -1,0 +1,59 @@
+{
+ "input": "/tmp/bo/r4/organ_perform.mid",
+ "rules": {
+  "legato_gap_ms": 8.0,
+  "repeat": "25% of the note, 70-150 ms",
+  "third": "10%, 30-60 ms",
+  "leap": "14%, 40-90 ms"
+ },
+ "voices": {
+  "soprano": {
+   "notes": 191,
+   "step": 96,
+   "repeat": 34,
+   "third": 34,
+   "leap": 20,
+   "rest": 6,
+   "last": 1,
+   "release_moved_ms_median": -4.5,
+   "release_moved_ms_min": -101.2,
+   "release_moved_ms_max": 32.1
+  },
+  "alto": {
+   "notes": 217,
+   "step": 103,
+   "repeat": 46,
+   "third": 34,
+   "leap": 30,
+   "rest": 3,
+   "last": 1,
+   "release_moved_ms_median": -4.5,
+   "release_moved_ms_min": -101.6,
+   "release_moved_ms_max": 32.4
+  },
+  "tenor": {
+   "notes": 192,
+   "step": 89,
+   "repeat": 49,
+   "third": 35,
+   "leap": 15,
+   "rest": 3,
+   "last": 1,
+   "release_moved_ms_median": -6.6,
+   "release_moved_ms_min": -101.2,
+   "release_moved_ms_max": 32.4
+  },
+  "bass": {
+   "notes": 141,
+   "step": 66,
+   "repeat": 27,
+   "third": 25,
+   "leap": 22,
+   "rest": 0,
+   "last": 1,
+   "release_moved_ms_median": -8.9,
+   "release_moved_ms_min": -101.8,
+   "release_moved_ms_max": 32.1
+  }
+ }
+}

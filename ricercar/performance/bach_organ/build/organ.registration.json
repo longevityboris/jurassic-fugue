@@ -1,0 +1,238 @@
+{
+ "custom": {
+  "ow_chorus": {
+   "stops": [
+    "Quintadena 8'",
+    "Zap: fl\u00f6ite 4'",
+    "Octava 2'"
+   ]
+  },
+  "ow_plenum": {
+   "stops": [
+    "Quintadena 8'",
+    "Zap: fl\u00f6ite 4'",
+    "Nasat 3'",
+    "Octava 2'",
+    "Zimball 2 fach"
+   ]
+  },
+  "ow_plenum_reed": {
+   "stops": [
+    "Quintadena 8'",
+    "Zap: fl\u00f6ite 4'",
+    "Nasat 3'",
+    "Octava 2'",
+    "Zimball 2 fach",
+    "Schallmeijen 8'"
+   ]
+  }
+ },
+ "manual_changes": [
+  {
+   "at": "30:1",
+   "voice": "soprano",
+   "division": "POS"
+  },
+  {
+   "at": "30:1",
+   "voice": "tenor",
+   "division": "HW"
+  },
+  {
+   "at": "35:1",
+   "voice": "soprano",
+   "division": "HW"
+  },
+  {
+   "at": "35:1",
+   "voice": "tenor",
+   "division": "POS"
+  }
+ ],
+ "changes": [
+  {
+   "at": "1:1",
+   "HW": "principal8",
+   "OW": "flute8+4",
+   "POS": "principal8",
+   "PED": "pedal16+8",
+   "why": "I exposition, p to mp: the tune alone on the Principal 8'; the answer on the Quintadena with its 4' flute"
+  },
+  {
+   "at": "13:1",
+   "OW": "ow_chorus",
+   "POS": "principal8+4",
+   "why": "entry 4, mf: the tenor's answer and the alto's CS2 step up; the soprano's descant stays on the Principal 8'"
+  },
+  {
+   "at": "18:1",
+   "OW": "flute8+4",
+   "why": "episode, mp: the first terrace down (an echo); the alto attacks at 18:1"
+  },
+  {
+   "at": "18:1.5",
+   "POS": "principal8",
+   "why": "the tenor's G3 is held to 18:1.5, its next attack"
+  },
+  {
+   "at": "20:1",
+   "HW": "principal8+4",
+   "OW": "ow_chorus",
+   "POS": "principal8+4",
+   "PED": "pedal16+8+4",
+   "why": "stretto, the false dawn, building to f"
+  },
+  {
+   "at": "24:1",
+   "HW": "principal8+4+2",
+   "POS": "principal8+4+2",
+   "why": "f: + 2'"
+  },
+  {
+   "at": "26:3",
+   "HW": "plenum",
+   "OW": "ow_plenum",
+   "POS": "plenum",
+   "PED": "pedal_plenum_reed",
+   "why": "liquidation and Climax I, ff: plenum, pedal reeds under the heads on E, G, B-flat, D-flat; all four attack at 26:3"
+  },
+  {
+   "at": "30:1",
+   "HW": "flute8",
+   "OW": "flute8",
+   "POS": "reed8",
+   "PED": "pedal16+8",
+   "why": "II arioso dolente, subito pp: the soprano's S2 as a Krummhorn solo on the Rueckpositief over the alto's Quintadena and the tenor's Gedackt"
+  },
+  {
+   "at": "35:1",
+   "HW": "flute8",
+   "OW": "flute8",
+   "POS": "flute8",
+   "PED": "pedal16+8",
+   "why": "III fuga inversa, pp: the inversion enters alone in the pedal"
+  },
+  {
+   "at": "39:1",
+   "HW": "flute8+4",
+   "OW": "flute8+4",
+   "POS": "flute8+4",
+   "why": "A minor established: + 4'"
+  },
+  {
+   "at": "41:1",
+   "HW": "principal8+4",
+   "why": "third entry, the inversion in the soprano: only its division steps up (principal 8'+4'), the others stay on flutes 8'+4'"
+  },
+  {
+   "at": "43:1",
+   "POS": "principal8",
+   "why": "mf into the A-minor cadence 45:3: the soprano's inversion on 8'+4'+2', the tenor on principals",
+   "HW": "principal8+4+2"
+  },
+  {
+   "at": "46:1",
+   "HW": "flute8",
+   "OW": "flute8+4",
+   "POS": "flute8+4",
+   "PED": "pedal16+8",
+   "why": "IV the dominant pedal, subito p misterioso: the augmented inversion in the pedal under the tenor's lament"
+  },
+  {
+   "at": "48:1",
+   "OW": "ow_chorus",
+   "POS": "principal8",
+   "why": "combination, mp: S2 (alto) and S1 (tenor) together, their divisions up a step; the pedal's 4' brings out the augmented inversion",
+   "PED": "pedal16+8+4"
+  },
+  {
+   "at": "50:1",
+   "HW": "principal8+4+2",
+   "OW": "ow_chorus",
+   "POS": "principal8+4",
+   "why": "towards f; the soprano enters at 50:3 with the heads in diminution (three speeds: diminution, S1 in the tenor, the augmentation in the pedal)"
+  },
+  {
+   "at": "52:1",
+   "HW": "plenum",
+   "OW": "ow_plenum",
+   "POS": "plenum",
+   "PED": "pedal_plenum_reed",
+   "why": "Climax II: C major, the light; every voice attacks at 52:1"
+  },
+  {
+   "at": "53:1",
+   "HW": "plenum16_reed",
+   "OW": "ow_plenum_reed",
+   "POS": "plenum_reed",
+   "why": "fff peak: the complete C7, manual reeds (Trommeten, Schalmei, Krummhorn) and the Quintadena 16'"
+  },
+  {
+   "at": "54:1",
+   "HW": "principal8+4",
+   "OW": "flute8+4",
+   "POS": "principal8",
+   "PED": "pedal16+8",
+   "why": "the hinge, f to p: first step down"
+  },
+  {
+   "at": "55:1",
+   "HW": "principal8",
+   "OW": "flute8",
+   "POS": "flute8",
+   "why": "V apotheosis, p: the whole tune in B-flat major as a cantus firmus on the Principal 8' over flutes 8' (CS2 in the tenor, the free alto) and the lament in the pedal"
+  },
+  {
+   "at": "57:1",
+   "HW": "principal8+4",
+   "why": "mf: only the tune steps up (principal 8'+4')"
+  },
+  {
+   "at": "59:1",
+   "HW": "plenum_reed",
+   "OW": "ow_plenum",
+   "POS": "plenum",
+   "PED": "pedal_plenum_reed",
+   "why": "apotheosis peak, f at 60:4: the tune's second half on the plenum with Trommeten over the answer in the pedal reeds"
+  },
+  {
+   "at": "61:3",
+   "HW": "principal8+4+2",
+   "OW": "ow_chorus",
+   "POS": "principal8+4",
+   "PED": "pedal16+8+4",
+   "why": "towards mp: every voice attacks at 61:3"
+  },
+  {
+   "at": "63:1",
+   "HW": "principal8",
+   "OW": "flute8+4",
+   "POS": "principal8",
+   "PED": "pedal16+8",
+   "why": "p: c'' rises to d'' over V7-I and the tolling tonic pedal"
+  },
+  {
+   "at": "65:1",
+   "POS": "flute8",
+   "why": "coda, pp: the inner voices on flutes 8' under the soprano's d'' on the Principal 8'"
+  },
+  {
+   "at": "65:3",
+   "OW": "flute8",
+   "why": "the alto's F4 is held to 65:3"
+  }
+ ],
+ "gain_db": {
+  "soprano": 1.5,
+  "alto": 3.0,
+  "tenor": 0.0,
+  "bass": 0.0
+ },
+ "measure": "1",
+ "manuals": {
+  "soprano": "HW",
+  "alto": "OW",
+  "tenor": "POS",
+  "bass": "PED"
+ }
+}
