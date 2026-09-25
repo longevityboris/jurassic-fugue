@@ -209,7 +209,7 @@ at 177.7 s (77%); V fermata 53:4 at 180.2 s; the tune in major 55:1 at 186.9 s (
 | 41-45 | third entry, cadence | soprano INV in A minor over the lament rising in the bass (CS1 inv.) and CS2 inv. (alto): i6/4-V-i (41), V6-vii dim-i (44:4), iv-i with a'' on top (45:3); E major (45:4) | a | < mf |
 | 46-47 | IV Pedal | INV augmented enters on F2; tenor lament lead-in alone above it (two voices, misterioso) | b-flat: V | subito p |
 | 48-51 | Combination | S2 (alto) and S1 (tenor) enter together over the augmentation: both halves of the tune for 16 beats | b-flat: V | < mp < f |
-| 50-53 | Climax II | S1 heads in diminution (the first sixteenths: soprano F, G-flat, A, C; alto E) over S1 (tenor) and the augmentation (bass): three speeds; C major (52:1, "the light") to complete C7 with B-flat 6 on top (53:1, fff), E dim7/D-flat, V fermata with the root doubled | b-flat | < fff |
+| 50-53 | Climax II | S1 heads in diminution (the first sixteenths: soprano F, G-flat, A, C; alto E) over S1 (tenor) and the augmentation (bass): three speeds; C major (52:1, "the light") C6 at 52:3 (the top of the range), complete C7 with B-flat 5 on top (53:1, fff), E dim7/D-flat, V fermata with the root doubled | b-flat | < fff |
 | 54 | Hinge | the dominant continues: V4/2 (E-flat bass), vii dim 4/2 (G-flat bass); soprano A F E-flat C A, the leading tone resolving to the tune's first note | to B-flat | f > p |
 | 55-58 | V Apotheosis | the whole tune untouched in B-flat major (S) over CS1 major (the lament, B) and CS2 major (T): the exposition's triple counterpoint in major; A-flat and G-flat of the lament are the one minor shadow | B-flat | p < mf |
 | 59-62 | | the tune's second half over the answer (B); the answer's mirror in contrary motion (T 61-62); peak f at 60:4; C7/B-flat, V7 complete | B-flat | < f > mp |
@@ -270,12 +270,12 @@ at 177.7 s (77%); V fermata 53:4 at 180.2 s; the tune in major 55:1 at 186.9 s (
 
 * Neapolitan: C-flat major at 12:3 (N6 under the subject's held E-flat), G-flat major over D-flat at 16:3 (N6/4
   of f), and C-flat major as a region at 25 (IV of G-flat = the Neapolitan of b-flat).
-* Diminished sevenths: vii dim 4/3 of f at 14:4; E dim7 (26:3, complete 28:1-4) sliding into A dim7 over
+* Diminished and half-diminished sevenths: ii half-dim 7 of f at 14:4 (then vii dim 6 at 14:4.5); E dim7 (26:3, complete 28:1-4) sliding into A dim7 over
   E-flat (28:4.5-29); A dim7 over E-flat arpeggiated across 51 (51:1 C-E-flat-G-flat, 51:3 A: vii dim 4/2 in the
   pedal); E dim7 over D-flat at 53:3;
   A dim7 over G-flat at 54:4 (the hinge).
 * Augmented sixth: V7 of B-flat heard as the German sixth of A minor (33-34).
-* Secondary dominants: rootless C7 over B-flat (9:1); C7 half cadence of f (17:3); B7/D = V7/iv (31:4);
+* Secondary dominants: rootless C7 over B-flat (9:1); C7 half cadence of f (17:3); rootless B-flat7 over D = V7/iv, completed by the tune's B-flat at 31:4.5;
   B major = V of e (40); C major then C7 = V/V (52-53); C7/B-flat = V4/2 of V (62:1).
 * Deceptive: E major (V of a) to F (45:4-46:1).
 * Pedal points: dominant pedal F2 46:1-50:3; tonic pedal 63-66 re-struck every bar.
@@ -356,9 +356,9 @@ First sonority (1:1): Bb4 alone. Last sonority (12:4.5): Bb2 F3 Db5 = B-flat min
   leads; the alto answers it at the half bar (`bes'4. des''8`, 18:3); the tenor moves in quarters (F G F |
   E-flat G-flat A-flat C) into the leader's D-flat at 20:1. Keep the bass.
 * Harmony: 13:1 F over C (the subject's arpeggiated tail, a 6/4), 13:3 F major (V of b-flat), 13:4 the
-  tenor's F over C resolving to E (4-3); 14 f: i6, 14:4 vii dim 4/3; 15:1 i, 15:2.5 V6, 15:3 v6 (C minor over
+  tenor's F over C resolving to E (4-3); 14 f: i6, 14:4 ii half-dim 7 (G B-flat D-flat F), 14:4.5 vii dim 6 (E over G); 15:1 i, 15:2.5 V6, 15:3 v6 (C minor over
   E-flat), 15:4.5 v6/5; 16:1 iv6, 16:3 N6/4 (G-flat over D-flat), 16:4 cadential 6/4; 17:1 V6, 17:3 V7 (C7:
-  the alto's B-flat), 17:4 V7 with passing D; 18:1 f: i; 18:3 b-flat: i (B-flat minor 7 at 18:4.5); 19:1 e-flat
+  the alto's B-flat), 17:4 V7 with passing D; 18:1 f: i; 18:3 b-flat: i (B-flat minor, the alto's D-flat at 18:4.5); 19:1 e-flat
   minor (= D-flat: ii); 19:3 A-flat7 with the soprano's F as a 13th resolving to E-flat (19:4.5) = V7 of D-flat.
 * Dynamics: < mf to the half cadence (17:3), mp at 18, < into the stretto.
 * Flags: DIR 13:3 (the soprano leaps F5-C5 onto the root while the bass moves A-F: a hidden fifth softened by
@@ -392,7 +392,7 @@ First sonority (13:1): C3 F3 A3 F5 = F major. Last sonority (19:4.5): Ab2 C4 Gb4
   it suspensions and CS2-like eighths (the neighbour cell) against the leader's held notes; tenor/bass 25-26:2
   may move more (keep 26:1 D-flat/F and 26:2 F minor). Do not add notes between 26:3 and 29 except the
   written ones: the liquidation must be heard as heads accumulating one chord, then one slide.
-* Harmony: 20:1 D-flat: I, 20:3 IV6/4 (neighbour), 20:4.5 V (A-flat), 21:1 I6, 21:4 ii7, 21:4.5 vii dim 6;
+* Harmony: 20:1 D-flat: I, 20:3 a suspended fourth (G-flat over D-flat, a neighbour), 20:4.5 V (A-flat), 21:1 I6, 21:4 ii7, 21:4.5 vii dim 6;
   22:1 G-flat over D-flat (the follower enters on I6/4 of G-flat), 22:2.5 C half-dim 7 (the lament passing),
   22:3 C-flat major (IV of G-flat); 23:1 G-flat: I6, 23:4 A-flat7 with passing F, 23:4.5 D-flat over A-flat;
   24:1 C dim, 24:2.5 A-flat7 over E-flat, 24:3 the three thematic lines land on A-flat: a bare fifth
@@ -428,7 +428,7 @@ First sonority (20:1): Db2 Db4 Ab4 F5 = D-flat major. Last sonority (29:1): Eb2 
   diminished-fourth fall to G-flat, F); 33:1-35:1 FREE.
 * FREE work: voicing inside the pulse only (rule 5 exemption above); one more suspension per bar is welcome.
 * Harmony: 30:1 V (F major, third present from the downbeat), 30:4 i6/4; 31:1 ii dim 6 (C dim over E-flat),
-  31:4 V7/iv (B-flat7 over D: the tenor's A-flat resolves down); 32:1 iv6 with the alto's F as a 7-6 over
+  31:4 D F A-flat (rootless V7/iv; the tune's B-flat completes it at 31:4.5, and the tenor's A-flat resolves down); 32:1 iv6 with the alto's F as a 7-6 over
   G-flat (the arioso's peak), 32:2 iv6; 32:3 cadential 6/4 with E-flat (D-flat in the soprano = b6), 32:4.5
   6-5; 33:1 V7 sus4, 33:3 V7 (4-3); 34:1 E with C held (the German sixth's C over E: an augmented triad, b6),
   34:2 A minor 6/4 (the tenor's A: the new key glimpsed), 34:3 E major (V of a).
@@ -465,7 +465,7 @@ First sonority (30:1): F2 F3 A3 C5 = F major. Last sonority (34:4.5): E2 G#3 E4 
   without its root (V), 38:3 G-sharp dim (vii dim), 38:4.5 A minor over E; 39:1 ii dim 6 (B dim over D), 39:2.5
   iv6, **39:3 i in root position, complete (A2 A3 C4 E5)**; 39:4 B minor 7, 40:1 B major (V of e), 40:4 e: i;
   **41:1 a: cadential 6/4, 41:3 V (E, no fifth), 41:4 i (bass E-A)**; 42:1 i6; 42:4.5 G7 over D (passing);
-  43:1 i6/4 passing, 43:2.5 iv6, 43:3 IV6 (D major over F-sharp, melodic minor); **44:1 V6 (E over G-sharp),
+  43:1 C over E (passing), 43:2.5 iv6, 43:3 IV6 (D major over F-sharp, melodic minor); **44:1 rootless V6 (G-sharp, B),
   44:3 vii dim, 44:4 i (bass G-sharp-A)**; **45:1 iv6, 45:2.5 iv, 45:3 i with a'' on top (iv-i)**; 45:4 E major
   (V of a, no seventh), resolving deceptively to F at 46:1 (VI of a = V of b-flat).
 * Dynamics: pp (35) < mf (45:3), accelerando 64 to 76.
@@ -495,10 +495,10 @@ First sonority (35:1): E3 alone. Last sonority (45:4): E2 B3 G#4 = E major (V of
 * FREE work: the soprano may enter before 50:3 (e.g. a sustained line from 48 above S2), but S2 must stay the
   top thematic voice in 48-49 (do not sit a second above it) and 46-47 stay two voices (misterioso).
 * Harmony: 46:1 F with B-flat (Vsus4, two voices), 46:3 V, 47:1 v (A-flat), 47:3 V with G, 47:4 the pedal's
-  G-flat under C (A dim7 implied); 48:1 Vsus4 (S1 and S2 enter), 48:3 i6/4 over V, 49:4 the G-flat neighbour
+  G-flat under C (A dim7 implied); 48:1 Vsus4 (S1 and S2 enter), 48:3 still Vsus4, 48:4 i6/4 over V (S2's D-flat), 49:4 the G-flat neighbour
   again; 50:1 V7sus4, 50:3 V with the b6 (D-flat to C) as the first head sounds; 51:1 C dim over E-flat, 51:3
   A dim over E-flat (with 51:1's G-flat: vii dim 4/2 arpeggiated); 52:1 C major (V/V, "the light": the alto's E), 52:3 C7 (the tenor's
-  B-flat), **53:1 C7 complete, B-flat 6 on top (fff)**, 53:3 E dim7 over D-flat (vii dim 7 of V), **53:4 V
+  B-flat), **53:1 C7 complete, B-flat 5 on top (fff; the soprano's C6 at 52:3 is the peak note)**, 53:3 E dim7 over D-flat (vii dim 7 of V), **53:4 V
   (F2 C4 F5 A5, root doubled), fermata**; 54:1 V4/2 (E-flat bass), 54:4 vii dim 4/2 (G-flat bass); 55:1 I.
 * Density: 13, 12, 12, 13 attacks in bars 50-53 (revision 1: 9, 9, 7, 9); the sixteenths are the piece's first.
 * Dynamics: subito p misterioso (46); < mp (48-50); < f (50-52); < fff (52-53:4); fermata (+2 beats); f at
@@ -541,7 +541,7 @@ First sonority (46:1): F2 Bb3 (Vsus4, two voices). Last sonority (54:4): Gb2 Eb3
   over B-flat), 57:2 V6 with the tune's B-flat as a retardation, 57:3 v6 (F minor over A-flat: the minor
   shadow), 57:4.5 v6/5; 58:1 iv6 (E-flat minor over G-flat), 58:3 ii dim (C dim over G-flat), 58:4 I6/4;
   59:1 V7 complete (the answer enters), 59:4 I6/4, 59:4.5 V6/5 of V; 60:1-60:4 V (the tune's peak f'' over F A C
-  F at 60:4), 60:4.5 C7 over E; 61:1 V7 (the tune's e-flat''), 61:2.5 vii half-dim 7 of V over G; 61:4.5-62:1
+  F at 60:4), 60:4.5 E dim (vii dim of V); 61:1 V7 (the tune's e-flat''), 61:2.5 vii half-dim 7 of V over G; 61:4.5-62:1
   C7 over B-flat (V4/2 of V); 62:4 V6/5 (A C E-flat), 62:4.5 V7 complete; **63:1 I (c''-d'')**; 63:4.5 I with
   the inversion head's G; 64 I; 65:1 I, 65:3 V7 over the tonic pedal (65:4.5 the tenor's A), 66:1 I, 66:3 I
   complete (fermata, d'' on top).
@@ -686,7 +686,7 @@ G-flat/A); the pivot's diminished fourth G-sharp/C (34:1); passing or neighbour 
    MIDI rendering is unaffected; a printed piano score needs cross-staff distribution and the sostenuto pedal
    (46-50) as given in the section idiom notes.
 5. **Pedal and climax harshness.** 48-50 hold S1's B-flat as a 4th over the F pedal (Vsus4); 50:3 has the b6
-   (D-flat) over V; 53:1 is fff at the top of the range. Voice the top lighter than the bass on the piano.
+   (D-flat) over V; 52:3-53:1 are fff at the top of the range (C6, then B-flat 5). Voice the top lighter than the bass on the piano.
 6. **The one skeleton unison (5:3)** is kept on purpose (section 1). splice_check lists it as known and fails
    any new one.
 7. **Three-voice third entry (42-44).** Thin by design; a composer may add a fourth voice only where the alto's
@@ -726,7 +726,7 @@ proved (proofs.txt) and enforced (splice_check).
 | # | finding | response |
 |---|---|---|
 | C1-m1 | 33-34 identical repeated chords | **Changed.** 33: V7 sus4 resolving 4-3 at 33:3 (the tenor's B-flat from the cadential 6/4); 34:2 the tenor's A (an A-minor 6/4 over the E). |
-| C1-m2 | Arioso without a dolente peak; 31:4 bare D-F | **Changed.** 31:4 V7/iv complete (the tenor's A-flat resolving down); the alto's F held over the G-flat bass as a 7-6 at 32:1 is the peak (< mp). |
+| C1-m2 | Arioso without a dolente peak; 31:4 bare D-F | **Changed.** 31:4 is now D-F-A-flat, the rootless V7/iv that the tune's B-flat completes at 31:4.5 (the bare D-F the critic heard is gone; the tenor's A-flat resolves down); the alto's F held over the G-flat bass as a 7-6 at 32:1 is the peak (< mp). |
 | C1-m3 | Violin II below compass 9:4-13:3 | **Changed (with C2-m7's correction).** The viola takes 9:4-12:4; violin II resumes at 13:1. |
 | C1-m4 | Unisons 5:3, 15:2.5; add a unison scan | **Changed.** splice_check fails any new unison; 15:2.5 removed (soprano E5); 5:3 kept on purpose (section 1). |
 | C1-m5 | 9:1-9:2.5 is E dim, not C7 | **Label corrected** (sections 2.1 and 6.1). |
@@ -745,7 +745,7 @@ proved (proofs.txt) and enforced (splice_check).
 |---|---|---|
 | C2-M1 | Liquidation never sounds the E dim7 | **Changed (the critic's voicing).** Each head holds until all four sound; E dim7 complete 28:1-4 (ff); all four voices strike x8 (x-1)8 together at 28:4-4.5 into A dim7 over E-flat; re-struck at 29:1. Claims in sections 0, 4 and 6 now describe exactly this (lab X3). |
 | C2-M2 | Combination of subjects nominal | **Changed.** Alto rests in 46-47; S2 (alto) and S1 (tenor) enter together at 48:1 over the augmentation (16 beats, lab X6); the soprano's INV head is gone. |
-| C2-M3 | Bar 20 static; tenor rest not declared FREE; section-2.1 claim false for bar 5 | **Changed.** Bar 20 (now the tenor leader in D-flat) moves I, IV6/4, V, I6; claim 2.1 now covers entries 3, 4 and 20 and says entry 2 is two voices by design. |
+| C2-M3 | Bar 20 static; tenor rest not declared FREE; section-2.1 claim false for bar 5 | **Changed.** Bar 20 (now the tenor leader in D-flat) moves I, a suspended fourth (G-flat), V, I6; claim 2.1 now covers entries 3, 4 and 20 and says entry 2 is two voices by design. |
 | C2-M4 | Episode instruction not executable | **Changed.** The skeleton's episode contains the proven line (the alto answers cell b at 18:3 with B-flat-D-flat; the tenor moves in quarters) and the spec names bar, beat and pitch. |
 | C2-M5 | splice_check only warns on countersubjects; "keep" items unchecked; T 49-50 FREE inside a lock | **Changed.** splice_check fails on countersubject changes outside `landing_from`, on 30 KEEP items, and on new unisons; the tenor's S1 lock ends at 52:3 where the subject breaks off, and the held B-flat after it is a KEEP item; `spanmap.py` prints every voice's map, and the section specs quote it. |
 

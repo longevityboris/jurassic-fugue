@@ -79,7 +79,7 @@ M = {
     'headDiminution': ("f''4. f''16 ees''16",
                        "S1's head in diminution (x4. x16 (x-1)16); Climax II heads on F, G-flat, A, C (soprano) and E (alto), 50:3-53:3; the first neighbour is diatonic (E-flat) against the E-flat bass"),
     'climaxHeads': ("r2 f''4. f''16 ees''16 | ges''4. ges''16 f''16 a''4. a''16 aes''16 | g''2 c'''4. c'''16 bes''16 | bes''2. a''4",
-                    "soprano 50-53: the diminution heads rising to the peak B-flat 6 over C7 and the A at the V fermata"),
+                    "soprano 50-53: the diminution heads rising to C6 (52:3, the peak note) and B-flat 5 over C7 (53:1), then the A at the V fermata"),
     'hingeDescent': ("a''4 | f''4 ees''4 c''4 a'4 | bes'2.",
                      "the dominant hinge 53:4-55:1: V7 arpeggio falling to the leading tone A, which resolves to the tune's first note"),
     'themeCantusFirmus': ("bes'2. bes'8 a'8 | bes'2. bes'8 a'8 | bes'4. c''8 c''4. ees''8 | ees''2. d''8 bes'8 | "

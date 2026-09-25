@@ -19,7 +19,7 @@ from build_sk import offsets  # noqa: E402
 from piece import SECTIONS  # noqa: E402
 
 LANDMARKS = [('Climax I fermata (E dim7 -> A dim7)', '29:1'), ('A-minor cadence', '45:3'),
-             ('Climax II peak (C7, B-flat 6)', '53:1'), ('V fermata', '53:4'), ('tune in B-flat major', '55:1'),
+             ('Climax II peak (C7 complete, fff; C6 at 52:3)', '53:1'), ('V fermata', '53:4'), ('tune in B-flat major', '55:1'),
              ('c-d, the answered question', '63:1'), ('final chord', '66:3')]
 
 

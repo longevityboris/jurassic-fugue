@@ -133,7 +133,7 @@ headDiminution = \absolute {
   f''4. f''16 ees''16 |
 }
 
-% climaxHeads: soprano 50-53: the diminution heads rising to the peak B-flat 6 over C7 and the A at the V fermata
+% climaxHeads: soprano 50-53: the diminution heads rising to C6 (52:3, the peak note) and B-flat 5 over C7 (53:1), then the A at the V fermata
 climaxHeads = \absolute {
   r2 f''4. f''16 ees''16 | ges''4. ges''16 f''16 a''4. a''16 aes''16 | g''2 c'''4. c'''16 bes''16 | bes''2. a''4 |
 }
