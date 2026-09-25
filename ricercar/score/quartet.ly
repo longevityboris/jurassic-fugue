@@ -9,7 +9,7 @@
   composer = "Theme: John Williams (1993)"
   tagline = ##f
 }
-\paper { #(set-paper-size "a4") ragged-last-bottom = ##t }
+\paper { #(set-paper-size "a4") ragged-last-bottom = ##t max-systems-per-page = 3 }
 
 \score {
   \new StaffGroup <<
