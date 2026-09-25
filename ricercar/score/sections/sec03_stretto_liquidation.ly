@@ -2,17 +2,26 @@
 % bars 20-29
 % Section 3: Stretto in the relative major (false dawn), liquidation, Climax I. Composed from the verified
 % starter design/final-lab/sections/sec03_stretto_liquidation.ly; LOCKED, CS and KEEP spans unchanged,
-% every boundary entry kept. Revised after review (findings 1-9 cited by number).
+% every boundary entry kept. Revised after review (findings 1-9 cited by number); whole-piece review round 1:
+% finding 4 done (alto 20-21, below); findings 1-3 need piece.py (see REPORTS at the end of this header).
 %
 % FREE ALTO 20-26:2, the inner voice between the tenor leader (S1 in D-flat) and the soprano follower:
-%   20  Ab (boundary) Gb F: the A-flat7's seventh (alto Gb4, 19:3) resolves late in its own voice, and the F
-%       takes over the soprano's third as she falls silent at 20:2, so the D-flat dawn keeps its third under
-%       the leader's held Db (8). Gb-F is also the follower's neighbour motto (22:4), heard two bars early.
-%       Then Ab Bb: the Bb (a 6th over the pedal) is held into 20:4, where it and the tenor's Db are
-%       suspended together over the lament's Ab2 (9/4) and resolve together at 20:4.5 (8/3; sixths Bb/Db
-%       to Ab/C), the double suspension on V (2). So 21:1 is a clean I6 (F3 Db4 Ab4), not b-flat 6/4.
-%   21  Ab held through the I6, then eighths against the leader's held Db: the mirror sigh Ab Bb Ab and
-%       CS1's chromatic core Ab G Gb into ii7 and vii dim 6 (21:4). 21:2.5 and 21:3 now have attacks (5).
+%   20  Ab (boundary) F Bb in quarters, then Ab: the alto moves only where the soprano's silence needs a
+%       chord tone, so the leader's head (S1 in D-flat major, the tune's major shape heard for the first
+%       time) is heard as the entry. The F at 20:2 takes over the soprano's third as she falls silent, so
+%       the D-flat dawn keeps its third under the leader's held Db (8); it is also the A-flat7's seventh
+%       (alto Gb4, 19:3) resolving late by way of the boundary Ab (Gb Ab F). The Bb (a 6th over the pedal)
+%       is held into 20:4, where it and the tenor's Db are suspended together over the lament's Ab2 (9/4)
+%       and resolve together at 20:4.5 (8/3; sixths Bb/Db to Ab/C), the double suspension on V (2). So
+%       21:1 is a clean I6 (F3 Db4 Ab4), not b-flat 6/4.
+%   21  Ab held through the I6 while the leader's second head sounds (the skeleton's bar), then Gb for ii7
+%       and vii dim 6 (21:4). Whole-piece review, finding 4: the previous eighths (Ab Gb F Ab Bb | Ab Bb
+%       Ab G Gb, ten attacks in two bars) circled Ab4-Bb4 above the leader as the top line while the
+%       soprano rests; in the piano render the tenor's held Db4 (velocity 67-73) decayed under them
+%       (50-60), so the head Db Db C Db read as an inner pedal under a new melody and the stretto was heard
+%       only when the soprano entered at 22. Now five attacks (53-59) and the eighth motion starts at 22
+%       with the follower. This reverses round 1's (5) (attacks at 21:2.5 and 21:3); the hairpin audit
+%       still finds an attack in every half bar (tenor and bass at 21:1; alto, tenor and bass at 21:4).
 %   22  Bb held under the follower's entry (the third of G-flat), a 7th over the lament's C-flat at 22:3,
 %       resolving to Ab on 22:3.5, the eighth where S, T and B all hold; Cb on 22:4 completes C-flat major
 %       under the soprano's Gb and holds through her F, then steps to Db (6). The free voice no longer
@@ -60,9 +69,8 @@
 %   assembled score (delivered sec02/sec04). New strict ACC
 %   24:1 soprano Gb5 / alto Ab4: the seventh of A-flat7/C (rule 4, a chord seventh). check.py DIS, all
 %   changes against the previous version: strong DIS down from 3 (21:1 Bb4/F3; 24:1 Db5/Eb4, Db5/C3) to
-%   1 (24:1 Gb5/Ab4, the same chord seventh). New weak DIS, all of them: 20:1.5 alto Gb4 (M7 under the
-%   soprano's F5, 4th over the pedal), passing Ab-Gb-F, the late resolution of 19:3's seventh; 21:2.5
-%   alto Bb4 (4th over F3), the sigh's upper neighbour; 22:3.5 Gb5/Ab4 m7, the 7-6's resolution under the
+%   1 (24:1 Gb5/Ab4, the same chord seventh). New weak DIS, all of them (the 20:1.5 Gb4, 21:2.5 Bb4 and
+%   21:3.5 G4 of the earlier alto are gone with finding 4): 22:3.5 Gb5/Ab4 m7, the 7-6's resolution under the
 %   soprano's held Gb (A-flat minor 7 = IV add6); 23:4 Gb5/Ab4 m7, A-flat7; 25:3.5 alto Db5 (m7 under
 %   the soprano's suspended Cb6, m7 over the tenor's Eb4), the seventh of E-flat minor 7 arriving early;
 %   25:4.5 alto Cb5 (4th over Gb2), the passing 6/4 C-flat over G-flat.
@@ -82,7 +90,7 @@ soprano = \absolute {
 }
 alto = \absolute {
   % 20
-  aes'8 ges'8 f'8 aes'8 bes'4. aes'8 ~ | aes'4. bes'8 aes'8 g'8 ges'4 | bes'2 ~ bes'8 aes'8 ces''4 | des''8 ees''8 des''8 ces''8 des''4 aes'4 ~ |
+  aes'4 f'4 bes'4. aes'8 ~ | aes'2. ges'4 | bes'2 ~ bes'8 aes'8 ces''4 | des''8 ees''8 des''8 ces''8 des''4 aes'4 ~ |
   % 24
   aes'4 c''4 ees''2 | ees''2 ~ ees''8 des''4 ces''8 | aes'2 g'2 ~ | g'2 bes'2 ~ |
   % 28
