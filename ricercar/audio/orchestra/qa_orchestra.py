@@ -13,6 +13,12 @@ demo_crescendo, and writes evidence/qa.json:
              distance delay), dropped (band never within 30 dB of the track's
              level), stuck (the key's band 0.8 s after the note-off not 20 dB
              below the note, where no other note of that pitch class follows)
+  entries    every entry after >= 0.3 s of silence in its track: the time the band of
+             the note's harmonics 1-3 (20 ms STFT, 2 ms hop) reaches 12 dB below its peak
+             in the first 300 ms, minus the note-on and the seat's delay (the -6 dB
+             criterion above is the one the renderer's latency compensation targets, so
+             it cannot see an entry that swells in early); per track median / worst,
+             and the gap between two tracks entering on the same MIDI onset (a flam)
   artefacts  clicks (>6 kHz jumps 30 dB above the local level) per stem and in the
              mix; sustain smoothness: largest 50 ms level step inside notes of
              2 s or more (loops, splices, layer switches), excluding the first 0.3 s
@@ -113,8 +119,7 @@ def chain(rep: dict, stem_dir: Path) -> dict:
     all_c, all_det, all_leg, dropped, stuck, ntot = [], [], [], [], [], 0
     for tr in rep["tracks"]:
         name = tr["name"]
-        f = stem_dir / f"{''.join(ch if ch.isalnum() or ch in '._-' else '_' for ch in name)}.wav"
-        x, _ = sf.read(str(f), dtype="float64", always_2d=True)
+        x, _ = sf.read(str(stem_file(rep, stem_dir, name)), dtype="float64", always_2d=True)
         m = x.mean(axis=1)
         d = depth.get(name, 0.0) / 343.0
         notes = tr["note_list"]
@@ -196,6 +201,83 @@ def chain(rep: dict, stem_dir: Path) -> dict:
     return out
 
 
+# ----------------------------------------------------------------- entries
+def stem_file(rep: dict, stem_dir: Path, name: str) -> Path:
+    for safe, tr in (rep.get("stems") or {}).items():
+        if tr == name:
+            return stem_dir / f"{safe}.wav"
+    return stem_dir / f"{''.join(ch if ch.isalnum() or ch in '._-' else '_' for ch in name)}.wav"
+
+
+def band_onset(x: np.ndarray, t0: float, key: int, thr_db: float = 12.0) -> float | None:
+    """Time (s) at which the band of harmonics 1-3 of `key` first reaches thr_db below
+    its peak in [t0 - 0.15, t0 + 0.30] (20 ms Hann STFT, 2 ms hop, window centre)."""
+    a = t0 - 0.15
+    seg = x[max(0, int(a * SR)): int((t0 + 0.30) * SR)]
+    w, hop = 960, 96
+    if a < 0 or len(seg) < w + hop:
+        return None
+    f0 = 440 * 2 ** ((key - 69) / 12)
+    fr = np.fft.rfftfreq(w, 1 / SR)
+    m = np.zeros_like(fr, bool)
+    for h in (1, 2, 3):
+        m |= np.abs(fr - h * f0) < max(30, 0.03 * h * f0)
+    win = np.hanning(w)
+    fr_idx = np.arange(0, len(seg) - w, hop)
+    frames = np.stack([seg[i:i + w] * win for i in fr_idx])
+    env = 10 * np.log10(np.sum(np.abs(np.fft.rfft(frames, axis=1))[:, m] ** 2, axis=1) + 1e-20)
+    i = int(np.argmax(env >= env.max() - thr_db))
+    return a + (i * hop + w / 2) / SR
+
+
+def entries(rep: dict, stem_dir: Path, min_gap: float = 0.3, thr_db: float = 12.0) -> dict:
+    delay = {}
+    for j in rep["jobs"]:
+        delay.setdefault(j["label"].split("/")[0], []).append(j["seat_depth_m"] / 343.0 + j["delay_ms"] / 1000)
+    delay = {k: min(v) for k, v in delay.items()}
+    per, allo = {}, []
+    for tr in rep["tracks"]:
+        name = tr["name"]
+        x, _ = sf.read(str(stem_file(rep, stem_dir, name)), dtype="float64", always_2d=True)
+        x = x.mean(axis=1)
+        d = delay.get(name, 0.0)
+        prev_end, errs = -9.0, []
+        for on, off, key, vel, art in tr["note_list"]:
+            gap = on - prev_end
+            prev_end = max(prev_end, off)
+            if gap < min_gap or tr["part"] == "timp":
+                continue
+            t = band_onset(x, on + d, key, thr_db)
+            if t is None:
+                continue
+            e = 1000 * (t - on - d)
+            errs.append(e)
+            allo.append((name, on, e))
+        if errs:
+            per[name] = dict(n=len(errs), median_ms=round(float(np.median(errs)), 1),
+                             earliest_ms=round(min(errs), 1), latest_ms=round(max(errs), 1))
+    flams = {}
+    for i, (ta, oa, ea) in enumerate(allo):
+        for tb, ob, eb in allo[i + 1:]:
+            if ta != tb and abs(oa - ob) < 0.005:
+                k = "/".join(sorted((ta, tb)))
+                flams.setdefault(k, []).append(round(abs(ea - eb), 1))
+    ev = [e for _, _, e in allo]
+    str_ev = [e for n, _, e in allo if PARTS[next(t["part"] for t in rep["tracks"] if t["name"] == n)]["family"]
+              == "strings"]
+    gaps = [g for v in flams.values() for g in v]
+    return dict(rule=f"harmonics 1-3 band reaches -{thr_db:g} dB re its peak; entries after >= {min_gap:g} s "
+                     "of silence; minus note-on and seat delay",
+                all=dict(n=len(ev), median_ms=round(float(np.median(ev)), 1) if ev else None,
+                         p10_p90_ms=[round(float(np.percentile(ev, q)), 1) for q in (10, 90)] if ev else None,
+                         earliest_ms=round(min(ev), 1) if ev else None),
+                strings=dict(n=len(str_ev), median_ms=round(float(np.median(str_ev)), 1) if str_ev else None,
+                             earliest_ms=round(min(str_ev), 1) if str_ev else None),
+                tracks=per,
+                doubled_entry_gap_ms=dict(pairs=len(gaps), worst=max(gaps) if gaps else None,
+                                          by_pair={k: v for k, v in sorted(flams.items(), key=lambda z: -max(z[1]))}))
+
+
 # ----------------------------------------------------------------- dynamics
 def dynamics(rep: dict, wav: Path) -> dict:
     x, _ = sf.read(str(wav), dtype="float64", always_2d=True)
@@ -271,12 +353,15 @@ def file_checks(wav: Path, rep: dict) -> dict:
     y, _ = sf.read(str(dec), dtype="float64", always_2d=True)
     dec.unlink()
     first = np.flatnonzero(np.max(np.abs(x), axis=1) > 10 ** (-60 / 20))
+    first_any = np.flatnonzero(np.max(np.abs(x), axis=1) > 1e-5)
     return dict(samplerate=info.samplerate, channels=info.channels, subtype=info.subtype,
                 duration_s=round(info.duration, 2), true_peak_dbtp=round(true_peak_db(x), 2),
                 m4a_decoded_peak_dbfs=round(float(20 * np.log10(np.max(np.abs(y)))), 2),
                 integrated_lufs=round(I, 1), loudness_range_lu=round(lra, 1),
                 lr_correlation=round(float(np.corrcoef(x[:, 0], x[:, 1])[0, 1]), 3),
                 first_sound_s=round(first[0] / SR, 3) if len(first) else None,
+                first_sound_re_midi_ms=round(1000 * (first_any[0] / SR + rep["offset_s"]), 1)
+                if len(first_any) else None,
                 offset_s=rep["offset_s"], c80_db=rep["c80_db"], wet_db=rep["wet_db"],
                 clicks_in_mix=len(M.clicks(x)))
 
@@ -295,6 +380,7 @@ def main(argv=None):
         render(HERE / "out" / "demo_crescendo.mid", QA / "crescendo", "--keep-start")
     rep = json.loads(sk.with_suffix(".json").read_text())
     res = dict(chain=chain(rep, QA / "skeleton.stems"))
+    res["entries"] = entries(rep, QA / "skeleton.stems")
     res["dynamics"] = dynamics(json.loads((QA / "instruments.json").read_text()), QA / "instruments.wav")
     res["crescendo"] = crescendo(json.loads((QA / "crescendo.json").read_text()), QA / "crescendo.wav")
     res["balance"] = balance(rep, QA / "skeleton.stems", sk.with_suffix(".wav"))
@@ -307,6 +393,11 @@ def main(argv=None):
                                    "onset_med_ms", "onset_p90_abs_ms", "slurs", "handover_med_ms", "handover_p90_ms",
                                    "sustain_max_step_db", "sustain_steps_over_3db")},
               "clicks", len(v["clicks"]))
+    en = res["entries"]
+    print("entries (-12 dB rule):", en["all"], "strings", en["strings"], "doubled-entry gaps", 
+          {k: en["doubled_entry_gap_ms"][k] for k in ("pairs", "worst")})
+    for k, v in en["tracks"].items():
+        print("  ", k, v)
     print(json.dumps({k: res[k] for k in ("dynamics", "crescendo", "balance", "file")}, indent=0)[:6000])
 
 

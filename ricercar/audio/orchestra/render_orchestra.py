@@ -121,6 +121,23 @@ LOWPASS = {"tba": 3500.0}
 PLAYER_DETUNE = [0.0, 4.0, -5.0, 7.0]
 PLAYER_DELAY = [0.0, 0.012, 0.022, 0.03]
 PLAYER_SEAT = [(0.0, 0.0), (-3.0, 0.4), (3.0, 0.8), (-6.0, 1.0)]    # (az offset, depth offset)
+# several tracks of one part (hn.1 / hn.2, vc / vc.div) are different players or desks
+# (CONTRACT section 2): each further track sits beside the first (az offset, depth
+# offset, at most 1.5 m back), is detuned a few cents, starts its notes a few ms
+# apart and, for winds and brass, begins its player order on the next recording,
+# so two same-part tracks in unison are two instruments, not one copy added twice
+TRACK_SEAT = [(0.0, 0.0), (3.0, 0.5), (-3.0, 1.0), (6.0, 1.5)]
+TRACK_DETUNE = [0.0, -3.0, 3.0, -6.0]
+TRACK_JITTER_MS = 8.0
+# bowed strings: a new bow is not moved earlier by the sustain's onset latency.
+# tune_orchestra.py's latency_ms (note-on to -6 dB below the peak of the first
+# 0.6 s) measures the bowed swell into the sustain, not when the note starts:
+# 54-96 ms on the section recordings, which put every string entry after a rest
+# 32-90 ms before its beat (a flam against a wind doubling it).  The 15 ms bow
+# pre-roll (render_quartet's normal_pre) stays.  Trombones: half the measured
+# latency (the full value left them 38-46 ms early on entries).
+NO_SUS_LATENCY = {"vn1", "vn2", "va", "vc", "cb"}
+HALF_SUS_LATENCY = {"tbn", "btbn"}
 
 
 def set_available(part: str, s: str) -> bool:
@@ -151,6 +168,7 @@ class Track:
     part: str | None = None
     how: str = ""
     shifted: list = field(default_factory=list)
+    part_index: int = 0          # index among the tracks of the same part (0 = first)
 
 
 def read_tracks(path: Path, log: list) -> list[Track]:
@@ -320,9 +338,13 @@ class Job:
     seed: int = 0
 
 
-def make_jobs(t: Track, side: dict, log: list) -> list[Job]:
+def make_jobs(t: Track, side: dict, log: list, ti: int = 0) -> list[Job]:
+    """ti: the track's index among the tracks of its part (0 = the first)."""
     part = t.part
     jobs = []
+    t_az, t_depth = TRACK_SEAT[ti % len(TRACK_SEAT)]
+    t_det = TRACK_DETUNE[ti % len(TRACK_DETUNE)]
+    t_jit = TRACK_JITTER_MS if ti else 0.0
     if part in STACK:
         stack = [(s, g, d) for s, g, d in STACK[part] if set_available(part, s)]
         if not stack:
@@ -350,40 +372,45 @@ def make_jobs(t: Track, side: dict, log: list) -> list[Job]:
                     continue
                 g0 = g if g is not None else total
                 gain = g0 if full else g0 + (total - sub)
-                jobs.append(Job(t, s, notes, gain_db=gain, detune=d, az_off=(-2.0, 2.0)[i % 2],
-                                depth_off=0.3 * i, label=f"{t.name}/{s}" + ("" if full else "+"),
-                                seed=i))
+                jobs.append(Job(t, s, notes, gain_db=gain, detune=d + t_det, jitter_ms=t_jit,
+                                az_off=(-2.0, 2.0)[i % 2] + t_az, depth_off=0.3 * i + t_depth,
+                                label=f"{t.name}/{s}" + ("" if full else "+"), seed=10 * ti + i))
         return jobs
     sets = [s for s in PLAYERS[part] if set_available(part, s)]
     if not sets:
         raise SystemExit(f"render_orchestra: no built instrument for {part}: run setup_orchestra.sh")
     np_ = players_of(t, side)
     maxp = max(np_)
+    # solo recordings in player order, starting at this track's index (hn.2's player 1
+    # is the recording hn.1's player 2 uses); a section recording (the four-horn
+    # section) stays player 3 and stands for horns 3 and 4 together
+    solo = [s for s in sets if (part, s) not in SECTION_SETS]
+    section = [s for s in sets if (part, s) in SECTION_SETS]
+    order = solo[ti % len(solo):] + solo[:ti % len(solo)] if solo else section
     for p in range(maxp):
         notes = [n for n, k in zip(t.notes, np_) if k > p]
         if not notes:
             continue
-        s = sets[p % len(sets)]
-        if (part, s) in SECTION_SETS:
+        if section and p >= 2:
             if p >= 3:
                 continue                          # the section recording already covers horns 3 and 4
-            gain = -2.0
+            s, gain = section[0], -2.0
         else:
-            gain = 0.0
-        if p == 2 and len(sets) >= 3 and (part, sets[2]) in SECTION_SETS:
-            s = sets[2]
-            gain = -2.0
+            s, gain = order[p % len(order)], 0.0
+        first = order[0]
+        det = (PLAYER_DETUNE[p] if s == first and p else 0.0) + t_det
+        jit = 8.0 if p else t_jit
+        az_o, dp_o = PLAYER_SEAT[p][0] + t_az, PLAYER_SEAT[p][1] + t_depth
         lo, hi = coverage(part, s)
         inside = [n for n in notes if lo <= n.key <= hi]
         outside = [n for n in notes if not lo <= n.key <= hi]
         if outside:                                  # this recording does not reach: player 1's does
-            jobs.append(Job(t, sets[0], outside, gain_db=gain, detune=PLAYER_DETUNE[p], delay=PLAYER_DELAY[p],
-                            jitter_ms=8.0 if p else 0.0, az_off=PLAYER_SEAT[p][0], depth_off=PLAYER_SEAT[p][1],
-                            label=f"{t.name}/p{p + 1}/{sets[0]}", seed=p))
+            jobs.append(Job(t, first, outside, gain_db=gain, detune=PLAYER_DETUNE[p] + t_det, delay=PLAYER_DELAY[p],
+                            jitter_ms=jit, az_off=az_o, depth_off=dp_o,
+                            label=f"{t.name}/p{p + 1}/{first}", seed=10 * ti + p))
         if inside:
-            jobs.append(Job(t, s, inside, gain_db=gain, detune=PLAYER_DETUNE[p] if s == sets[0] and p else 0.0,
-                            delay=PLAYER_DELAY[p], jitter_ms=8.0 if p else 0.0, az_off=PLAYER_SEAT[p][0],
-                            depth_off=PLAYER_SEAT[p][1], label=f"{t.name}/p{p + 1}/{s}", seed=p))
+            jobs.append(Job(t, s, inside, gain_db=gain, detune=det, delay=PLAYER_DELAY[p], jitter_ms=jit,
+                            az_off=az_o, depth_off=dp_o, label=f"{t.name}/p{p + 1}/{s}", seed=10 * ti + p))
     return jobs
 
 
@@ -488,7 +515,13 @@ def job_midi(job: Job, T: np.ndarray, c_true: np.ndarray, t_end: float) -> tuple
         lat_ms = spec.get("latency_ms") or 0.0
         if (n.art or 0) >= 96 and spec.get("latency_short_ms") is not None:
             lat_ms = spec["latency_short_ms"]              # a short note cut from the sustain speaks sooner
-        lat = 0.0 if 64 <= (n.art or 0) < 96 else min(0.10, max(0.0, lat_ms / 1000 - 0.012))
+        art = n.art or 0
+        if 64 <= art < 96 or (job.track.part in NO_SUS_LATENCY and art < 96):
+            lat = 0.0
+        else:
+            lat = min(0.10, max(0.0, lat_ms / 1000 - 0.012))
+            if job.track.part in HALF_SUS_LATENCY and art < 96:
+                lat *= 0.5
         ton = sec2tick(n.on - n.pre - lat + d + SHIFT)
         toff = max(sec2tick(n.off + d + SHIFT), ton + 1)
         timed.append([ton, toff, n])
@@ -595,6 +628,12 @@ def place(y: np.ndarray, az: float, depth: float, width: float) -> np.ndarray:
 
 
 # ------------------------------------------------------------ output
+def stem_name(track: str) -> str:
+    """CONTRACT section 1: the stem file of a track is <name>.wav with every character
+    that is not a letter, digit, '.', '_' or '-' replaced by '_' ('fl:oct' -> fl_oct.wav)."""
+    return "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in track)
+
+
 def export(y: np.ndarray, out: Path, peak_db: float | None):
     tp = true_peak(y)
     g = (10 ** (peak_db / 20) / tp) if peak_db is not None else 1.0
@@ -660,7 +699,13 @@ def main(argv=None):
             abs(x.on - y.on) < 0.02 for x, y in zip(t.notes, t.notes[1:]))
         if winds_chord:
             log.append(f"warning: {t.name}: chords on a {t.part} track (rendered, but one player plays one note)")
-    jobs = [j for t in tracks for j in make_jobs(t, side, log)]
+    seen: dict = {}
+    jobs = []
+    for t in tracks:                             # each track's index among the tracks of its part
+        ti = seen.get(t.part, 0)
+        seen[t.part] = ti + 1
+        t.part_index = ti
+        jobs += make_jobs(t, side, log, ti)
     grids = {t.name: cc_grid(t.cc.get(1, []), t_end + 1.0) for t in tracks}
 
     tmp = Path(tempfile.mkdtemp(prefix="orch_"))
@@ -740,17 +785,20 @@ def main(argv=None):
     mix[-fade:] *= (np.linspace(1, 0, fade) ** 2)[:, None]
     wav, m4a, norm_db, tp = export(mix, out, None if a.no_normalize else a.peak)
     offset_s = (first - sh) / SR
+    stem_names = {}
     if a.stems:
         sd = out.parent / (out.name + ".stems")
         sd.mkdir(parents=True, exist_ok=True)
         for name, y in stems.items():
-            safe = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in name)
+            safe = stem_name(name)
+            stem_names[safe] = name
             sf.write(str(sd / f"{safe}.wav"), y[first: first + len(mix)], SR, subtype="FLOAT")
     rep = dict(midi=str(a.midi), out=str(wav), duration_s=round(len(mix) / SR, 3), offset_s=round(offset_s, 4),
                lead_in_s=0.0 if a.keep_start else a.lead_in, norm_gain_db=round(norm_db, 3),
                true_peak_dbtp=round(tp, 2), hall=None if a.no_reverb else "detmold", wet_db=wet_db,
                c80_db=None if c80 is None else round(c80, 2), seating=seating, sidecar=str(side_p) if side else None,
-               tracks=[dict(name=t.name, part=t.part, identified_by=t.how, notes=len(t.notes),
+               stems=stem_names or None,
+               tracks=[dict(name=t.name, part=t.part, part_index=t.part_index, identified_by=t.how, notes=len(t.notes),
                             articulation=arts[t.name], octave_shifted=t.shifted,
                             note_list=[(round(n.on, 4), round(n.off, 4), n.key, n.vel, n.art) for n in t.notes])
                        for t in tracks],
