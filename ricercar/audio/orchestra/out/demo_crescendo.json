@@ -1,20 +1,22 @@
 {
- "midi": "out/demo_crescendo.mid",
- "out": "out/demo_crescendo.wav",
- "duration_s": 13.364,
+ "midi": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_crescendo.mid",
+ "out": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_crescendo.wav",
+ "duration_s": 13.353,
  "offset_s": 0.2,
  "lead_in_s": 0.3,
- "norm_gain_db": 3.903,
+ "norm_gain_db": 5.106,
  "true_peak_dbtp": -1.0,
  "hall": "detmold",
  "wet_db": -5.0,
  "c80_db": 9.26,
  "seating": "american",
  "sidecar": null,
+ "stems": null,
  "tracks": [
   {
    "name": "fl",
    "part": "fl",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -36,6 +38,7 @@
   {
    "name": "ob",
    "part": "ob",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -57,6 +60,7 @@
   {
    "name": "cl",
    "part": "cl",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -78,6 +82,7 @@
   {
    "name": "bn",
    "part": "bn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -99,6 +104,7 @@
   {
    "name": "hn.1",
    "part": "hn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -120,6 +126,7 @@
   {
    "name": "hn.2",
    "part": "hn",
+   "part_index": 1,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -141,6 +148,7 @@
   {
    "name": "tpt",
    "part": "tpt",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -162,6 +170,7 @@
   {
    "name": "tbn",
    "part": "tbn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -183,6 +192,7 @@
   {
    "name": "btbn",
    "part": "btbn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -204,6 +214,7 @@
   {
    "name": "tba",
    "part": "tba",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -225,6 +236,7 @@
   {
    "name": "timp",
    "part": "timp",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -245,6 +257,7 @@
   {
    "name": "vn1",
    "part": "vn1",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -266,6 +279,7 @@
   {
    "name": "vn2",
    "part": "vn2",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -287,6 +301,7 @@
   {
    "name": "va",
    "part": "va",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -308,6 +323,7 @@
   {
    "name": "vc",
    "part": "vc",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -329,6 +345,7 @@
   {
    "name": "cb",
    "part": "cb",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -383,7 +400,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -32.85
+   "rms_db_active": -32.83
   },
   {
    "label": "cb/vsco",
@@ -405,7 +422,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -39.1
+   "rms_db_active": -39.09
   },
   {
    "label": "cl/p1/iowa",
@@ -488,15 +505,33 @@
    "rms_db_active": -34.05
   },
   {
-   "label": "hn.2/p1/vsco",
+   "label": "hn.2/p1/iowa",
+   "part": "hn",
+   "set": "iowa",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": -3.0,
+   "delay_ms": 0.0,
+   "seat_az": 27.0,
+   "seat_depth_m": 9.5,
+   "layers": {
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -34.42
+  },
+  {
+   "label": "hn.2/p2/vsco",
    "part": "hn",
    "set": "vsco",
    "notes": 1,
    "gain_db": 0.0,
-   "detune_c": 0.0,
-   "delay_ms": 0.0,
+   "detune_c": -3.0,
+   "delay_ms": 12.0,
    "seat_az": 24.0,
-   "seat_depth_m": 9.0,
+   "seat_depth_m": 9.9,
    "layers": {
     "stac": {
      "switches": 1,
@@ -507,25 +542,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -34.0
-  },
-  {
-   "label": "hn.2/p2/iowa",
-   "part": "hn",
-   "set": "iowa",
-   "notes": 1,
-   "gain_db": 0.0,
-   "detune_c": 0.0,
-   "delay_ms": 12.0,
-   "seat_az": 21.0,
-   "seat_depth_m": 9.4,
-   "layers": {
-    "sus": {
-     "switches": 1,
-     "notes": 1
-    }
-   },
-   "rms_db_active": -34.42
+   "rms_db_active": -33.99
   },
   {
    "label": "ob/p1/iowa",
@@ -579,7 +596,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -34.41
+   "rms_db_active": -34.39
   },
   {
    "label": "timp/p1/vsco",
@@ -641,7 +658,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -41.32
+   "rms_db_active": -41.29
   },
   {
    "label": "va/vsco",
@@ -663,7 +680,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -46.46
+   "rms_db_active": -46.44
   },
   {
    "label": "vc/vpo3",
@@ -681,7 +698,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -38.87
+   "rms_db_active": -38.86
   },
   {
    "label": "vc/vsco",
@@ -703,7 +720,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -44.98
+   "rms_db_active": -44.95
   },
   {
    "label": "vn1/vpo3",
@@ -725,7 +742,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -42.68
+   "rms_db_active": -42.63
   },
   {
    "label": "vn1/vsco",
@@ -769,7 +786,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -45.68
+   "rms_db_active": -45.65
   },
   {
    "label": "vn2/vsco",

@@ -1,20 +1,22 @@
 {
- "midi": "out/demo_tutti.mid",
- "out": "out/demo_tutti.wav",
- "duration_s": 7.286,
+ "midi": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_tutti.mid",
+ "out": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_tutti.wav",
+ "duration_s": 7.375,
  "offset_s": 0.2,
  "lead_in_s": 0.3,
- "norm_gain_db": 3.444,
+ "norm_gain_db": 3.791,
  "true_peak_dbtp": -1.0,
  "hall": "detmold",
  "wet_db": -5.0,
  "c80_db": 9.26,
  "seating": "american",
  "sidecar": null,
+ "stems": null,
  "tracks": [
   {
    "name": "fl",
    "part": "fl",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -36,6 +38,7 @@
   {
    "name": "ob",
    "part": "ob",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -57,6 +60,7 @@
   {
    "name": "cl",
    "part": "cl",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -78,6 +82,7 @@
   {
    "name": "bn",
    "part": "bn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -99,6 +104,7 @@
   {
    "name": "hn.1",
    "part": "hn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -120,6 +126,7 @@
   {
    "name": "hn.2",
    "part": "hn",
+   "part_index": 1,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -141,6 +148,7 @@
   {
    "name": "tpt",
    "part": "tpt",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -162,6 +170,7 @@
   {
    "name": "tbn",
    "part": "tbn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -183,6 +192,7 @@
   {
    "name": "btbn",
    "part": "btbn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -204,6 +214,7 @@
   {
    "name": "tba",
    "part": "tba",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -225,6 +236,7 @@
   {
    "name": "timp",
    "part": "timp",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -245,6 +257,7 @@
   {
    "name": "vn1",
    "part": "vn1",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -266,6 +279,7 @@
   {
    "name": "vn2",
    "part": "vn2",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -287,6 +301,7 @@
   {
    "name": "va",
    "part": "va",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -308,6 +323,7 @@
   {
    "name": "vc",
    "part": "vc",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -329,6 +345,7 @@
   {
    "name": "cb",
    "part": "cb",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 1,
    "articulation": {
@@ -405,7 +422,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -33.52
+   "rms_db_active": -33.53
   },
   {
    "label": "cl/p1/iowa",
@@ -488,15 +505,33 @@
    "rms_db_active": -29.69
   },
   {
-   "label": "hn.2/p1/vsco",
+   "label": "hn.2/p1/iowa",
+   "part": "hn",
+   "set": "iowa",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": -3.0,
+   "delay_ms": 0.0,
+   "seat_az": 27.0,
+   "seat_depth_m": 9.5,
+   "layers": {
+    "sus": {
+     "switches": 0,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -30.03
+  },
+  {
+   "label": "hn.2/p2/vsco",
    "part": "hn",
    "set": "vsco",
    "notes": 1,
    "gain_db": 0.0,
-   "detune_c": 0.0,
-   "delay_ms": 0.0,
+   "detune_c": -3.0,
+   "delay_ms": 12.0,
    "seat_az": 24.0,
-   "seat_depth_m": 9.0,
+   "seat_depth_m": 9.9,
    "layers": {
     "stac": {
      "switches": 0,
@@ -508,24 +543,6 @@
     }
    },
    "rms_db_active": -29.59
-  },
-  {
-   "label": "hn.2/p2/iowa",
-   "part": "hn",
-   "set": "iowa",
-   "notes": 1,
-   "gain_db": 0.0,
-   "detune_c": 0.0,
-   "delay_ms": 12.0,
-   "seat_az": 21.0,
-   "seat_depth_m": 9.4,
-   "layers": {
-    "sus": {
-     "switches": 0,
-     "notes": 1
-    }
-   },
-   "rms_db_active": -30.03
   },
   {
    "label": "ob/p1/iowa",
@@ -641,7 +658,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -35.41
+   "rms_db_active": -35.43
   },
   {
    "label": "va/vsco",
@@ -663,7 +680,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -40.27
+   "rms_db_active": -40.28
   },
   {
    "label": "vc/vpo3",
@@ -681,7 +698,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -33.01
+   "rms_db_active": -33.02
   },
   {
    "label": "vc/vsco",
@@ -703,7 +720,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -38.96
+   "rms_db_active": -38.97
   },
   {
    "label": "vn1/vpo3",
@@ -725,7 +742,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -36.93
+   "rms_db_active": -36.96
   },
   {
    "label": "vn1/vsco",
@@ -791,7 +808,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -36.19
+   "rms_db_active": -36.21
   }
  ],
  "warnings": []

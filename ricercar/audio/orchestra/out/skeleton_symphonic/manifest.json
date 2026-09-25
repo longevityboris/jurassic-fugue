@@ -76,7 +76,7 @@
      "instrument": "timp"
     }
    },
-   "wet_db": -5.0
+   "hall_re_dry_db": 3.0
   }
  }
 }

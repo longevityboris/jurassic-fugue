@@ -319,7 +319,7 @@
      "channel": 7,
      "program": 71,
      "instrument": "cl",
-     "notes": 93,
+     "notes": 96,
      "range": [
       54,
       77
@@ -350,12 +350,12 @@
       {
        "kind": "line",
        "voice": "tenor",
-       "at": "38:1",
+       "at": "37:1",
        "until": "46:1",
        "octave": 0,
        "level": -0.5,
        "articulation": "auto",
-       "t0_s": 128.519,
+       "t0_s": 124.92,
        "t1_s": 155.617
       },
       {
@@ -422,9 +422,9 @@
      "channel": 10,
      "program": 60,
      "instrument": "hn",
-     "notes": 51,
+     "notes": 45,
      "range": [
-      48,
+      51,
       72
      ],
      "windows": [
@@ -442,23 +442,23 @@
       {
        "kind": "pedal",
        "voice": "bass",
-       "at": "42:1",
-       "until": "46:1",
-       "octave": 0,
+       "at": "46:1",
+       "until": "50:1",
+       "octave": 12,
        "level": -1.0,
        "articulation": "auto",
-       "t0_s": 142.352,
-       "t1_s": 155.617
+       "t0_s": 155.617,
+       "t1_s": 168.248
       },
       {
        "kind": "line",
        "voice": "tenor",
-       "at": "48:1",
+       "at": "50:1",
        "until": "55:1",
        "octave": 0,
        "level": -1.0,
        "articulation": "auto",
-       "t0_s": 161.932,
+       "t0_s": 168.248,
        "t1_s": 186.918
       },
       {
@@ -700,20 +700,20 @@
      "instrument": "timp",
      "notes": 1,
      "range": [
-      48,
-      48
+      41,
+      41
      ],
      "windows": [
       {
        "kind": "pedal",
        "voice": "bass",
-       "at": "42:1",
-       "until": "46:1",
+       "at": "46:1",
+       "until": "50:1",
        "octave": 0,
        "level": -1.0,
        "articulation": "roll",
-       "t0_s": 142.352,
-       "t1_s": 155.617
+       "t0_s": 155.617,
+       "t1_s": 168.248
       }
      ]
     }

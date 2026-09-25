@@ -7,3 +7,4 @@ __pycache__/
 out/test/
 out/qa/
 out/compare/
+out/skeleton_symphonic/render/

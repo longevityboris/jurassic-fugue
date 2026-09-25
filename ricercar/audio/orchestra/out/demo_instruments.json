@@ -1,20 +1,22 @@
 {
- "midi": "out/demo_instruments.mid",
- "out": "out/demo_instruments.wav",
+ "midi": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_instruments.mid",
+ "out": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_instruments.wav",
  "duration_s": 175.8,
  "offset_s": 0.2,
  "lead_in_s": 0.3,
- "norm_gain_db": 13.723,
+ "norm_gain_db": 13.727,
  "true_peak_dbtp": -1.0,
  "hall": "detmold",
  "wet_db": -5.0,
  "c80_db": 9.26,
  "seating": "american",
  "sidecar": null,
+ "stems": null,
  "tracks": [
   {
    "name": "fl",
    "part": "fl",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -134,6 +136,7 @@
   {
    "name": "ob",
    "part": "ob",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -253,6 +256,7 @@
   {
    "name": "cl",
    "part": "cl",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -372,6 +376,7 @@
   {
    "name": "bn",
    "part": "bn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -491,6 +496,7 @@
   {
    "name": "hn",
    "part": "hn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -610,6 +616,7 @@
   {
    "name": "tpt",
    "part": "tpt",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -729,6 +736,7 @@
   {
    "name": "tbn",
    "part": "tbn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -848,6 +856,7 @@
   {
    "name": "btbn",
    "part": "btbn",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -967,6 +976,7 @@
   {
    "name": "tba",
    "part": "tba",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -1086,6 +1096,7 @@
   {
    "name": "timp",
    "part": "timp",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 7,
    "articulation": {
@@ -1148,6 +1159,7 @@
   {
    "name": "vn1",
    "part": "vn1",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -1267,6 +1279,7 @@
   {
    "name": "vn2",
    "part": "vn2",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -1386,6 +1399,7 @@
   {
    "name": "va",
    "part": "va",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -1505,6 +1519,7 @@
   {
    "name": "vc",
    "part": "vc",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -1624,6 +1639,7 @@
   {
    "name": "cb",
    "part": "cb",
+   "part_index": 0,
    "identified_by": "part id",
    "notes": 15,
    "articulation": {
@@ -1776,7 +1792,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -35.01
+   "rms_db_active": -35.0
   },
   {
    "label": "cb/vsco",
@@ -1798,7 +1814,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -39.9
+   "rms_db_active": -39.93
   },
   {
    "label": "cl/p1/iowa",
@@ -1914,7 +1930,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -37.07
+   "rms_db_active": -37.06
   },
   {
    "label": "timp/p1/vsco",
@@ -1936,7 +1952,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -38.49
+   "rms_db_active": -38.48
   },
   {
    "label": "tpt/p1/vsco",
@@ -1976,7 +1992,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -41.27
+   "rms_db_active": -41.34
   },
   {
    "label": "va/vsco",
@@ -1998,7 +2014,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -45.62
+   "rms_db_active": -45.72
   },
   {
    "label": "vc/vpo3",
@@ -2016,7 +2032,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -38.8
+   "rms_db_active": -38.83
   },
   {
    "label": "vc/vsco",
@@ -2038,7 +2054,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -43.32
+   "rms_db_active": -43.38
   },
   {
    "label": "vn1/vpo3",
@@ -2060,7 +2076,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -42.94
+   "rms_db_active": -43.01
   },
   {
    "label": "vn1/vsco",
@@ -2082,7 +2098,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -44.4
+   "rms_db_active": -44.46
   },
   {
    "label": "vn2/vpo3",
@@ -2104,7 +2120,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -47.52
+   "rms_db_active": -47.57
   },
   {
    "label": "vn2/vsco",
@@ -2126,7 +2142,7 @@
      "notes": 15
     }
    },
-   "rms_db_active": -40.89
+   "rms_db_active": -40.92
   }
  ],
  "warnings": []

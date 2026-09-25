@@ -27,7 +27,10 @@ part ID, give every track the CC1/CC11 envelope and velocities that
   `--stems` adds `OUT.stems/<track name>.wav`: 32-bit float stereo, dry but
   already placed on stage (pan, width, depth delay and air absorption), at the
   same gain, start and length as in the mix before the final normalisation
-  gain (the report gives that gain as `norm_gain_db`).
+  gain (the report gives that gain as `norm_gain_db`). In the file name every
+  character of the track name other than a letter, digit, `.`, `_` or `-` is
+  replaced by `_` (`fl:oct` -> `fl_oct.wav`, `tpt 2` -> `tpt_2.wav`); the
+  report's `stems` maps each file name back to its track.
 
 ## 2. Tracks and part IDs
 
@@ -63,7 +66,11 @@ Part IDs (case-insensitive; stable, never renamed):
   (e.g. horns 1-2 and 3-4), `vn1` and `vn1.div` a divided first-violin
   section. Each track is rendered as its own player (or desk group) of that
   part; same-part tracks sit side by side at the part's seat (spread by up
-  to 1.5 m), never on top of each other.
+  to 1.5 m), never on top of each other. (How: the second, third, ... track of
+  a part sits 3 deg aside and 0.5 m further back per track, is detuned by a
+  few cents, starts its notes up to 8 ms apart and, for winds and brass,
+  starts its player order on the next recording, so `hn.1` and `hn.2` in
+  unison are two horns, not one horn 6 dB louder.)
 * A track may contain overlapping notes (chords, divisi): every note sounds.
   Wind and brass parts should be monophonic per player; a chord on a wind
   track is rendered but logged (`warnings` in the report).
@@ -80,7 +87,11 @@ Bass"); then the track's first GM program change (73 fl, 68 ob, 71 cl, 70 bn,
 60 hn, 56 tpt, 57 tbn, 58 tba, 47 timp, 40 vn1 then vn2, 41 va, 42 vc, 43 cb);
 then the SATB voice names `perform.py` writes (soprano -> vn1, alto -> vn2,
 tenor -> va, bass/pedal -> vc), so a plain `perform.py --target strings` file
-renders as a string orchestra. An unidentifiable track is an error.
+renders as a string orchestra. An unidentifiable track is an error. The SATB
+fallback does not look at the notes: an alto that goes below G3 (the ricercar's
+alto reaches F3) has those notes moved up an octave on Violins II (section 3);
+`tools/orchestrate.py` with a spec that gives those bars to the violas is the
+supported route.
 
 ## 3. Pitch
 
@@ -104,7 +115,7 @@ renders as a string orchestra. An unidentifiable track is an error.
 | no CC1 on a track | the level is taken from the note velocities on perform.py's velocity scale (ppp 22, pp 32, p 44, mp 56, mf 68, f 82, ff 98, fff 112), as a `--target piano` file writes them. |
 | **CC16** | **players** (winds and brass), value in force at the note-on: 0-42 solo (one player), 43-84 **a2** (two players in unison: two different recordings, seated side by side), 85-127 **a4** (horns only: four players; other parts treat it as a2). Default solo. Strings ignore CC16 (always the full section). |
 | **CC20** | **articulation** of the note (value in force at the note-on): 0-63 normal (new bow / tongued), 64-95 legato (slurred from the previous note: no new attack, the pitch changes on the beat), 96-127 short (staccato / spiccato). Absent: inferred per note: a note that starts within 60 ms of the previous note's end, at another pitch, and is not short, is legato; a note shorter than `--short-ms` (default 260 ms) is short; anything else normal. |
-| CC20 on `timp` | 0-63 single stroke (rings until the note-off, then damped), 64-127 **roll** for the note's whole duration (the roll's loudness follows CC1, so a CC1 ramp is a crescendo roll). Absent: a note of 0.9 s or longer is a roll, shorter notes are strokes. |
+| CC20 on `timp` | 0-63 single stroke (rings until the note-off, then damped over the CC21 release, default 0.35 s: write the note as long as the drum should ring), 64-127 **roll** for the note's whole duration (the roll's loudness follows CC1, so a CC1 ramp is a crescendo roll). Absent: a note of 0.9 s or longer is a roll, shorter notes are strokes. |
 | **CC21** | release time of the note (value in force at the note-on): `0.03 + 1.2 x v/127` s. Absent: chosen from the context (short into a slur, longer before a rest, the hall carries the rest). |
 | CC10, CC64, pitch bend, aftertouch, sysex | ignored (seating is fixed per part, see the sidecar to move a part). |
 | program change | identification only (section 2); it never switches sounds. |
