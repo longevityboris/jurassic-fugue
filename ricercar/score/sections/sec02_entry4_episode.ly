@@ -133,17 +133,20 @@
 %     note to be dissonant with the lowest sounding voice at t, not only with the attacking agent. (3) Require
 %     the dissonance to begin at t: the held note is consonant with the bass immediately before t. With these
 %     tests, this section counts 5 (18:1 T, 18:3 T, 19:1 A, 19:1 T, 19:3 T).
-%   piano.ly: at 13:4, 16:1 and 16:4 (and 45:3 in section 5) the notes struck together fit no two-hand split. 13:4: C2 with the tenor's F3 while the right hand holds C5 (left hand 17
-%     semitones; right hand C5-F3 19). 16:1: D-flat 2 B-flat 3 B-flat 4 F5 (left hand 21, right hand F5-B-flat 3
-%     19). 16:4: C2 A-flat 3 A-flat 4 F5 (left hand 20, right hand F5-A-flat 3 21). Print them spread, bass
-%     first as an anticipation (no note change), and catch the bass with the sostenuto: C2 at 13:4 (lift at
-%     14:1), D-flat 2 at 16:1, changed to C2 at 16:4 (lift at 17:1), E-flat 2 at 19:1 (lift at 19:3). Tested on
-%     copies of piano.ly with the assembled score in LilyPond 2.26: no warnings; the spread lines join across
-%     the staves at 16:1, 16:4 and 45:3.
+%   piano.ly: at 13:4, 16:1 and 16:4 (and 45:3 in section 5) the notes struck together fit no two-hand split.
+%     13:4: C2 with the tenor's F3 while the right hand holds C5 (left hand 17 semitones; right hand C5-F3
+%     19). 16:1: D-flat 2 B-flat 3 B-flat 4 F5 (left hand 21, right hand F5-B-flat 3 19). 16:4: C2 A-flat 3
+%     A-flat 4 F5 (left hand 20, right hand F5-A-flat 3 21). Print them spread, bass first as an anticipation
+%     (no note change), and catch the bass with the sostenuto: C2 at 13:4 (lift at 14:1), D-flat 2 at 16:1,
+%     changed to C2 at 16:4 (lift at 17:1); and E-flat 2 at 19:2 (lift at 19:3). Tested on copies of piano.ly
+%     with the assembled score in LilyPond 2.26: no warnings; the spread lines join across the staves at 16:1,
+%     16:4 and 45:3.
 %       spreadUpper = { s1*15 s2.\arpeggio s4\arpeggio | s1*28 s2 s4\arpeggio }
 %       spreadLower = { s1*12 s2. s4\arpeggio | s1*2 | s2.\arpeggio s4\arpeggio | s1*28 s2 s4\arpeggio }
 %       sostLower = { s1*12 s2. s4\sostenutoOn | s1\sostenutoOff | s1 |
-%         s2.\sostenutoOn s4\sostenutoOff\sostenutoOn | s1\sostenutoOff | s1 | s2\sostenutoOn s2\sostenutoOff }
+%         s2.\sostenutoOn s4\sostenutoOff\sostenutoOn | s1\sostenutoOff | s1 | s4 s4\sostenutoOn s2\sostenutoOff }
+%       (with the default mixed style the 19:2-19:3 catch prints as text only; \set Staff.pedalSostenutoStyle =
+%       #'bracket at the start of sostLower draws all three catches as brackets, also tested without warnings)
 %       \new PianoStaff \with { connectArpeggios = ##t } << ...
 %         \new Voice = "soprano" << { \voiceOne \soprano } \spreadUpper >>   (the alto likewise, \voiceTwo)
 %         \new Voice = "tenor" << { \voiceOne \tenor } \spreadLower >>
@@ -152,9 +155,18 @@
 %   13:3: roll or split the alto's A3 and the soprano's C5 (a minor tenth in the right hand; F2-A3 is too wide
 %     for the left).
 %   13:4, 16:1, 16:4: spread, bass first, with the sostenuto as above, so the left hand takes the tenor dry: the
-%     4-3 at 13:4.5 and the tenor's B-flat 3 and A-flat 3-F3 under CS2's eighths stay clean.
-%   19:1: the left hand strikes E-flat 2 under the tied F3 (a ninth); the sostenuto then holds E-flat 2 (lift at
-%     19:3), so the 9-8s at 19:2 and 19:3.5 stay clean.
+%     4-3 at 13:4.5 and the tenor's B-flat 3 and A-flat 3-F3 under CS2's eighths stay clean. The sostenuto
+%     catches every key that is down, and every key if the damper pedal is down: press it with the damper up,
+%     after the bass is struck and before the tenor (at 13:4 the left hand lets go of the tenor's F3, strikes
+%     C2, catches it, then re-strikes F3; at 16:1 the damper of 15:3 is lifted first).
+%   19:1-19:2: the left hand holds the tied F3 and strikes E-flat 2 under it, a major ninth (14 semitones) held
+%     for one beat, for large hands. Nothing can relieve it: the right hand's D-flat 5/G-flat 5 lie 20-25
+%     semitones away, the damper from 18:4 would drag B-flat 2 into E-flat minor, and a sostenuto pressed at
+%     19:1 would catch F3 and let it ring through its own resolution. It is the price of the tied 9-8 (the old
+%     version had an octave, E-flat 2/E-flat 3, here). For small hands, re-strike F3 with the bass at 19:1: that
+%     turns the 9-8 into the re-struck kind the review rejects, so it is a performance fallback only.
+%   19:2: after the 9-8 has resolved (E-flat 2 E-flat 3 C5 G-flat 5, nothing left to resolve), catch E-flat 2 with the
+%     sostenuto (lift at 19:3), so the left hand can take B-flat 3 and the 9-8 at 19:3.5 stays clean.
 %   Damper pedal on one harmony at a time: 15:3-16:1 (C minor 7 over E-flat 2; the right hand holds), and
 %     17:3-17:4.5 (C7, all chord tones), changed at 17:4.5.
 %   The left hand then holds G3 over E2 (a minor tenth) and F2 (a ninth).
