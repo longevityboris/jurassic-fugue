@@ -37,11 +37,11 @@ SECTIONS = [
          soprano='''f''2. r4 | r4 c''2 des''4 | c''2 r2 | r4 des''2 f''4 |
             e''2. d''4 | c''4. des''8 des''4. f''8 | ges''4. f''8 f''4. ees''8''',
          alto='''a4. c'8 a4 r4 | f'8 e'8 f'8 g'8 aes'8 g'8 bes'8 des'8 | aes'4 g'8 c''8~ c''2 | bes'8 c''8 bes'8 aes'8 ges'4 aes'4 |
-            c''1 | aes'2 bes'2 | bes'2 a'2''',
+            c''1 | aes'2 bes'4. c''8 | bes'2 ges'2''',
          tenor='''f2. f8 e8 | f2. f8 e8 | f4. g8 g4. bes8 | bes2. aes8 f8 |
             g4. e8 c4 e4 | f2 des'2 | ees'2 c'2''',
          bass='''c4. a,8 f,4 c,4 | aes,2. g,4 | f,4 e,4 ees,2 | des,2. c,4 |
-            e,4. g,8 c,4 c4 | f,2 bes,2 | ees,2 f,2''',
+            e,4. g,8 c,4 c4 | f,2 bes,2 | ees,2 aes,2''',
          roles=[('tenor', '1:1', '5:4', 'answer'),
                 ('bass', '1:4', '5:4', 'cs'),
                 ('alto', '2:1', '5:1', 'cs')],
@@ -51,22 +51,21 @@ SECTIONS = [
          breaths=[],
          pedal=[],
     ),
-    dict(id='sec03_stretto_liquidation', title='Stretto, liquidation, Climax I', bars=10,
-         soprano='''des''4 r2. | r1 | ees''2. ees''8 d''8 | ees''2. ees''8 d''8 |
-            ees''4. f''8 f''4. aes''8 | aes''2. ges''8 ees''8 | f''4. des''8 bes'4 r4 | r1 |
-            des''2. des''8 c''8 | c''1''',
-         alto='''f'1 | des''2. c''4 | bes'4 a'4 aes'2 | ges'2. f'4 |
-            aes'4. c''8 f'4 f'4 | f'2 bes'2 | bes'2 g'2 ~ | g'2 bes'2 ~ |
-            bes'4 bes'8 a'8 ~ a'2 ~ | a'1''',
-         tenor='''bes4 r2. | bes8 a8 bes8 c'8 des'8 c'8 ees'8 ges8 | des'4 c'8 f'8 ~ f'2 | ees'8 f'8 ees'8 des'8 ces'4 aes4 |
-            ees'2 aes2 | aes2 bes2 | bes1 | g2. g8 ges8 |
-            ges1 ~ | ges1''',
-         bass='''bes,2. bes,8 a,8 | bes,2. bes,8 a,8 | bes,4. c8 c4. ees8 | ees2. des8 bes,8 |
-            c4. aes,8 f,4 ees,4 | des,2. c,4 | f,2 e,2 ~ | e,4 e,8 ees,8 ~ ees,2 ~ |
-            ees,1 ~ | ees,1''',
-         roles=[('bass', '1:1', '5:4', 'subject'),
-                ('alto', '1:4', '5:4', 'cs'),
-                ('tenor', '2:1', '4:4', 'cs'),
+    dict(id='sec03_stretto_liquidation', title='Stretto in the relative major (false dawn), liquidation, Climax I', bars=10,
+         soprano="""f''4 r2. | r1 | ges''2. ges''8 f''8 | ges''2. ges''8 f''8 |
+            ges''4. aes''8 aes''4. ces'''8 | ces'''2. bes''8 ges''8 | aes''4. f''8 des''4 r4 | r1 |
+            des''2. des''8 c''8 | c''1""",
+         alto="""aes'2 ges'4 ees'4 | aes'2. ges'4 | bes'2 ees''2 | des''2. des''4 |
+            ges'2 ees''2 | ees''2. des''4 ~ | des''4 aes'4 g'2 ~ | g'2 bes'2 ~ |
+            bes'2. bes'8 a'8 | a'1""",
+         tenor="""des'2. des'8 c'8 | des'2. des'8 c'8 | des'4. ees'8 ees'4. ges'8 | ges'2. f'8 des'8 |
+            ees'4. c'8 aes4 ces'4 | ges'2. ees'4 | f'4 c'4 bes2 | g1 ~ |
+            g2. g8 ges8 | ges1""",
+         bass="""des,2. aes,4 | f2. ees4 | des4 c4 ces2 | bes,2. aes,4 |
+            c4. ees8 aes,2 | ees2 ges,2 | f,2 e,2 ~ | e,1 ~ |
+            e,2. e,8 ees,8 | ees,1""",
+         roles=[('tenor', '1:1', '5:4', 'subject'),
+                ('bass', '1:4', '5:3', 'cs'),
                 ('soprano', '3:1', '7:4', 'subject'),
                 ('bass', '7:3', '10:1', 'subject'),
                 ('tenor', '8:1', '10:1', 'subject'),

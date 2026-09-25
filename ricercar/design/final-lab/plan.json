@@ -254,21 +254,15 @@
    "role": "cs"
   },
   {
-   "voice": "bass",
+   "voice": "tenor",
    "at": "20:1",
    "until": "24:4",
    "role": "subject"
   },
   {
-   "voice": "alto",
+   "voice": "bass",
    "at": "20:4",
-   "until": "24:4",
-   "role": "cs"
-  },
-  {
-   "voice": "tenor",
-   "at": "21:1",
-   "until": "23:4",
+   "until": "24:3",
    "role": "cs"
   },
   {
