@@ -62,7 +62,7 @@ alto = \absolute {
   % 50
   ees''4. des''8 des''4. c''8 | c''1 | e''4. e''16 dis''16 e''2 | e''4. e''16 d''16 e''4 f''4 |
   % 54
-  c''2 a'4 c'4 |
+  c''2 a'8 f'8 ees'4 |
 }
 tenor = \absolute {
   % 46
@@ -70,7 +70,7 @@ tenor = \absolute {
   % 50
   bes4. c'8 c'4. ees'8 | ees'2. des'8 bes8 | c'4. a8 bes2 | g2 g4 c'4 |
   % 54
-  a2 c'4 ees4 |
+  a2 c'4 f4 |
 }
 bass = \absolute {
   % 46
@@ -78,5 +78,5 @@ bass = \absolute {
   % 50
   f,2. ees,4 | ees,2. c,4 | c,1 | c,2 des,4 f,4 |
   % 54
-  ees,2. ges,4 |
+  f,1 |
 }

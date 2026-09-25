@@ -547,7 +547,7 @@
    "voice": "alto",
    "at": "53:3",
    "until": "55:1",
-   "what": "E, F (root doubled at the V fermata), then the hinge C A C"
+   "what": "E, F (root doubled at the V fermata), then the hinge C A F E-flat: the seventh resolves to D at 55:1"
   },
   {
    "voice": "soprano",
@@ -559,7 +559,7 @@
    "voice": "tenor",
    "at": "54:1",
    "until": "55:1",
-   "what": "hinge: A C E-flat"
+   "what": "hinge: A C F (root-position V7 to I, no parallel fifths with the bass)"
   },
   {
    "voice": "alto",
