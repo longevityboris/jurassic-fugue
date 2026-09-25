@@ -21,8 +21,8 @@ For every instrument (violin, viola, cello, bass) and every chromatic note it
      (ff = 0 dB, mf = -6.5 dB, pp = -16 dB) so CC1 behaves predictably;
   6. writes <inst>.sfz with:
        CC1   dynamics on the perform.py scale (ppp 36, pp 49, p 62, mp 75, mf 88,
-             f 101, ff 114, fff 127): the pp recording up to 65, mf from 71 to
-             104, ff from 110, equal-power crossfades only in the two narrow zones
+             f 101, ff 114, fff 127): the pp recording up to 65, mf from 72 to
+             104, ff from 111, equal-power crossfades only in the two narrow zones
              between (two takes of one note interfere, see XF); a volume curve
              moves loudness about 3.5 dB per dynamic step (CC1_TARGET) and a high
              shelf adds brightness with CC1 inside each layer (EQ_DEPTH)
@@ -69,15 +69,18 @@ SUSTAIN_S = 10.0
 LAYER_CC1 = {"pp": 49, "mf": 88, "ff": 114}
 # Two recordings of the same note sounding together interfere (independent vibrato:
 # the sum swells and fades by 5-8 dB at 0.2-3 Hz), so the layers overlap only in two
-# narrow zones, pp->mf over CC1 65-72 and mf->ff over 104-111 (sfizz: gain = 0 at the
-# zone start, 1 one step before its end).  Every named level (p 62, mp 75, f 101,
-# ff 114) is a single recording; CC1_TARGET carries the loudness in between.
+# narrow zones, pp->mf over CC1 65-72 and mf->ff over 104-111.  sfizz reads xfin_hicc /
+# xfout_hicc as hi + 0.999 (Defaults.h kFillGap), so a zone's fade runs over (hi - lo) / 127
+# and a layer is fully in or out only AT the zone's end value: at CC1 71 the pp take still
+# plays at -8.4 dB under the mf take (round-2 QA measured 2-3.5 dB of extra wander there).
+# Every named level (p 62, mp 75, f 101, ff 114) is a single recording; CC1_TARGET carries
+# the loudness in between.
 # render_quartet.py never parks inside a zone: it holds each layer in its home range
 # (LAYER_HOME) and crosses a zone in 50 ms at a note-on (0.3 s inside a held note),
 # with hysteresis (LAYER_UP / LAYER_DOWN), and restores the loudness of the true CC1
 # as a gain.  Other players of the SFZ get the narrow zones.
 XF = {"pp": (0, 65, 65, 72), "mf": (65, 72, 104, 111), "ff": (104, 111, 111, 127)}
-LAYER_HOME = {"pp": (0, 65), "mf": (71, 104), "ff": (110, 127)}
+LAYER_HOME = {"pp": (0, 65), "mf": (72, 104), "ff": (111, 127)}   # one recording each (65, 72, 104, 111 checked)
 LAYER_UP = {"pp": 70, "mf": 109}          # switch to the next layer at CC1 >= this
 LAYER_DOWN = {"mf": 66, "ff": 106}        # back to the lower layer at CC1 <= this
 # loudness of each layer at its anchor (dB re ff) = the CC1 target there, so the
@@ -652,12 +655,13 @@ def cc1_curve(eq_k: dict | None = None, eq_depth: float = 0.0) -> list[float]:
         p = 0.0
         k = 0.0
         for d, (i0, i1, o0, o1) in XF.items():
-            # same maths as sfizz crossfadeIn/crossfadeOut (power curve -> linear power)
-            pin = 1.0 if (d == "pp" or v >= i1) else (0.0 if v < i0 else min(1.0, (v - i0) / (i1 - i0 - 1)))
+            # same maths as sfizz crossfadeIn/crossfadeOut (power curve -> linear power); the
+            # fade length is (hi + 0.999 - lo - 1) / 127, i.e. (hi - lo) steps (kFillGap on hi)
+            pin = 1.0 if (d == "pp" or v >= i1) else (0.0 if v < i0 else min(1.0, (v - i0) / (i1 - i0)))
             if d == "ff" or v <= o0:
                 pout = 1.0
             else:
-                pos = (v - o0) / (o1 - o0 - 1)
+                pos = (v - o0) / (o1 - o0)
                 pout = 0.0 if pos > 1 else 1.0 - pos
             w = pin * pout * 10 ** (LAYER_DB[d] / 10)
             p += w
@@ -700,7 +704,34 @@ def retune(verify_json: Path, only: set, min_c: float = RETUNE_MIN_C):
     print(f"retune: updated {n} corrections -> {CORR_PATH}")
 
 
-def write_sfz(inst: str, meta: list[dict]):
+def shared_takes(meta: list[dict], base_meta: list[dict] | None) -> dict:
+    """Violin II keys whose pick is the very take violin I plays at that key -> the meta entry of the
+    neighbouring key's take (same string, same layer) that plays there instead, pitched by a semitone:
+    violin II's own neighbour if it is on the same string, else violin I's (which violin I only plays
+    at that neighbouring pitch).  Round-2 QA: on G3-D4, 82, 87 and 93-100 both desks played one
+    recording, so a unison was one violin 6 dB louder (waveform correlation 1.00) instead of two
+    players; a neighbour's take has its own vibrato and bow."""
+    if not base_meta:
+        return {}
+    base = {(m["dyn"], m["midi"]): m for m in base_meta}
+    by = {(m["dyn"], m["midi"]): m for m in meta}
+    out = {}
+    for (d, k), m in sorted(by.items()):
+        b = base.get((d, k))
+        if b is None or (b["file"], b["string"]) != (m["file"], m["string"]):
+            continue
+        for src in (by, base):
+            for n in (k + 1, k - 1):                 # prefer the take above, pitched down (a darker colour)
+                mn = src.get((d, n))
+                if mn is not None and mn["string"] == m["string"]:
+                    out[(d, k)] = mn
+                    break
+            if (d, k) in out:
+                break
+    return out
+
+
+def write_sfz(inst: str, meta: list[dict], base_meta: list[dict] | None = None):
     corr = load_corrections()
     cal = smooth_levels(meta)
     eq_k = {d: float(np.median([m["eq_k"] for m in meta if m["dyn"] == d and "eq_k" in m] or [0.0]))
@@ -710,6 +741,8 @@ def write_sfz(inst: str, meta: list[dict]):
     by = defaultdict(dict)
     for m in meta:
         by[m["dyn"]][m["midi"]] = m
+    swap = shared_takes(meta, base_meta)
+    cal_base = smooth_levels(base_meta) if swap else {}
     lo_all = INSTRUMENTS[inst]["lo"]
     hi_all = INSTRUMENTS[inst]["hi"]
     lines = [
@@ -776,14 +809,19 @@ def write_sfz(inst: str, meta: list[dict]):
             lines.append(f"<group> // {d} art cc20 {lc}-{hc}")
             lines.append(" ".join(xf + [f"locc20={lc} hicc20={hc}"] + ([att] if att else [])))
             for k, (lo, hi) in zip(ks, bounds):
-                m = notes[k]
-                vol = cal[(d, k)] - m["norm_gain_db"]
+                m = swap.get((d, k), notes[k])           # the take that plays key k (a neighbour's, see shared_takes)
+                n = m["midi"]
+                vol = (cal if m["inst"] == inst else cal_base)[(d, n)] - m["norm_gain_db"]
+                # the closed tuning loop measures and corrects each region at its own key k
                 tune = -m["cents"] + corr.get(f"{inst}/{d}/{k}", 0.0)
-                reg = (f"<region> sample={m['path']} lokey={lo} hikey={hi} pitch_keycenter={k} "
+                reg = (f"<region> sample={m['path']} lokey={lo} hikey={hi} pitch_keycenter={n} "
                        f"tune={tune:.1f} volume={vol:.2f} loop_start={m['loop_start']} loop_end={m['loop_end']}")
                 if offk:
                     reg += f" offset={articulation_offsets(m)[offk]}"
                 reg += f"  // {midi_name(k)} {m['string']} {m['file']}"
+                if n != k:
+                    reg += (f" (the {midi_name(n)} take" + ("" if m["inst"] == inst else f" of {m['inst']}")
+                            + f": {base_of(inst)} plays this key's own take)")
                 lines.append(reg)
     out = QUARTET_DIR / f"{inst}.sfz"
     out.write_text("\n".join(lines) + "\n")
@@ -828,9 +866,12 @@ def main():
         meta = all_meta[inst]
         if add_k_levels(meta) | add_rise_times(meta) | add_settle_times(meta, a.jobs) | add_eq_k(meta):
             meta_path.write_text(json.dumps(all_meta, indent=1))
-        path = write_sfz(inst, meta)
+        base_meta = all_meta.get(base_of(inst)) if base_of(inst) != inst else None
+        path = write_sfz(inst, meta, base_meta)
         cov = {d: len([m for m in meta if m["dyn"] == d]) for d in DYNAMICS}
-        print(f"{inst}: {len(meta)} samples {cov} -> {path}")
+        sw = shared_takes(meta, base_meta)
+        print(f"{inst}: {len(meta)} samples {cov} -> {path}"
+              + (f"; {len(sw)} key x layer play a neighbour's take (violin I has this key's)" if sw else ""))
 
 
 if __name__ == "__main__":

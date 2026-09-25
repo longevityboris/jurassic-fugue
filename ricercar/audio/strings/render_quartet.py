@@ -65,7 +65,7 @@ MIDI CONVENTIONS (what perform.py --target strings writes)
     bite, low = softer, slower start, 15-41 ms; about +-2 dB).
   * CC1 = dynamic level with real timbre change, perform.py's scale:
     ppp 36, pp 49, p 62, mp 75, mf 88, f 101, ff 114, fff 127.  The pp
-    recording plays up to 65, mf from 71 to 104, ff from 110 (two takes of one
+    recording plays up to 65, mf from 72 to 104, ff from 111 (two takes of one
     note sounding together interfere, so they only overlap in the narrow zones
     between); a volume curve moves loudness about 3.5 dB per step and a high
     shelf brightens with CC1 inside each layer.  This renderer never parks in a

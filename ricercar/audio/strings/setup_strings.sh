@@ -18,7 +18,8 @@
 #                                                 violin2 = Violin II, next lower string where recorded;
 #                                                 attack pitch drift flattened by attack_tune.py)
 #   IowaMIS/quartet/tuning_corrections.json       closed-loop tuning (verify_tuning.py + retune)
-#   IowaMIS/quartet/tuning_verify.json, verified.sha256   last verification and what it covered
+#   IowaMIS/quartet/tuning_verify.json, shape_verify.json, verified.sha256
+#                                                 last verification and what it covered
 #   tools/sfizz/build/library/bin/sfizz_render    pinned sfizz + float patch, shared with the piano
 #   IR/Detmold-Konzerthaus-S1R163-MS-48k.wav      hall IR, shared with the piano (make_ir.py)
 #   VPO3/                                         optional, --with-vpo3
@@ -210,11 +211,12 @@ if [[ "$MODE" == "install" && "$FAILED" == 0 ]]; then
     (cd "$HERE" && python3 iowa_analyze.py --jobs "$(ncpu)" >/dev/null)
   fi
   need_build=0
-  # every instrument built, and built with the attack-pitch correction (meta 'attack')
-  python3 -c "import json,sys; m=json.load(open(sys.argv[1])); sys.exit(0 if all(i in m and all('attack' in s for s in m[i]) for i in ('violin','violin2','viola','cello','bass')) else 1)" \
-    "$Q/samples/meta.json" 2>/dev/null || need_build=1
+  # every instrument built, with the attack-pitch correction (meta 'attack') and the current
+  # sustain pitch / level flattening (meta 'flat_v' == iowa_build.FLATTEN_VERSION)
+  (cd "$HERE" && python3 -c "import json,sys; from iowa_build import FLATTEN_VERSION as V; m=json.load(open(sys.argv[1])); sys.exit(0 if all(i in m and all('attack' in s and s.get('flat_v') == V for s in m[i]) for i in ('violin','violin2','viola','cello','bass')) else 1)" \
+    "$Q/samples/meta.json") 2>/dev/null || need_build=1
   if [[ "$FORCE" == 1 || "$need_build" == 1 ]]; then
-    doing "iowa_build.py (trims, extends and calibrates about 540 samples, about 1 min)"
+    doing "iowa_build.py (trims, flattens, extends and calibrates about 680 samples, about 5 min)"
     rm -f "$Q/tuning_corrections.json"
     (cd "$HERE" && python3 iowa_build.py --jobs "$(ncpu)" >/dev/null)
   fi
@@ -241,20 +243,41 @@ for i in violin violin2 viola cello bass; do
 done
 # the verification covers these files; its stamp lets a second run skip it
 stamp() { (cd "$Q" && cat violin.sfz violin2.sfz viola.sfz cello.sfz bass.sfz tuning_corrections.json samples/meta.json
-           cat "$HERE/verify_tuning.py") 2>/dev/null | shasum -a 256 | cut -d' ' -f1; }
+           cat "$HERE/verify_tuning.py" "$HERE/verify_shape.py") 2>/dev/null | shasum -a 256 | cut -d' ' -f1; }
+TUNE_TOL=5
 if [[ "$FAILED" == 0 ]]; then
   if [[ -f "$Q/verified.sha256" && "$(cat "$Q/verified.sha256")" == "$(stamp)" && -f "$Q/tuning_verify.json" ]]; then
-    ok "tuning: verified earlier for exactly these instruments (steady and attack pitch, every key x layer)"
-  elif (cd "$HERE" && python3 verify_tuning.py violin violin2 viola cello bass --tol 15 --attack --attack-tol 30 \
-          --json "$Q/tuning_verify.json" >/dev/null); then
-    ok "tuning: every key x layer within 15 cents through sfizz, attacks (40-200 ms) within 30 ($(python3 -c "
-import json,sys; r=json.load(open(sys.argv[1])); c=[abs(x['cents']) for i in r['steady'].values() for l in i.values() for x in l]
-a=[abs(x['cents']) for i in r['attack'].values() for l in i.values() for s in l.values() for x in s if x['cents'] is not None]
-print(f'steady max {max(c):.1f} c, median {sorted(c)[len(c)//2]:.1f} c; attack median {sorted(a)[len(a)//2]:.1f} c, {sum(v > 15 for v in a)} of {len(a)} over 15 c')" "$Q/tuning_verify.json"))"
-    stamp > "$Q/verified.sha256"
+    ok "tuning and sample shape: verified earlier for exactly these instruments (steady and attack pitch, every key x layer)"
   else
-    rm -f "$Q/verified.sha256"
-    fail "tuning check failed, see $Q/tuning_verify.json (silent notes show as cents=null)"
+    if [[ "$MODE" == "install" ]]; then
+      # closed loop: measure every key x layer (0.45-1.05 s and 1.05-1.9 s, YIN and harmonic peaks), fold
+      # the errors into the tuning corrections, repeat until every figure is within TUNE_TOL cents
+      for pass in 2 3 4; do
+        if (cd "$HERE" && python3 verify_tuning.py violin violin2 viola cello bass --tol "$TUNE_TOL" \
+              --json "$Q/tuning_pass$pass.json" >/dev/null); then break; fi
+        doing "closed-loop tuning, pass $pass: folding the measured errors into the SFZ"
+        (cd "$HERE" && python3 iowa_build.py --retune "$Q/tuning_pass$pass.json" >/dev/null)
+      done
+    fi
+    if (cd "$HERE" && python3 verify_tuning.py violin violin2 viola cello bass --tol "$TUNE_TOL" --attack --attack-tol 30 \
+          --json "$Q/tuning_verify.json" >/dev/null); then
+      tune_ok=1
+      ok "tuning: every key x layer within $TUNE_TOL cents through sfizz in both windows by both estimators, attacks (40-200 ms) within 30 ($(python3 -c "
+import json,sys; r=json.load(open(sys.argv[1])); c=[abs(x['worst']) for i in r['steady'].values() for l in i.values() for x in l]
+a=[abs(x['cents']) for i in r['attack'].values() for l in i.values() for s in l.values() for x in s if x['cents'] is not None]
+print(f'steady worst {max(c):.1f} c, median {sorted(c)[len(c)//2]:.1f} c; attack median {sorted(a)[len(a)//2]:.1f} c, {sum(v > 15 for v in a)} of {len(a)} over 15 c')" "$Q/tuning_verify.json"))"
+    else
+      tune_ok=0
+      fail "tuning check failed, see $Q/tuning_verify.json (silent notes show as cents=null)"
+    fi
+    if (cd "$HERE" && python3 verify_shape.py --json "$Q/shape_verify.json" >/dev/null); then
+      shape_ok=1
+      ok "sample shape: no normal or slurred region sits low, dips and jumps back in its first second (verify_shape.py)"
+    else
+      shape_ok=0
+      fail "sample shape check failed, see $Q/shape_verify.json"
+    fi
+    if [[ "$tune_ok" == 1 && "$shape_ok" == 1 ]]; then stamp > "$Q/verified.sha256"; else rm -f "$Q/verified.sha256"; fi
   fi
 fi
 
