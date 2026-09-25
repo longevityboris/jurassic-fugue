@@ -66,6 +66,56 @@
 % hand is free for A2. From 11:1 the alto stays in the left hand (at most 12 over the bass; S+A in the
 % right hand would reach 23 at 12:1.5). For plan.json's owner: {"at": "9:1", "until": "9:4", "every":
 % "bar"}. Strings: the viola takes the alto 9:4-12:4 (blueprint).
+%
+% REVIEW ROUND 1: two whole-piece findings on this section. Notes unchanged: both fixes live outside this
+% file, which a section fixer may not edit. They are ready to paste and were tested on copies in /tmp.
+% NOT YET APPLIED (for the owners of piece.py/plan.json, make_global.py, perform.py, quartet.ly, piano.ly).
+% (1) 5:3-6:1, the tune "goes wrong". S1 ends on F4 (5:3) and the soprano carries straight on into CS1's
+%   c''4 | aes''2. in the tune's own slots (the tune would go on des''8 bes'8 | c''2), and it stays the top
+%   line to 9:3. The notes are locked (S1, CS1), so the performance has to let the answer (alto, 5:1) hold
+%   the ear, with CS1 heard as a new, softer line. plan.json, via piece.py section 1 "dynamics", then
+%   build_sk.py (SK_final.ly must come out byte-identical). Order matters: the step comes before the ramp.
+%     {"at": "5:4", "level": "pp", "voice": "soprano"},
+%     {"at": "5:4", "until": "10:1", "to": 3.625, "voice": "soprano"},
+%     {"at": "10:1", "until": "13:1", "to": "mp", "voice": "soprano"}
+%   A voice override in perform.py has no release, so after 10:1 the soprano has to follow the global
+%   p < mp (5:1-13:1) on its own. 3.625 is the global level at 10:1. Measured on a copy against
+%   score/music-voices.ly: soprano/alto level 2.00/3.09 at 5:4, 2.48/3.25 at 7:1, 3.24/3.50 at 9:1, equal
+%   from 10:1 (3.625) through 13:1 (4.00) and after. On piano the soprano's 11 notes 5:4-9:3 lose 2-13
+%   velocity (C5 at 5:4 47->34; A-flat 5 at 6:1 53->41, against the answer's 58). No other note changes,
+%   and the piece still lasts 232.1 s on both targets. make_global.py must then leave "voice" events out
+%   of \dynamicsLine: today it prints every event on every staff, and a numeric "to" stops it with
+%   "ValueError: 3.625 is not in list". Print "pp <" on the soprano (violin I) only.
+%   Strings: render_quartet.py has no portamento (its pitch bend only tunes), but it slurs F4 into C5,
+%   because F4 ends 5 ms after C5 starts (it infers a slur for gaps under 60 ms). A new bow at 5:4 needs a
+%   gap of at least 60 ms, for example a perform.py plan key "lifts": [{"voice": "soprano", "at": "5:4",
+%   "ms": 90}] that shortens the note ending there without stretching time ("breaths" would stop all
+%   four voices). One CC20 is not enough: once a channel carries any CC20, render_quartet.py stops
+%   inferring and reads CC20 for every note.
+% (2) 9:4-12:4, engraving. quartet.ly gives \alto to violin II, so the printed part has F3 (9:4, 12:4) and
+%   G-flat 3 (12:1) below the violin's G3, and piano.ly has no cross-staff. Tested in LilyPond 2.26 on
+%   copies: no warnings, and nothing else changes. quartet.ly, before \score:
+%     altoToViola = { s1*8 s2. \change Staff = "viola" s4 s1*3 \change Staff = "violinII" }
+%     violinIIGap = { s1*8 s2. r4 R1*3 }
+%     violaGap = { s1*8 r2. s4 }
+%     tenorRestsOff = { s1*8 \omit Rest \override Staff.RestCollision.positioning-done = ##t s1*4
+%                       \undo \omit Rest \revert Staff.RestCollision.positioning-done }
+%   and the two middle staves (\dynamicsLine stays outside the alto's Voice, or the dynamics would move
+%   to the viola with it):
+%     \new Staff = "violinII" \with { instrumentName = "Violin II" } << \global
+%       \new Voice = "alto" << \alto \altoToViola >> \new Voice \violinIIGap \dynamicsLine >>
+%     \new Staff = "viola" \with { instrumentName = "Viola" } << \global \clef alto
+%       \new Voice = "tenor" << \tenor \tenorRestsOff >> \new Voice \violaGap \dynamicsLine >>
+%   piano.ly, with this section's hands as given above: the alto goes to the lower staff for 9:2.5-10:1
+%   and 10:4-13:1, stems up.
+%     altoHands = { s1*8 s4. \change Staff = "lower" \voiceOne s8 s2 |
+%       \change Staff = "upper" \voiceTwo s2. \change Staff = "lower" \voiceOne s4 | s1*2 |
+%       \change Staff = "upper" \voiceTwo }
+%     tenorRestsOff = { s1*8 \omit Rest s1*4 \undo \omit Rest }
+%     \new Voice = "alto" << { \voiceTwo \alto } \altoHands >>   (upper staff)
+%     \new Voice = "tenor" << { \voiceOne \tenor } \tenorRestsOff >>   (lower staff)
+%   The other documented spans (13, 42-44, 55:4, 59:3-60:3, 63:4-64:1) belong to sections 2, 5 and 7 and
+%   go in the same way, as a staff-change skeleton in parallel with the voice that crosses.
 soprano = \absolute {
   % 1
   bes'2. bes'8 a'8 | bes'2. bes'8 a'8 | bes'4. c''8 c''4. ees''8 | ees''2. des''8 bes'8 |
