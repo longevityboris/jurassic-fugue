@@ -23,8 +23,8 @@
   },
   "vn2": {
    "track": "Violin II",
-   "expected": 161,
-   "matched": 161,
+   "expected": 160,
+   "matched": 160,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -36,8 +36,8 @@
   },
   "va": {
    "track": "Viola",
-   "expected": 179,
-   "matched": 179,
+   "expected": 178,
+   "matched": 178,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -160,14 +160,14 @@
    "uncovered": []
   },
   "alto": {
-   "notes": 208,
-   "covered": 208,
+   "notes": 207,
+   "covered": 207,
    "allowed_gaps": 0,
    "uncovered": []
   },
   "tenor": {
-   "notes": 177,
-   "covered": 177,
+   "notes": 176,
+   "covered": 176,
    "allowed_gaps": 0,
    "uncovered": []
   },

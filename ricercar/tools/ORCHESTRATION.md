@@ -60,6 +60,7 @@ python3 tools/mix.py orchestration/out/skeleton_quintet/manifest.json
   {"voice": "bass", "part": "pedal_8vb", "at": "42:1", "until": "46:1", "octave": -12, "bridge": 1}
  ],
  "allow_uncovered": [],
+ "allow_octave_shift": [],
  "mix": {"lead_in": 0.5, "reference_group": "quartet",
          "groups": {"quartet": {"wet_db": -4}, "piano": {"wet_db": -3, "stage": {"*": {"az": 0, "depth": 1.2}}}}}
 }
@@ -139,6 +140,14 @@ G-flat neighbours.
 `[{"voice": "tenor", "at": "44:1", "until": "46:1"}]`: score notes deliberately played by no part.
 Without it, a score note that no part plays fails the integrity check.
 
+### allow_octave_shift
+
+`["vn2", "orchestra.ob"]` (or `true`): orchestra parts whose notes outside their compass the
+renderer may move by octaves. Without it such a note fails the integrity check (section 3). The
+alto reaches F3 (53) and F#3 (54) in bars 9-12 and A3 (57) in the arioso: below vn2 (55-96) and the
+oboe (58-91). Give those bars to the viola or the clarinet (or split the window) rather than allow
+the shift: a moved note sounds an octave off.
+
 ## 3. Integrity check
 
 Written to `OUTDIR/integrity.json`; the exit code is 1 if it fails. It re-reads the score with
@@ -153,14 +162,22 @@ lyparse and the written MIDI files with mido (independently of the routing code)
 * no hanging note-ons, no re-struck held keys, single-line parts stay single lines (perform.py's
   own legato overlap of a few ms is allowed);
 * all group files have the same tempo map and ticks per quarter;
-* notes outside an instrument's compass (from the renderers' tables) are warnings.
+* notes outside an **orchestra** part's compass (from the renderer's own table, `orch_common.PARTS`)
+  are errors: `render_orchestra.py` would play them an octave off (its report's
+  `tracks[].octave_shifted`), and a note-presence check keyed to the score pitch cannot catch that,
+  because the moved note's fundamental sits on the expected note's second harmonic. The message
+  names the notes and the remedy. Parts listed in `allow_octave_shift` and the other renderers'
+  compasses (quartet, including its SFZ's two-semitone stretch down; organ manuals 36-85, pedal
+  36-64) give warnings; mix.py reports every move any renderer made (below).
 
 `orchestration/tests/test_orchestrate.py` plants errors in clean output (a semitone, an undeclared
 octave, a dropped note, an added note, a hanging note, a tempo change, an uncovered window, a
 pedal held past its pedal, bad specs) and checks that each one is caught, and checks the contract
 details (markers, track names, pedal only where the piano plays, CC20 on every note once hinted,
 the viola's CC1 following the alto and then the tenor across a hand-off, a level of -1 lowering
-piano velocities by one dynamic step, shared onset ticks in doublings): 24/24 pass
+piano velocities by one dynamic step, shared onset ticks in doublings, a 17-part orchestra group
+(more than 16 MIDI channels: channels are reused), the alto on vn2 throughout failing on its 3
+notes below the compass, and `allow_octave_shift` turning them into warnings): 30/30 pass
 (`tests/results/orchestrate_tests.json`).
 
 ## 4. Renderer contracts used
@@ -198,23 +215,39 @@ orchestrate.py writes `OUTDIR/manifest.json` from the spec's `mix` section:
 | `groups.<g>.wet_db` | used when `hall_re_dry_db` is absent: hall energy re the dry sound for an impulse (`hall.py` convention, default -4) |
 | `groups.<g>.stage` | per stem seat: keys part, track, instrument or `"*"`; `az` (degrees, + = left), `depth` (m behind the front; adds 1/343 s per m and -1 dB/m), `width` (share of the stem's own stereo width). Quartet defaults: its renderer's seats; piano: centre, 1.2 m back. Orchestra stems come seated by their renderer |
 | `groups.<g>.render_args` | extra arguments for that renderer |
-| `groups.<g>.latency_ms` | shift the group earlier by this many ms, or `"auto"`: by its own time base from the timing probe, so its attacks land on the MIDI clock. Default `"auto"` for the organ (its pipes speak about 20 ms after the key, and an organist playing with others anticipates), 0 for the others |
+| `groups.<g>.latency_ms` | shift the group earlier by this many ms, or `"auto"`: by its own time base from the timing probe, so its attacks land on the MIDI clock. Default `"auto"` for the organ (its renderer already anticipates half of each pipe's speech; the rest, about 11 ms, is its time base), 0 for the others |
 
 **Rendering.** One group at a time, dry stems and no reverb, into `OUTDIR/render/<group>/`; a
-render is reused while its MIDI, sidecar, renderer script and arguments are unchanged
-(`--rerender` forces it).
+render is reused while its MIDI, sidecar, arguments and **engine** are unchanged (`--rerender`
+forces it). The engine fingerprint (`engine_hash`, in `stamp.json` and in the calibration key)
+covers the renderer script, every local module it imports (found transitively in its directory
+and `audio/strings`: the orchestra's `orch_common` and the quartet's `render_quartet`, `iowa_build`,
+`hall`; the organ's `pipe_engine`, `odf`), and its instrument definitions as text: the SFZ files
+and tuning, latency and layer JSON of the built instruments (content and mtime), the piano's
+velocity calibration, the organ's ODF, pipe model and `registrations.json`. Samples are not hashed
+(a rebuild rewrites its SFZ). After changing anything else a renderer reads, run with
+`--rerender --recalibrate`.
+
+**Octave moves.** Every note a renderer moved by octaves into a compass is copied into the report
+(`groups.<g>.octave_shifted`: the orchestra's `[MIDI s, key in, key played]` per track, the
+organ's folded notes per division, the quartet's count per job from its log) and printed as a
+warning; `warnings` in the report lists them.
 
 **Time base.** Every stem is placed so that its sample 0 is MIDI time `-lead_in`: the piano and
 the organ start their output at MIDI time `-lead_in`; the quartet and the orchestra report
 `offset_s` (MIDI time of their first sample). No stretch or resampling: offsets are whole samples.
 
 **Levels.** The quartet normalises its stems with its mix; mix.py undoes that from the report's
-pre-normalisation stem levels (the four instruments give the same gain within 0.01 dB). The piano
-and organ stems and the orchestra's are pre-normalisation by contract. The renderers are then
+pre-normalisation stem levels (the four instruments give the same gain within 0.01 dB). The organ's
+stems carry its render's normalisation gain (organ CONTRACT section 6); mix.py undoes it with the
+report's `normalisation_gain_db` (before calibration version 3 it did not, and an organ in an
+ensemble sat 5.6 dB low on the whole piece, by the difference between the piece's and the
+chorale's normalisation). The piano's and the orchestra's stems are pre-normalisation by contract. The renderers are then
 levelled against each other with a **calibration chorale**: `orchestration/calibration/chorale.ly`
 (eight bars of four-part B-flat major at mf, `chorale.plan.json`) goes through orchestrate.py and
 each renderer, seated as in the mix; the K-weighted loudness of each (`calibration.json`, cached
-per renderer script, orchestrate.py and mix.py hash) sets a gain so that an mf chorale is equally
+under a key of the calibration version, the engine fingerprint, the chorale, orchestrate.py and
+hall.py) sets a gain so that an mf chorale is equally
 loud on every renderer. `gain_db` is applied on top. So the scoring changes the balance the way
 it would on stage (a doubled line is louder, a solo softer), and nothing depends on how loud a
 group happens to be where it plays.
@@ -227,11 +260,29 @@ from the renderers' own reports). What is verified by cross-correlation, with an
    calibration chorale with every note `short` (no bow pre-roll, no slur crossfade, a plain attack
    on the note-on), orchestrated, rendered and loaded through exactly the path a mix uses. Each
    stem's envelope is cross-correlated with its note-ons (orchestra: plus its seat's depth delay,
-   because its stems arrive seated), the curves of the renderer's stems are summed, the peak is
-   the renderer's lag. The groups' lags must agree within `--max-lag-ms` (5 ms).
-2. **Doublings in this piece (the gate, where there are any).** Where two groups play the same
-   onsets, their two envelopes, masked to +-60 ms around the shared onsets, are cross-correlated
-   directly: the lag must be under 5 ms. This is what a listener hears in a doubling.
+   because its stems arrive seated), the curves of the renderer's stems are summed, the peak
+   within +-30 ms is the renderer's lag (per-note p10-p90 about 1-4 ms wide for piano, quartet
+   and orchestra). The groups' lags must agree within `--max-lag-ms` (5 ms). This is the only
+   gate. If it fails, the mix is still written, `alignment_ok` is false and the exit code is 3.
+   The search window: the orchestra starts each sample early by its measured onset latency
+   (about 80 ms for the VPO3 violins), so on a note after silence a quiet pre-attack rises out
+   of digital silence 80 ms before the note-on, and the log-energy envelope scores that rise
+   above the tone's. The global peak (-76.7 ms) is kept in `calibration.json` as
+   `time_base_global_peak_ms`; within +-30 ms the orchestra measures +3.3 ms (per-note median
+   +2.5 ms); on the orchestra + piano chorale that gives +2.9 ms re the piano, and the doubled
+   onsets there measure -1.8 ms. A peak on the window's edge fails
+   the gate (time base not measured).
+2. **Doublings in this piece (information).** Where two groups play the same onsets, their two
+   envelopes, masked to +-60 ms around the shared onsets, are cross-correlated directly
+   (`direct_xcorr_lag_ms`, with its peak prominence), and again on the onsets that both renderers
+   attack (`direct_xcorr_lag_ms_attacks`: piano and organ every note; strings and winds new-bow,
+   tongued and short notes). This used to be a gate and is not any more. On bowed music the
+   curve is flat over several ms (0.421-0.423 from -5 to +1 ms on the current score draft):
+   slurred notes enter by crossfade, and bow attacks are slow. So its peak moved with the
+   subset of notes: -4.6 ms over all 206 shared onsets, -4.9 to +0.9 ms over 80 % bootstrap
+   subsets, +4.1 ms on the 34 attacked ones. Meanwhile the stems sat sample-accurately
+   where intended (cross-correlated against the final WAV: vn1 -0.02 ms, piano +3.5 ms = its 1.2 m
+   seat).
 3. **Attacks in the music (information).** The same cross-correlation per stem against the notes
    whose attack the renderer places on the note-on (piano: all; quartet and orchestra: new-bow,
    tongued and short notes, from their reports, orchestra plus seat delay; organ: notes after
@@ -245,9 +296,11 @@ by default only the organ is shifted, by its measured pipe speech; the gate comp
 bases after that shift. Numbers: `groups.<g>.alignment`
 (`time_base_lag_ms`, `entry_xcorr_lag_ms` ...), `inter_group`, `alignment_worst_ms`.
 
-Measured time bases (`orchestration/calibration/calibration.json`, 56 probe notes each): piano
-+0.4 ms (per note -1..+1), quartet +2.3 ms (0..+4), orchestra +1.5 ms (0..+3), organ +20.8 ms
-(-9..+46: pipe speech, slower in the bass; compensated by default).
+Measured time bases (`orchestration/calibration/calibration.json`, calibration version 4, 56 probe
+notes each; per-note p10..p90 in brackets): piano +0.4 ms (-1..+1), quartet +2.3 ms (0..+3.5),
+orchestra +3.3 ms (-27..+15: the VPO3 pre-attacks above; per-note median +2.5), organ +10.7 ms
+(-11.5..+52.5: the renderer now anticipates half of each pipe's speech, median 13 ms, and the rest
+is slower in the bass; compensated by default, so the organ lands on the MIDI clock).
 
 **Hall.** `audio/strings/hall.py` (shared with the quartet renderer): `place_dry` seats each stem
 (constant-power pan, width, depth delay and attenuation) and `Hall("detmold")` is the measured
@@ -260,47 +313,80 @@ and convolved once at the group's wet level.
 256 kb/s m4a via `afconvert` (decoded and measured; encoded again lower if it overshoots by more
 than 0.1 dB). `OUT.mix.json`: per group offsets, gains, calibration, lags, level while playing,
 seats, C80; the balance where all groups play; integrated loudness, loudness range, true peak of
-WAV and m4a, stereo correlation, mono fold-down, hall re dry, a click scan (1 ms bursts above
-12 kHz, 15 dB over their surroundings, away from onsets) and a 5 s loudness curve.
+WAV and m4a, stereo correlation, mono fold-down, hall re dry, a click scan and a 5 s loudness
+curve. The click scan looks for 1 ms bursts above 12 kHz, 15 dB over their surroundings, away
+from onsets. It keeps only isolated bursts, with no other burst 3-60 ms away: a low brass note's
+lip pulses cross the threshold on every period (bass trombone C2 every 15.3 ms, tuba F1 every
+22.9 ms). Before this rule the symphonic mix reported hundreds of such false clicks
+(`periodic_candidates_dropped` counts them). Single-sample clicks planted at -50 dBFS in quiet
+passages are still found.
+
+**Stems.** `--keep-stems` writes each stem as it enters the hall to `OUT.stems/<group>_<stem>.wav`
+(32-bit float, the mix's start and length, seated, with all gains, the latency compensation and
+the master's normalisation gain, but without the hall and the 18 Hz high-pass). Their sum is each
+group's dry sound in the master: on the organ + quartet chorale the stems give the report's
+`level_when_playing_lufs` to 0.01 dB. About 92 MB per stereo stem for four minutes: delete them after
+the listening QA.
 
 ## 6. Evidence
 
-**Quintet demo** (`orchestration/quintet_skeleton.json` on the 66-bar skeleton as of commit
-4c9dd17, score sha256 `11d2569847377a69`, 239.9 s of music, 241.9 s of audio; report
+**Quintet demo** (`orchestration/quintet_skeleton.json` on the 66-bar skeleton
+`design/final-lab/SK_final.ly` as of commit e3fbbe3, score sha256 `1e4927257b65a84c`, plan
+`7804a26d6d18e0d7`; 232.1 s of music, 234.1 s of audio; report
 `orchestration/out/skeleton_quintet.mix.json`, QA `orchestration/tests/results/qa_skeleton_quintet.json`,
-integrity `orchestration/out/skeleton_quintet/integrity.json`). The composer revised the skeleton
-four times while the demo was made (62 to 66 bars, Parts II-V rewritten); the spec, written in
-section marks, did not have to change:
+integrity `orchestration/out/skeleton_quintet/integrity.json`; re-rendered after the QA round's
+fixes, 1.6 min for render and mix). The spec is written in section marks and did not change while
+the skeleton was revised (62 to 66 bars, Parts II-V rewritten):
 
 * integrity: every part note is its voice's note at the declared octave, every score note is
-  played (soprano 187, alto 208, tenor 177, bass 133);
-* on the rendered stems (`tests/qa_mix.py`, independent of mix.py's measurements): 921 of 921 part
+  played (soprano 187, alto 207, tenor 176, bass 133); no note outside a compass;
+* on the rendered stems (`tests/qa_mix.py`, independent of mix.py's measurements): 919 of 919 part
   notes sound at their pitch, none dropped, no sound in rests or after the last note; strings
-  within 9 cents (p95 2.8-7.0), piano on its own stretch curve (bass 8vb about -15 cents, as its
-  README documents for the bottom octave); median onset per part -1..+2 ms from the MIDI (the
-  piano's 8vb bass +8 ms, low strings speak later);
-* alignment: time bases quartet - piano +1.9 ms (probe); the 192 doubled onsets -2.5 ms; attacks
-  in the music +1.4 ms;
-* levels: the quartet's stems are brought back to its raw scale (-14.2 dB; the four instruments
-  agree within 0.01 dB); calibration puts the piano +0.3 dB, the spec trims it -1 dB (it sits
-  behind the quartet and carries the octave doublings); where both play (69 s) the quartet sits at
-  -30.2 LUFS and the piano at -29.2; hall +4.0 dB re dry for each group on this music;
-* master: 48 kHz / 24-bit, -22.4 LUFS integrated, loudness range 20.3 LU, true peak -1.0 dBTP
-  (m4a -1.06; ffmpeg ebur128 agrees), m4a sample-aligned with the WAV, no clicks away from
-  onsets, L/R correlation 0.52, mono fold-down -1.2 dB.
+  within 3 cents at p95 (medians -0.0..+0.3), piano on its own stretch curve (bass 8vb about -15
+  cents, as its README documents for the bottom octave); median onset per part -2..+1 ms from the
+  MIDI (the piano's 8vb bass +7 ms);
+* alignment: time bases quartet - piano +1.87 ms (probe, the gate); for information, the 190
+  doubled onsets -0.34 ms (-0.71 ms over the 47 that both groups attack), attacks in the music
+  +0.69 ms;
+* levels: the quartet's stems are brought back to its raw scale (-13.7 dB; the four instruments
+  agree within 0.01 dB); calibration puts the piano +0.35 dB, the spec trims it -1 dB (it sits
+  behind the quartet and carries the octave doublings); where both play (68 s) the quartet sits at
+  -29.5 LUFS and the piano at -28.4; hall +4.0 dB re dry for each group on this music;
+* master: 48 kHz / 24-bit, -21.85 LUFS integrated, loudness range 20.4 LU, true peak -1.0 dBTP
+  (m4a -0.99; ffmpeg ebur128 agrees: -21.8 LUFS, -1.0 dBTP for both), m4a sample-aligned with the
+  WAV, no clicks away from onsets, L/R correlation 0.54, mono fold-down -1.1 dB.
 
 **Orchestra adapter** (`tests/spec_chorale_orch_piano.json`: string sections, flute 8va, horn,
-piano; 29 s): rendered, aligned and mixed end to end; time bases orchestra - piano +1.1 ms,
-32 doubled onsets +0.1 ms.
+piano; 29 s; calibration version 4): time bases orchestra - piano +2.86 ms (the orchestra's probe
+searched within +-30 ms, section 5); for information, 32 doubled onsets -1.81 ms; -1.0 dBTP (m4a
+-1.08), no clicks.
 
 **Organ adapter** (`tests/spec_chorale_organ_quartet.json`: four voices on HW/POS/PED with a
 registration change and the swell, violin and cello doubling from bar 5; 30 s): rendered with its
-registration sidecar, the organ shifted by its 20.8 ms pipe speech, time bases then organ - quartet
--2.3 ms; -1.0 dBTP (m4a -0.98), no clicks.
+registration sidecar; its stems taken back to its raw scale (+4.39 dB, the render's own
+normalisation undone), calibration -9.74 LUFS raw (was -15.2 before the organ's normalisation was
+undone), so the quartet's calibration gain is +23.6 dB (was +17.8); the organ shifted by its
+10.7 ms time base, time bases then organ - quartet -2.27 ms; -1.0 dBTP (m4a -1.05), no clicks.
+
+**Whole piece, other ensembles** (the adversarial QA round, in /tmp sandboxes, on SK_final and on
+the score draft): organ + quartet and a 17-part orchestra ran through orchestrate.py and mix.py
+with integrity OK. All 1037 orchestra, 703 organ and 589 quartet notes were present on the stems,
+with no sound in rests or after the last note, no clipped samples and no cut tails. The
+registration and dynamics steps showed in level and spectral centroid. Placement in the final WAV,
+cross-correlated stem by stem against the mix, was sample-accurate: vn1 -0.02 ms (intended 0),
+piano +3.5 ms (its 1.2 m seat), organ -10.69 ms (its compensation). That round found the defects
+fixed since: the doubled-onset gate, octave-moved orchestra notes passing integrity, the organ's
+level, false clicks from low brass, the render cache, and `--keep-stems`.
 
 ## 7. Limits
 
-* The organ and orchestra adapters were tested on the 30 s chorale only, not on a whole piece.
+* Quartet and organ compass moves are warnings, not errors (the quartet's compass includes its
+  SFZ's two-semitone stretch down, which covers the alto's F3 on vn2). mix.py reports every move.
+* The onset envelope measures log-energy rises, so a quiet pre-attack after silence can outscore
+  the tone (the orchestra's VPO3 violins). The time-base search is bounded to +-30 ms for this
+  reason. A renderer whose time base is really off by more than 30 ms fails the gate, but its
+  error is not measured.
+* The engine fingerprint does not hash the samples themselves or the sfizz binary.
 * The calibration equates the renderers at mf on a four-part chorale. It does not know that a
   concert grand at mf may be louder than a string quartet at mf; `gain_db` is the balance control.
 * A piano quintet in one hall: the groups share one measured response (source position S1, one

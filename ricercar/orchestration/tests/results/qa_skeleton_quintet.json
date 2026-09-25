@@ -4,62 +4,62 @@
    "notes": 149,
    "pitched": 149,
    "dropped": [],
-   "cents_median": 0.4,
-   "cents_abs_p95": 7.0,
-   "cents_worst": -8.8,
+   "cents_median": 0.3,
+   "cents_abs_p95": 2.9,
+   "cents_worst": 4.4,
    "partials_used": {
-    "1": 84,
+    "1": 79,
     "2": 20,
     "3": 24,
-    "4": 21
+    "4": 26
    },
-   "onset_lag_ms_median": 0.0,
+   "onset_lag_ms_median": -2.0,
    "onset_lag_ms_p10_p90": [
-    -12.0,
-    15.400000000000034
+    -13.2,
+    11.0
    ],
    "rests_checked": 4,
    "sound_in_rests_dB_re_peak": [],
    "pass": true
   },
   "quartet/Violin II": {
-   "notes": 161,
-   "pitched": 161,
+   "notes": 160,
+   "pitched": 160,
    "dropped": [],
-   "cents_median": 0.4,
-   "cents_abs_p95": 5.5,
-   "cents_worst": 7.0,
+   "cents_median": 0.1,
+   "cents_abs_p95": 2.6,
+   "cents_worst": 3.9,
    "partials_used": {
-    "1": 140,
-    "2": 11,
+    "1": 141,
+    "2": 9,
     "3": 9,
     "4": 1
    },
-   "onset_lag_ms_median": 1.0,
+   "onset_lag_ms_median": 0.0,
    "onset_lag_ms_p10_p90": [
-    -7.0,
-    19.0
+    -9.1,
+    14.099999999999994
    ],
    "rests_checked": 3,
    "sound_in_rests_dB_re_peak": [],
    "pass": true
   },
   "quartet/Viola": {
-   "notes": 179,
-   "pitched": 179,
+   "notes": 178,
+   "pitched": 178,
    "dropped": [],
-   "cents_median": -0.0,
-   "cents_abs_p95": 2.8,
-   "cents_worst": -5.4,
+   "cents_median": 0.1,
+   "cents_abs_p95": 2.5,
+   "cents_worst": 3.2,
    "partials_used": {
-    "1": 115,
-    "2": 48,
+    "1": 116,
+    "2": 46,
     "3": 16
    },
-   "onset_lag_ms_median": -1.0,
+   "onset_lag_ms_median": 0.0,
    "onset_lag_ms_p10_p90": [
-    -11.0,
-    17.200000000000017
+    -10.0,
+    15.300000000000011
    ],
    "rests_checked": 4,
    "sound_in_rests_dB_re_peak": [],
@@ -69,18 +69,18 @@
    "notes": 102,
    "pitched": 102,
    "dropped": [],
-   "cents_median": 0.4,
-   "cents_abs_p95": 3.9,
-   "cents_worst": 6.2,
+   "cents_median": -0.0,
+   "cents_abs_p95": 2.7,
+   "cents_worst": 3.4,
    "partials_used": {
     "1": 41,
-    "2": 46,
-    "3": 15
+    "2": 45,
+    "3": 16
    },
-   "onset_lag_ms_median": 1.5,
+   "onset_lag_ms_median": -1.5,
    "onset_lag_ms_p10_p90": [
-    -15.799999999999997,
-    50.0
+    -15.899999999999999,
+    39.50000000000003
    ],
    "rests_checked": 2,
    "sound_in_rests_dB_re_peak": [],
@@ -98,7 +98,7 @@
    },
    "onset_lag_ms_median": 1.0,
    "onset_lag_ms_p10_p90": [
-    0.0,
+    1.0,
     2.0
    ],
    "rests_checked": 3,
@@ -130,16 +130,16 @@
    "pitched": 62,
    "dropped": [],
    "cents_median": -0.5,
-   "cents_abs_p95": 6.9,
-   "cents_worst": -8.3,
+   "cents_abs_p95": 7.5,
+   "cents_worst": -9.0,
    "partials_used": {
     "1": 53,
     "2": 9
    },
-   "onset_lag_ms_median": 2.0,
+   "onset_lag_ms_median": 1.0,
    "onset_lag_ms_p10_p90": [
-    0.10000000000000053,
-    4.899999999999999
+    0.0,
+    4.0
    ],
    "rests_checked": 1,
    "sound_in_rests_dB_re_peak": [],
@@ -150,16 +150,16 @@
    "pitched": 67,
    "dropped": [],
    "cents_median": -4.9,
-   "cents_abs_p95": 8.8,
-   "cents_worst": -9.3,
+   "cents_abs_p95": 8.9,
+   "cents_worst": -10.3,
    "partials_used": {
     "1": 57,
     "2": 10
    },
    "onset_lag_ms_median": 1.0,
    "onset_lag_ms_p10_p90": [
-    0.0,
-    6.0
+    -1.0,
+    7.399999999999999
    ],
    "rests_checked": 2,
    "sound_in_rests_dB_re_peak": [],
@@ -188,18 +188,18 @@
    "notes": 23,
    "pitched": 23,
    "dropped": [],
-   "cents_median": -14.8,
-   "cents_abs_p95": 17.1,
+   "cents_median": -14.7,
+   "cents_abs_p95": 17.2,
    "cents_worst": -17.4,
    "partials_used": {
     "2": 13,
     "3": 6,
     "4": 4
    },
-   "onset_lag_ms_median": 8.0,
+   "onset_lag_ms_median": 7.0,
    "onset_lag_ms_p10_p90": [
     -1.0,
-    20.200000000000006
+    36.00000000000002
    ],
    "rests_checked": 2,
    "sound_in_rests_dB_re_peak": [],
@@ -232,19 +232,19 @@
    "PCM_24"
   ],
   "ffmpeg_wav": {
-   "I": -22.4,
-   "LRA": 20.3,
+   "I": -21.8,
+   "LRA": 20.5,
    "Peak": -1.0
   },
   "ffmpeg_m4a": {
-   "I": -22.4,
-   "LRA": 20.3,
-   "Peak": -1.1
+   "I": -21.8,
+   "LRA": 20.5,
+   "Peak": -1.0
   },
   "m4a_lag_samples": 0,
   "duration_s": [
-   241.87,
-   241.87
+   234.09,
+   234.09
   ],
   "pass": true
  },

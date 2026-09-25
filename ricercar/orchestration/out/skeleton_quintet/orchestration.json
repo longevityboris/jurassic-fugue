@@ -2,9 +2,9 @@
  "spec": "orchestration/quintet_skeleton.json",
  "score": "design/final-lab/SK_final.ly",
  "plan": "design/final-lab/plan.json",
- "score_sha256": "11d2569847377a69",
- "plan_sha256": "169725621b089ddb",
- "duration_s": 239.899,
+ "score_sha256": "1e4927257b65a84c",
+ "plan_sha256": "7804a26d6d18e0d7",
+ "duration_s": 232.106,
  "bars": 66.0,
  "marks": {
   "sec01_expo": {
@@ -17,51 +17,51 @@
   },
   "sec02_entry4_episode": {
    "at": "13:1",
-   "t_s": 38.919
+   "t_s": 36.923
   },
   "entry4_episode": {
    "at": "13:1",
-   "t_s": 38.919
+   "t_s": 36.923
   },
   "sec03_stretto_liquidation": {
    "at": "20:1",
-   "t_s": 61.622
+   "t_s": 58.461
   },
   "stretto_liquidation": {
    "at": "20:1",
-   "t_s": 61.622
+   "t_s": 58.461
   },
   "sec04_arioso": {
    "at": "30:1",
-   "t_s": 98.751
+   "t_s": 94.164
   },
   "arioso": {
    "at": "30:1",
-   "t_s": 98.751
+   "t_s": 94.164
   },
   "sec05_inversa": {
    "at": "35:1",
-   "t_s": 122.128
+   "t_s": 117.541
   },
   "inversa": {
    "at": "35:1",
-   "t_s": 122.128
+   "t_s": 117.541
   },
   "sec06_pedal_climax": {
    "at": "46:1",
-   "t_s": 161.409
+   "t_s": 155.617
   },
   "pedal_climax": {
    "at": "46:1",
-   "t_s": 161.409
+   "t_s": 155.617
   },
   "sec07_apotheosis_coda": {
    "at": "55:1",
-   "t_s": 193.252
+   "t_s": 186.918
   },
   "apotheosis_coda": {
    "at": "55:1",
-   "t_s": 193.252
+   "t_s": 186.918
   }
  },
  "groups": {
@@ -89,7 +89,7 @@
        "level": 0.0,
        "articulation": "auto",
        "t0_s": 0.0,
-       "t1_s": 122.128
+       "t1_s": 117.541
       },
       {
        "kind": "line",
@@ -99,8 +99,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 161.409,
-       "t1_s": 239.899
+       "t0_s": 155.617,
+       "t1_s": 232.106
       }
      ]
     },
@@ -109,7 +109,7 @@
      "channel": 1,
      "program": 40,
      "instrument": "vn2",
-     "notes": 161,
+     "notes": 160,
      "range": [
       57,
       77
@@ -124,7 +124,7 @@
        "level": 0.0,
        "articulation": "auto",
        "t0_s": 0.0,
-       "t1_s": 28.378
+       "t1_s": 26.923
       },
       {
        "kind": "line",
@@ -134,8 +134,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 38.919,
-       "t1_s": 98.751
+       "t0_s": 36.923,
+       "t1_s": 94.164
       },
       {
        "kind": "line",
@@ -145,8 +145,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "detache",
-       "t0_s": 98.751,
-       "t1_s": 122.128
+       "t0_s": 94.164,
+       "t1_s": 117.541
       },
       {
        "kind": "line",
@@ -156,8 +156,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 161.409,
-       "t1_s": 239.899
+       "t0_s": 155.617,
+       "t1_s": 232.106
       }
      ]
     },
@@ -166,7 +166,7 @@
      "channel": 2,
      "program": 41,
      "instrument": "va",
-     "notes": 179,
+     "notes": 178,
      "range": [
       48,
       66
@@ -180,8 +180,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 28.378,
-       "t1_s": 38.919
+       "t0_s": 26.923,
+       "t1_s": 36.923
       },
       {
        "kind": "line",
@@ -191,8 +191,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 38.919,
-       "t1_s": 122.128
+       "t0_s": 36.923,
+       "t1_s": 117.541
       },
       {
        "kind": "line",
@@ -202,8 +202,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 129.946,
-       "t1_s": 167.724
+       "t0_s": 124.92,
+       "t1_s": 161.932
       },
       {
        "kind": "line",
@@ -213,8 +213,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 174.04,
-       "t1_s": 239.899
+       "t0_s": 168.248,
+       "t1_s": 232.106
       }
      ]
     },
@@ -238,7 +238,7 @@
        "level": 0.0,
        "articulation": "auto",
        "t0_s": 0.0,
-       "t1_s": 122.128
+       "t1_s": 117.541
       },
       {
        "kind": "line",
@@ -248,8 +248,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 161.409,
-       "t1_s": 239.899
+       "t0_s": 155.617,
+       "t1_s": 232.106
       }
      ]
     }
@@ -278,8 +278,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 122.128,
-       "t1_s": 161.409
+       "t0_s": 117.541,
+       "t1_s": 155.617
       },
       {
        "kind": "line",
@@ -289,8 +289,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 174.04,
-       "t1_s": 180.356
+       "t0_s": 168.248,
+       "t1_s": 174.564
       },
       {
        "kind": "line",
@@ -300,8 +300,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 221.078,
-       "t1_s": 239.899
+       "t0_s": 213.585,
+       "t1_s": 232.106
       }
      ]
     },
@@ -324,8 +324,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 122.128,
-       "t1_s": 161.409
+       "t0_s": 117.541,
+       "t1_s": 155.617
       },
       {
        "kind": "line",
@@ -335,8 +335,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 174.04,
-       "t1_s": 239.899
+       "t0_s": 168.248,
+       "t1_s": 232.106
       }
      ]
     },
@@ -359,8 +359,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 167.724,
-       "t1_s": 239.899
+       "t0_s": 161.932,
+       "t1_s": 232.106
       }
      ]
     },
@@ -383,8 +383,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 122.128,
-       "t1_s": 161.409
+       "t0_s": 117.541,
+       "t1_s": 155.617
       },
       {
        "kind": "line",
@@ -394,8 +394,8 @@
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
-       "t0_s": 174.04,
-       "t1_s": 239.899
+       "t0_s": 168.248,
+       "t1_s": 232.106
       }
      ]
     },
@@ -418,8 +418,8 @@
        "octave": 12,
        "level": -1.0,
        "articulation": "auto",
-       "t0_s": 180.356,
-       "t1_s": 221.078
+       "t0_s": 174.564,
+       "t1_s": 213.585
       }
      ]
     },
@@ -442,8 +442,8 @@
        "octave": -12,
        "level": -0.5,
        "articulation": "auto",
-       "t0_s": 174.04,
-       "t1_s": 193.252
+       "t0_s": 168.248,
+       "t1_s": 186.918
       },
       {
        "kind": "line",
@@ -453,8 +453,8 @@
        "octave": -12,
        "level": -0.5,
        "articulation": "auto",
-       "t0_s": 207.165,
-       "t1_s": 221.078
+       "t0_s": 200.252,
+       "t1_s": 213.585
       }
      ]
     },
@@ -477,8 +477,8 @@
        "octave": -12,
        "level": -0.5,
        "articulation": "auto",
-       "t0_s": 161.409,
-       "t1_s": 174.04
+       "t0_s": 155.617,
+       "t1_s": 168.248
       }
      ]
     }

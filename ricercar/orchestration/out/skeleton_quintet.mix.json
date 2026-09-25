@@ -13,44 +13,45 @@
     "vn2"
    ],
    "offset_s": -0.5,
-   "raw_scale_db": -14.244,
+   "raw_scale_db": -13.704,
    "raw_scale_estimates": {
-    "va": -14.249,
-    "vc": -14.241,
-    "vn1": -14.245,
-    "vn2": -14.244
+    "va": -13.706,
+    "vc": -13.703,
+    "vn1": -13.705,
+    "vn2": -13.702
    },
    "calibration_db": 0.0,
    "gain_db": 0.0,
-   "total_gain_db": -14.244,
+   "total_gain_db": -13.704,
    "alignment": {
     "attack_rule": "new-bow and short strokes at their note-on (the renderer starts the bow's pre-roll early so that the stroke lands on the note-on); slurred notes, which enter by crossfade, are left out (articulation from its report)",
-    "entry_xcorr_lag_ms": 2.83,
-    "entries": 181,
-    "after_silence_xcorr_lag_ms": -11.66,
+    "entry_xcorr_lag_ms": 2.19,
+    "entries": 176,
+    "after_silence_xcorr_lag_ms": -10.98,
     "after_silence_notes": 13,
     "entry_lag_ms_by_quarter": [
-     -10.51,
-     -0.08,
-     3.4,
-     3.34
+     -10.82,
+     -1.59,
+     3.51,
+     3.86
     ],
     "entry_per_note_lag_ms_median": 0.0,
     "entry_per_note_lag_ms_p10_p90": [
-     -7.0,
-     12.0
+     -9.0,
+     8.5
     ],
     "requested_latency_ms": 0,
-    "all_notes_xcorr_lag_ms": -0.15,
-    "all_notes": 591,
-    "all_notes_per_note_lag_ms_median": 5.0,
+    "all_notes_xcorr_lag_ms": -0.5,
+    "all_notes": 589,
+    "all_notes_per_note_lag_ms_median": 6.0,
     "compensation_ms": 0.0,
-    "entry_lag_after_ms": 2.83,
-    "time_base_lag_ms": 2.28
+    "entry_lag_after_ms": 2.19,
+    "time_base_lag_ms": 2.27,
+    "time_base_after_compensation_ms": 2.27
    },
    "hall_re_dry_db_program": 4.0,
-   "wet_db": -4.37,
-   "c80_db_impulse": 8.74,
+   "wet_db": -4.56,
+   "c80_db_impulse": 8.89,
    "seats": {
     "va": {
      "az": -10,
@@ -73,7 +74,7 @@
      "width": 0.35
     }
    },
-   "level_when_playing_lufs": -31.47
+   "level_when_playing_lufs": -30.75
   },
   "piano": {
    "renderer": "piano",
@@ -90,37 +91,38 @@
    "offset_s": -0.5,
    "raw_scale_db": 0.0,
    "raw_scale_estimates": {},
-   "calibration_db": 0.302,
+   "calibration_db": 0.347,
    "gain_db": -1.0,
-   "total_gain_db": -0.698,
+   "total_gain_db": -0.653,
    "alignment": {
     "attack_rule": "every note-on (the samples are onset-aligned to 0.2 ms)",
-    "entry_xcorr_lag_ms": 1.47,
+    "entry_xcorr_lag_ms": 1.5,
     "entries": 329,
-    "after_silence_xcorr_lag_ms": 0.79,
+    "after_silence_xcorr_lag_ms": 0.97,
     "after_silence_notes": 7,
     "entry_lag_ms_by_quarter": [
      null,
      null,
-     1.41,
-     1.56
+     1.42,
+     1.62
     ],
     "entry_per_note_lag_ms_median": 1.0,
     "entry_per_note_lag_ms_p10_p90": [
      0.0,
-     4.199999999999989
+     4.0
     ],
     "requested_latency_ms": 0,
-    "all_notes_xcorr_lag_ms": 1.6,
+    "all_notes_xcorr_lag_ms": 1.62,
     "all_notes": 330,
     "all_notes_per_note_lag_ms_median": 1.0,
     "compensation_ms": 0.0,
-    "entry_lag_after_ms": 1.47,
-    "time_base_lag_ms": 0.4
+    "entry_lag_after_ms": 1.5,
+    "time_base_lag_ms": 0.4,
+    "time_base_after_compensation_ms": 0.4
    },
    "hall_re_dry_db_program": 4.0,
-   "wet_db": -5.55,
-   "c80_db_impulse": 9.74,
+   "wet_db": -5.63,
+   "c80_db_impulse": 9.8,
    "seats": {
     "alto": {
      "az": 0,
@@ -158,17 +160,20 @@
      "width": 0.7
     }
    },
-   "level_when_playing_lufs": -30.01
+   "level_when_playing_lufs": -29.18
   }
  },
  "calibration": {
   "piano": {
-   "key": "v2:44ac2ef08382403e:b8ead12081fd2b83:aa447cbe4d28dc3f:a168f551556ad5c4",
+   "key": "v4:19001b7bd8388335:b8ead12081fd2b83:aa447cbe4d28dc3f:ed64ef6025335e82:a8544f2aec877a7d",
    "lufs_raw": -33.673,
    "raw_scale_db": 0.0,
    "stems": 4,
    "note": "four-part mf chorale, placed dry sum, pre-normalisation scale",
    "time_base_lag_ms": 0.4,
+   "time_base_search_ms": 30,
+   "time_base_at_search_edge": false,
+   "time_base_global_peak_ms": 0.4,
    "time_base_notes": 56,
    "time_base_per_note_median_ms": 0.0,
    "time_base_per_note_p10_p90_ms": [
@@ -177,106 +182,113 @@
    ]
   },
   "quartet": {
-   "key": "v2:b32c34e0dd47ed48:b8ead12081fd2b83:aa447cbe4d28dc3f:a168f551556ad5c4",
-   "lufs_raw": -33.371,
-   "raw_scale_db": -22.294,
+   "key": "v4:35716e98535d0c89:b8ead12081fd2b83:aa447cbe4d28dc3f:ed64ef6025335e82:a8544f2aec877a7d",
+   "lufs_raw": -33.326,
+   "raw_scale_db": -22.286,
    "stems": 4,
    "note": "four-part mf chorale, placed dry sum, pre-normalisation scale",
-   "time_base_lag_ms": 2.28,
+   "time_base_lag_ms": 2.27,
+   "time_base_search_ms": 30,
+   "time_base_at_search_edge": false,
+   "time_base_global_peak_ms": 2.27,
    "time_base_notes": 56,
-   "time_base_per_note_median_ms": 2.0,
+   "time_base_per_note_median_ms": 1.0,
    "time_base_per_note_p10_p90_ms": [
     0.0,
-    4.0
+    3.5
    ]
   }
  },
  "inter_group": {
   "quartet-piano": {
-   "entry_lag_difference_ms": 1.36,
+   "entry_lag_difference_ms": 0.69,
    "entry_lag_difference_ms_by_quarter": [
     null,
     null,
-    1.99,
-    1.78
+    2.09,
+    2.24
    ],
-   "shared_onsets": 192,
-   "direct_xcorr_lag_ms": -2.46,
-   "time_base_difference_ms": 1.88
+   "shared_onsets": 190,
+   "direct_xcorr_lag_ms": -0.34,
+   "direct_xcorr_prominence": 1.096,
+   "shared_attacks": 47,
+   "direct_xcorr_lag_ms_attacks": -0.71,
+   "direct_xcorr_prominence_attacks": 1.107,
+   "time_base_difference_ms": 1.87
   }
  },
+ "alignment_gate": "time base difference between groups (timing probe) under 5.0 ms; doubled-onset lags are information",
  "alignment_ok": true,
- "alignment_worst_ms": 2.46,
+ "alignment_worst_ms": 1.87,
  "output": {
   "wav": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/orchestration/out/skeleton_quintet.wav",
   "m4a": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/orchestration/out/skeleton_quintet.m4a",
-  "duration_s": 241.87,
+  "duration_s": 234.09,
   "format": "48000 Hz, 2 ch, PCM_24",
   "true_peak_dbtp_wav": -1.0,
-  "true_peak_dbtp_m4a": -1.06,
-  "normalise_gain_db": 2.62,
-  "integrated_lufs": -22.43,
-  "loudness_range_lu": 20.3,
-  "short_term_max_lufs": -13.51,
-  "stereo_correlation": 0.522,
-  "mono_fold_down_db": -1.19,
-  "hall_re_dry_db": 4.07,
+  "true_peak_dbtp_m4a": -0.99,
+  "normalise_gain_db": 3.1,
+  "integrated_lufs": -21.85,
+  "loudness_range_lu": 20.44,
+  "short_term_max_lufs": -13.43,
+  "stereo_correlation": 0.541,
+  "mono_fold_down_db": -1.13,
+  "hall_re_dry_db": 4.13,
   "clicks_away_from_onsets": 0,
-  "click_times_s": []
+  "click_times_s": [],
+  "periodic_candidates_dropped": 2
  },
  "balance_where_all_play": {
-  "seconds": 69.1,
-  "quartet": -30.24,
-  "piano": -29.18
+  "seconds": 68.0,
+  "quartet": -29.5,
+  "piano": -28.36
  },
  "loudness_curve_5s_lufs": [
+  -36.8,
   -37.4,
-  -38.3,
-  -38.4,
-  -36.7,
-  -35.5,
-  -32.8,
-  -31.7,
-  -30.9,
-  -29.5,
-  -27.4,
-  -26.1,
-  -31.2,
-  -31.5,
-  -28.6,
-  -25.8,
-  -25.0,
-  -21.4,
-  -17.5,
-  -18.4,
-  -19.4,
-  -38.5,
-  -35.7,
-  -36.9,
-  -37.6,
-  -39.3,
-  -37.2,
-  -32.8,
-  -32.3,
-  -34.0,
-  -30.2,
-  -27.7,
-  -26.5,
-  -29.7,
-  -35.3,
+  -37.3,
+  -36.3,
+  -34.9,
+  -30.8,
+  -31.0,
+  -30.6,
   -28.8,
-  -20.3,
-  -15.7,
-  -14.5,
-  -25.0,
+  -26.1,
   -28.2,
-  -26.5,
-  -22.6,
+  -30.9,
+  -30.0,
+  -26.2,
+  -24.6,
+  -21.8,
+  -17.3,
+  -17.6,
+  -18.7,
+  -36.4,
+  -31.9,
+  -33.3,
+  -37.1,
+  -38.3,
+  -37.1,
+  -32.6,
+  -31.6,
+  -32.5,
+  -30.1,
+  -26.4,
+  -25.9,
+  -31.8,
+  -33.9,
+  -27.5,
   -18.6,
+  -15.0,
+  -14.7,
+  -27.1,
+  -27.0,
+  -23.7,
   -19.3,
-  -27.4,
-  -31.2,
-  -33.2,
-  -36.0
+  -16.7,
+  -20.6,
+  -31.0,
+  -32.5,
+  -34.2
  ]
 }
