@@ -38,7 +38,8 @@ writes `evidence/probe.json`; `python3 qa_orchestra.py` (skeleton stems, instrum
 demo, final file) writes `evidence/qa.json`. Numbers below are from the current commit.
 
 **Pitch (A4 = 440 Hz).** Probe: 112 of 112 held and slurred notes measured, median 1.0 cents, worst
-7.8 cents. Skeleton stems: 1287 of 1311 notes measured, median 0.8 c, p95 4.2 c. The one note over
+7.8 cents. Skeleton stems: 1287 of 1311 notes measured, median 0.8 c, p95 4.2 c (hn.2 reads about
+3-4 c flat by design: a second track of a part is detuned a few cents, see Seating). The one note over
 25 c is a real defect, not a measuring error: a 0.40 s slurred tuba Eb1 in Climax I (85.94 s) sounds
 about 50 c flat (YIN -50 c; harmonics 2-5 -49 c). At ff the Iowa tuba has no Eb1, so its D1 plays it,
 and that recording is about 50 c flatter in its first half second than in its body (raw D1: -71 c at
