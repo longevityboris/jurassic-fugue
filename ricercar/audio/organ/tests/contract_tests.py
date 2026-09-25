@@ -15,6 +15,9 @@ usage: python3 tests/contract_tests.py [--keep]
 5. folding below the pedal compass (warning, count) and --no-fold (error); zero-length note.
 6. stems: the stems sum to the dry mix (--no-reverb); lead-in and anticipation of the first sound;
    velocity has no effect; two renders are identical.
+
+Each promise is then checked (`checks` in results.json, PASS/FAIL printed); the exit code is 1 if
+any check fails.
 """
 from __future__ import annotations
 
@@ -202,9 +205,44 @@ def main():
     res['deterministic_identical'] = bool(np.array_equal(xa, xc))
     res['velocity_max_abs_diff'] = float(np.abs(xa - xb).max())
     res['determinism_max_abs_diff'] = float(np.abs(xa - xc).max())
+
+    # verdicts: what CONTRACT.md promises, as pass/fail --------------------------------------------
+    pv = [pl[r]['k_level_db'] for r in ('pedal8', 'pedal16+8', 'pedal16+8+4', 'pedal_plenum_reed')]
+    sw_, ks, fo_, stm = res['swell'], res['key_sharing'], res['folding'], res['stems']
+    checks = {
+        'HW ladder: level never falls by more than 0.5 dB from flute8 to plenum_reed': res['ladder_levels_rise'],
+        'HW ladder: plenum has >= 6 dB more energy above 2 kHz than flute8': res['ladder_brightness_rises_flute_to_plenum'],
+        'PED ladder: pedal8 < pedal16+8 < pedal16+8+4 < pedal_plenum_reed': all(b > a for a, b in zip(pv, pv[1:])),
+        'swell: closed is 15-24 dB below open': -24 <= sw_['closed_minus_open_db'] <= -15,
+        'swell: closed is darker (lower centroid, less above 2 kHz)': sw_['closed_centroid'] < sw_['open_centroid']
+        and sw_['closed_above_2k_db'] < sw_['open_above_2k_db'],
+        'swell: reopened within 1.5 dB of open': abs(sw_['reopened_db'] - sw_['open_db']) <= 1.5,
+        'swell: CC11 ignored on a division not enclosed (within 1 dB)': abs(sw_['not_enclosed_level_change_db']) <= 1.0,
+        'organ: text events change registration and move a voice': res['text_events']['ok'],
+        'preset plenum draws the HW plenum (5 stops with the Mixtur)': len(res['preset_plenum_HW_stops']) == 5
+        and any('Mixtur' in s for s in res['preset_plenum_HW_stops']),
+        'custom stop list resolves (accents, case, punctuation ignored)': res['custom_list_HW_stops'] == ["Gedackt flött 8'", "Octava 4'"],
+        'unknown registration name is an error': res['unknown_registration']['exit_code'] != 0,
+        'key sharing: one set of pipes (same events, level within 0.5 dB)': ks['shared_keys'] == 1
+        and ks['pipe_events_two'] == ks['pipe_events_one'] and abs(ks['level_two_minus_one_db']) <= 0.5,
+        'hand-over between voices is re-struck': ks['handover_restrikes'] == 1 and ks['handover_pipe_events'] == 2,
+        'folding: out-of-compass key folded and counted; --no-fold is an error': fo_['folded'] == {'PED': 1}
+        and fo_['no_fold_exit_code'] != 0,
+        'zero-length note played as a touch, with a warning': any('zero-length' in w for w in fo_['warnings']),
+        'stems sum to the dry mix (< -80 dBFS difference)': stm['max_abs_diff_sum_vs_mix_dbfs'] < -80,
+        'first sound within 45 ms before the lead-in (anticipation only)': stm['lead_in_s'] - 0.045 <= stm['first_sound_s'] <= stm['lead_in_s'],
+        'velocity ignored (bit-identical)': res['velocity_ignored_identical'],
+        'deterministic (bit-identical)': res['deterministic_identical'],
+    }
+    res['checks'] = {k: bool(v) for k, v in checks.items()}
+    res['all_pass'] = all(res['checks'].values())
     json.dump(res, open(HERE / 'tests' / 'results.json', 'w'), indent=1, ensure_ascii=False)
     print(json.dumps(res, indent=1, ensure_ascii=False))
+    for k, v in res['checks'].items():
+        print(('PASS ' if v else 'FAIL ') + k)
     print('renders in', TMP)
+    print('ALL PASS' if res['all_pass'] else 'SOME CHECKS FAILED')
+    sys.exit(0 if res['all_pass'] else 1)
 
 
 if __name__ == '__main__':

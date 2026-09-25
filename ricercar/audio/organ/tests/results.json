@@ -152,5 +152,27 @@
  "velocity_ignored_identical": true,
  "deterministic_identical": true,
  "velocity_max_abs_diff": 0.0,
- "determinism_max_abs_diff": 0.0
+ "determinism_max_abs_diff": 0.0,
+ "checks": {
+  "HW ladder: level never falls by more than 0.5 dB from flute8 to plenum_reed": true,
+  "HW ladder: plenum has >= 6 dB more energy above 2 kHz than flute8": true,
+  "PED ladder: pedal8 < pedal16+8 < pedal16+8+4 < pedal_plenum_reed": true,
+  "swell: closed is 15-24 dB below open": true,
+  "swell: closed is darker (lower centroid, less above 2 kHz)": true,
+  "swell: reopened within 1.5 dB of open": true,
+  "swell: CC11 ignored on a division not enclosed (within 1 dB)": true,
+  "organ: text events change registration and move a voice": true,
+  "preset plenum draws the HW plenum (5 stops with the Mixtur)": true,
+  "custom stop list resolves (accents, case, punctuation ignored)": true,
+  "unknown registration name is an error": true,
+  "key sharing: one set of pipes (same events, level within 0.5 dB)": true,
+  "hand-over between voices is re-struck": true,
+  "folding: out-of-compass key folded and counted; --no-fold is an error": true,
+  "zero-length note played as a touch, with a warning": true,
+  "stems sum to the dry mix (< -80 dBFS difference)": true,
+  "first sound within 45 ms before the lead-in (anticipation only)": true,
+  "velocity ignored (bit-identical)": true,
+  "deterministic (bit-identical)": true
+ },
+ "all_pass": true
 }
