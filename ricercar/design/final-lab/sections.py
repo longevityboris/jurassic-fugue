@@ -17,15 +17,13 @@ sys.path.insert(0, os.path.join(HERE, '..', '..', 'tools'))
 import fl  # noqa: E402
 from lyparse import parse_voice  # noqa: E402
 
-SECTIONS = [
-    (1, 1, 12, 'expo', 'Exposition, entries 1-3'),
-    (2, 13, 19, 'entry4_episode', 'Exposition entry 4 and Episode 1'),
-    (3, 20, 29, 'stretto_liquidation', 'Stretto, liquidation, Climax I'),
-    (4, 30, 34, 'arioso', 'Arioso dolente and the German-sixth pivot'),
-    (5, 35, 41, 'inversa', 'Fuga inversa and transition'),
-    (6, 42, 50, 'pedal_climax', 'Dominant pedal, combination, Climax II, plagal turn'),
-    (7, 51, 62, 'apotheosis_coda', 'Apotheosis (cantus firmus) and coda'),
-]
+from piece import SECTIONS as _PIECE  # noqa: E402
+from build_sk import offsets as _offsets  # noqa: E402
+
+_OFF = _offsets()
+# (number, first bar, last bar, slug, title), derived from piece.py so the starters always match SK_final.ly
+SECTIONS = [(i + 1, _OFF[s['id']], _OFF[s['id']] + s['bars'] - 1, s['id'].split('_', 1)[1], s['title'])
+            for i, s in enumerate(_PIECE)]
 NAMES = {'soprano': 'S', 'alto': 'A', 'tenor': 'T', 'bass': 'B'}
 
 

@@ -10,15 +10,15 @@ soprano = \absolute {
 }
 alto = \absolute {
   % 30
-  c'8 c'8 c'8 c'8 c'8 c'8 des'8 des'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 f'8 f'8 | ges'8 ges'8 ges'8 ges'8 ees'8 ees'8 ees'8 ees'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 |
+  a8 a8 c'8 c'8 c'8 c'8 des'8 des'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 f'4 | f'8 f'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 |
   % 34
   e'8 e'8 e'8 e'8 e'8 e'8 e'8 e'8 |
 }
 tenor = \absolute {
   % 30
-  f8 f8 f8 f8 a8 a8 bes8 bes8 | ges8 ges8 ges8 ges8 ges8 ges8 f8 f8 | bes8 bes8 bes8 bes8 a8 a8 a8 a8 | a8 a8 a8 a8 a8 a8 a8 a8 |
+  f8 f8 a8 a8 a8 a8 bes8 bes8 | ges8 ges8 ges8 ges8 ges8 ges8 aes4 | ges8 ges8 bes8 bes8 bes8 bes8 bes8 bes8 | bes8 bes8 bes8 bes8 a8 a8 a8 a8 |
   % 34
-  gis8 gis8 gis8 gis8 gis8 gis8 gis8 gis8 |
+  gis8 gis8 a8 a8 gis8 gis8 gis8 gis8 |
 }
 bass = \absolute {
   % 30
