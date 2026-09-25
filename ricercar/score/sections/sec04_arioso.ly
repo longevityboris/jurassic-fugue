@@ -8,22 +8,51 @@
 %   (voice exchange at 30:2.5), tenor F3-A3 against the soprano's A4-F4 (30:3); soprano and tenor swap
 %   D-flat and B-flat at 30:4 (i6/4 over the F pedal).
 % * 30:4.5-32:1 tenor: CS1's chromatic core at its own pitch, one note a beat (D-flat C B-flat A A-flat
-%   G-flat): the lament accompanies S2 as it accompanied S1 in the exposition. Its A at 31:3 makes A dim7
-%   over E-flat with the same outer notes as the Climax I chord (29:1), recalled pp.
-% * alto: the head neighbour and its mirror around F (F E-flat G-flat F), twice: 31:1 F held over the
-%   bass E-flat (9-8) and 32:3 G-flat held over the bass F (b9-8). With the kept 7-6 (32:1) and 4-3 (tenor
-%   32:3-33:3) the dominant becomes a chain of resolutions: b9-8 (32:3.5), b6-5 (soprano, 32:4.5), 8-7 (the
-%   seventh E-flat enters by step, 33:1), 4-3 (33:3). The alto then holds E-flat, the German sixth's D-sharp,
-%   and resolves it to E (34:1); its last-beat F-E (34:4) is the inversion's neighbour, heard just before
-%   the bass states it at 35.
-% Prepared suspensions (suspensions.py): 31:1 alto 9-8, 32:1 alto 7-6 (kept), 32:3 alto 9-8 (b9 over V),
-%   32:3 tenor 4-3 (kept): 4 on strong beats, 2 of them new.
-% Flags (check.py/strict.py, bars 29-35): no new D4?, DIR, MEL, XREL, ACC or ACC2. Kept from the skeleton:
-%   MEL 32:1 bass D-G-flat (the lament's diminished fourth); XREL 33:4 and 33:4.5 alto E-flat then bass E
-%   (the enharmonic pivot itself). ACC2 in the window: 6, all the skeleton's (it had 7; 32:3 alto E-flat
-%   over F is gone). Spelled dissonances check.py cannot see, all intended: 31:3 tenor A3 / alto G-flat4
-%   (inside A dim7), 32:3 alto G-flat4 over bass F2 (the b9 suspension), 34:1 tenor G-sharp3 / soprano C5
-%   (the pivot's augmented triad, skeleton), 34:4 tenor G-sharp3 / alto F4 (upper neighbour, weak eighth).
+%   G-flat): the lament accompanies S2 as it accompanied S1 in the exposition. Over the held E-flat bass it
+%   makes ii dim 6 (31:1), ii half-dim 6/5 (31:2, its B-flat a passing chord seventh), vii dim 4/3 = A dim7
+%   over E-flat (31:3: the Climax I chord of 29:1 with the same outer notes, recalled pp) and, with A-flat,
+%   the rootless V7/iv (31:4).
+% * alto: the tonal mirror's upper neighbour F G-flat F at bar scale. F4 (30:4) rises to G-flat4 on the
+%   downbeat of 31, in contrary motion to the bass F-E-flat, completing ii dim 6; it holds G-flat as the
+%   common tone of the three chords of bar 31, so the alto stands still exactly where the tenor's lament
+%   moves every beat (rule 5: held notes where the other line moves). Back to the kept F (31:4), which
+%   becomes the arioso's peak, the 7-6 over G-flat (32:1); its E-flat (32:2) stays as the seventh of V,
+%   prepared as a common tone of the iv6, and is re-read as the German sixth's D-sharp rising to E (34:1).
+%   33:2.5: the mirror sigh at eighth scale (E-flat F E-flat), F B-flat C over F2 for one eighth, so that at
+%   33:3 the V7's third (tenor A) and seventh (alto E-flat) are struck together. The alto's last-beat F-E
+%   (34:4) is the inversion's neighbour, heard just before the bass states it at 35.
+% * Bar 32's alto is the skeleton's. The previous version tied F4 from 30:4 into 31:1 (9-8 over E-flat)
+%   and set G-flat4 at 32:2.5-32:3 (b9-8 over F). Both were the bass's own step shadowed two octaves up and
+%   delayed by the syncopation (F4/F2 -> E-flat4/E-flat2; G-flat4/G-flat2 -> F4/F2), i.e. double octaves,
+%   not suspensions. The first also left 31:1 without G-flat and the second made 32:2.5 root-position
+%   G-flat major. Both were removed.
+% Dominant chain: 7-6 (alto, 32:1), b6-5 (soprano, 32:4.5), 4-3 (tenor, 33:3).
+% Prepared suspensions (suspensions.py): 32:1 alto 7-6, 32:3 tenor 4-3: 2 on strong beats, both the skeleton's.
+% Harmony against the blueprint's section-4 labels: 30, 31:1, 31:4 and 32-34 as given (bar 32 as in the
+%   skeleton: 32:2 iv6, 32:2.5 iv6/5 with S2's passing D-flat, 32:3 cadential 6/4 with E-flat). Added inside
+%   bar 31 (the skeleton held C dim over E-flat all bar): 31:2 ii half-dim 6/5 (C E-flat G-flat B-flat),
+%   31:3 vii dim 4/3 (A dim7 over E-flat). Added at 33:2.5: F B-flat C (sus4, one eighth).
+% Flags (check.py/strict.py, bars 29-35): identical to the skeleton's; no new D4?, DIR, MEL, XREL, ACC or
+%   ACC2. MEL 32:1 bass D-G-flat (the lament's diminished fourth); XREL 33:4 and 33:4.5 alto E-flat then bass
+%   E (the enharmonic pivot itself). ACC2: 7: 29:1 alto A4/bass E-flat2 (section 3's A dim7); 32:1 alto F4
+%   against soprano E-flat5, tenor G-flat3 and bass G-flat2 (the 7-6); 32:3 alto E-flat4/bass F2 (the chord
+%   seventh of V, prepared as a common tone from 32:2) and tenor B-flat3/bass F2 (the 4-3); 33:1 soprano
+%   C5/tenor B-flat3 (the held fourth under the fifth).
+% Spelled dissonances check.py cannot see (it measures semitones), all intended: 31:3 tenor A3/alto G-flat4
+%   (diminished seventh inside A dim7), 34:1 tenor G-sharp3/soprano C5 (the pivot's diminished fourth,
+%   skeleton), 34:4 tenor G-sharp3/alto F4 (diminished seventh, upper neighbour on a weak eighth).
+% For the design owner (outside this file):
+% * Piano idiom (for the blueprint's section-4 notes): from 30:3 the tenor lies 16-21 semitones above the
+%   bass, so the left hand cannot hold the bass under the tenor's pulse. Strike each new bass note alone and
+%   catch it with the sostenuto pedal (30:1, 31:1, 31:4, 32:1, 32:3, 33:1, 34:1), let the left hand take the
+%   tenor pulse, change the damper per harmony. 31:4 (D2 A-flat3 F4 F5) and 32:3 (F2 B-flat3 E-flat4
+%   D-flat5) fit neither hand: spread them, bass slightly before the beat. At 31:1 the right hand takes the
+%   tenor's C4 (C4 G-flat4 C5, an octave). 34:1 needs a major tenth (E2-G-sharp3): sostenuto as above.
+%   The quartet has no problem, and MIDI is unaffected.
+% * plan.json: the tenor 30:4.5-32:1 (the lament) is the section's moving inner line but has the free role
+%   (-4/-0.2), the same level as the alto. Give it about +2 piano / +0.2 strings. A 'cs' role would make
+%   splice_check compare these notes with the skeleton and fail; a new role name (e.g. "lament") in role_boost
+%   and role_level is applied by perform.py and ignored by splice_check.
 soprano = \absolute {
   % 30
   c''4. a'8 f'4 des''8 bes'8 | c''2. f''8 bes'8 | ees''4. des''8 des''4. c''8 | c''1 |
@@ -32,7 +61,7 @@ soprano = \absolute {
 }
 alto = \absolute {
   % 30
-  a8 a8 a8 c'8 c'8 c'8 f'8 f'8 ~ | f'8 f'8 ees'8 ges'8 ges'8 ges'8 f'4 | f'8 f'8 ees'8 ges'8 ges'8 f'8 f'8 f'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 |
+  a8 a8 a8 c'8 c'8 c'8 f'8 f'8 | ges'8 ges'8 ges'8 ges'8 ges'8 ges'8 f'4 | f'8 f'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 | ees'8 ees'8 ees'8 f'8 ees'8 ees'8 ees'8 ees'8 |
   % 34
   e'8 e'8 e'8 e'8 e'8 e'8 f'8 e'8 |
 }
