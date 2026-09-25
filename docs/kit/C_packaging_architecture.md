@@ -204,6 +204,26 @@ Jev facts from docs.typesafe.ai, read this session:
 
 This takes about one day of work and under $0.10 of Jev input. It decides whether Jev is a triage tool here or stays optional. The calibration runs again as a test whenever the pinned model id changes.
 
+**Preliminary evidence** from a sibling's probe (`docs/kit/jev_probe_summary.json`, uncommitted and still in progress when this was written; the figures may change):
+
+| Probe | Result | What it means |
+|---|---|---|
+| Musical quality from raw `.ly`, single items | AUC 0.545 (n=40) | Chance level. |
+| Musical quality from raw `.ly`, pairwise | accuracy 0.47 to 0.59; picked the first slot 62 to 95% of the time | Chance level with strong position bias. |
+| Same pairwise probe on a code-rendered beat grid | accuracy 0.70 (n=56, 95% CI 0.57 to 0.80) | Text representation matters. |
+| Routing findings to a fixer role | 0.86 (n=100) | Strong enough to use. |
+| Mapping findings to a section | 0.89 (n=98) | Code does this exactly from `bar:beat`. |
+| Finding severity | 0.67 with context, 0.61 redacted | Marginal. |
+
+That fits the plan above and sharpens it:
+
+* **ship `route`**;
+* **use `triage` only as a prior**, with low-confidence cases sent to Opus;
+* **keep `rank` experimental**, fed with grid or profile text, never `.ly`, and always asked in both orders to cancel the slot bias;
+* **do section mapping in code.**
+
+The calibration gate stays mandatory.
+
 ---
 
 ## 8. Repository and template layout
