@@ -46,7 +46,6 @@ import re
 import shutil
 import subprocess
 import sys
-import threading
 import time
 from bisect import bisect_right
 from collections import defaultdict
@@ -143,6 +142,7 @@ def load_midi(path, warn):
         return f'{base[ti]}.ch{ch + 1}' if len(chans[ti]) > 1 else base[ti]
     voices = defaultdict(lambda: {'notes': [], 'cc11': []})
     pending = {}
+    orphan_off = {}          # note-off with nothing pending: a zero-length note if its note-on follows at the same tick
     # note-offs before note-ons at the same tick
     evs.sort(key=lambda e: (e[0], 0 if (e[2].type == 'note_off' or (e[2].type == 'note_on' and e[2].velocity == 0)) else 1))
     last_tick = 0
@@ -159,10 +159,15 @@ def load_midi(path, warn):
             if k in pending:                        # re-press without release: close the old note
                 t0 = pending.pop(k)
                 voices[v]['notes'].append([m.note, t0, tick])
+            if orphan_off.pop(k, None) == tick:     # note-on and note-off on the same tick
+                voices[v]['notes'].append([m.note, tick, tick])
+                continue
             pending[k] = tick
         else:
             if k in pending:
                 voices[v]['notes'].append([m.note, pending.pop(k), tick])
+            else:
+                orphan_off[k] = tick
     for (v, note), t0 in pending.items():
         warn(f'{v}: note {note} at tick {t0} has no note-off; closed after 2 s')
         voices[v]['notes'].append([note, t0, None])
@@ -289,10 +294,17 @@ def build_timelines(reg_arg, voices, tmap, texts, bank, warn):
             raise SystemExit(f'voice {v}: unknown division {d}')
     reg_tl = {d: [(-1e9, cur[d])] for d in DIVS}
     for t, _, d, name in sorted(changes, key=lambda c: (c[0], c[1])):
-        reg_tl[d].append((t, regs.stops(d, name)))
+        if t <= 1e-6 and len(reg_tl[d]) == 1:          # a change at the very start sets the initial state
+            reg_tl[d][0] = (-1e9, regs.stops(d, name))
+        else:
+            reg_tl[d].append((t, regs.stops(d, name)))
     div_tl = {v: [(-1e9, d)] for v, d in vdiv.items()}
     for t, v, d in sorted(moves):
-        div_tl.setdefault(v, [(-1e9, 'HW')]).append((t, d))
+        tl = div_tl.setdefault(v, [(-1e9, 'HW')])
+        if t <= 1e-6 and len(tl) == 1:
+            tl[0] = (-1e9, d)
+        else:
+            tl.append((t, d))
     enclosed = set(side.get('enclosed', []))
     return div_tl, reg_tl, side, enclosed
 
@@ -597,7 +609,6 @@ def main(argv=None):
     n_total = int((a.lead_in + last + 4.0) * SR)
     vnames = sorted(voices)
     stems = {v: np.zeros((n_total, 2), np.float32) for v in vnames}
-    locks = {v: threading.Lock() for v in vnames}
     samples = SampleCache()
     rels = ReleaseCache(samples)
     rel_stats = []
@@ -610,26 +621,29 @@ def main(argv=None):
     def work_stable(item):
         fname, evs = item
         rng = np.random.default_rng(stable(f'{fname}|{a.seed}'))
-        local_stats = []
+        local_stats, parts = [], []
         for v, sk, k, t0, t1, pc in sorted(evs, key=lambda e: (e[3], e[1])):
             y, _ = render_event(bank, pc, t1 - t0, samples, rels, rng, local_stats)
-            i0 = int(round((t0 + a.lead_in) * SR))
-            n = min(len(y), n_total - i0)
-            if n <= 0:
-                continue
-            with locks[v]:
-                stems[v][i0:i0 + n] += y[:n]
-                end_max[0] = max(end_max[0], i0 + n)
+            parts.append((v, int(round((t0 + a.lead_in) * SR)), y))
         used = {fname}
         for e in evs:
             used |= {f for f, _ in e[5].attacks} | {r[0] for r in e[5].releases}
         samples.drop(used)
         rels.drop(used)
-        return local_stats
+        return local_stats, parts
     t_r = time.time()
+    items = sorted(groups.items())
+    chunk = max(8, 2 * a.jobs)
     with ThreadPoolExecutor(a.jobs) as ex:
-        for st in ex.map(work_stable, sorted(groups.items())):
-            rel_stats.extend(st)
+        for c0 in range(0, len(items), chunk):
+            # results are added in a fixed order, so renders are bit-identical from run to run
+            for st, parts in ex.map(work_stable, items[c0:c0 + chunk]):
+                rel_stats.extend(st)
+                for v, i0, y in parts:
+                    n = min(len(y), n_total - i0)
+                    if n > 0:
+                        stems[v][i0:i0 + n] += y[:n]
+                        end_max[0] = max(end_max[0], i0 + n)
     t_render = time.time() - t_r
     # swell box on enclosed divisions (per voice, where the voice sits on an enclosed division)
     for v in vnames:
