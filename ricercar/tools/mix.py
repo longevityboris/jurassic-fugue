@@ -72,7 +72,7 @@ import hall as hallmod  # noqa: E402  (audio/strings/hall.py: the shared Detmold
 
 SR = 48000
 CAL_DIR = RICERCAR / "orchestration" / "calibration"
-CAL_VERSION = 1           # bump when the calibration method (seating, loudness measure) changes
+CAL_VERSION = 2           # bump when the calibration method (seating, loudness measure) changes
 CAL_PARTS = {"piano": ["soprano", "alto", "tenor", "bass"], "quartet": ["vn1", "vn2", "va", "vc"],
              "orchestra": ["vn1", "vn2", "va", "vc"], "organ": ["soprano", "alto", "tenor", "bass"]}
 SCRIPTS = {"piano": AUDIO / "piano" / "render_piano.py", "quartet": AUDIO / "strings" / "render_quartet.py",
@@ -372,6 +372,9 @@ ATTACK_RULE = {
     "quartet": "new-bow and short strokes at their note-on (the renderer starts the bow's pre-roll early "
                "so that the stroke lands on the note-on); slurred notes, which enter by crossfade, are left out "
                "(articulation from its report)",
+    "orchestra": "new-bow / tongued and short notes at their note-on plus the seat's depth delay (the "
+                 "renderer's stems arrive seated; articulation and seats from its report); slurred notes are "
+                 "left out",
     "default": "notes after at least 100 ms of silence in their part",
 }
 
@@ -389,6 +392,14 @@ def attack_starts(renderer: str, rep: dict, by_track: dict, track_of: dict) -> d
             ts = [on for (on, off, key, vel, art) in j["note_list"] if art is None or art < 64 or art >= 96]
             out.setdefault(j["inst"], []).extend(ts)
         return {k: sorted(v) for k, v in out.items()}
+    if renderer == "orchestra":
+        delay = seat_delays(renderer, rep)
+        out = {}
+        for t in rep.get("tracks", []):
+            d = delay.get(t["name"], 0.0)
+            out[t["name"]] = sorted(on + d for (on, off, key, vel, art) in t.get("note_list", [])
+                                    if art is None or art < 64 or art >= 96)
+        return out
     return {stem_of[t]: entry_onsets(v) for t, v in by_track.items() if t in stem_of}
 
 
@@ -472,11 +483,62 @@ def calibrate(renderers: set, lead_in: float, force: bool) -> dict:
         lufs = pyln.Meter(SR).integrated_loudness(dry)
         cal[r] = {"key": key, "lufs_raw": round(float(lufs), 3), "raw_scale_db": round(g_db, 3),
                   "stems": len(stems), "note": "four-part mf chorale, placed dry sum, pre-normalisation scale"}
+        cleanup_render(work / "render")
+        # timing probe: the same chorale with every note short (no bow pre-roll, no slur crossfade:
+        # a plain attack on the note-on), through the same render / offset / stem path as a mix
+        print(f"  timing probe {r} (the chorale, every note short)", flush=True)
+        spec["assignments"] = [dict(x, articulation="short") for x in spec["assignments"]]
+        sp.write_text(json.dumps(spec))
+        with contextlib.redirect_stdout(io.StringIO()):
+            rep = orchestrate.build(score, plan, sp, work / "probe", quiet=True)
+        side = work / "probe" / ("cal.orchestra.json" if r == "orchestra" else "cal.registration.json")
+        res = render_group(r, work / "probe" / "cal.mid", work / "probe_render", lead_in, [], True,
+                           side if side.exists() else None)
+        n = max(sf.info(str(p)).frames for _, p in res["stems"]) + SR
+        stems = load_stems(res["stems"], res["offset_s"], lead_in, n)
+        gm = {"renderer": r, "parts": {p: {"track": orchestrate.part_track(r, p, {})["track"],
+                                           "instrument": orchestrate.part_track(r, p, {})["instrument"]}
+                                       for p in parts}}
+        by_track = midi_notes(work / "probe" / "cal.mid")
+        track_of = stem_track_map(gm, stems)
+        delays = seat_delays(r, res["report"])
+        nfr = n // (SR // 1000)
+        tot, pn, cnt = None, [], 0
+        for name, x in stems.items():
+            tr = track_of.get(name)
+            if tr not in by_track:
+                continue
+            ts = [on + lead_in + delays.get(name, 0.0) for on, *_ in by_track[tr]]
+            env = fit(onset_envelope(x), nfr)
+            c = xcorr_curve(env, onset_train(ts, nfr)) * len(ts)
+            tot = c if tot is None else tot + c
+            pn += list(per_note_lags(env, ts))
+            cnt += len(ts)
+        cal[r].update({"time_base_lag_ms": round(peak_of(tot), 2), "time_base_notes": cnt,
+                       "time_base_per_note_median_ms": float(np.median(pn)),
+                       "time_base_per_note_p10_p90_ms": [float(np.percentile(pn, 10)), float(np.percentile(pn, 90))]})
         cal_path.write_text(json.dumps(cal, indent=1))
-        shutil.rmtree(work / "render" / "stems", ignore_errors=True)
-        for p in (work / "render").glob("*.wav"):
-            p.unlink()
+        cleanup_render(work / "probe_render")
     return cal
+
+
+def cleanup_render(rdir: Path):
+    shutil.rmtree(rdir / "stems", ignore_errors=True)
+    shutil.rmtree(rdir / "render.stems", ignore_errors=True)
+    for p in rdir.glob("*.wav"):
+        p.unlink()
+    for p in rdir.glob("*.m4a"):
+        p.unlink()
+
+
+def seat_delays(renderer: str, rep: dict) -> dict:
+    """Orchestra stems arrive seated: {track: mean depth delay (s) of its players}."""
+    if renderer != "orchestra":
+        return {}
+    delay = {}
+    for j in rep.get("jobs", []):
+        delay.setdefault(str(j.get("label", "")).split("/")[0], []).append(float(j.get("seat_depth_m", 0.0)) / 343.0)
+    return {k: float(np.mean(v)) for k, v in delay.items()}
 
 
 # ----------------------------------------------------------------------------- placement
@@ -729,15 +791,31 @@ def main(argv=None):
                     mask[max(0, k - 60):k + 60] = 1.0
                 e["direct_xcorr_lag_ms"] = round(xcorr_lag(env_group[g] * mask, env_group[h] * mask)[0], 2)
             inter[f"{g}-{h}"] = e
+    # the gate: (1) the renderers' time bases, measured by the timing probe (the calibration chorale
+    # with every note short, through the same render / offset / stem path), agree; (2) where the
+    # groups double each other in this piece, their onsets coincide (direct cross-correlation)
+    for g, gm in groups.items():
+        tb = cal.get(gm["renderer"], {}).get("time_base_lag_ms")
+        report["groups"][g]["alignment"]["time_base_lag_ms"] = tb
+    checks = []
+    for key_, v in inter.items():
+        g, h = key_.split("-", 1)
+        tg = report["groups"][g]["alignment"]["time_base_lag_ms"]
+        th = report["groups"][h]["alignment"]["time_base_lag_ms"]
+        if tg is not None and th is not None:
+            v["time_base_difference_ms"] = round(tg - th, 2)
+            checks.append(abs(tg - th))
+        if "direct_xcorr_lag_ms" in v:
+            checks.append(abs(v["direct_xcorr_lag_ms"]))
     report["inter_group"] = inter
-    worst = max((abs(v["entry_lag_difference_ms"]) for v in inter.values()), default=0.0)
+    worst = max(checks, default=0.0)
     report["alignment_ok"] = worst < a.max_lag_ms
     report["alignment_worst_ms"] = round(worst, 2)
     for k, v in inter.items():
-        print(f"  {k}: attack lag difference {v['entry_lag_difference_ms']:+.2f} ms "
-              f"(by quarter {v['entry_lag_difference_ms_by_quarter']})"
-              + (f", direct {v['direct_xcorr_lag_ms']:+.2f} ms over {v['shared_onsets']} shared onsets"
-                 if "direct_xcorr_lag_ms" in v else ""))
+        print(f"  {k}: time base difference {v.get('time_base_difference_ms', float('nan')):+.2f} ms (probe)"
+              + (f", doubled onsets {v['direct_xcorr_lag_ms']:+.2f} ms over {v['shared_onsets']}"
+                 if "direct_xcorr_lag_ms" in v else "")
+              + f"; attacks in the music {v['entry_lag_difference_ms']:+.2f} ms")
     if not report["alignment_ok"]:
         (out.parent / f"{out.name}.mix.json").write_text(json.dumps(report, indent=1))
         raise SystemExit(f"alignment error {worst:.2f} ms exceeds {a.max_lag_ms} ms (report written)")

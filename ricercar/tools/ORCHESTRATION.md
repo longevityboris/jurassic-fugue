@@ -219,24 +219,33 @@ loud on every renderer. `gain_db` is applied on top. So the scoring changes the 
 it would on stage (a doubled line is louder, a solo softer), and nothing depends on how loud a
 group happens to be where it plays.
 
-**Alignment check.** Before placement (depth delays are physical), mix.py computes an onset
-envelope (1 ms frames, log-energy rises in four bands) of every stem and cross-correlates it with
-an impulse train at the times at which that stem's renderer starts an attack; the curves of a
-group's stems are summed and the peak is the group's lag. The difference between groups must be
-under `--max-lag-ms` (5 ms) or the mix stops. Attack times per renderer:
+**Alignment check.** Every stem is on the MIDI time base by construction (whole-sample offsets
+from the renderers' own reports). What is verified by cross-correlation, with an onset envelope
+(1 ms frames, log-energy rises in four bands) against impulse trains at MIDI note-on times:
 
-* piano: every note-on (its samples are onset-aligned to 0.2 ms);
-* quartet: new-bow and short strokes at their note-on (the renderer starts a stroke's bow pre-roll
-  15 ms early so that the stroke lands on the note-on); slurred notes are left out, because they
-  enter by a crossfade whose envelope peak depends on register (the cello's slurs peak up to 17 ms
-  late, the violins' within 2 ms), which is articulation, not time base;
-* orchestra, organ: notes after at least 100 ms of silence in their part (until their reports
-  give articulation).
+1. **Time base, per renderer (the gate).** A timing probe, cached with the calibration: the
+   calibration chorale with every note `short` (no bow pre-roll, no slur crossfade, a plain attack
+   on the note-on), orchestrated, rendered and loaded through exactly the path a mix uses. Each
+   stem's envelope is cross-correlated with its note-ons (orchestra: plus its seat's depth delay,
+   because its stems arrive seated), the curves of the renderer's stems are summed, the peak is
+   the renderer's lag. The groups' lags must agree within `--max-lag-ms` (5 ms).
+2. **Doublings in this piece (the gate, where there are any).** Where two groups play the same
+   onsets, their two envelopes, masked to +-60 ms around the shared onsets, are cross-correlated
+   directly: the lag must be under 5 ms. This is what a listener hears in a doubling.
+3. **Attacks in the music (information).** The same cross-correlation per stem against the notes
+   whose attack the renderer places on the note-on (piano: all; quartet and orchestra: new-bow,
+   tongued and short notes, from their reports, orchestra plus seat delay; organ: notes after
+   100 ms of silence), per group and per quarter of the piece, plus every note and notes after
+   silence. These depend on articulation by design: a bowed stroke after a rest starts its bow
+   noise 15 ms early and is caught there (-12 ms), a repeated note re-articulates out of a dip, a
+   cello slur peaks up to 17 ms late. They are reported, not gated.
 
-Reported alongside, for information: the lag per quarter of the piece, the lag over every note of
-the group's summed envelope, notes after silence, and where groups play the same onsets
-(doublings) the direct cross-correlation of their two envelopes, masked to +-60 ms around the
-shared onsets. Numbers: `groups.<g>.alignment`, `inter_group`.
+`--max-lag-ms` sets the tolerance. `latency_ms` (per group, ms or `"auto"`) shifts a group if a
+perceptual adjustment is wanted; by default nothing is shifted. Numbers: `groups.<g>.alignment`
+(`time_base_lag_ms`, `entry_xcorr_lag_ms` ...), `inter_group`, `alignment_worst_ms`.
+
+Measured time bases (`orchestration/calibration/calibration.json`, 56 probe notes each): piano
++0.4 ms (per note -1..+1), quartet +2.3 ms (0..+4), orchestra +1.5 ms (0..+3).
 
 **Hall.** `audio/strings/hall.py` (shared with the quartet renderer): `place_dry` seats each stem
 (constant-power pan, width, depth delay and attenuation) and `Hall("detmold")` is the measured
@@ -251,3 +260,41 @@ than 0.1 dB). `OUT.mix.json`: per group offsets, gains, calibration, lags, level
 seats, C80; the balance where all groups play; integrated loudness, loudness range, true peak of
 WAV and m4a, stereo correlation, mono fold-down, hall re dry, a click scan (1 ms bursts above
 12 kHz, 15 dB over their surroundings, away from onsets) and a 5 s loudness curve.
+
+## 6. Evidence
+
+**Quintet demo** (`orchestration/quintet_skeleton.json` on the 66-bar skeleton, 241.9 s; report
+`orchestration/out/skeleton_quintet.mix.json`, QA `orchestration/tests/results/qa_skeleton_quintet.json`,
+integrity `orchestration/out/skeleton_quintet/integrity.json`):
+
+* integrity: every part note is its voice's note at the declared octave, every score note is
+  played (soprano 183, alto 204, tenor 168, bass 138);
+* on the rendered stems (`tests/qa_mix.py`, independent of mix.py's measurements): 901 of 901 part
+  notes sound at their pitch, none dropped, no sound in rests or after the last note; strings
+  within 9 cents (p95 2.7-7.3), piano on its own stretch curve (bass 8vb about -15 cents, as its
+  README documents for the bottom octave); median onset per part -1..+2 ms from the MIDI;
+* alignment: time bases quartet - piano +1.9 ms; the 193 doubled onsets -2.9 ms; attacks in the
+  music +1.1 ms;
+* levels: the quartet's stems are brought back to its raw scale (-13.9 dB; the four instruments
+  agree within 0.01 dB); calibration puts the piano +0.3 dB; where both play (69 s) the quartet
+  sits at -30.3 LUFS and the piano at -28.5; hall +4.0 dB re dry for each group on this music;
+* master: 48 kHz / 24-bit, -22.2 LUFS integrated, loudness range 19.5 LU, true peak -1.0 dBTP
+  (m4a -1.1; ffmpeg ebur128 agrees), m4a sample-aligned with the WAV, no clicks away from onsets,
+  L/R correlation 0.53, mono fold-down -1.2 dB.
+
+**Orchestra adapter** (`tests/spec_chorale_orch_piano.json`: string sections, flute 8va, horn,
+piano; 29 s): rendered, aligned and mixed end to end; time bases orchestra - piano +1.1 ms,
+32 doubled onsets +0.1 ms.
+
+## 7. Limits
+
+* The organ renderer (`audio/organ/render_organ.py`) had not landed when these tools were
+  finished: orchestrate.py writes its MIDI and registration sidecar per its CONTRACT.md, mix.py
+  has its adapter, neither has been run against it.
+* The calibration equates the renderers at mf on a four-part chorale. It does not know that a
+  concert grand at mf may be louder than a string quartet at mf; `gain_db` is the balance control.
+* A piano quintet in one hall: the groups share one measured response (source position S1, one
+  seat); seats differ by pan, width, depth delay and level only.
+* The orchestra reports `offset_s` rounded to 0.1 ms: its stems can sit up to 2 samples off.
+* perform.py's pedal `"every": "harmony"` (used in plan.json) is not implemented there and falls
+  back to every half bar.

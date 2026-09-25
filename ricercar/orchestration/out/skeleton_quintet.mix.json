@@ -45,7 +45,8 @@
     "all_notes": 579,
     "all_notes_per_note_lag_ms_median": 8.0,
     "compensation_ms": 0.0,
-    "entry_lag_after_ms": 2.57
+    "entry_lag_after_ms": 2.57,
+    "time_base_lag_ms": 2.28
    },
    "hall_re_dry_db_program": 4.0,
    "wet_db": -4.12,
@@ -114,7 +115,8 @@
     "all_notes": 322,
     "all_notes_per_note_lag_ms_median": 1.0,
     "compensation_ms": 0.0,
-    "entry_lag_after_ms": 1.43
+    "entry_lag_after_ms": 1.43,
+    "time_base_lag_ms": 0.4
    },
    "hall_re_dry_db_program": 4.0,
    "wet_db": -5.61,
@@ -161,18 +163,32 @@
  },
  "calibration": {
   "piano": {
-   "key": "v1:44ac2ef08382403e:b8ead12081fd2b83:aa447cbe4d28dc3f:631b2534636930b8",
+   "key": "v2:44ac2ef08382403e:b8ead12081fd2b83:aa447cbe4d28dc3f:631b2534636930b8",
    "lufs_raw": -33.673,
    "raw_scale_db": 0.0,
    "stems": 4,
-   "note": "four-part mf chorale, placed dry sum, pre-normalisation scale"
+   "note": "four-part mf chorale, placed dry sum, pre-normalisation scale",
+   "time_base_lag_ms": 0.4,
+   "time_base_notes": 56,
+   "time_base_per_note_median_ms": 0.0,
+   "time_base_per_note_p10_p90_ms": [
+    -1.0,
+    1.0
+   ]
   },
   "quartet": {
-   "key": "v1:b32c34e0dd47ed48:b8ead12081fd2b83:aa447cbe4d28dc3f:631b2534636930b8",
+   "key": "v2:b32c34e0dd47ed48:b8ead12081fd2b83:aa447cbe4d28dc3f:631b2534636930b8",
    "lufs_raw": -33.371,
    "raw_scale_db": -22.294,
    "stems": 4,
-   "note": "four-part mf chorale, placed dry sum, pre-normalisation scale"
+   "note": "four-part mf chorale, placed dry sum, pre-normalisation scale",
+   "time_base_lag_ms": 2.28,
+   "time_base_notes": 56,
+   "time_base_per_note_median_ms": 2.0,
+   "time_base_per_note_p10_p90_ms": [
+    0.0,
+    4.0
+   ]
   }
  },
  "inter_group": {
@@ -185,11 +201,12 @@
     2.39
    ],
    "shared_onsets": 193,
-   "direct_xcorr_lag_ms": -2.86
+   "direct_xcorr_lag_ms": -2.86,
+   "time_base_difference_ms": 1.88
   }
  },
  "alignment_ok": true,
- "alignment_worst_ms": 1.14,
+ "alignment_worst_ms": 2.86,
  "output": {
   "wav": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/orchestration/out/skeleton_quintet.wav",
   "m4a": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/orchestration/out/skeleton_quintet.m4a",
