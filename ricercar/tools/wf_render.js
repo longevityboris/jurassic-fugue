@@ -9,7 +9,7 @@ export const meta = {
 
 const ROOT = '/Users/biobook/Music/llm-music/fugue-jp'
 const R = ROOT + '/ricercar'
-const MAX = 6
+const MAX = 5  // one engine-QA agent is still running; stay within the user's 6-worker limit
 let active = 0
 const waiters = []
 async function A(prompt, opts) {
@@ -21,7 +21,8 @@ async function A(prompt, opts) {
 const CONTEXT = `
 PROJECT: ${R} (git repo ${ROOT}; a background job pushes to GitHub, you only commit). Stage only your own paths: \`git add <paths> && git commit -m "<why>" -- <paths>\` (retry on index.lock). Commit after every verified step. Never commit audio. NEVER play audio through the speakers.
 THE PIECE is finished: "The Neighbour", a ricercar a 4 on John Williams's Theme from Jurassic Park, B-flat minor to a transfigured B-flat major, 66 bars, about 232 s. Score: ${R}/score/music-voices.ly (assembled from ${R}/score/sections/, whose comments mark every subject entry and device); design and performance sketch: ${R}/design/BLUEPRINT.md; performance plan: ${R}/design/final-lab/plan.json ("measure": "1"); printed scores in ${R}/score/out/. Do not change the notes.
-ENGINES (read each one's README/CONTRACT.md/docstring first): piano ${R}/audio/piano/render_piano.py; string quartet ${R}/audio/strings/render_quartet.py; pipe organ ${R}/audio/organ/render_organ.py; orchestra ${R}/audio/orchestra/render_orchestra.py; ensembles ${R}/tools/orchestrate.py + ${R}/tools/mix.py (spec format ${R}/tools/ORCHESTRATION.md, example specs in ${R}/orchestration/). Performance logic ${R}/tools/perform.py.`
+ENGINES (read each one's README/CONTRACT.md/docstring first): piano ${R}/audio/piano/render_piano.py; string quartet ${R}/audio/strings/render_quartet.py; pipe organ ${R}/audio/organ/render_organ.py; orchestra ${R}/audio/orchestra/render_orchestra.py; ensembles ${R}/tools/orchestrate.py + ${R}/tools/mix.py (spec format ${R}/tools/ORCHESTRATION.md, example specs in ${R}/orchestration/). Performance logic ${R}/tools/perform.py.
+KNOWN CAVEATS: (1) orchestrate.py's compass check stops a render when a part goes outside its instrument's range. In the final score the alto goes below violin II's G3 at 9:4 (F3), 12:1 (F#3) and 12:4 (F3); give those notes to the viola (hand-off) or reassign that voice in those bars. (2) Disk is nearly full: keep only final WAV/m4a files and delete your own scratch renders and stems when done. (3) The orchestra engine's QA may still be finishing; if its renderer changes under you, re-run your render.`
 
 const REVIEW_SCHEMA = {
   type: 'object',
