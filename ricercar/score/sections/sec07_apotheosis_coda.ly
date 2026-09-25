@@ -30,7 +30,8 @@
 %   tune's E-flat; the alto rises to C (61:2, its highest note, after the tune's peak), holds it as a 4-3 over
 %   the answer's re-struck G (61:3; also a 2-3 under the tune's D) and falls B-flat G into the KEEP E.
 % * Coda 63-66: the alto sings the inversion's head in major (F F F G F) under the held d'', then the mirror
-%   sigh again in diminution with its G tied over the tenor's F: a 9-8 (64:3). The tenor keeps its tolling
+%   sigh again in diminution with its G tied over the tenor's F: a 9-8 (64:3); its F is tied into 65 so the
+%   tenor's head (65:1) enters under no new inner attack. The tenor keeps its tolling
 %   D F | B-flat F arpeggio so that its final head (65) enters as the one moving line. Soprano 65 stays
 %   d''2 c''2: the neighbour D C D in augmentation above the tenor's B-flat A B-flat, and the C at 65:3 is the
 %   agent of the tenor's 2-3 (65:3), which a held D would cancel. The I at 66:1 is completed by the alto's F
@@ -61,7 +62,7 @@ alto = \absolute {
   % 59
   a'4. f'8 ees'8 d'4 g'8~ | g'4 f'4 a'4. g'8 | a'4 c''4~ c''8 bes'4 g'8 | e'2. a'4 |
   % 63
-  f'2. f'8 g'8 | f'4 f'8 g'8~ g'4 f'4 | f'2 ees'2 | d'2 f'2 |
+  f'2. f'8 g'8 | f'4 f'8 g'8~ g'4 f'4~ | f'2 ees'2 | d'2 f'2 |
 }
 tenor = \absolute {
   % 55
