@@ -5,7 +5,7 @@ four minutes. Four voices (soprano, alto, tenor, bass), written once and perform
 
 Score: [`score/music-voices.ly`](score/music-voices.ly), assembled from [`score/sections/`](score/sections/),
 whose comments explain every entry and device. Printed piano and string-quartet scores:
-`score/out/piano.pdf` and `score/out/quartet.pdf` (engraved locally, see the README). Full design and proofs:
+[`score/out/piano.pdf`](score/out/piano.pdf) and [`score/out/quartet.pdf`](score/out/quartet.pdf). Full design and proofs:
 [`design/BLUEPRINT.md`](design/BLUEPRINT.md).
 
 ## The idea
