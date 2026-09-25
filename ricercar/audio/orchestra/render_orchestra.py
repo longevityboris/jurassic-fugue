@@ -103,14 +103,21 @@ PLAYERS = {        # chosen by compare_sets.py (evidence/compare.json): best set
 }
 SECTION_SETS = {("hn", "vpo3")}            # a recording of four horns: plays for horns 3-4 at -2 dB
 # strings: every note is played by each recording of the stack (gain dB, detune cents);
-# a stack only where it measured better than its parts (Violins I, basses)
+# a stack only where it measured better than its parts (Violins I).  A gain of None
+# marks a range fallback: that recording plays only the notes the others do not reach
+# (the basses: the two sets summed on one held low note beat slowly against each
+# other, a held A2 faded by 12 dB in 4 s; VSCO alone holds within 3-5 dB, probe.json).
 STACK = {
     "vn1": [("vsco", -3.0, 0.0), ("vpo3", -3.0, 0.0)],
     "vn2": [("vsco", 0.0, 0.0), ("vpo3", -6.0, 3.0)],
     "va": [("vpo3", 0.0, 0.0), ("vsco", -6.0, 0.0)],
     "vc": [("vpo3", 0.0, 0.0), ("vsco", -6.0, 0.0)],
-    "cb": [("vpo3", -2.0, 0.0), ("vsco", -4.5, 0.0)],
+    "cb": [("vsco", 0.0, 0.0), ("vpo3", None, 0.0)],
 }
+# a static low-pass per part (Hz): the Iowa tuba's pp recordings carry hiss that the
+# layer calibration lifts with the note (probe: energy above 5 kHz -13 dB re the pp
+# note, -43 dB at ff); the tuba has nothing of its own up there
+LOWPASS = {"tba": 3500.0}
 PLAYER_DETUNE = [0.0, 4.0, -5.0, 7.0]
 PLAYER_DELAY = [0.0, 0.012, 0.022, 0.03]
 PLAYER_SEAT = [(0.0, 0.0), (-3.0, 0.4), (3.0, 0.8), (-6.0, 1.0)]    # (az offset, depth offset)
@@ -321,17 +328,30 @@ def make_jobs(t: Track, side: dict, log: list) -> list[Job]:
         if not stack:
             raise SystemExit(f"render_orchestra: no built instrument for {part}: run setup_orchestra.sh")
         cov = {s: coverage(part, s) for s, _, _ in stack}
+        main_sets = [s for s, g, _ in stack if g is not None]
+        # the stack's total (power sum) is the part's calibrated level: a note only
+        # some recordings reach gets that total on those recordings
+        total = 10 * math.log10(sum(10 ** (g / 10) for _, g, _ in stack if g is not None))
         groups: dict = {}
         for n in t.notes:
-            who = tuple(s for s, _, _ in stack if cov[s][0] <= n.key <= cov[s][1]) or (stack[0][0],)
+            who = tuple(s for s in main_sets if cov[s][0] <= n.key <= cov[s][1])
+            if not who:
+                who = tuple(s for s, g, _ in stack if g is None and cov[s][0] <= n.key <= cov[s][1])
+            if not who:                  # beyond every recording: the nearest one stretches (SFZ covers the compass)
+                who = (min((s for s, _, _ in stack),
+                           key=lambda s: max(cov[s][0] - n.key, n.key - cov[s][1], 0)),)
             groups.setdefault(who, []).append(n)
         for who, notes in groups.items():
+            full = set(who) == set(main_sets)
+            sub = 10 * math.log10(sum(10 ** ((g if g is not None else total) / 10)
+                                      for s, g, _ in stack if s in who))
             for i, (s, g, d) in enumerate(stack):
                 if s not in who:
                     continue
-                gain = g if len(who) == len(stack) else g + 10 * math.log10(len(stack) / len(who))
+                g0 = g if g is not None else total
+                gain = g0 if full else g0 + (total - sub)
                 jobs.append(Job(t, s, notes, gain_db=gain, detune=d, az_off=(-2.0, 2.0)[i % 2],
-                                depth_off=0.3 * i, label=f"{t.name}/{s}" + ("" if len(who) == len(stack) else "+"),
+                                depth_off=0.3 * i, label=f"{t.name}/{s}" + ("" if full else "+"),
                                 seed=i))
         return jobs
     sets = [s for s in PLAYERS[part] if set_available(part, s)]
@@ -614,6 +634,7 @@ def main(argv=None):
         PLAYERS[p_] = [s_]
         if p_ in STACK:
             STACK[p_] = [(s_, 0.0, 0.0)]
+            _COVER[(p_, s_)] = (0, 127)          # testing a set alone: it plays everything it maps
     out = a.out or a.midi.with_suffix("")
     side_p = a.sidecar or a.midi.with_name(a.midi.stem + ".orchestra.json")
     side = json.loads(side_p.read_text()) if side_p.exists() else {}
@@ -670,6 +691,9 @@ def main(argv=None):
             y = np.zeros((n_out, 2), np.float32)
             m = min(n_out, len(x))
             y[:m] = x[:m]
+            if j.track.part in LOWPASS:
+                y = sosfilt(butter(4, LOWPASS[j.track.part], btype="lowpass", fs=SR, output="sos"),
+                            y, axis=0).astype(np.float32)
             y *= gain_curve(j, T, c, n_out, side)[:, None]
             az, depth, width = seat(j.track.part, seating, side.get("tracks", {}).get(j.track.name, {}))
             az += j.az_off

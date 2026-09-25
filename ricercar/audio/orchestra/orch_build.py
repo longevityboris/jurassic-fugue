@@ -625,10 +625,15 @@ def smooth_cal(metas: list[dict]) -> dict:
 
 
 def key_bounds(keys: list[int], lo_all: int, hi_all: int, ext: int = 3):
+    """Key range of each sample.  The lowest and highest samples reach at least
+    `ext` semitones beyond themselves and always the part's whole compass
+    (lo_all..hi_all): a note the contract accepts must never be silent, even if
+    it is a few semitones beyond the recordings (the renderer routes such notes
+    to a set that has a closer sample where the part has one)."""
     out = []
     for j, k in enumerate(keys):
-        lo = max(lo_all - 2, k - ext) if j == 0 else (keys[j - 1] + k) // 2 + 1
-        hi = min(hi_all + 2, k + ext) if j == len(keys) - 1 else (k + keys[j + 1]) // 2
+        lo = min(lo_all, k - ext) if j == 0 else (keys[j - 1] + k) // 2 + 1
+        hi = max(hi_all, k + ext) if j == len(keys) - 1 else (k + keys[j + 1]) // 2
         if j == 0:
             lo = min(lo, k)
         if j == len(keys) - 1:
