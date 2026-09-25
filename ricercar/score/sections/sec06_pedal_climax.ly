@@ -8,7 +8,8 @@
 % * 46-47, alto and soprano: silent on purpose. Rule 6 ("keep the misterioso pedal 46-47 thin"), the section-6
 %   FREE note ("46-47 stay two voices") and critique fix C2-M2 ("alto rests in 46-47; S2 and S1 enter together
 %   at 48:1") all require the pedal and the tenor's lament lead-in alone, so that S2's entry at 48:1 is fresh.
-% * 48:1-50:2, soprano: silent on purpose (fix C1-M2: S2 must be the top thematic voice). Tested alternatives:
+% * 48, soprano: silent on purpose (fix C1-M2: S2 must be the top thematic voice), so S2's F4-D-flat 5 leap
+%   (48:3-48:4), the tune's signature, is heard bare. Tested alternatives for 48:1-50:2 (other than bar 49 below):
 %   over F2 and S1's held B-flat 3 only F5 is consonant above S2; F5 from 48:3 makes a hollow F/B-flat chord
 %   (HOL at 48:3); F5 held 48:4-49:4 brings back the removed soprano inversion head (C2-M2) and makes S2's leap to
 %   its peak F5 at 49:4 sound like a re-strike. The window can hold only two counted suspensions, both tested and
@@ -20,9 +21,25 @@
 %   which is still held until 50:2.5, and A5 is also a tritone over S2's E-flat 5. The line also sits a fourth
 %   above S2's peak F5, doubles S2's B-flat 4 at 49:4.5 and takes the Climax-II register early (B-flat 5 is the
 %   fff note of 53:1).
-% * 50:2, soprano g-flat''4 (the only new note): the pedal's upper neighbour (the inversion's G-flat, bass 49:4)
-%   taken up by the soprano and resolved onto the first diminution head: G-flat F | F E-flat = the mirror's
-%   upper neighbour and the subject's lower neighbour around one F, as Climax II begins. It moves in the one
+% * 49:2-49:3.5, soprano aes''4 g''8, then rest to 50:2: the free voice moves in the one gap of bar 49, where S1
+%   (B-flat 3) and S2 (C5) both hold a dotted half and only the pedal re-strikes, under the < mp (rule 5). A-flat G
+%   is the tenor's lament step of bar 47 two octaves higher, over the same bar of the pedal (F2, F2 re-struck,
+%   G-flat 2), the G on beat 3 as at 47:3; with G-flat F at 50:2-50:3 the soprano completes the tenor lead-in's
+%   B-flat A A-flat G (46-47) into the full chromatic fourth B-flat to F, landing on the first diminution head.
+%   49:2: A-flat 5 enters on a weak beat as a minor seventh over S1's held B-flat 3 (the v colour of 47:1) and
+%   resolves by step to G5 on beat 3 (7-6 over B-flat 3; unprepared, so not a counted suspension). 49:3: G5 is a
+%   P5 over S2's C5 and a M6 over S1's B-flat 3, dissonant only with the re-struck pedal (ACC2, pedal licence);
+%   F2 B-flat 3 C5 G5 is the pedal's Vsus4 with an added ninth, for one eighth. The eighth rest at 49:3.5
+%   leaves S2 alone on top for its C5-F5 leap to the peak (49:4), which perform.py plays at subject level (+9)
+%   against the soprano's free level (-4); the soprano's A-flat has moved on to G before S1's A natural (49:4.5).
+%   S2 stays the top thematic voice: the section-6 FREE note lets the soprano enter before 50:3, and A-flat 5 and
+%   G5 lie a sixth and a fifth above S2's held C5, not a second. If a play-through shows G5 fusing with S2's F5,
+%   the fallback is r4 aes''4 r2 (PASS, no new flags, line A-flat | G-flat F), at the cost of leaving the A-flat's
+%   seventh over B-flat 3 unresolved.
+% * 50:2, soprano g-flat''4, continuing the soprano's chromatic descent from 49: the pedal's upper neighbour (the
+%   inversion's G-flat, bass 49:4) taken up by the soprano and resolved onto the first diminution head:
+%   G-flat F | F E-flat = the mirror's upper neighbour and the subject's lower neighbour around one F, as
+%   Climax II begins. It moves in the one
 %   rhythmic gap of bar 50 (alto and tenor hold 50:1-50:2.5) and holds while they move. 50:2: the G-flat enters
 %   from rest as a struck minor ninth over F2 (check.py S:APP); with B-flat 3 and E-flat 5 it makes E-flat minor
 %   (iv) over the F pedal (pedal licence). 50:2.5: F2 C4 Db5 Gb5 = the 50:3 chord (V with b6), anticipated by S1
@@ -37,13 +54,18 @@
 %   B-flat 5 the Climax-II register. The only alternative is the starter's r2 at 50:1-50:3. Performance: 50:2 lies
 %   outside the soprano's subject role (from 50:3), so perform.py plays it at free level (-4, the head +9); no
 %   accent.
-% New flags against the skeleton: none (no new D4?, DIR, MEL, XREL, ACC, ACC2, HOL, unison or crossing).
+% New flags against the skeleton: XREL 49:3-49:4 (soprano G5, then the pedal's G-flat 2: not simultaneous, the
+%   same lament-against-augmentation step as the intended 47:3-47:4); strict ACC2 49:3 (G5 over the re-struck F2,
+%   a pedal licence). No new D4?, DIR, MEL, ACC, HOL, unison or crossing.
 % Pre-existing, unchanged: D4? 54:3 (V4/2 tritone), XREL 47:3-47:4 and 53:2.75-53:3 (non-simultaneous).
 % suspensions.py: 0 strong-beat (the free window cannot hold one without the faults above), 1 weak (50:4, skeleton).
-% Density: bar 50 now has 14 attacks (blueprint section 6 lists the skeleton's 13).
+% Density: bar 49 now has 11 attacks (skeleton 9), bar 50 has 14 (the skeleton's 13, as blueprint section 6 lists).
+% For the design owner (LOCKED/KEEP material, not changeable here): at 54:3-54:4 alto A4-C4 and tenor C4-E-flat 3
+%   leap a major sixth down together, and the seventh E-flat 3 then rises to F3 at 55:1; on the piano, 50:4-53:2
+%   needs the sostenuto re-caught on E-flat 2 (50:4) and C2 (51:4), which plan.json does not yet give.
 soprano = \absolute {
   % 46
-  r1 | r1 | r1 | r1 |
+  r1 | r1 | r1 | r4 aes''4 g''8 r8 r4 |
   % 50
   r4 ges''4 f''4. f''16 ees''16 | ges''4. ges''16 f''16 a''4. a''16 aes''16 | g''2 c'''4. c'''16 bes''16 | bes''2. a''4 |
   % 54
