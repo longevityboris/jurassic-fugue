@@ -15,7 +15,7 @@
    "offset_s": -0.5,
    "raw_scale_db": -15.514,
    "raw_scale_estimates": {
-    "va": -15.512,
+    "va": -15.513,
     "vc": -15.515,
     "vn1": -15.509,
     "vn2": -15.515
@@ -27,7 +27,7 @@
     "attack_rule": "new-bow and short strokes at their note-on (the renderer starts the bow's pre-roll early so that the stroke lands on the note-on); slurred notes, which enter by crossfade, are left out (articulation from its report)",
     "entry_xcorr_lag_ms": 3.44,
     "entries": 433,
-    "after_silence_xcorr_lag_ms": -10.06,
+    "after_silence_xcorr_lag_ms": -10.07,
     "after_silence_notes": 32,
     "entry_lag_ms_by_quarter": [
      3.41,
