@@ -13,7 +13,10 @@ PLAN keys (all optional except voices):
   "measure":  "1"                                             bar length in whole notes (1 = 4/4 or 2/2)
   "tempo":    [{"at": "1:1", "bpm": 60, "unit": "half"},       step change at a position
                {"at": "40:1", "until": "42:1", "to_bpm": 50}]  linear rit./accel. to to_bpm over the span
-  "breaths":  [{"at": "12:1", "ms": 120}]                      short caesura before a position
+  "breaths":  [{"at": "12:1", "ms": 120}]                      caesura before a position: the 16th
+              before it is stretched by the breath, and notes that end at the position (and a pedal
+              that lifts there) release before the added time, so the breath is silence and hall
+              tail, not a longer note; notes held across the position are held through it
   "fermatas": [{"at": "96:1", "extra_beats": 2}]               lengthen the moment starting at a position
   "dynamics": [{"at": "1:1", "level": "p"},                    global level (ppp..fff or number 1..8)
                {"at": "9:1", "until": "16:1", "to": "f"},      hairpin (linear in level)
@@ -226,7 +229,8 @@ def build(score_path, plan_path, out_path, target='piano', cues=False):
             on_s = secs(n.start) + rnd.uniform(-hum.get('ms', 6), hum.get('ms', 6)) / 1000
             if role in ('subject', 'answer', 'cf'):
                 on_s -= 0.008  # slight melody lead
-            off_s = secs(n.end)
+            # a note that ends at a breath releases before the breath's added time (a caesura)
+            off_s = secs(n.end) - breaths.get(n.end, 0.0)
             short = n.dur < F(1, 4)
             if target == 'piano':
                 off_s -= 0.04 if short else 0.012
@@ -259,7 +263,8 @@ def build(score_path, plan_path, out_path, target='piano', cues=False):
             x = a
             while x < b:
                 evs.append((secs(x) + 0.03, 2, ('cc', 64, 127)))
-                evs.append((secs(min(x + every, b)) - 0.005, -2, ('cc', 64, 0)))
+                lift = min(x + every, b)
+                evs.append((secs(lift) - breaths.get(lift, 0.0) - 0.005, -2, ('cc', 64, 0)))
                 x += every
         # seconds -> ticks via inverse of tempo map: use the tempo grid
         def ticks(sec):
