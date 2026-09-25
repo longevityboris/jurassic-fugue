@@ -22,6 +22,11 @@
 % Strong-beat suspensions (suspensions.py): 14:1 S G-F, 17:1 A A-flat-G, 18:1 T G-F, 18:3 T A-flat-G-flat,
 %   19:1 A D-flat-C, 19:3 T B-flat-A-flat (6). The tenor's weak-beat 7-6 at 14:4 is no longer counted: its
 %   preparation at 14:1 now sounds against the soprano's suspended G.
+%   16:1 is left unsuspended on purpose: with the alto's CS2 on C5 and the tenor locked, the only dissonance
+%   that can be prepared there is the soprano's E-flat as a 9-8 over D-flat, prepared by the octave
+%   E-flat5/E-flat2: parallel octaves by suspension in the outer voices (E-flat/E-flat to D-flat/D-flat).
+%   19:3 is deliberately thick: the tenor's 9th (B-flat), the alto's seventh and the soprano's 13th over the
+%   A-flat resolve one by one (9-8 at 19:3.5, 13-12 at 19:4.5) into the complete A-flat7.
 % Flags:
 %   XREL 14:1.5-14:2 (alto E4, CS2's rising lower neighbour, then the soprano's falling passing E-flat 5: the
 %        two sevenths of f minor in contrary directions, never sounding together; each voice moves by step).
