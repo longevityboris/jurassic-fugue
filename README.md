@@ -45,7 +45,7 @@ Lengths include the lead-in and the hall's (or church's) decay. The audio is not
 Its plan, in brief: the tune opens alone at its own pitch; a chromatic lament joins the answer; the subject is overlapped with itself until the harmony collapses into diminished sevenths; a slow arioso sings the second half of the tune; the fugue returns upside down; both halves of the tune sound together over a long pedal; and only at the end is the whole tune heard complete, in B-flat major, over the fugue's own countersubjects turned major.
 
 - **Listener's guide**: [`ricercar/NOTES.md`](ricercar/NOTES.md), the idea, a form table with timings, what to listen for in each version, every learned device by bar number, and the tune tweaks.
-- **Printed scores**: [`ricercar/score/out/piano.pdf`](ricercar/score/out/piano.pdf) and [`ricercar/score/out/quartet.pdf`](ricercar/score/out/quartet.pdf). PDFs are not committed; engrave them with `lilypond -o ricercar/score/out ricercar/score/piano.ly ricercar/score/quartet.ly`.
+- **Printed scores**: [`ricercar/score/out/piano.pdf`](ricercar/score/out/piano.pdf) and [`ricercar/score/out/quartet.pdf`](ricercar/score/out/quartet.pdf). To re-engrave: `lilypond -o ricercar/score/out ricercar/score/piano.ly ricercar/score/quartet.ly`.
 - **Design**: [`ricercar/design/BLUEPRINT.md`](ricercar/design/BLUEPRINT.md), the full design with every proof.
 
 ## How it is made
