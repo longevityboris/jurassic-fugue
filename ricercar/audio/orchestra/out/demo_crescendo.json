@@ -1,10 +1,10 @@
 {
- "midi": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_crescendo.mid",
- "out": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_crescendo.wav",
- "duration_s": 13.36,
+ "midi": "out/demo_crescendo.mid",
+ "out": "out/demo_crescendo.wav",
+ "duration_s": 13.364,
  "offset_s": 0.2,
  "lead_in_s": 0.3,
- "norm_gain_db": 3.619,
+ "norm_gain_db": 3.903,
  "true_peak_dbtp": -1.0,
  "hall": "detmold",
  "wet_db": -5.0,
@@ -383,40 +383,18 @@
      "notes": 1
     }
    },
-   "rms_db_active": -32.86
-  },
-  {
-   "label": "cb/vpo3",
-   "part": "cb",
-   "set": "vpo3",
-   "notes": 1,
-   "gain_db": -2.0,
-   "detune_c": 0.0,
-   "delay_ms": 0.0,
-   "seat_az": -39.0,
-   "seat_depth_m": 5.0,
-   "layers": {
-    "stac": {
-     "switches": 0,
-     "notes": 0
-    },
-    "sus": {
-     "switches": 0,
-     "notes": 1
-    }
-   },
-   "rms_db_active": -42.06
+   "rms_db_active": -32.85
   },
   {
    "label": "cb/vsco",
    "part": "cb",
    "set": "vsco",
    "notes": 1,
-   "gain_db": -4.5,
+   "gain_db": 0.0,
    "detune_c": 0.0,
    "delay_ms": 0.0,
-   "seat_az": -35.0,
-   "seat_depth_m": 5.3,
+   "seat_az": -39.0,
+   "seat_depth_m": 5.0,
    "layers": {
     "stac": {
      "switches": 1,
@@ -427,7 +405,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -43.61
+   "rms_db_active": -39.1
   },
   {
    "label": "cl/p1/iowa",
@@ -583,7 +561,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -36.16
+   "rms_db_active": -36.17
   },
   {
    "label": "tbn/p1/iowa",

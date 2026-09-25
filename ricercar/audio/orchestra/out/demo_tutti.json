@@ -1,10 +1,10 @@
 {
- "midi": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_tutti.mid",
- "out": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_tutti.wav",
+ "midi": "out/demo_tutti.mid",
+ "out": "out/demo_tutti.wav",
  "duration_s": 7.286,
  "offset_s": 0.2,
  "lead_in_s": 0.3,
- "norm_gain_db": 3.337,
+ "norm_gain_db": 3.444,
  "true_peak_dbtp": -1.0,
  "hall": "detmold",
  "wet_db": -5.0,
@@ -386,11 +386,11 @@
    "rms_db_active": -29.96
   },
   {
-   "label": "cb/vpo3",
+   "label": "cb/vsco",
    "part": "cb",
-   "set": "vpo3",
+   "set": "vsco",
    "notes": 1,
-   "gain_db": -2.0,
+   "gain_db": 0.0,
    "detune_c": 0.0,
    "delay_ms": 0.0,
    "seat_az": -39.0,
@@ -405,29 +405,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -36.28
-  },
-  {
-   "label": "cb/vsco",
-   "part": "cb",
-   "set": "vsco",
-   "notes": 1,
-   "gain_db": -4.5,
-   "detune_c": 0.0,
-   "delay_ms": 0.0,
-   "seat_az": -35.0,
-   "seat_depth_m": 5.3,
-   "layers": {
-    "stac": {
-     "switches": 0,
-     "notes": 0
-    },
-    "sus": {
-     "switches": 0,
-     "notes": 1
-    }
-   },
-   "rms_db_active": -37.97
+   "rms_db_active": -33.52
   },
   {
    "label": "cl/p1/iowa",
@@ -583,7 +561,7 @@
      "notes": 1
     }
    },
-   "rms_db_active": -33.34
+   "rms_db_active": -33.36
   },
   {
    "label": "tbn/p1/iowa",

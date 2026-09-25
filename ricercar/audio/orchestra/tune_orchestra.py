@@ -4,9 +4,9 @@
   python3 tune_orchestra.py [--only fl,hn] [--sets iowa] [--retune] [--rounds 2]
 
 For every set: renders each sampled key of every layer and articulation
-straight through sfizz_render (sustains 1.4 s at the layer's anchor, short
+straight through sfizz_render (sustains 4 s at the layer's anchor, short
 notes 0.3 s; timpani strokes and rolls), measures the pitch (YIN within +-1.2
-semitones of the key: 0.3-1.2 s into a sustain, 40-250 ms into a short note;
+semitones of the key, from harmonics 2-5 below 80 Hz: 1.0-3.8 s into a sustain, 40-250 ms into a short note;
 timpani: the partial-template fit of orch_build.timp_pitch) and writes
 built/tuning_verify.json.  --retune folds the errors into
 built/tuning_corrections.json (only |error| < 150 c: anything larger is a
@@ -30,10 +30,10 @@ import soundfile as sf
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import orch_build as B  # noqa: E402
-from orch_common import BUILT, PARTS, SFIZZ_RENDER, SR  # noqa: E402
+from orch_common import BUILT, PARTS, SFIZZ_RENDER, SR, midi_to_hz  # noqa: E402
 import orch_measure as M  # noqa: E402
 
-GAP = 1.8
+GAP = 4.4                      # s between notes (sustains are held 4 s)
 
 
 def plan_for(part: str, s: str):
@@ -59,7 +59,7 @@ def render_job(part, s, art, name, anchor, cc, keys, tmp: Path):
     art_cc = {"sus": 0, "sus_short": 112, "stac": 112, "hit": 0, "roll": 100}[art]
     for c, v in ((1, 88), (3, 88), (2, anchor), (cc, anchor), (20, art_cc), (21, 20)):
         tr.append(mido.Message("control_change", control=c, value=int(v), time=0))
-    dur = {"sus": 1.4, "sus_short": 0.3, "stac": 0.3, "hit": 1.2, "roll": 1.4}[art]
+    dur = {"sus": 4.0, "sus_short": 0.3, "stac": 0.3, "hit": 1.2, "roll": 1.4}[art]
     last = 0
     for i, k in enumerate(keys):
         on = int((0.3 + i * GAP) * 960)
@@ -80,7 +80,11 @@ def render_job(part, s, art, name, anchor, cc, keys, tmp: Path):
     rows = []
     for i, k in enumerate(keys):
         t0 = 0.3 + i * GAP
-        if art in ("sus", "roll") and part != "timp":
+        if art == "sus":
+            # the body of a held note (a low Iowa tuba note settles 20 cents away
+            # from its first second, and a held note is heard by its body)
+            seg = x[int((t0 + 1.0) * SR): int((t0 + 3.8) * SR)]
+        elif art == "roll" and part != "timp":
             seg = x[int((t0 + 0.3) * SR): int((t0 + 1.2) * SR)]
         elif art in ("stac", "sus_short"):
             seg = x[int((t0 + 0.04) * SR): int((t0 + 0.25) * SR)]
@@ -89,6 +93,8 @@ def render_job(part, s, art, name, anchor, cc, keys, tmp: Path):
         if part == "timp":
             f = B.timp_pitch(seg, 0, k)
             c = 100 * (f - k)
+        elif midi_to_hz(k) < 80.0:
+            c = M.pitch_cents_harmonic(seg, k)        # YIN is biased this low (orch_measure)
         else:
             c = M.pitch_cents(seg, k)
         rms = float(np.sqrt(np.mean(seg ** 2)) + 1e-12)

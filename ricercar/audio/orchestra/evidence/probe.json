@@ -1,8 +1,8 @@
 {
  "summary": {
   "notes_pitched": 112,
-  "pitch_med_abs_c": 1.1,
-  "pitch_max_abs_c": 7.5,
+  "pitch_med_abs_c": 1.0,
+  "pitch_max_abs_c": 7.8,
   "pitch_over_10c": [],
   "pitch_unmeasured": [],
   "held_steps_over_3db": [
@@ -600,7 +600,7 @@
     ],
     [
      "C#3",
-     7.5
+     0.0
     ],
     [
      "Eb4",
@@ -608,7 +608,7 @@
     ],
     [
      "C#3",
-     -0.1
+     -7.8
     ],
     [
      "Eb3",
@@ -629,26 +629,26 @@
    ],
    "held_max_step_db": [
     1.6,
-    2.2,
+    1.9,
     2.7
    ],
    "held_level_range_db": [
     2.8,
-    2.4,
+    2.2,
     3.0
    ],
    "hairpin_corr_level_cc1": 0.998,
-   "hairpin_corr_centroid_cc1": 0.692,
-   "hairpin_corr_richness_cc1": 0.698,
+   "hairpin_corr_centroid_cc1": 0.691,
+   "hairpin_corr_richness_cc1": 0.729,
    "hairpin_level_pp_ff_pp_db": [
     -61.0,
     -41.1,
     -60.7
    ],
    "hairpin_centroid_pp_ff_pp_hz": [
-    1350,
+    1353,
     3121,
-    1291
+    1301
    ],
    "hairpin_max_step_db": 2.9,
    "short_level_re_held_db": [
@@ -1102,11 +1102,11 @@
     ],
     [
      "C#3",
-     1.6
+     -0.6
     ],
     [
      "D3",
-     1.3
+     -0.9
     ],
     [
      "E3",

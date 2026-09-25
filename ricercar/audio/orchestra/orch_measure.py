@@ -114,3 +114,32 @@ def harmonic_richness(seg: np.ndarray, key: int, fmax: float = 8000.0) -> float 
     if len(amp) < 4:
         return None
     return float(10 * np.log10((sum(amp[2:]) + 1e-20) / (sum(amp[:2]) + 1e-20)))
+
+
+def pitch_cents_harmonic(seg: np.ndarray, key: int, harmonics=(2, 3, 4, 5)) -> float | None:
+    """Pitch error (cents) of a steady low note from its harmonics 2-5: zero-padded
+    FFT peak (parabolic) within +-1.2 semitones of each harmonic, median over the
+    harmonics that stand 20 dB above their window's median.  For fundamentals below
+    about 80 Hz, where YIN's 85 ms window holds only a few periods and a weak
+    fundamental biases it (a tuba's Eb1 measured in tune by YIN sounded 22 cents
+    flat on its harmonics)."""
+    m = mono(seg).astype(np.float64)
+    if len(m) < int(0.15 * SR):
+        return None
+    f = midi_to_hz(key)
+    n = len(m) * 8
+    sp = np.abs(np.fft.rfft(m * np.hanning(len(m)), n)) + 1e-20
+    df = SR / n
+    out = []
+    for h in harmonics:
+        lo, hi = int(h * f * 2 ** (-1.2 / 12) / df), int(h * f * 2 ** (1.2 / 12) / df) + 1
+        if hi >= len(sp) - 1:
+            break
+        w = sp[lo:hi]
+        j = int(np.argmax(w))
+        if w[j] < 10 * np.median(w) or j == 0 or j == len(w) - 1:
+            continue
+        a, b, c = np.log(w[j - 1]), np.log(w[j]), np.log(w[j + 1])
+        d = 0.5 * (a - c) / (a - 2 * b + c)
+        out.append(1200 * np.log2((lo + j + d) * df / (h * f)))
+    return float(np.median(out)) if out else None

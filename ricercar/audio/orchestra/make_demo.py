@@ -11,18 +11,18 @@ their renders.
   demo_tutti         a B-flat minor chord for the full orchestra, struck ff and held
   demo_crescendo     the same chord from pp to fff in 10 s: strings from the
                      start, woodwinds, horns, brass and a timpani roll join in turn
-  skeleton_orchestra the ricercar skeleton through perform.py (--target strings)
-                     with a simple orchestration: the strings carry the four voices
-                     (Violins I soprano, Violins II alto, violas tenor, cellos bass,
-                     basses an octave below in the full sections), woodwinds double
-                     the entering voices at the section changes, brass and timpani
-                     only in the two climaxes and the apotheosis (timpani wherever
-                     the bass has F or B-flat there)
+  skeleton_orchestra the ricercar skeleton through the real chain (perform.py and
+                     tools/orchestrate.py with specs/skeleton_symphonic.json): the
+                     strings carry the four voices (basses 8vb in the full sections),
+                     the arioso's lament on a solo clarinet, woodwinds double the
+                     entering voices, a horn and a timpani roll hold the dominant
+                     pedal, brass only in the two climaxes and the apotheosis peak
 Outputs: out/<name>.mid (+ .wav/.m4a/.json with --render).
 """
 from __future__ import annotations
 
 import argparse
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -146,108 +146,19 @@ def demo_crescendo() -> Path:
 
 
 # ------------------------------------------------------------------ skeleton
-# (track, voice, first bar, bar after the last, transpose, level offset, a2)
-STRINGS = [("vn1", "soprano", 1, 999, 0, 0.0, False), ("vn2", "alto", 1, 999, 0, 0.0, False),
-           ("va", "tenor", 1, 999, 0, 0.0, False), ("vc", "bass", 1, 999, 0, 0.0, False),
-           ("cb", "bass", 20, 30, -12, -0.5, False), ("cb", "bass", 42, 999, -12, -0.5, False)]
-WINDS = [  # the woodwinds double the entering voices at the section changes
-    ("bn", "bass", 20, 25, 0, -0.5, False), ("ob", "soprano", 22, 27, 0, -0.5, False),
-    ("fl", "soprano", 27, 30, 0, -0.5, False), ("cl", "alto", 27, 30, 0, -0.5, False),
-    ("cl", "soprano", 30, 35, 0, 0.0, False),                                   # the lament
-    ("bn", "bass", 35, 40, 0, -0.5, False), ("cl", "tenor", 37, 42, 0, -0.5, False),
-    ("ob", "alto", 42, 47, 0, -0.5, False), ("cl", "tenor", 44, 50, 0, -0.5, False),
-    ("fl", "soprano", 51, 59, 0, -0.5, False), ("ob", "soprano", 51, 59, 0, -0.5, False),
-    ("cl", "alto", 51, 59, 0, -0.5, False), ("bn", "bass", 51, 63, 0, -0.5, False),
-]
-CLIMAX = [(26, 30), (46, 51)]
-APOTHEOSIS = (51, 63)
-BRASS = [
-    ("tbn", "bass", 26, 30, 0, -1.0, False), ("tba", "bass", 26, 30, -12, -1.0, False),
-    ("hn.1", "tenor", 27, 30, 0, -1.0, True), ("tpt", "soprano", 28, 30, 0, -1.0, False),
-    ("hn.1", "tenor", 46, 50, 0, -1.0, True), ("hn.2", "alto", 46, 50, 0, -1.0, True),
-    ("btbn", "bass", 46, 51, 0, -1.0, False), ("tba", "bass", 46, 51, -12, -1.0, False),
-    ("tpt", "alto", 48, 50, 0, -1.0, False),
-    ("tpt", "soprano", 51, 59, 0, -1.0, False), ("hn.1", "alto", 51, 59, 0, -1.0, True),
-    ("hn.2", "tenor", 51, 63, 0, -1.0, True), ("tbn", "tenor", 55, 59, 0, -1.0, False),
-    ("btbn", "bass", 55, 59, 0, -1.0, False), ("tba", "bass", 55, 59, -12, -1.5, False),
-]
+SPEC = HERE / "specs" / "skeleton_symphonic.json"
 
 
 def skeleton(score: Path, plan: Path) -> Path:
-    vm = OUT / "skeleton_voices.mid"
-    subprocess.run([sys.executable, str(R / "tools" / "perform.py"), str(score), str(plan), str(vm),
-                    "--target", "strings"], check=True)
-    src = mido.MidiFile(str(vm))
-    bar = src.ticks_per_beat * 4
-    voices = {}
-    tempo = None
-    for tr in src.tracks:
-        name, t, evs = None, 0, []
-        for msg in tr:
-            t += msg.time
-            if msg.type == "track_name":
-                name = msg.name
-            if not msg.is_meta or msg.type == "set_tempo":
-                evs.append((t, msg))
-        if name == "tempo":
-            tempo = tr
-        elif name:
-            voices[name] = evs
-    out = mido.MidiFile(type=1, ticks_per_beat=src.ticks_per_beat)
-    out.tracks.append(tempo)
-    parts: dict = {}
-
-    def add(track, voice, b0, b1, tr_, dl, a2):
-        t0, t1 = (b0 - 1) * bar, (b1 - 1) * bar
-        ev = parts.setdefault(track, [])
-        evs = voices[voice]
-        # the level in force at the entry
-        c1 = [m for t, m in evs if m.type == "control_change" and m.control == 1 and t <= t0]
-        c11 = [m for t, m in evs if m.type == "control_change" and m.control == 11 and t <= t0]
-        shift = int(round(13 * dl))
-        if c1:
-            ev.append((t0, 0, mido.Message("control_change", control=1, value=max(1, min(127, c1[-1].value + shift)))))
-        if c11:
-            ev.append((t0, 0, c11[-1].copy(channel=0)))
-        ev.append((t0, 0, mido.Message("control_change", control=16, value=64 if a2 else 0)))
-        on = {}
-        for t, m in evs:
-            if m.type == "control_change" and t0 <= t < t1 and m.control in (1, 11):
-                v = m.value + (shift if m.control == 1 else 0)
-                ev.append((t, 0, mido.Message("control_change", control=m.control, value=max(1, min(127, v)))))
-            elif m.type == "note_on" and m.velocity > 0 and t0 <= t < t1:
-                on[m.note] = True
-                ev.append((t, 2, mido.Message("note_on", note=m.note + tr_, velocity=m.velocity)))
-            elif (m.type == "note_off" or (m.type == "note_on" and m.velocity == 0)) and on.pop(m.note, False):
-                ev.append((t, 1, mido.Message("note_off", note=m.note + tr_, velocity=0)))
-    for spec in STRINGS + WINDS + BRASS:
-        add(*spec)
-    # timpani: the bass's F and B-flat inside the climaxes and the apotheosis
-    ev = parts.setdefault("timp", [])
-    bass = voices["bass"]
-    windows = CLIMAX + [APOTHEOSIS]
-    pending = {}
-    for t, m in bass:
-        b = t / bar + 1
-        inside = any(w0 <= b < w1 for w0, w1 in windows)
-        if m.type == "control_change" and m.control == 1 and inside:
-            ev.append((t, 0, mido.Message("control_change", control=1, value=max(1, m.value - 13))))
-        elif m.type == "note_on" and m.velocity > 0 and inside and m.note % 12 in (5, 10):
-            k = 41 if m.note % 12 == 5 else 46
-            pending[m.note] = k
-            ev.append((t, 2, mido.Message("note_on", note=k, velocity=m.velocity)))
-        elif (m.type == "note_off" or (m.type == "note_on" and m.velocity == 0)) and m.note in pending:
-            ev.append((t, 1, mido.Message("note_off", note=pending.pop(m.note), velocity=0)))
-    for name, ev in parts.items():
-        tr = mido.MidiTrack()
-        tr.append(mido.MetaMessage("track_name", name=name))
-        last = 0
-        for t, _, msg in sorted(ev, key=lambda e: (e[0], e[1])):
-            tr.append(msg.copy(time=t - last, channel=0))
-            last = t
-        out.tracks.append(tr)
+    """The skeleton through the real chain: perform.py and orchestrate.py with
+    specs/skeleton_symphonic.json (its integrity check must pass), then its
+    orchestra group as out/skeleton_orchestra.mid + .orchestra.json (sidecar)."""
+    od = OUT / "skeleton_symphonic"
+    subprocess.run([sys.executable, str(R / "tools" / "orchestrate.py"), str(score), str(plan), str(SPEC), str(od)],
+                   check=True)
     p = OUT / "skeleton_orchestra.mid"
-    out.save(str(p))
+    shutil.copyfile(od / "orchestra.mid", p)
+    shutil.copyfile(od / "orchestra.orchestra.json", OUT / "skeleton_orchestra.orchestra.json")
     return p
 
 
