@@ -37,6 +37,11 @@
 % * Finding 3, Climax II 52:3-53:3: the tenor KEEP (B-flat, G) blocks the proposed eighth climb B-flat 3 C4 D4 E4
 %   to G4 at 53:1 (held through the E dim7 at 53:3, then the KEEP C4 at 53:4), which would move the peak bar's
 %   inner voice and close the 21-semitone hole G3-E5 in the fff chord; plan.json would reach fff at 52:3.
+%   Tested with finding 1 on a /tmp copy of the assembled score with this file (tenor 52 c'4. a8 bes8 c'8 d'8 e'8,
+%   53 g'2. c'4, 54 a2 c'2; alto 54 c''2 a'8 f'8 ees'4): check.py 0 errors/0 PAR/0 BEAT/0 unjustified, strict
+%   clash 0 (xrel 7, acc 8, acc2 29: 53:3 tenor G4 over D-flat 2 becomes ACC, the E dim7's own tritone),
+%   suspensions 21 strong / 11 weak unchanged. New flags: D4? 54:4 (C4/Gb2, the dim7's tritone), passing D4 at
+%   52:4 (m7 under C6, 9th over C2 and under E5), alto F4 appoggiatura at 54:3.5 (over E-flat 2).
 % * Finding 5: delete the 250 ms breath at 46:1 (piece.py) so E major resolves straight into F.
 % * Finding 8: plan.json has no pedal in 46-54. Use a damper span {"at":"46:1","until":"55:1","every":"harmony"}
 %   and listen for blur at the bass steps 50:4 (E-flat 2) and 51:4 (C2). Do NOT re-catch the sostenuto at
