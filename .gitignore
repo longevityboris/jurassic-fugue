@@ -10,3 +10,4 @@ ricercar/preview/*.mid
 ricercar/audio/organ/out/stems/
 ricercar/audio/*/out/*.mid
 !ricercar/score/out/*.pdf
+.kapell-build/
