@@ -4,8 +4,8 @@
 \include "music-voices.ly"
 
 \header {
-  title = "Ricercar on the Theme from Jurassic Park"
-  subtitle = "Double fugue a 4 in B-flat minor (string quartet)"
+  title = "The Neighbour"
+  subtitle = "Ricercar a 4 on the Theme from Jurassic Park, for string quartet"
   composer = "Theme: John Williams (1993)"
   tagline = ##f
 }

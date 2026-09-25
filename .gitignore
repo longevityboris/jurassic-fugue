@@ -9,3 +9,4 @@ ricercar/preview/*.mid
 .claude/tsc-cache/
 ricercar/audio/organ/out/stems/
 ricercar/audio/*/out/*.mid
+!ricercar/score/out/*.pdf
