@@ -27,6 +27,10 @@ results = {}
 
 def run(spec_d, name):
     d = Path(tempfile.mkdtemp(prefix=f"orch_{name}_"))
+    spec_d = copy.deepcopy(spec_d)
+    frm = spec_d.get("marks", {}).get("from")
+    if frm and not Path(frm).is_absolute():
+        spec_d["marks"]["from"] = str((SPEC.parent / frm).resolve())
     sp = d / "spec.json"
     sp.write_text(json.dumps(spec_d))
     try:
@@ -177,11 +181,11 @@ expect("tempo mismatch caught", not r6["ok"] and any("tempo" in e for e in r6["e
 # 7. a spec that leaves the tenor unplayed in 44-46 must fail coverage
 s7 = copy.deepcopy(base)
 s7["assignments"] = [a for a in s7["assignments"] if not (a["voice"] == "tenor" and a["part"] == "tenor")]
-s7["assignments"].append({"voice": "tenor", "part": "tenor", "at": "46:1", "until": "end"})
+s7["assignments"].append({"voice": "tenor", "part": "tenor", "at": "pedal_climax+4", "until": "end"})
 _, r7 = run(s7, "uncovered")
 expect("uncovered score notes caught", not r7["ok"] and any("played by no part" in e for e in r7["errors"]),
        r7["errors"][:3])
-s7["allow_uncovered"] = [{"voice": "tenor", "at": "44:1", "until": "46:1"}]
+s7["allow_uncovered"] = [{"voice": "tenor", "at": "pedal_climax+2", "until": "pedal_climax+4"}]
 _, r7b = run(s7, "allowed")
 expect("declared gap accepted", r7b["ok"], r7b["errors"][:3])
 
@@ -220,6 +224,22 @@ mutate(work / "o", "piano", "pedal_8vb", stretch)
 r10 = O.check(SCORE, PLAN, SPEC, work / "o")
 expect("pedal note held past the pedal caught", not r10["ok"] and any("pedal" in e for e in r10["errors"]),
        r10["errors"][:2])
+
+# 11. marks: an unknown mark and a section list that disagrees with the score are refused
+s11 = copy.deepcopy(base)
+s11["assignments"].append({"voice": "alto", "part": "soprano_8va", "at": "nowhere+2", "until": "end"})
+_, r11 = run(s11, "badmark")
+expect("unknown mark rejected", not r11["ok"] and "marks:" in r11["errors"][0], r11["errors"][:1])
+bad_secs = Path(tempfile.mkdtemp()) / "secs.json"
+bad_secs.write_text(json.dumps([{"id": "sec01_all", "bars": 10}]))
+s12 = copy.deepcopy(base)
+s12["marks"] = {"from": str(bad_secs)}
+_, r12 = run(s12, "badsecs")
+expect("section list that disagrees with the score rejected", not r12["ok"] and "disagree" in r12["errors"][0],
+       r12["errors"][:1])
+res = json.loads((out / "orchestration.json").read_text())
+expect("marks resolved from piece.py", res["marks"]["inversa"]["at"] == "35:1" and "pedal_climax" in res["marks"],
+       {k: v["at"] for k, v in res["marks"].items() if not k.startswith("sec")})
 
 # ---- contract checks on the clean output
 pm = mido.MidiFile(str(out / "piano.mid"))

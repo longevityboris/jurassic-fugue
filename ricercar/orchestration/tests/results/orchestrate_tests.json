@@ -7,7 +7,7 @@
   "pass": true,
   "detail": [
    "va: 1 assigned note(s) missing: ['alto 9:4 F3+0']",
-   "va: 1 note(s) that no assignment accounts for: ['key 54 at 9:4.00521']",
+   "va: 1 note(s) that no assignment accounts for: ['key 54 at 9:3.99479']",
    "alto: 1 score note(s) played by no part: ['9:4 F3']"
   ]
  },
@@ -15,7 +15,7 @@
   "pass": true,
   "detail": [
    "bass: 1 assigned note(s) missing: ['bass 35:1 E3+0']",
-   "bass: 1 note(s) that no assignment accounts for: ['key 64 at 34:4.99688']",
+   "bass: 1 note(s) that no assignment accounts for: ['key 64 at 34:4.99479']",
    "bass: 1 score note(s) played by no part: ['35:1 E3']"
   ]
  },
@@ -49,7 +49,7 @@
  "uncovered score notes caught": {
   "pass": true,
   "detail": [
-   "tenor: 6 score note(s) played by no part: ['44:1 Bb3', '44:4 Bb3', '44:4.5 A3', '45:1 Bb3', '45:4 Bb3']"
+   "tenor: 6 score note(s) played by no part: ['48:1 Bb3', '48:4 Bb3', '48:4.5 A3', '49:1 Bb3', '49:4 Bb3']"
   ]
  },
  "declared gap accepted": {
@@ -83,14 +83,38 @@
  "pedal pitch the voice never sounds rejected": {
   "pass": true,
   "detail": [
-   "SystemExit: pedal point bass->pedal_8vb: pitch 43 is not sounded by bass in 42:1-46:1"
+   "SystemExit: pedal point bass->pedal_8vb: pitch 43 is not sounded by bass in 46:1-50:1"
   ]
  },
  "pedal note held past the pedal caught": {
   "pass": true,
   "detail": [
-   "pedal_8vb: pedal note 29 at 41:4.99688 is not a pitch bass holds (bridge 1 beats)"
+   "pedal_8vb: pedal note 29 at 45:4.99375 is not a pitch bass holds (bridge 1 beats)"
   ]
+ },
+ "unknown mark rejected": {
+  "pass": true,
+  "detail": [
+   "SystemExit: bad position 'nowhere+2': expected \"bar:beat\", \"end\" or MARK[+N[:beat]] (marks: apotheosis_coda, arioso, entry4_episode, expo, inversa, pedal_climax, sec01_expo, sec02_entry4_episode, sec03_stretto_liquidation, sec04_arioso, sec05_inversa, sec06_pedal_climax, sec07_apotheosis_coda, stretto_liquidation)"
+  ]
+ },
+ "section list that disagrees with the score rejected": {
+  "pass": true,
+  "detail": [
+   "SystemExit: marks from /var/folders/qh/7w8n7nzn5ns_qjyyllhjxnt40000gn/T/tmp5t4qr7lf/secs.json: the sections add up to 10 bars, the score has 66; the score and the section list disagree"
+  ]
+ },
+ "marks resolved from piece.py": {
+  "pass": true,
+  "detail": {
+   "expo": "1:1",
+   "entry4_episode": "13:1",
+   "stretto_liquidation": "20:1",
+   "arioso": "30:1",
+   "inversa": "35:1",
+   "pedal_climax": "46:1",
+   "apotheosis_coda": "55:1"
+  }
  },
  "piano marker": {
   "pass": true,
@@ -117,11 +141,11 @@
  },
  "piano pedal only where it plays": {
   "pass": true,
-  "detail": "pedal-down bars [46, 47, 48]..[60, 61, 62]"
+  "detail": "pedal-down bars [50, 51, 52]..[64, 65, 66]"
  },
  "CC20 before every vn2 note": {
   "pass": true,
-  "detail": "156/156"
+  "detail": "157/157"
  },
  "detache window = 32": {
   "pass": true,
@@ -135,10 +159,10 @@
  },
  "level -1 lowers piano velocity by one dynamic step (8-16 perform units)": {
   "pass": true,
-  "detail": "velocity change -16..-10"
+  "detail": "velocity change -16..-12"
  },
  "vn1 and piano soprano 8va share onset ticks where they double (51-58)": {
   "pass": true,
-  "detail": "31 shared onsets"
+  "detail": "36 shared onsets"
  }
 }

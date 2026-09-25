@@ -57,6 +57,9 @@ from dataclasses import dataclass, field
 from fractions import Fraction as F
 from pathlib import Path
 
+import re
+import runpy
+
 import mido
 
 TOOLS = Path(__file__).resolve().parent
@@ -191,6 +194,7 @@ class Spec:
     part_group: dict           # part -> group
     windows: list
     end: F
+    marks: dict = field(default_factory=dict)
 
     def part_windows(self, part):
         return sorted([w for w in self.windows if w.part == part], key=lambda w: w.a)
@@ -202,8 +206,50 @@ def fmt_pos(plan: perform.Plan, x: F) -> str:
     return f"{bar}:{float(beat):g}"
 
 
+MARK_RE = re.compile(r"^([A-Za-z_][\w.]*?)(?:([+-]\d+)(?::(\d+(?:\.\d+)?))?)?$")
+
+
+def load_marks(d: dict, spec_path: Path, plan: perform.Plan, end: F) -> dict:
+    """Named positions: {"from": FILE} reads section lengths (a Python file with SECTIONS =
+    [{"id", "bars"}, ...], such as design/final-lab/piece.py, or a JSON list of the same, or a
+    JSON {name: "bar:beat"}), plus explicit {name: "bar:beat"} entries. A section id "sec05_inversa"
+    is also available as "inversa"."""
+    m = d.get("marks", {}) or {}
+    marks = {}
+    src = m.get("from")
+    if src:
+        path = Path(src) if Path(src).is_absolute() else (Path(spec_path).parent / src)
+        if path.suffix == ".py":
+            with contextlib.redirect_stdout(io.StringIO()):
+                secs = runpy.run_path(str(path), run_name="orchestrate_marks")["SECTIONS"]
+        else:
+            secs = json.loads(path.read_text())
+        if isinstance(secs, dict):
+            for k, v in secs.items():
+                marks[k] = plan.pos(v)
+        else:
+            bar = 1
+            for sec in secs:
+                names = [sec["id"]]
+                mm = re.match(r"sec\d+_(.+)$", sec["id"])
+                if mm:
+                    names.append(mm.group(1))
+                for nm in names:
+                    marks[nm] = (bar - 1) * plan.measure
+                bar += int(sec["bars"])
+            total = (bar - 1) * plan.measure
+            if total != end:
+                raise SystemExit(f"marks from {path}: the sections add up to {bar - 1} bars, the score has "
+                                 f"{float(end / plan.measure):g}; the score and the section list disagree")
+    for k, v in m.items():
+        if k != "from":
+            marks[k] = plan.pos(v)
+    return marks
+
+
 def load_spec(spec_path: Path, plan: perform.Plan, end: F) -> Spec:
     d = json.loads(Path(spec_path).read_text())
+    marks = load_marks(d, spec_path, plan, end)
     if "groups" not in d or not d["groups"]:
         raise SystemExit(f"{spec_path}: no 'groups'")
     groups, part_group = {}, {}
@@ -231,14 +277,7 @@ def load_spec(spec_path: Path, plan: perform.Plan, end: F) -> Spec:
                      "plan_overrides": gd.get("plan_overrides", {})}
 
     def pos(s, default):
-        if s is None:
-            s = default
-        if s == "end":
-            return end
-        try:
-            return plan.pos(s)
-        except Exception:
-            raise SystemExit(f"bad position {s!r} (expected \"bar:beat\" or \"end\")")
+        return resolve_pos(s if s is not None else default, plan, end, marks)
 
     def part_of(p):
         if p in part_group:
@@ -284,7 +323,42 @@ def load_spec(spec_path: Path, plan: perform.Plan, end: F) -> Spec:
             if w2.a < w1.u:
                 raise SystemExit(f"part {p!r}: windows overlap ({w1.voice} {w1.at}-{w1.until} and "
                                  f"{w2.voice} {w2.at}-{w2.until}); split them or use another part")
-    return Spec(Path(spec_path), d, plan, groups, part_group, windows, end)
+    # positions inside group options (piano pedal spans, organ registration) may use marks too;
+    # perform.py and the organ read plain "bar:beat", so they are rewritten here
+    for gd in groups.values():
+        ped = gd["options"].get("pedal")
+        if isinstance(ped, list):
+            gd["options"]["pedal"] = [dict(x, **{k: fmt_pos(plan, resolve_pos(x[k], plan, end, marks))
+                                                 for k in ("at", "until") if k in x}) for x in ped]
+        reg = gd["options"].get("registration")
+        if isinstance(reg, dict):
+            for key in ("changes", "manual_changes"):
+                reg[key] = [dict(x, at=fmt_pos(plan, resolve_pos(x["at"], plan, end, marks))) if "at" in x else x
+                            for x in reg.get(key, [])]
+    d["allow_uncovered"] = [dict(x, **{k: fmt_pos(plan, resolve_pos(x[k], plan, end, marks)) if x[k] != "end"
+                                       else "end" for k in ("at", "until") if k in x})
+                            for x in d.get("allow_uncovered", [])]
+    return Spec(Path(spec_path), d, plan, groups, part_group, windows, end, marks)
+
+
+def resolve_pos(s: str, plan: perform.Plan, end: F, marks: dict) -> F:
+    """"bar:beat" | "end" | "MARK" | "MARK+N" | "MARK-N" | "MARK+N:beat" (N bars after the mark, then
+    the beat within that bar)."""
+    if s == "end":
+        return end
+    if re.match(r"^\d+:\d+(?:\.\d+)?(?:/\d+)?$", str(s)):
+        return plan.pos(s)
+    mm = MARK_RE.match(str(s))
+    if not mm or mm.group(1) not in marks:
+        known = ", ".join(sorted(marks)) or "none"
+        raise SystemExit(f"bad position {s!r}: expected \"bar:beat\", \"end\" or MARK[+N[:beat]] "
+                         f"(marks: {known})")
+    x = marks[mm.group(1)]
+    if mm.group(2):
+        x += int(mm.group(2)) * plan.measure
+    if mm.group(3):
+        x += (F(mm.group(3)) - 1) / 4
+    return x
 
 
 # ------------------------------------------------------------------------------ perform.py
@@ -466,7 +540,10 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
     tmap = TempoMap(runs[0][0]["tempo"])
 
     resolved = {"spec": str(spec_path), "score": str(score), "plan": str(plan_path),
-                "duration_s": round(tmap.sec(tick_of(end)), 3), "groups": {}}
+                "duration_s": round(tmap.sec(tick_of(end)), 3), "bars": float(end / plan.measure),
+                "marks": {k: {"at": fmt_pos(plan, v), "t_s": round(tmap.sec(tick_of(v)), 3)}
+                          for k, v in sorted(spec.marks.items(), key=lambda kv: kv[1])},
+                "groups": {}}
     group_files = {}
     for g, gd in spec.groups.items():
         rname = gd["renderer"]
@@ -878,7 +955,7 @@ def check(score: Path, plan_path: Path, spec_path: Path, outdir: Path) -> dict:
     allowed = spec.d.get("allow_uncovered", [])
     for v, flags in covered.items():
         unc = [n for n, f in zip(sounding[v], flags) if not f]
-        ok_unc = [n for n in unc if any(a.get("voice", v) == v and plan.pos(a["at"]) <= n.start <
+        ok_unc = [n for n in unc if any(a.get("voice", v) == v and plan.pos(a.get("at", "1:1")) <= n.start <
                                         (end if a.get("until", "end") == "end" else plan.pos(a["until"]))
                                         for a in allowed)]
         bad = [n for n in unc if n not in ok_unc]
