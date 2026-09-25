@@ -432,6 +432,18 @@
   },
   {
    "voice": "bass",
+   "at": "30:2",
+   "until": "31:1",
+   "role": "lament"
+  },
+  {
+   "voice": "tenor",
+   "at": "30:4.5",
+   "until": "32:2",
+   "role": "lament"
+  },
+  {
+   "voice": "bass",
    "at": "35:1",
    "until": "37:1",
    "role": "subject"
@@ -928,6 +940,7 @@
   "answer_major": 9,
   "head": 5,
   "cs": 3,
+  "lament": 2,
   "free": -5
  },
  "role_level": {
@@ -940,6 +953,7 @@
   "head": 0.4,
   "subject_tail": 0.2,
   "cs": 0.2,
+  "lament": 0.2,
   "free": -0.3
  }
 }
