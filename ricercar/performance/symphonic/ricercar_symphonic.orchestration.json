@@ -1,7 +1,7 @@
 {
- "spec": "performance/symphonic/symphonic.json",
- "score": "score/music-voices.ly",
- "plan": "design/final-lab/plan.json",
+ "spec": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/symphonic/symphonic.json",
+ "score": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/score/music-voices.ly",
+ "plan": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/design/final-lab/plan.json",
  "score_sha256": "0132d043358cbcb9",
  "plan_sha256": "7804a26d6d18e0d7",
  "duration_s": 232.106,
@@ -176,7 +176,7 @@
        "at": "30:1",
        "until": "34:1",
        "octave": 0,
-       "level": 0.0,
+       "level": 0.5,
        "articulation": "auto",
        "t0_s": 94.164,
        "t1_s": 112.626
@@ -266,7 +266,7 @@
        "at": "30:1",
        "until": "34:1",
        "octave": 0,
-       "level": 0.0,
+       "level": 0.5,
        "articulation": "auto",
        "t0_s": 94.164,
        "t1_s": 112.626
@@ -323,7 +323,7 @@
        "at": "30:1",
        "until": "34:1",
        "octave": 0,
-       "level": 0.0,
+       "level": 0.5,
        "articulation": "auto",
        "t0_s": 94.164,
        "t1_s": 112.626
@@ -380,7 +380,7 @@
        "at": "30:1",
        "until": "34:1",
        "octave": 0,
-       "level": 0.0,
+       "level": 0.5,
        "articulation": "auto",
        "t0_s": 94.164,
        "t1_s": 112.626
@@ -459,7 +459,7 @@
        "at": "32:3",
        "until": "34:1",
        "octave": 12,
-       "level": -1.0,
+       "level": -0.5,
        "articulation": "auto",
        "t0_s": 105.703,
        "t1_s": 112.626
@@ -562,7 +562,7 @@
        "at": "28:1",
        "until": "30:1",
        "octave": 0,
-       "level": -0.5,
+       "level": -1.0,
        "articulation": "auto",
        "t0_s": 83.077,
        "t1_s": 94.164
@@ -573,7 +573,7 @@
        "at": "50:3",
        "until": "54:1",
        "octave": 0,
-       "level": -1.0,
+       "level": -0.5,
        "articulation": "auto",
        "t0_s": 169.827,
        "t1_s": 182.86
@@ -700,7 +700,7 @@
        "at": "59:1",
        "until": "63:1",
        "octave": 0,
-       "level": -1.0,
+       "level": -1.5,
        "articulation": "auto",
        "t0_s": 200.252,
        "t1_s": 213.585
@@ -959,11 +959,22 @@
        "kind": "line",
        "voice": "alto",
        "at": "50:1",
-       "until": "59:1",
+       "until": "55:1",
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
        "t0_s": 168.248,
+       "t1_s": 186.918
+      },
+      {
+       "kind": "line",
+       "voice": "alto",
+       "at": "55:1",
+       "until": "59:1",
+       "octave": 0,
+       "level": 0.5,
+       "articulation": "auto",
+       "t0_s": 186.918,
        "t1_s": 200.252
       },
       {
@@ -972,7 +983,7 @@
        "at": "59:1",
        "until": "63:1",
        "octave": 0,
-       "level": 0.5,
+       "level": 1.0,
        "articulation": "auto",
        "t0_s": 200.252,
        "t1_s": 213.585
@@ -1040,7 +1051,7 @@
        "at": "55:1",
        "until": "59:1",
        "octave": 0,
-       "level": 0.5,
+       "level": 1.0,
        "articulation": "auto",
        "t0_s": 186.918,
        "t1_s": 200.252
@@ -1051,7 +1062,7 @@
        "at": "59:1",
        "until": "63:1",
        "octave": 0,
-       "level": 0.5,
+       "level": 1.0,
        "articulation": "auto",
        "t0_s": 200.252,
        "t1_s": 213.585
@@ -1231,7 +1242,7 @@
        "at": "59:1",
        "until": "63:1",
        "octave": -12,
-       "level": -0.5,
+       "level": -1.0,
        "articulation": "auto",
        "t0_s": 200.252,
        "t1_s": 213.585

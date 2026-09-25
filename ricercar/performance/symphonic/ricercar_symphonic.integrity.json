@@ -2,14 +2,11 @@
  "ok": true,
  "errors": [],
  "warnings": [
-  "ob: 1 note(s) held across a hand-off shortened to the next note",
-  "cl: 1 note(s) held across a hand-off shortened to the next note",
-  "bn: 1 note(s) held across a hand-off shortened to the next note",
   "timp: 1 note(s) held across a hand-off shortened to the next note",
   "vn1: 1 note(s) held across a hand-off shortened to the next note",
-  "vn2: 1 note(s) held across a hand-off shortened to the next note",
+  "vn2: 2 note(s) held across a hand-off shortened to the next note",
   "va: 2 note(s) held across a hand-off shortened to the next note",
-  "vc: 4 note(s) held across a hand-off shortened to the next note"
+  "vc: 3 note(s) held across a hand-off shortened to the next note"
  ],
  "onset_tolerance_ticks": 60,
  "tempo_changes": 285,
