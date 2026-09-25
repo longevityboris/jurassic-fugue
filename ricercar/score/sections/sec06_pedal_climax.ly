@@ -9,13 +9,13 @@
 %   stay two voices") and critique fix C2-M2 ("alto rests in 46-47; S2 and S1 enter together at 48:1"): the
 %   pedal and the tenor's lament lead-in alone, so S2's entry at 48:1 is fresh.
 % * 48:1-50:3, soprano: silent so S2 (alto) is the unbroken top line through the whole combination and the first
-%   diminution head (F5, 50:3) enters from silence (fix C1-M2(a), whole-piece review findings 4, 6, 7). Round 1
-%   of this section had A-flat 5 G5 at 49:2-49:3.5 and G-flat 5 at 50:2; both were removed because
+%   diminution head (F5, 50:3) enters from silence (fix C1-M2(a), whole-piece review findings 4, 6, 7). The
+%   composer's version had A-flat 5 G5 at 49:2-49:3.5 and G-flat 5 at 50:2; both were removed because
 %   (a) with S2's F5 at 49:4 the top line was heard as a descent A-flat G F, so S2's leap C5-F5 (the second
 %   half's signature) sounded like the end of the soprano's line; (b) the G-flat 5 covered S2's E-flat 5-D-flat 5
 %   step from a third above, anticipated head 2's G-flat a bar early and turned head 1 into the resolution of an
 %   appoggiatura; (c) the Climax-II climb F, G-flat, A, C was heard as falling A-flat G G-flat F, then rising.
-%   Also tested and rejected in round 1 (do not retry): F5 from 48:3 (hollow F/B-flat chord); F5 held 48:4-49:4
+%   Also tested and rejected by the composer (do not retry): F5 from 48:3 (hollow F/B-flat chord); F5 held 48:4-49:4
 %   (brings back the removed inversion head, C2-M2, and re-strikes S2's peak); G-flat 5 tied 49:4.5-50:1 as a 9-8
 %   over F2 (doubles the pedal's G-flat neighbour at three octaves, masks S2's leap F5-B-flat 4); B-flat 5 tied
 %   49:4-50:1 as a 4-3 (its resolution A5 or A-flat 5 is a seventh against S1's held B-flat 3, and it takes the
@@ -45,7 +45,7 @@
 % * Finding 5: delete the 250 ms breath at 46:1 (piece.py) so E major resolves straight into F.
 % * Finding 8: plan.json has no pedal in 46-54. Use a damper span {"at":"46:1","until":"55:1","every":"harmony"}
 %   and listen for blur at the bass steps 50:4 (E-flat 2) and 51:4 (C2). Do NOT re-catch the sostenuto at
-%   50:4 or 51:4 (round 1 suggested it): F5, D-flat 5 and C4 are still down at 50:4 and would ring into 51:1's
+%   50:4 or 51:4 (the composer's header suggested it): F5, D-flat 5 and C4 are still down at 50:4 and would ring into 51:1's
 %   G-flat 5 and C5, A5 at 51:4 into 52:1's G5; the tenor lies 18-25 semitones above the bass on every
 %   downbeat 51:4-54:1, so the left hand cannot hold both.
 soprano = \absolute {
