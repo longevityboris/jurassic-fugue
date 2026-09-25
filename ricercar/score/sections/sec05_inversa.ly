@@ -31,7 +31,13 @@
 %                     S+T (with the alto's G4 at 42:4.5), left hand A+B; quartet: viola above violin II for two bars.
 %   Weak-beat dissonances against the held a' (42:4 alto B3, 42:4.5 alto G4) are the CS2 inv.'s own leap figure
 %                     under a prepared note (check.py: T:SUS); 42:4.5 becomes G9 over D (the passing G7 plus the held A).
-%   HOL 43:4.5 (weak eighth): the inversion's b' leaps in while the tenor holds the F# that prepares the 44:1 7-6.
+%   HOL 43:4.5 (weak eighth): S B4, A B3, B F#3 are all skeleton notes and the tenor must hold the F# that prepares
+%                     the 44:1 7-6 (a re-struck preparation would also need F# there); A4 instead would put a HOL on
+%                     the strong beat 44:2. Kept.
+% Judgement calls: (1) soprano 35 stays a full rest although the section list calls it free (rule 6 and the section
+%   map: the inversion alone). (2) The tenor re-enters at 42:3, not at 44 as the blueprint prefers: the register
+%   licence holds for the whole span (alto at most G4), and the entry buys the 43:1 4-3 that starts the chain; the
+%   third entry is still in three voices for its first half bar (42:1-2), as rule 6's "unless a composer finds room" allows.
 %   Skeleton flags unchanged: DIR 37:2.5; D4? 42:4.5, 43:4.5; strict ACC2 37:1, ACC 41:1 (the cadential 6/4).
 % Suspensions (suspensions.py on the section spliced into SK_final): 3 new on strong beats (43:1, 43:3, 44:1);
 % section total 3 strong + 2 weak-beat (37:2 bass 2-3 and 43:2 soprano 7-6, both already in the skeleton).
