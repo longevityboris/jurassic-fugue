@@ -143,10 +143,20 @@ Without it, a score note that no part plays fails the integrity check.
 ### allow_octave_shift
 
 `["vn2", "orchestra.ob"]` (or `true`): orchestra parts whose notes outside their compass the
-renderer may move by octaves. Without it such a note fails the integrity check (section 3). The
-alto reaches F3 (53) and F#3 (54) in bars 9-12 and A3 (57) in the arioso: below vn2 (55-96) and the
-oboe (58-91). Give those bars to the viola or the clarinet (or split the window) rather than allow
-the shift: a moved note sounds an octave off.
+renderer may move by octaves. Without it such a note fails the integrity check (section 3). Give
+those bars to a part whose compass holds them (or split the window) rather than allow the shift:
+a moved note sounds an octave off.
+
+Ranges of the final score draft (`score/music-voices.ly`, MIDI): soprano 65-84, alto 53-77, tenor
+48-68, bass 36-57. Notes that fall outside common orchestra compasses (`orch_common.PARTS`: vn1/vn2
+55-, ob 58-, fl 60-, cl 50-, tbn 40-, timp 38-57):
+
+* alto below vn2 (55): 9:4 F3, 12:1 F#3, 12:4 F3. Also below the oboe (58): 11:2 A3, 11:3 Ab3,
+  13:1 and 13:3 A3, 30:1-30:2 A3 (arioso), 43:2.5 and 44:1.5 A3. Viola (48-) or clarinet (50-)
+  hold all of them;
+* tenor below the clarinet (50): C3 at 17:3, 57:2, 58:3, 61:4.5, 62:1. Bassoon (34-) or viola;
+* bass below the tenor trombone (40): 18 notes (lowest C2 at 13:4, 16:4, 17:3, 51:4-53:1); below
+  the timpani (38) at C2/C#2. Bass trombone (31-), tuba, cello, bassoon.
 
 ## 3. Integrity check
 
