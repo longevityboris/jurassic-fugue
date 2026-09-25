@@ -74,7 +74,7 @@
     127
    ],
    "cc_dynamics_db_mean": 0.0,
-   "rms_dbfs_prenorm": -37.22,
+   "rms_dbfs_prenorm": -37.23,
    "transpose": 0,
    "zero_length_notes": 0,
    "unterminated_notes": 0,
@@ -145,7 +145,7 @@
   "mix": {
    "lr_correlation": 0.476,
    "mono_fold_db": -1.34,
-   "mono_fold_worst_1s_db": -3.42,
+   "mono_fold_worst_1s_db": -3.34,
    "balance_r_minus_l_db": 1.5
   }
  },
