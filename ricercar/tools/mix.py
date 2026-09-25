@@ -25,11 +25,14 @@ What it does
      (orchestration/calibration/: the same four-part mf chorale through orchestrate.py and each
      renderer; equal K-weighted loudness; cached per renderer script hash), then the manifest's
      gain_db per group.
-  4. Verify: an onset-strength envelope (1 ms frames, four bands) of each group is cross-correlated
-     with an impulse train at that group's MIDI note-ons; the difference between the groups' lags
-     must be under --max-lag-ms (5 ms). Where two groups play the same onsets (doublings), their
-     onset envelopes are also cross-correlated directly. With "latency_ms" in a group ("auto" or a
-     number) a measured offset can be compensated; by default nothing is shifted.
+  4. Verify (before placement; seat delays are physical): onset envelopes (1 ms frames, four
+     bands) are cross-correlated with impulse trains at MIDI note-ons. Gate, under --max-lag-ms
+     (5 ms): (a) the renderers' time bases, measured by a timing probe (the calibration chorale
+     with every note short, through the same render / offset / stem path, cached with the
+     calibration), agree; (b) where groups double each other, their onsets coincide (direct
+     cross-correlation of the two groups' envelopes around the shared onsets). Reported too:
+     each group's lag on the attacks in the music, per quarter of the piece (articulation shows
+     there: bowed pre-roll, slurs). "latency_ms" ("auto" or ms) shifts a group; default none.
   5. Place and reverberate: each stem is panned to its seat (audio/strings/hall.py place_dry:
      azimuth, width, depth delay and -1 dB/m), and each group feeds the same measured Detmold
      Konzerthaus response (hall.Hall, unit energy, tail continued; right-hand sources get the

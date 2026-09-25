@@ -13,44 +13,44 @@
     "vn2"
    ],
    "offset_s": -0.5,
-   "raw_scale_db": -13.86,
+   "raw_scale_db": -14.244,
    "raw_scale_estimates": {
-    "va": -13.86,
-    "vc": -13.861,
-    "vn1": -13.856,
-    "vn2": -13.859
+    "va": -14.249,
+    "vc": -14.241,
+    "vn1": -14.245,
+    "vn2": -14.244
    },
    "calibration_db": 0.0,
    "gain_db": 0.0,
-   "total_gain_db": -13.86,
+   "total_gain_db": -14.244,
    "alignment": {
     "attack_rule": "new-bow and short strokes at their note-on (the renderer starts the bow's pre-roll early so that the stroke lands on the note-on); slurred notes, which enter by crossfade, are left out (articulation from its report)",
-    "entry_xcorr_lag_ms": 2.57,
-    "entries": 192,
-    "after_silence_xcorr_lag_ms": -11.91,
-    "after_silence_notes": 16,
+    "entry_xcorr_lag_ms": 2.83,
+    "entries": 181,
+    "after_silence_xcorr_lag_ms": -11.66,
+    "after_silence_notes": 13,
     "entry_lag_ms_by_quarter": [
-     -10.57,
-     -0.7,
-     3.52,
-     3.88
+     -10.51,
+     -0.08,
+     3.4,
+     3.34
     ],
-    "entry_per_note_lag_ms_median": -1.0,
+    "entry_per_note_lag_ms_median": 0.0,
     "entry_per_note_lag_ms_p10_p90": [
-     -9.0,
-     9.0
+     -7.0,
+     12.0
     ],
     "requested_latency_ms": 0,
-    "all_notes_xcorr_lag_ms": -0.98,
-    "all_notes": 579,
-    "all_notes_per_note_lag_ms_median": 8.0,
+    "all_notes_xcorr_lag_ms": -0.15,
+    "all_notes": 591,
+    "all_notes_per_note_lag_ms_median": 5.0,
     "compensation_ms": 0.0,
-    "entry_lag_after_ms": 2.57,
+    "entry_lag_after_ms": 2.83,
     "time_base_lag_ms": 2.28
    },
    "hall_re_dry_db_program": 4.0,
-   "wet_db": -4.12,
-   "c80_db_impulse": 8.53,
+   "wet_db": -4.37,
+   "c80_db_impulse": 8.74,
    "seats": {
     "va": {
      "az": -10,
@@ -73,7 +73,7 @@
      "width": 0.35
     }
    },
-   "level_when_playing_lufs": -31.18
+   "level_when_playing_lufs": -31.47
   },
   "piano": {
    "renderer": "piano",
@@ -91,36 +91,36 @@
    "raw_scale_db": 0.0,
    "raw_scale_estimates": {},
    "calibration_db": 0.302,
-   "gain_db": 0.0,
-   "total_gain_db": 0.302,
+   "gain_db": -1.0,
+   "total_gain_db": -0.698,
    "alignment": {
     "attack_rule": "every note-on (the samples are onset-aligned to 0.2 ms)",
-    "entry_xcorr_lag_ms": 1.43,
-    "entries": 321,
-    "after_silence_xcorr_lag_ms": 0.83,
+    "entry_xcorr_lag_ms": 1.47,
+    "entries": 329,
+    "after_silence_xcorr_lag_ms": 0.79,
     "after_silence_notes": 7,
     "entry_lag_ms_by_quarter": [
      null,
      null,
-     1.39,
-     1.49
+     1.41,
+     1.56
     ],
     "entry_per_note_lag_ms_median": 1.0,
     "entry_per_note_lag_ms_p10_p90": [
      0.0,
-     3.0
+     4.199999999999989
     ],
     "requested_latency_ms": 0,
-    "all_notes_xcorr_lag_ms": 1.57,
-    "all_notes": 322,
+    "all_notes_xcorr_lag_ms": 1.6,
+    "all_notes": 330,
     "all_notes_per_note_lag_ms_median": 1.0,
     "compensation_ms": 0.0,
-    "entry_lag_after_ms": 1.43,
+    "entry_lag_after_ms": 1.47,
     "time_base_lag_ms": 0.4
    },
    "hall_re_dry_db_program": 4.0,
-   "wet_db": -5.61,
-   "c80_db_impulse": 9.79,
+   "wet_db": -5.55,
+   "c80_db_impulse": 9.74,
    "seats": {
     "alto": {
      "az": 0,
@@ -158,12 +158,12 @@
      "width": 0.7
     }
    },
-   "level_when_playing_lufs": -29.35
+   "level_when_playing_lufs": -30.01
   }
  },
  "calibration": {
   "piano": {
-   "key": "v2:44ac2ef08382403e:b8ead12081fd2b83:aa447cbe4d28dc3f:631b2534636930b8",
+   "key": "v2:44ac2ef08382403e:b8ead12081fd2b83:aa447cbe4d28dc3f:a168f551556ad5c4",
    "lufs_raw": -33.673,
    "raw_scale_db": 0.0,
    "stems": 4,
@@ -177,7 +177,7 @@
    ]
   },
   "quartet": {
-   "key": "v2:b32c34e0dd47ed48:b8ead12081fd2b83:aa447cbe4d28dc3f:631b2534636930b8",
+   "key": "v2:b32c34e0dd47ed48:b8ead12081fd2b83:aa447cbe4d28dc3f:a168f551556ad5c4",
    "lufs_raw": -33.371,
    "raw_scale_db": -22.294,
    "stems": 4,
@@ -193,90 +193,90 @@
  },
  "inter_group": {
   "quartet-piano": {
-   "entry_lag_difference_ms": 1.14,
+   "entry_lag_difference_ms": 1.36,
    "entry_lag_difference_ms_by_quarter": [
     null,
     null,
-    2.13,
-    2.39
+    1.99,
+    1.78
    ],
-   "shared_onsets": 193,
-   "direct_xcorr_lag_ms": -2.86,
+   "shared_onsets": 192,
+   "direct_xcorr_lag_ms": -2.46,
    "time_base_difference_ms": 1.88
   }
  },
  "alignment_ok": true,
- "alignment_worst_ms": 2.86,
+ "alignment_worst_ms": 2.46,
  "output": {
   "wav": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/orchestration/out/skeleton_quintet.wav",
   "m4a": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/orchestration/out/skeleton_quintet.m4a",
-  "duration_s": 241.89,
+  "duration_s": 241.87,
   "format": "48000 Hz, 2 ch, PCM_24",
   "true_peak_dbtp_wav": -1.0,
-  "true_peak_dbtp_m4a": -1.09,
-  "normalise_gain_db": 2.35,
-  "integrated_lufs": -22.27,
-  "loudness_range_lu": 19.51,
-  "short_term_max_lufs": -12.76,
-  "stereo_correlation": 0.533,
-  "mono_fold_down_db": -1.15,
-  "hall_re_dry_db": 4.08,
+  "true_peak_dbtp_m4a": -1.06,
+  "normalise_gain_db": 2.62,
+  "integrated_lufs": -22.43,
+  "loudness_range_lu": 20.3,
+  "short_term_max_lufs": -13.51,
+  "stereo_correlation": 0.522,
+  "mono_fold_down_db": -1.19,
+  "hall_re_dry_db": 4.07,
   "clicks_away_from_onsets": 0,
   "click_times_s": []
  },
  "balance_where_all_play": {
-  "seconds": 69.3,
-  "quartet": -30.31,
-  "piano": -28.54
+  "seconds": 69.1,
+  "quartet": -30.24,
+  "piano": -29.18
  },
  "loudness_curve_5s_lufs": [
-  -37.5,
+  -37.4,
+  -38.3,
   -38.4,
-  -38.6,
-  -36.9,
-  -35.6,
-  -32.7,
+  -36.7,
+  -35.5,
+  -32.8,
+  -31.7,
+  -30.9,
+  -29.5,
+  -27.4,
+  -26.1,
+  -31.2,
   -31.5,
-  -31.1,
-  -29.9,
-  -27.8,
-  -26.2,
-  -30.9,
-  -30.9,
-  -27.7,
-  -25.4,
-  -25.6,
-  -20.7,
-  -18.6,
-  -18.8,
-  -20.3,
-  -38.8,
-  -36.1,
+  -28.6,
+  -25.8,
+  -25.0,
+  -21.4,
+  -17.5,
+  -18.4,
+  -19.4,
+  -38.5,
+  -35.7,
   -36.9,
   -37.6,
-  -38.6,
-  -36.9,
-  -32.5,
-  -32.1,
-  -32.7,
-  -29.8,
-  -26.9,
-  -25.7,
-  -29.1,
-  -35.1,
-  -28.5,
-  -20.0,
-  -15.2,
-  -14.0,
-  -24.7,
-  -29.6,
-  -25.7,
-  -22.9,
-  -18.3,
-  -19.2,
-  -27.1,
-  -32.4,
-  -34.1,
-  -35.8
+  -39.3,
+  -37.2,
+  -32.8,
+  -32.3,
+  -34.0,
+  -30.2,
+  -27.7,
+  -26.5,
+  -29.7,
+  -35.3,
+  -28.8,
+  -20.3,
+  -15.7,
+  -14.5,
+  -25.0,
+  -28.2,
+  -26.5,
+  -22.6,
+  -18.6,
+  -19.3,
+  -27.4,
+  -31.2,
+  -33.2,
+  -36.0
  ]
 }

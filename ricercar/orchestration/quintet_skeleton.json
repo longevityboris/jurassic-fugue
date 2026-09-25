@@ -228,7 +228,7 @@
     }
    },
    "piano": {
-    "gain_db": 0.0,
+    "gain_db": -1.0,
     "hall_re_dry_db": 4.0,
     "stage": {
      "*": {

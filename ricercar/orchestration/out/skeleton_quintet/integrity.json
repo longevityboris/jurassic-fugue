@@ -10,8 +10,8 @@
  "parts": {
   "vn1": {
    "track": "Violin I",
-   "expected": 145,
-   "matched": 145,
+   "expected": 149,
+   "matched": 149,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -23,8 +23,8 @@
   },
   "vn2": {
    "track": "Violin II",
-   "expected": 157,
-   "matched": 157,
+   "expected": 161,
+   "matched": 161,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -36,28 +36,28 @@
   },
   "va": {
    "track": "Viola",
-   "expected": 170,
-   "matched": 170,
+   "expected": 179,
+   "matched": 179,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
    "shortened": 0,
    "range": [
     48,
-    65
+    66
    ]
   },
   "vc": {
    "track": "Cello",
-   "expected": 107,
-   "matched": 107,
+   "expected": 102,
+   "matched": 102,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
    "shortened": 0,
    "range": [
     36,
-    51
+    53
    ]
   },
   "soprano": {
@@ -75,8 +75,8 @@
   },
   "alto": {
    "track": "alto",
-   "expected": 88,
-   "matched": 88,
+   "expected": 90,
+   "matched": 90,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -88,8 +88,8 @@
   },
   "tenor": {
    "track": "tenor",
-   "expected": 55,
-   "matched": 55,
+   "expected": 62,
+   "matched": 62,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -101,8 +101,8 @@
   },
   "bass": {
    "track": "bass",
-   "expected": 68,
-   "matched": 68,
+   "expected": 67,
+   "matched": 67,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -154,26 +154,26 @@
  },
  "coverage": {
   "soprano": {
-   "notes": 183,
-   "covered": 183,
+   "notes": 187,
+   "covered": 187,
    "allowed_gaps": 0,
    "uncovered": []
   },
   "alto": {
-   "notes": 204,
-   "covered": 204,
+   "notes": 208,
+   "covered": 208,
    "allowed_gaps": 0,
    "uncovered": []
   },
   "tenor": {
-   "notes": 168,
-   "covered": 168,
+   "notes": 177,
+   "covered": 177,
    "allowed_gaps": 0,
    "uncovered": []
   },
   "bass": {
-   "notes": 138,
-   "covered": 138,
+   "notes": 133,
+   "covered": 133,
    "allowed_gaps": 0,
    "uncovered": []
   }

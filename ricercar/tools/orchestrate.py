@@ -540,6 +540,8 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
     tmap = TempoMap(runs[0][0]["tempo"])
 
     resolved = {"spec": str(spec_path), "score": str(score), "plan": str(plan_path),
+                "score_sha256": hashlib.sha256(Path(score).read_bytes()).hexdigest()[:16],
+                "plan_sha256": hashlib.sha256(Path(plan_path).read_bytes()).hexdigest()[:16],
                 "duration_s": round(tmap.sec(tick_of(end)), 3), "bars": float(end / plan.measure),
                 "marks": {k: {"at": fmt_pos(plan, v), "t_s": round(tmap.sec(tick_of(v)), 3)}
                           for k, v in sorted(spec.marks.items(), key=lambda kv: kv[1])},

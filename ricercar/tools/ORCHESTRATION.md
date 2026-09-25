@@ -263,24 +263,29 @@ WAV and m4a, stereo correlation, mono fold-down, hall re dry, a click scan (1 ms
 
 ## 6. Evidence
 
-**Quintet demo** (`orchestration/quintet_skeleton.json` on the 66-bar skeleton, 241.9 s; report
+**Quintet demo** (`orchestration/quintet_skeleton.json` on the 66-bar skeleton as of commit
+4c9dd17, score sha256 `11d2569847377a69`, 239.9 s of music, 241.9 s of audio; report
 `orchestration/out/skeleton_quintet.mix.json`, QA `orchestration/tests/results/qa_skeleton_quintet.json`,
-integrity `orchestration/out/skeleton_quintet/integrity.json`):
+integrity `orchestration/out/skeleton_quintet/integrity.json`). The composer revised the skeleton
+four times while the demo was made (62 to 66 bars, Parts II-V rewritten); the spec, written in
+section marks, did not have to change:
 
 * integrity: every part note is its voice's note at the declared octave, every score note is
-  played (soprano 183, alto 204, tenor 168, bass 138);
-* on the rendered stems (`tests/qa_mix.py`, independent of mix.py's measurements): 901 of 901 part
+  played (soprano 187, alto 208, tenor 177, bass 133);
+* on the rendered stems (`tests/qa_mix.py`, independent of mix.py's measurements): 921 of 921 part
   notes sound at their pitch, none dropped, no sound in rests or after the last note; strings
-  within 9 cents (p95 2.7-7.3), piano on its own stretch curve (bass 8vb about -15 cents, as its
-  README documents for the bottom octave); median onset per part -1..+2 ms from the MIDI;
-* alignment: time bases quartet - piano +1.9 ms; the 193 doubled onsets -2.9 ms; attacks in the
-  music +1.1 ms;
-* levels: the quartet's stems are brought back to its raw scale (-13.9 dB; the four instruments
-  agree within 0.01 dB); calibration puts the piano +0.3 dB; where both play (69 s) the quartet
-  sits at -30.3 LUFS and the piano at -28.5; hall +4.0 dB re dry for each group on this music;
-* master: 48 kHz / 24-bit, -22.2 LUFS integrated, loudness range 19.5 LU, true peak -1.0 dBTP
-  (m4a -1.1; ffmpeg ebur128 agrees), m4a sample-aligned with the WAV, no clicks away from onsets,
-  L/R correlation 0.53, mono fold-down -1.2 dB.
+  within 9 cents (p95 2.8-7.0), piano on its own stretch curve (bass 8vb about -15 cents, as its
+  README documents for the bottom octave); median onset per part -1..+2 ms from the MIDI (the
+  piano's 8vb bass +8 ms, low strings speak later);
+* alignment: time bases quartet - piano +1.9 ms (probe); the 192 doubled onsets -2.5 ms; attacks
+  in the music +1.4 ms;
+* levels: the quartet's stems are brought back to its raw scale (-14.2 dB; the four instruments
+  agree within 0.01 dB); calibration puts the piano +0.3 dB, the spec trims it -1 dB (it sits
+  behind the quartet and carries the octave doublings); where both play (69 s) the quartet sits at
+  -30.2 LUFS and the piano at -29.2; hall +4.0 dB re dry for each group on this music;
+* master: 48 kHz / 24-bit, -22.4 LUFS integrated, loudness range 20.3 LU, true peak -1.0 dBTP
+  (m4a -1.06; ffmpeg ebur128 agrees), m4a sample-aligned with the WAV, no clicks away from
+  onsets, L/R correlation 0.52, mono fold-down -1.2 dB.
 
 **Orchestra adapter** (`tests/spec_chorale_orch_piano.json`: string sections, flute 8va, horn,
 piano; 29 s): rendered, aligned and mixed end to end; time bases orchestra - piano +1.1 ms,

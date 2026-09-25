@@ -2,6 +2,8 @@
  "spec": "orchestration/quintet_skeleton.json",
  "score": "design/final-lab/SK_final.ly",
  "plan": "design/final-lab/plan.json",
+ "score_sha256": "11d2569847377a69",
+ "plan_sha256": "169725621b089ddb",
  "duration_s": 239.899,
  "bars": 66.0,
  "marks": {
@@ -72,7 +74,7 @@
      "channel": 0,
      "program": 40,
      "instrument": "vn1",
-     "notes": 145,
+     "notes": 149,
      "range": [
       65,
       84
@@ -107,7 +109,7 @@
      "channel": 1,
      "program": 40,
      "instrument": "vn2",
-     "notes": 157,
+     "notes": 161,
      "range": [
       57,
       77
@@ -164,10 +166,10 @@
      "channel": 2,
      "program": 41,
      "instrument": "va",
-     "notes": 170,
+     "notes": 179,
      "range": [
       48,
-      65
+      66
      ],
      "windows": [
       {
@@ -221,10 +223,10 @@
      "channel": 3,
      "program": 42,
      "instrument": "vc",
-     "notes": 107,
+     "notes": 102,
      "range": [
       36,
-      51
+      53
      ],
      "windows": [
       {
@@ -308,7 +310,7 @@
      "channel": 1,
      "program": 0,
      "instrument": null,
-     "notes": 88,
+     "notes": 90,
      "range": [
       57,
       77
@@ -343,7 +345,7 @@
      "channel": 2,
      "program": 0,
      "instrument": null,
-     "notes": 55,
+     "notes": 62,
      "range": [
       48,
       63
@@ -367,7 +369,7 @@
      "channel": 3,
      "program": 0,
      "instrument": null,
-     "notes": 68,
+     "notes": 67,
      "range": [
       36,
       57
