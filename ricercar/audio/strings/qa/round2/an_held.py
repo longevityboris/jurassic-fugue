@@ -139,6 +139,10 @@ def part_a(tag, temp):
             zone_stay_max_s=max([s[1] for s in stays], default=0.0),
             zone_stays_over_0p31s=[s for s in stays if s[1] > 0.31],
             notes_ge_1s=len(rows),
+            # every long note's residual per key, no switch inside (round-2 defect: vn1 Eb5 6.65-7.5 dB)
+            residual_by_key_no_switch={str(k): sorted(r["residual"]["p2_p98_db"] for r in rows
+                                                      if r["key"] == k and not r["switch_inside"])
+                                       for k in sorted({r["key"] for r in rows})},
             residual_p2_p98_db=dict(median=round(float(np.median(res_p)), 2), p90=round(float(np.percentile(res_p, 90)), 2),
                                     max=round(float(np.max(res_p)), 2)),
             residual_max_dev_1s_db=dict(median=round(float(np.median(dev)), 2), p90=round(float(np.percentile(dev, 90)), 2),
@@ -238,7 +242,7 @@ def part_bc(reuse):
     C = {}
     for inst, (_, _, _, keys) in KEYS.items():
         wav = H / f"direct_{inst}.wav"
-        sch = direct_sfizz(inst, keys, [49, 68, 71, 88, 104, 108, 110, 114], wav)
+        sch = direct_sfizz(inst, keys, [49, 68, 71, 72, 88, 104, 108, 110, 111, 114], wav)
         x, _ = sf.read(str(wav), always_2d=True)
         te, e = rms_env(x.mean(axis=1), 0.05, 0.01)
         rows = {}
@@ -249,7 +253,10 @@ def part_bc(reuse):
         home = [rows[k][c] for k in rows for c in (71, 104, 110)]
         C[inst] = dict(per_key=rows, zone_median_db=round(float(np.median(zone)), 2), zone_max_db=max(zone),
                        anchor_median_db=round(float(np.median(anch)), 2), anchor_max_db=max(anch),
-                       home_edges_71_104_110_median_db=round(float(np.median(home)), 2), home_edges_max_db=max(home))
+                       home_edges_71_104_110_median_db=round(float(np.median(home)), 2), home_edges_max_db=max(home),
+                       # round-2 fix: LAYER_HOME is now mf 72-104, ff 111-127 (the first values with one take only)
+                       new_home_edges_72_111_excess_db={f"{k}/{c}": round(rows[k][c] - rows[k][a], 2)
+                                                        for k in rows for c, a in ((72, 88), (111, 114))})
     return dict(renderer=B, renderer_summary=summ, direct_sfizz_control=C)
 
 
@@ -277,6 +284,10 @@ def part_d(tag, temp):
         notes = j["note_list"]
         G = np.arange(0, max(n[1] for n in notes) + 1.0, 0.005)
         c = step_on_grid(ev, G, 88)
+        sounding = np.zeros(len(G), bool)
+        for (on_, off_, *_r) in notes:
+            sounding |= (G >= on_) & (G < off_)
+        at_old_edges_s = round(float(np.sum(sounding & ((c == 71) | (c == 110)))) * 0.005, 3)
         xa = sfizz_job(src, H / f"d_{inst}_a.mid", H / f"d_{inst}_a.wav", inst, {})
         xb = sfizz_job(src, H / f"d_{inst}_b.mid", H / f"d_{inst}_b.wav", inst, {71: 72, 110: 111})
         ta, ea = rms_env(xa, 0.05, 0.01)
@@ -293,7 +304,7 @@ def part_d(tag, temp):
             rows.append(dict(on=round(on, 3), dur=round(off - on, 3), key=key, frac_at_edge=round(frac, 2),
                              as_rendered=wa, edge_moved=wb, excess_db=round(wa["p2_p98_db"] - wb["p2_p98_db"], 2)))
         exs = [r["excess_db"] for r in rows]
-        out[inst] = dict(n=len(rows), excess_median_db=round(float(np.median(exs)), 2) if exs else None,
+        out[inst] = dict(sounding_s_at_cc1_71_or_110=at_old_edges_s, n=len(rows), excess_median_db=round(float(np.median(exs)), 2) if exs else None,
                          excess_max_db=max(exs, default=None),
                          as_rendered_max_db=max([r["as_rendered"]["p2_p98_db"] for r in rows], default=None),
                          edge_moved_max_db=max([r["edge_moved"]["p2_p98_db"] for r in rows], default=None),

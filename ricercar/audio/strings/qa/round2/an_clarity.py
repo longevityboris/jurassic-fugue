@@ -26,6 +26,8 @@ NAMES = {"soprano": "vn1", "alto": "vn2", "tenor": "va", "pedal": "vc", "bass": 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", default="sk_final")
+    ap.add_argument("--compare", nargs="*", default=["hall_none=_dryhall", "wet_minus8=_wet8"],
+                    help="LABEL=SUFFIX renders of the same MIDI to compare with the default mix")
     a = ap.parse_args()
     base = TMP / f"{a.tag}_def"
     rep = json.loads(Path(str(base) + ".json").read_text())
@@ -33,7 +35,7 @@ def main():
     x, SR = sf.read(str(base) + ".wav", always_2d=True)
     stems = {i: sf.read(f"{base}_stem_{i}.wav", always_2d=True)[0].mean(axis=1) for i in ("vn1", "vn2", "va", "vc")}
     sigs = {"mix": x.mean(axis=1), "dry_sum": sum(stems.values())}
-    for nm, suf in (("hall_none", "_dryhall"), ("wet_minus8", "_wet8")):
+    for nm, suf in (c.split("=", 1) for c in a.compare):
         p = TMP / f"{a.tag}{suf}.wav"
         z, _ = sf.read(str(p), always_2d=True)
         rz = json.loads((TMP / f"{a.tag}{suf}.json").read_text())
