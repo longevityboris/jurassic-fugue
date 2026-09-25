@@ -163,7 +163,10 @@ Recipes take the project root and card paths from `kapell workflow args RECIPE`,
 | Section composers | **Opus, high** | Musical invention under constraints |
 | Seam joiner, fixers per finding | **Opus, medium** | Local and well specified by the finding plus the card |
 | Critics (rigour, arc, beauty, idiom) | **Opus, high** | Judgement on musical substance |
-| Finding dedupe, severity triage, route-to-section, "needs a second reviewer?" | **Jev** (Score, Noul, Choice) + code | Semantic, narrow, calibrated, $0.04/M tokens (§7) |
+| Route each finding to its fixer role | **Jev** (Choice) | Probe accuracy 0.86 overall and 0.89 on the 93% of cases with confidence ≥0.75 (§7) |
+| Finding severity | **Jev as a prior**; confidence <0.75 goes to Opus | Probe 0.67 overall, 0.76 at confidence ≥0.75 (§7) |
+| Finding dedupe, "ready for review?" gate | **Jev, pending calibration** | Unmeasured so far |
+| Map a finding to its section | **Code** | Exact from `bar:beat`; Jev scored 0.89 |
 | Performance plan authors (per version) | **Opus, medium** (or Sonnet if the rule below is relaxed) | Schema'd JSON with musical intent; linted by `perform` |
 | Listening QA read-out, NOTES.md, README, commit messages | **Opus, low** (or Sonnet or Haiku if relaxed) | Mechanical prose from measured data |
 | Completeness critic at the end | **Opus, high** | Cheap insurance, one agent |
@@ -214,6 +217,11 @@ This takes about one day of work and under $0.10 of Jev input. It decides whethe
 | Routing findings to a fixer role | 0.86 (n=100) | Strong enough to use. |
 | Mapping findings to a section | 0.89 (n=98) | Code does this exactly from `bar:beat`. |
 | Finding severity | 0.67 with context, 0.61 redacted | Marginal. |
+
+Confidence carries real information:
+
+* **Pooled across probes:** accuracy is 0.90 in the 0.90 to 1.00 confidence band (n=202) and 0.55 to 0.57 below 0.50 (ECE 0.10).
+* **Severity:** 49 of the 100 findings had confidence ≥0.75, and Jev scored 0.755 on those, against 0.567 on findings below 0.5.
 
 That fits the plan above and sharpens it:
 
