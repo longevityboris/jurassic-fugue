@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Deepen the swell on long notes in an orchestrate.py quartet MIDI (in place).
 
-usage: python3 swell.py GROUP.mid [--extra LEVELS] [--min-beats B] [--report OUT.json]
+usage: python3 swell.py GROUP.mid [--extra LEVELS] [--min-beats B] [--no-extra A-B ...] [--report OUT.json]
 
 perform.py --target strings already gives every note of a half note or longer a sine swell of
 0.45 dynamic levels on the CC1/CC11 envelope (a messa di voce of about 1.5 dB). For the
@@ -9,7 +9,10 @@ Beethoven quartet reading the swell is deepened: each such note gets an extra
 EXTRA * k * 13 * sin(pi * phase), phase in real seconds, CC units (13 = one dynamic level on perform.py's scale, about
 3.5 dB on the quartet renderer) on both CC1 and CC11 of its own track, from its note-on to its
 note-off; k = 1 for a note at mf or softer, 0.5 at f, 0 at ff and louder (read at the note's
-ends), so the climaxes are not pushed to the CC ceiling. Outside long notes the envelope is left exactly as orchestrate.py wrote it (same
+ends), so the climaxes are not pushed to the CC ceiling. --no-extra A-B (bar:beat positions,
+repeatable) leaves out the extra swell for the long notes that start in [A, B): where every part
+holds a long note at once (the C7 chord at 62:1, inside the planned diminuendo after the tune's
+peak) four swells and the hall's build-up made the held chord louder than the peak itself. Outside long notes the envelope is left exactly as orchestrate.py wrote it (same
 ticks, same values). Notes, velocities, tempo and every other event are untouched, so
 orchestrate.py's integrity check (--check) still applies unchanged; render.sh re-runs it.
 """
@@ -65,7 +68,7 @@ def abs_events(track):
         yield t, i, m
 
 
-def process(track, extra, min_ticks, tmap):
+def process(track, extra, min_ticks, tmap, skip=()):
     evs = list(abs_events(track))
     # notes (mono line; perform.py's few-ms legato overlap is paired by key)
     pend, notes = {}, []
@@ -99,6 +102,8 @@ def process(track, extra, min_ticks, tmap):
         for a, b in long_notes:
             m = 0.5 * (base(a) + base(b - 1))
             depth[(a, b)] = extra * max(0.0, min(1.0, (FULL_TO - m) / (FULL_TO - FULL_FROM)))
+            if any(s0 <= a < s1 for s0, s1 in skip):
+                depth[(a, b)] = 0.0
 
         def bump(t):
             s = 0.0
@@ -158,6 +163,9 @@ def main():
     ap.add_argument("--min-beats", type=float, default=1.75,
                     help="notes at least this many quarter beats long (as performed, in ticks) swell "
                          "(default 1.75: every half note or longer after humanising)")
+    ap.add_argument("--no-extra", action="append", default=[], metavar="A-B",
+                    help="no extra swell on long notes starting in [A, B) (bar:beat, quarter beats)")
+    ap.add_argument("--measure", type=float, default=1.0, help="bar length in whole notes (default 1: 4/4)")
     ap.add_argument("--report")
     a = ap.parse_args()
     mid = mido.MidiFile(a.midi)
@@ -166,18 +174,25 @@ def main():
     rep = {"extra_levels": a.extra, "min_beats": a.min_beats, "tracks": {}}
     min_ticks = int(a.min_beats * mid.ticks_per_beat)
     tmap = TempoMap(mid)
+
+    def pos_tick(p):             # perform.py's "bar:beat"; humanised onsets may come 60 ticks early
+        bar, beat = p.split(":")
+        return int(round(((int(bar) - 1) * 4 * a.measure + float(beat) - 1) * mid.ticks_per_beat)) - 60
+    skip = [tuple(pos_tick(x) for x in span.split("-")) for span in a.no_extra]
+    rep["no_extra"] = a.no_extra
     for k, tr in enumerate(mid.tracks):
         name = next((m.name for m in tr if m.type == "track_name"), f"track{k}")
         if not any(m.type == "note_on" for m in tr):
             continue
-        mid.tracks[k], n, peak = process(tr, a.extra, min_ticks, tmap)
+        mid.tracks[k], n, peak = process(tr, a.extra, min_ticks, tmap, skip)
         rep["tracks"][name] = {"long_notes": n, "max_cc_added": peak}
     # after perform.py's and orchestrate.py's markers (the renderers read perform.py's)
     t0 = mid.tracks[0]
     at = 0
     while at < len(t0) and t0[at].time == 0 and t0[at].is_meta and t0[at].type in ("track_name", "text"):
         at += 1
-    t0.insert(at, mido.MetaMessage("text", text=f"swell.py extra={a.extra} min_beats={a.min_beats}", time=0))
+    t0.insert(at, mido.MetaMessage("text", text=f"swell.py extra={a.extra} min_beats={a.min_beats}"
+                                   + (f" no_extra={','.join(a.no_extra)}" if a.no_extra else ""), time=0))
     mid.save(a.midi)
     print(f"swell.py: {a.midi}: " + ", ".join(f"{k} {v['long_notes']} notes (+{v['max_cc_added']} CC)"
                                              for k, v in rep["tracks"].items()))
