@@ -11,10 +11,14 @@
 % * 48:1-50:2, soprano: silent on purpose (fix C1-M2: S2 must be the top thematic voice). Tested alternatives:
 %   over F2 and S1's held B-flat 3 only F5 is consonant above S2; F5 from 48:3 makes a hollow F/B-flat chord
 %   (HOL at 48:3); F5 held 48:4-49:4 brings back the removed soprano inversion head (C2-M2) and makes S2's leap to
-%   its peak F5 at 49:4 sound like a re-strike; G-flat 5 tied into 50:1 (9-8, the only suspension this window
-%   could hold) doubles the pedal's G-flat and resolves with it in octaves (Gb2/Gb5 -> F2/F5) and enters a
-%   semitone above S2's peak; B-flat 5 held into 50:1 (4-3) sits over S2's peak and takes the Climax-II register
-%   (B-flat 5 is the fff note of 53:1) four bars early.
+%   its peak F5 at 49:4 sound like a re-strike. The window can hold only two counted suspensions, both tested and
+%   rejected: (a) G-flat 5 from 49:4.5 tied into 50:1 (9-8 over F2) doubles the pedal's G-flat neighbour at three
+%   octaves while it sounds (49:4.5-50:1), accenting it, and its 9-8 only decorates octaves Gb2/Gb5 -> F2/F5 in the
+%   outer voices; it enters the instant S2 leaves its peak F5, so F5-G-flat 5 is heard as one line and S2's leap
+%   F5-B-flat 4 is lost; and its F5 at 50:2 states the head's pitch a beat before the head. (b) B-flat 5 from 49:4
+%   tied into 50:1 (4-3 over F2) sits a fourth above S2's peak F5, doubles S2's B-flat 4 at the octave at 49:4.5,
+%   resolves at 50:2 onto A-flat 5 (a seventh over the tenor's held B-flat 3), then leaps to F5, and takes the
+%   Climax-II register (B-flat 5 is the fff note of 53:1) four bars early.
 % * 50:2, soprano g-flat''4 (the only new note): the pedal's upper neighbour (the inversion's G-flat, bass 49:4)
 %   taken up by the soprano and resolved onto the first diminution head: G-flat F | F E-flat = the mirror's
 %   upper neighbour and the subject's lower neighbour around one F, as Climax II begins. It moves in the one
@@ -24,6 +28,7 @@
 % New flags against the skeleton: none (no new D4?, DIR, MEL, XREL, ACC, ACC2, HOL, unison or crossing).
 % Pre-existing, unchanged: D4? 54:3 (V4/2 tritone), XREL 47:3-47:4 and 53:2.75-53:3 (non-simultaneous).
 % suspensions.py: 0 strong-beat (the free window cannot hold one without the faults above), 1 weak (50:4, skeleton).
+% Density: bar 50 now has 14 attacks (blueprint section 6 lists the skeleton's 13).
 soprano = \absolute {
   % 46
   r1 | r1 | r1 | r1 |
