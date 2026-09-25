@@ -32,3 +32,27 @@ strong_suspensions = 20
 
 [versions]
 render = ["bach_organ", "beethoven_piano", "beethoven_quartet", "symphonic", "quintet"]
+
+[themes]                       # label = materials variable (paths.materials), at reference pitch
+S1 = "subjectOne"              # first label is the main subject
+S2 = "subjectTwo"              # the second subject of the double fugue
+CS1 = "csOne"
+CS2 = "csTwo"
+
+[checks]
+resolution_beats = 4           # a chordal seventh must resolve within this many beats of leaving
+
+# Featured roles: moments the analysis says a performance must bring out. piece.py has no
+# feature flag, so they are declared here; roles.py also treats every piece-model
+# subject/answer/cf role as featured. Every plan under performance/*/ needs a cue for each.
+[[features]]
+label = "arioso bass head imitation (S2 head c-a-f)"
+voice = "bass"
+at = "30:2"
+until = "31:1"
+
+[[features]]
+label = "arioso tenor lament (d-flat c b-flat a a-flat g-flat)"
+voice = "tenor"
+at = "30:4.5"
+until = "32:2"
