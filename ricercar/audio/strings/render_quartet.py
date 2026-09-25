@@ -102,8 +102,8 @@ MIDI CONVENTIONS (what perform.py --target strings writes)
     between other detached notes, 0.5-1.1 s before a rest.  A long note
     followed directly by a short one (dotted figures, the start of a run)
     lifts 25 ms early so the short note speaks.  A repeated key (perform.py
-    lifts 60 ms early) is held to 12 ms before the new stroke and released
-    over 0.18 s: a dip of about 15 dB, not a hole.
+    lifts 60 ms early) is held, or cut back, to 12 ms before the new stroke's
+    early start and released over 0.18 s: a dip of about 15 dB, not a hole.
   * A note-on without a note-off is closed at the end of its track (logged).
   * Tempo map honoured (all timing is converted to seconds before rendering).
 """
@@ -536,7 +536,9 @@ def shape_articulation(notes: list[Note], short_s: float, xfade_s: float, art_ev
       * a normal (new-bow) stroke starts normal_pre early;
       * a repeated key (gap under 80 ms) is held to 12 ms before the new stroke
         and released over 0.18 s: a re-articulation dip of about 15 dB rather
-        than a hole of silence;
+        than a hole of silence; a note-off that would come later (a same-key
+        note meeting the next within 27 ms, or overlapping it) is moved to that
+        point, because a note-off after the new note-on ends both notes;
       * a long note directly followed by a short one lifts 25 ms early."""
     counts = {"normal": 0, "legato": 0, "short": 0}
     for i, n in enumerate(notes):
@@ -572,8 +574,12 @@ def shape_articulation(notes: list[Note], short_s: float, xfade_s: float, art_ev
             n.off = max(n.off, nxt.on + xfade_s)
             rel = 0.12
         elif gap < 0.08 and nxt.key == n.key:
-            # repeated note: re-articulate with a dip, not a hole (perform.py lifts 60 ms early)
-            n.off = max(n.off, min(nxt.on - nxt.pre - 0.012, n.on + 0.9 * (nxt.on - n.on)))
+            # repeated note: re-articulate with a dip, not a hole (perform.py lifts 60 ms early).
+            # The note-off always lands before the new stroke's sfizz note-on (nxt.on - nxt.pre):
+            # a same-key note-off after it ends the new note too (a hand-off onto the same key
+            # 3 ms apart silenced a 2.2 s viola note)
+            n.off = min(max(n.off, min(nxt.on - nxt.pre - 0.012, n.on + 0.9 * (nxt.on - n.on))),
+                        nxt.on - nxt.pre - 0.012)
             rel = 0.18
         elif gap < 0.08 and dur >= short_s and (nxt.art or 0) >= 96:
             # into a detached short note (a dotted figure, a run): lift the bow a
