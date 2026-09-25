@@ -536,6 +536,9 @@ def stem_track_map(gm: dict, stems: dict) -> dict:
     by_inst = {v.get("instrument"): v.get("track") for v in parts.values() if v.get("instrument")}
     tracks = {v.get("track"): v.get("track") for v in parts.values()}
     low = {str(t).lower(): t for t in tracks}
+    # the orchestra writes a track's stem as its name with every character other than a
+    # letter, digit, '.', '_' or '-' replaced by '_' (its CONTRACT section 1: 'fl:oct' -> fl_oct)
+    safe = {"".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in str(t)): t for t in tracks}
     out = {}
     for name in stems:
         if gm["renderer"] == "quartet" and name in by_inst:
@@ -544,6 +547,8 @@ def stem_track_map(gm: dict, stems: dict) -> dict:
             out[name] = name
         elif name.lower() in low:
             out[name] = low[name.lower()]
+        elif name in safe:
+            out[name] = safe[name]
     return out
 
 
