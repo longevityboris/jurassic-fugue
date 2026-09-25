@@ -12,7 +12,7 @@
 %              parallel octaves with the tenor; f'' is the only consonant choice.)
 %   B 40       b,8 cis8 b,8 ais,8 b,4 under V of E: bar 40 is the accelerando's one bar where S, A and T all hold (KEEP
 %              and LOCKED), so the free bass carries the motor: CS2 inv.'s head shape (x x+1 x x-1), ending on the
-%              subject's own head rhythm and neighbour, B A# B = B-flat A B-flat a semitone higher. C#3 (40:1.5) is an
+%              subject's neighbour figure x8 (x-1)8 x, B A# B = B-flat A B-flat a semitone higher. C#3 (40:1.5) is an
 %              upper neighbour on a weak eighth (a compound second under D#5, a fourth under both F#s). E3 kept for the
 %              cadence (E2 is saved for 45:4).
 %   A 41       c''4 b'8 a'8 gis'4 a'4: over the bass E the line sings 6-5-4-3 (C B A G#), the cadential 6/4 resolved in
@@ -30,9 +30,9 @@
 %                     F# at 43:4. Two beats of dissonance on one of preparation, the price of the rising bass.
 %                44:1 7-6 (F# over G# -> E: the rootless V6 gets its root at 44:2),
 %              then the inversion's neighbour E-F-E in quarters: F = seventh of vii dim 7 (44:3, with the alto's D),
-%              resolving to E in the complete i (44:4); then the KEEP A at 45:1. At 44:2.5-45:1 tenor and alto move
-%              in thirds (E-F-E over C-D-C): the vii dim 7's fifth and seventh resolving together, 1.5 beats of
-%              parallel motion.
+%              resolving to E in the complete i (44:4); then the KEEP A at 45:1. Tenor and alto sound thirds on three
+%              attacks (E-F-E over C-D-C at 44:2.5, 44:3, 44:4, the last held to 45:1): the vii dim 7's fifth and
+%              seventh resolving together, two parallel moves, then the leap apart at 45:1.
 %   A 44:4     landing kept on c': the vii dim 7's D resolves down; the rising sixth into the KEEP a' is CS1's sigh.
 %
 % Checker notes: no new D4?, DIR, MEL, XREL or ACC/ACC2 (strict.py counts in 34-46 equal the skeleton's).
