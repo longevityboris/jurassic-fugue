@@ -69,7 +69,7 @@ r = 0.996.
 except the low strings, whose spiccato recordings ring to the next note 0.45 s later (the room of the
 recording). Held notes at a constant CC1 hold within 3-5 dB (winds, brass, basses); the upper strings
 move 6-11 dB in 100 ms frames inside a held note, as each recording does alone (vibrato and bow; a
-sweep of every key, stack against each recording, `out/test/sweep.py`). No clicks in any stem or in the
+sweep of every key, stack against each recording, `sweep_strings.py`). No clicks in any stem or in the
 mix; no dropped or stuck notes.
 
 **Seating and hall.** American seating by default (German with the sidecar): violins I 30 deg left at
@@ -97,7 +97,10 @@ vn1 -1.5, vn2 -4.4, va -2.9, vc 0.0 dB), so the inner voices stay audible under 
 * Low notes were tuned on their first second with YIN, which is biased below 80 Hz and misses a
   recording that settles later (held tuba Eb1 -22 c, F#1 +10 c): `tune_orchestra.py` now measures
   sustains 1.0-3.8 s into a 4 s note, from harmonics 2-5 below 80 Hz, and the tuba, bass trombone and
-  basses were retuned (median 0.4 c, p95 1.8 c).
+  basses were retuned (median 0.4 c, p95 1.8 c). `evidence/tuning_summary.json` is refreshed from
+  `built/tuning_verify.json`: horns, bassoons and cellos were only re-verified with the new low-note
+  measure, not retuned (their worst values, vc/vsco 11 c and hn/vsco 5 c, are 0.2 s short-note regions
+  below 80 Hz, where the harmonic measure has little to work with).
 
 ## Limits
 
@@ -107,3 +110,10 @@ vn1 -1.5, vn2 -4.4, va -2.9, vc 0.0 dB), so the inner voices stay audible under 
 * In the skeleton QA a few entries after long rests speak 65-80 ms early (violas, 2 of 3) or 30-60 ms late
   (clarinet at pp); the mix's time base is gated on short notes (`tools/mix.py`), which are aligned.
 * Wind chords on one track render but are logged; the orchestration tool keeps winds monophonic.
+* `tools/mix.py` on the symphonic skeleton (`out/skeleton_symphonic.mix.json`): attacks against MIDI
+  -3.9 ms (357 entries), all notes +0.0 ms; its click scan flags 129 bursts in Climax I, which are the
+  bass trombone's ff rasp at E2/Eb2 (bursts every 12 ms = one period; the btbn stem carries the
+  energy above 12 kHz there), not splices: the stems' own click scan finds none.
+* The tuning corrections and the regenerated SFZ files live in `~/Music/SampleLibraries/Orchestra/built/`
+  (outside git); `setup_orchestra.sh --force` rebuilds them from the committed `orch_build.py` and
+  `tune_orchestra.py`.
