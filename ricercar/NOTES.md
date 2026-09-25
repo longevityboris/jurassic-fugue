@@ -50,10 +50,10 @@ other versions differ by a few seconds; their own timings are in the next sectio
 | 2:39 | 46-47 | **IV Pedal** | The inversion in double note values in the bass becomes a long held F, the home dominant; the tenor's lament alone above it. |
 | 2:46 | 48-49 | combination | Both halves of the tune together: the first in the tenor, the second in the alto. |
 | 2:54 | 50-53 | **Climax II** | Subject heads at double speed climb F, G-flat, A, C (soprano) over the subject at normal speed and the inversion at half speed. C major at 52:1 (2:58); the peak, a full C7 at fff, at 53:1 (3:02); fermata on the dominant (3:05). |
-| 3:08 | 54 | hinge | The dominant keeps falling, one step per chord, into the tune's first note. |
+| 3:08 | 54 | hinge | No break after the fermata: the dominant harmony continues while the soprano falls A F E-flat C A, and that A (the leading note) resolves to the tune's first B-flat. |
 | 3:13 | 55-62 | **V Apotheosis** | The whole tune in B-flat major, untouched, over the lament and the motor turned major; its second half over the answer in the bass (59:1, 3:26); peak at 60:4 (3:33). |
 | 3:41 | 63-64 | | C rises to D over a real V7-I; the inversion's head, now major, in the alto. |
-| 3:49 | 65-66 | coda | The subject's B-flat A B-flat, last time, in the tenor over a tolling low B-flat; while the soprano sings D E-flat D, the same gesture upside down. Final chord 3:56; the file ends at 4:04. |
+| 3:49 | 65-66 | coda | The subject's B-flat A B-flat, last time, in the tenor over a tolling low B-flat, while the soprano sings D E-flat D, the same gesture upside down. Final chord 3:56; the file ends at 4:04. |
 
 ## The versions
 
