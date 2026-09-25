@@ -5,13 +5,13 @@ soprano = \absolute {
   % 1
   r1 | e''8 f''8 e''8 d''8 c''8 d''8 b'8 g''8 | c''4 d''8 a'8 ~ a'4 b'4 | b'8 a'8 b'8 c''8 d''4 c''4 |
   % 5
-  f''2 e''4 dis''4 ~ |
+  f''2 e''4 d''4 |
 }
 alto = \absolute {
   % 1
   r2. a'4 | c'2. d'4 | e'4 f'4 fis'2 | gis'2. a'4 |
   % 5
-  f'4. d'8 a'2 |
+  f'4. d'8 c'4 b4 |
 }
 tenor = \absolute {
   % 1
@@ -23,5 +23,5 @@ bass = \absolute {
   % 1
   e2. e8 f8 | e2. e8 f8 | e4. d8 d4. b,8 | b,2. c8 e8 |
   % 5
-  d4. f8 a4 fis4 |
+  d4. f8 a,4 b,4 |
 }

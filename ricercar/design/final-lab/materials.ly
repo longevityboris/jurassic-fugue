@@ -83,47 +83,97 @@ headH = \absolute {
   e2. e8 ees8 |
 }
 
-% episodeCell: cell b = S1 bar 3 rhythm in sequence; soprano bar 18
+% episodeCell: cell b = S1 bar 3 rhythm in sequence over the bass fifths F B-flat E-flat A-flat; soprano bar 18, lands on F (the third of D-flat) at 20:1
 episodeCell = \absolute {
-  c''4. des''8 des''4. f''8 | ges''4. f''8 f''4. ees''8 | des''4 r2. |
+  c''4. des''8 des''4. f''8 | ges''4. f''8 f''4. ees''8 | f''4 r2. |
 }
 
-% descantEntryFour: free soprano over exposition entry 4 (c''-des''-c'' = the INV sigh at the answer level); bar 13
+% descantEntryFour: free soprano over exposition entry 4, completing every chord (13:3 C, 15:2.5 E, G-flat on the N6/4); bar 13
 descantEntryFour = \absolute {
-  f''2. r4 | r4 c''2 des''4 | c''2 r2 | r4 des''2 f''4 | e''2. d''4 |
+  f''2 c''2~ | c''2. des''4 | c''4. e''8 g''4 ees''4 | f''2 ges''4 f''4 | e''2. d''4 |
 }
 
-% lamentLeadIn: tenor lead-in to its S1 entry over the pedal; bar 42
+% subjectOneDflat: S1 in D-flat major (III), the stretto leader; tenor bar 20
+subjectOneDflat = \absolute {
+  des'2. des'8 c'8 | des'2. des'8 c'8 | des'4. ees'8 ees'4. ges'8 | ges'2. f'8 des'8 | ees'4. c'8 aes4 |
+}
+
+% subjectOneGflat: S1 in G-flat major (VI), the stretto follower a 4th + octave above, 2 bars later; soprano bar 22
+subjectOneGflat = \absolute {
+  ges''2. ges''8 f''8 | ges''2. ges''8 f''8 | ges''4. aes''8 aes''4. ces'''8 | ces'''2. bes''8 ges''8 | aes''4. f''8 des''4 |
+}
+
+% csOneDflat: CS1 (the lament) in D-flat major under the stretto leader; bass 20:4
+csOneDflat = \absolute {
+  r2. aes,4 | f2. ees4 | des4 c4 ces2 | bes,2. aes,4 | c4. ees8 aes,4 |
+}
+
+% inversionAthird: INV in A minor, the third inverted entry (after the tenor's E-minor answer); soprano bar 41
+inversionAthird = \absolute {
+  e''2. e''8 f''8 | e''2. e''8 f''8 | e''4. d''8 d''4. b'8 | b'2. c''8 e''8 | d''4. f''8 a''4 |
+}
+
+% csOneInvBass: CS1 inverted (the lament rising) in the bass under the third entry; cadence iv-i and the E that resolves to F; bass 41:4
+csOneInvBass = \absolute {
+  r2. a,4 | c2. d4 | e4 f4 fis2 | gis2. a4 | f4. d8 a,4 e,4 |
+}
+
+% csTwoInvLow: CS2 inverted an octave lower; alto bar 42
+csTwoInvLow = \absolute {
+  e'8 f'8 e'8 d'8 c'8 d'8 b8 g'8 | c'4 d'8 a8~ a4 b4 | b8 a8 b8 c'8 d'4 c'4 |
+}
+
+% lamentLeadIn: tenor lead-in over the dominant pedal, the lament's fall, then C into its S1 entry; bar 46
 lamentLeadIn = \absolute {
-  bes2 a2 | aes2 g4 ges4 |
+  bes2 a2 | aes2 g4 c'4 |
 }
 
-% wedge: soprano 44-50: INV head, inverted pedal, chromatic wedge to the V fermata (a'' at 49:4)
-wedge = \absolute {
-  f''2. f''8 ges''8 | f''1 | f''1~ | f''2. ges''4~ | ges''2 g''2 | bes''2 bes''4 a''4 | bes''1 |
+% headDiminution: S1's head in diminution (x4. x16 (x-1)16); Climax II heads on F, G-flat, A, C (soprano) and E (alto), 50:3-53:3; the first neighbour is diatonic (E-flat) against the E-flat bass
+headDiminution = \absolute {
+  f''4. f''16 ees''16 |
 }
 
-% themeCantusFirmus: the whole theme untouched in B-flat major; its open c'' rises to d''; soprano bar 51
+% climaxHeads: soprano 50-53: the diminution heads rising to the peak B-flat 6 over C7 and the A at the V fermata
+climaxHeads = \absolute {
+  r2 f''4. f''16 ees''16 | ges''4. ges''16 f''16 a''4. a''16 aes''16 | g''2 c'''4. c'''16 bes''16 | bes''2. a''4 |
+}
+
+% hingeDescent: the dominant hinge 53:4-55:1: V7 arpeggio falling to the leading tone A, which resolves to the tune's first note
+hingeDescent = \absolute {
+  a''4 | f''4 ees''4 c''4 a'4 | bes'2. |
+}
+
+% themeCantusFirmus: the whole theme untouched in B-flat major; its open c'' rises to d''; soprano bar 55
 themeCantusFirmus = \absolute {
   bes'2. bes'8 a'8 | bes'2. bes'8 a'8 | bes'4. c''8 c''4. ees''8 | ees''2. d''8 bes'8 | c''4. a'8 f'4 d''8 bes'8 | c''2. f''8 bes'8 | ees''4. d''8 d''4. c''8 | c''1 | d''1~ | d''1 |
 }
 
-% mirrorMajor: melodic mirror of S1 (major) about its first note; bass bar 51 (pickup g,-bes, replaced by d,4)
-mirrorMajor = \absolute {
-  bes,2. bes,8 c8 | bes,2. bes,8 c8 | bes,4. a,8 a,4. f,8 | f,2. d,4 |
+% csOneMajor: CS1 (the lament) in B-flat major under the tune, entering on beat 4 over the tonic; bass bar 55 (A-flat, G-flat: the one minor shadow)
+csOneMajor = \absolute {
+  bes,2. f,4 | d2. c4 | bes,4 a,4 aes,2 | ges,2. f,4 |
 }
 
-% answerMajor: the answer in F major under the tune's second half; bass bar 55
+% csTwoMajor: CS2 in B-flat major (bars 2-3 an octave lower to leave the alto room); tenor bar 56
+csTwoMajor = \absolute {
+  bes8 a8 bes8 c'8 d'8 c'8 ees'8 g8 | d4 c8 f8~ f2 | ees8 f8 ees8 d8 c4 d4 |
+}
+
+% answerMajor: the answer in F major under the tune's second half; bass bar 59
 answerMajor = \absolute {
   f,2. f,8 e,8 | f,2. f,8 e,8 | f,4. g,8 g,4. bes,8 | bes,2. a,8 f,8 |
 }
 
-% answerMirrorMajor: the answer's mirror = INV in major with e for ees over the F pedal; tenor bar 55
-answerMirrorMajor = \absolute {
-  f2. f8 g8 | f2. f8 g8 | f4. e8 e4. c8 | c2. d8 f8 |
+% answerMirrorTail: the answer's mirror, bars 3-4 only (contrary to the answer's F-G-B-flat), tail landing on the seventh of V7; tenor bar 61
+answerMirrorTail = \absolute {
+  f4. e8 e4. c8 | c2. ees4 |
 }
 
-% codaHead: the subject's head as the last word (V7 over the tonic pedal); tenor bar 61
+% inversionHeadMajor: the inversion's head in major (5-6-5, G natural for the old G-flat) under the held d''; alto bar 63
+inversionHeadMajor = \absolute {
+  f'2. f'8 g'8 | f'4 |
+}
+
+% codaHead: the subject's head as the last word (V7 over the tonic pedal); tenor bar 65
 codaHead = \absolute {
   bes2. bes8 a8 | bes1 |
 }

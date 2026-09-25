@@ -17,11 +17,11 @@ tenor = \absolute {
   % 1
   r1 | r1 | b2. b8 c'8 | b2. b8 c'8 |
   % 5
-  b4. a8 a4. fis8 | fis2. g8 b8 | a4. c'8 e'4 c'4 |
+  b4. a8 a4. fis8 | fis2. g8 b8 | a4. c'8 e'4 r4 |
 }
 bass = \absolute {
   % 1
   e2. e8 f8 | e2. e8 f8 | e4. d8 d4. b,8 | b,2. c8 e8 |
   % 5
-  d4. f8 a4 fis4 | b,2. e4 | c2. c4 |
+  d4. f8 a,4 b,4 | b,2. e4 ~ | e2. a,4 |
 }
