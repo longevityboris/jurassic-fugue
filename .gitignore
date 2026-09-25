@@ -7,3 +7,5 @@ __pycache__/
 ricercar/preview/*.mid
 .DS_Store
 .claude/tsc-cache/
+ricercar/audio/organ/out/stems/
+ricercar/audio/*/out/*.mid
