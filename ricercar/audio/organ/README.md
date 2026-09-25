@@ -109,7 +109,13 @@ unsteadiness). One outlier, see Limits.
   loses 11.3 dB in mono in its worst second: the alignment is kept.
 * Speed: the 232 s piece renders in about 20 s (8 threads); the whole demo with QA in about 30 s.
 
-The QA lists 25 bass notes whose harmonic comb is weak (`presence.weak_comb_notes`). They sound:
+**The assembled score** (`score/music-voices.ly` at 09:08 on 2026-09-25, 66 bars, 748 notes),
+rendered read-only with the same plan and registration as a check for the final renders: no
+warnings, 0 key presses without sound, pitch p95 1.5 cents (the same single short 16' pedal note
+over 5 cents), no stuck notes, no clicks away from note boundaries, whole-system C80 +1.7 dB
+broadband / +7.3 dB at 1 kHz, T20 2.7 s, -18.4 LUFS, LRA 14.2 LU.
+
+The skeleton's QA lists 25 bass notes whose harmonic comb is weak (`presence.weak_comb_notes`). They sound:
 checked on the bass stem, two are a repeated key re-struck after 50 ms (the same pitch before and
 after), three share a partial with the previous note (e.g. C#2's 16' third harmonic is G#2's
 fundamental), and the rest rise 8-53 dB at their fundamental and third harmonic after the onset.
