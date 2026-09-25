@@ -1,0 +1,701 @@
+{
+ "t3_pool": 119,
+ "t3_used": 100,
+ "t2_items": [
+  {
+   "kind": "parallel5",
+   "section": "sec05_inversa",
+   "voice": "tenor",
+   "bars": [
+    4,
+    5
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0
+    ]
+   ]
+  },
+  {
+   "kind": "parallel5",
+   "section": "sec03_stretto_liquidation",
+   "voice": "alto",
+   "bars": [
+    9,
+    10
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0
+    ]
+   ]
+  },
+  {
+   "kind": "parallel5",
+   "section": "sec07_apotheosis_coda",
+   "voice": "soprano",
+   "bars": [
+    6,
+    7
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     2,
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "kind": "parallel5",
+   "section": "sec03_stretto_liquidation",
+   "voice": "tenor",
+   "bars": [
+    1,
+    2
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "kind": "parallel5",
+   "section": "sec06_pedal_climax",
+   "voice": "tenor",
+   "bars": [
+    8,
+    9
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     2,
+     0,
+     0
+    ]
+   ]
+  },
+  {
+   "kind": "parallel5",
+   "section": "sec03_stretto_liquidation",
+   "voice": "alto",
+   "bars": [
+    7,
+    8
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "kind": "parallel5",
+   "section": "sec02_entry4_episode",
+   "voice": "soprano",
+   "bars": [
+    1,
+    2
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     2,
+     1,
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "parallel5",
+   "section": "sec02_entry4_episode",
+   "voice": "soprano",
+   "bars": [
+    5,
+    6
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     0,
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "parallel5",
+   "section": "sec05_inversa",
+   "voice": "tenor",
+   "bars": [
+    10,
+    11
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     2,
+     0,
+     0
+    ]
+   ]
+  },
+  {
+   "kind": "parallel5",
+   "section": "sec05_inversa",
+   "voice": "alto",
+   "bars": [
+    6,
+    7
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     2,
+     0,
+     0
+    ]
+   ]
+  },
+  {
+   "kind": "clash",
+   "section": "sec02_entry4_episode",
+   "voice": "alto",
+   "bars": [
+    3,
+    4
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "clash",
+   "section": "sec06_pedal_climax",
+   "voice": "tenor",
+   "bars": [
+    8,
+    9
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "clash",
+   "section": "sec06_pedal_climax",
+   "voice": "tenor",
+   "bars": [
+    7,
+    8
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     3
+    ]
+   ]
+  },
+  {
+   "kind": "clash",
+   "section": "sec05_inversa",
+   "voice": "tenor",
+   "bars": [
+    7,
+    8
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "clash",
+   "section": "sec07_apotheosis_coda",
+   "voice": "alto",
+   "bars": [
+    1,
+    2
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "clash",
+   "section": "sec07_apotheosis_coda",
+   "voice": "alto",
+   "bars": [
+    11,
+    12
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     2
+    ]
+   ]
+  },
+  {
+   "kind": "clash",
+   "section": "sec06_pedal_climax",
+   "voice": "alto",
+   "bars": [
+    3,
+    4
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "clash",
+   "section": "sec04_arioso",
+   "voice": "tenor",
+   "bars": [
+    3,
+    4
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "clash",
+   "section": "sec07_apotheosis_coda",
+   "voice": "tenor",
+   "bars": [
+    2,
+    3
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "clash",
+   "section": "sec01_expo",
+   "voice": "soprano",
+   "bars": [
+    11,
+    12
+   ],
+   "check": [
+    [
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "subject_note",
+   "section": "sec01_expo",
+   "voice": "soprano",
+   "bars": [
+    1,
+    4
+   ],
+   "check": null
+  },
+  {
+   "kind": "subject_note",
+   "section": "sec01_expo",
+   "voice": "soprano",
+   "bars": [
+    1,
+    4
+   ],
+   "check": null
+  },
+  {
+   "kind": "subject_note",
+   "section": "sec01_expo",
+   "voice": "alto",
+   "bars": [
+    5,
+    8
+   ],
+   "check": null
+  },
+  {
+   "kind": "subject_note",
+   "section": "sec01_expo",
+   "voice": "alto",
+   "bars": [
+    5,
+    8
+   ],
+   "check": null
+  },
+  {
+   "kind": "subject_note",
+   "section": "sec01_expo",
+   "voice": "bass",
+   "bars": [
+    9,
+    12
+   ],
+   "check": null
+  },
+  {
+   "kind": "subject_note",
+   "section": "sec01_expo",
+   "voice": "bass",
+   "bars": [
+    9,
+    12
+   ],
+   "check": null
+  },
+  {
+   "kind": "subject_note",
+   "section": "sec02_entry4_episode",
+   "voice": "tenor",
+   "bars": [
+    1,
+    4
+   ],
+   "check": null
+  },
+  {
+   "kind": "subject_note",
+   "section": "sec02_entry4_episode",
+   "voice": "tenor",
+   "bars": [
+    1,
+    4
+   ],
+   "check": null
+  }
+ ],
+ "t1_items": [
+  {
+   "sha": "1474036",
+   "file": "sec07_apotheosis_coda.ly",
+   "bars": [
+    1,
+    12
+   ],
+   "n_diff_bars": 8
+  },
+  {
+   "sha": "edb4081",
+   "file": "sec02_entry4_episode.ly",
+   "bars": [
+    1,
+    7
+   ],
+   "n_diff_bars": 4
+  },
+  {
+   "sha": "94760f8",
+   "file": "sec04_arioso.ly",
+   "bars": [
+    1,
+    1
+   ],
+   "n_diff_bars": 1
+  },
+  {
+   "sha": "3245029",
+   "file": "sec03_stretto_liquidation.ly",
+   "bars": [
+    1,
+    2
+   ],
+   "n_diff_bars": 2
+  },
+  {
+   "sha": "9c9cd95",
+   "file": "sec05_inversa.ly",
+   "bars": [
+    6,
+    8
+   ],
+   "n_diff_bars": 2
+  },
+  {
+   "sha": "f760fe1",
+   "file": "sec06_pedal_climax.ly",
+   "bars": [
+    4,
+    5
+   ],
+   "n_diff_bars": 2
+  },
+  {
+   "sha": "ed1d733",
+   "file": "sec02_entry4_episode.ly",
+   "bars": [
+    2,
+    7
+   ],
+   "n_diff_bars": 5
+  },
+  {
+   "sha": "004adb1",
+   "file": "sec07_apotheosis_coda.ly",
+   "bars": [
+    3,
+    11
+   ],
+   "n_diff_bars": 7
+  },
+  {
+   "sha": "cfea661",
+   "file": "sec03_stretto_liquidation.ly",
+   "bars": [
+    1,
+    6
+   ],
+   "n_diff_bars": 6
+  },
+  {
+   "sha": "59d99ff",
+   "file": "sec04_arioso.ly",
+   "bars": [
+    1,
+    4
+   ],
+   "n_diff_bars": 4
+  },
+  {
+   "sha": "6e4c7cc",
+   "file": "sec05_inversa.ly",
+   "bars": [
+    6,
+    9
+   ],
+   "n_diff_bars": 4
+  },
+  {
+   "sha": "dea9521",
+   "file": "sec06_pedal_climax.ly",
+   "bars": [
+    4,
+    4
+   ],
+   "n_diff_bars": 1
+  },
+  {
+   "sha": "4792436",
+   "file": "sec01_expo.ly",
+   "bars": [
+    9,
+    9
+   ],
+   "n_diff_bars": 1
+  },
+  {
+   "sha": "e6a37dc",
+   "file": "sec07_apotheosis_coda.ly",
+   "bars": [
+    10,
+    10
+   ],
+   "n_diff_bars": 1
+  },
+  {
+   "sha": "d294503",
+   "file": "sec02_entry4_episode.ly",
+   "bars": [
+    1,
+    1
+   ],
+   "n_diff_bars": 1
+  },
+  {
+   "sha": "5914e8e",
+   "file": "sec03_stretto_liquidation.ly",
+   "bars": [
+    3,
+    7
+   ],
+   "n_diff_bars": 3
+  },
+  {
+   "sha": "e671a11",
+   "file": "sec05_inversa.ly",
+   "bars": [
+    8,
+    9
+   ],
+   "n_diff_bars": 2
+  }
+ ]
+}
