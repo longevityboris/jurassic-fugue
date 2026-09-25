@@ -17,7 +17,13 @@ before its notated end and a repeated note 60 ms before. This script replaces th
 * leap of a third: slight detachment, gap = 10 % of the note, 30-60 ms;
 * leap of a fourth or more: gap = 14 % of the note, 40-90 ms;
 * a note before a notated rest and the last note of a voice keep perform.py's release (the rest
-  is the articulation).
+  is the articulation);
+* a note whose notated end falls on a plan `breaths` position (joined to the next note or before
+  a rest): the key comes up the breath's length before that position. perform.py makes a breath
+  by stretching the last 16th before the position, so without this the note would hold through
+  the breath and fill it (the general pause after Climax I at 30:1 was filled by the fermata
+  chord in all four voices). orchestrate.py --check does not catch that: its 'shortened' rule
+  is tick-based, and the stretched 16th is only a few hundred ticks.
 
 Key-downs are never moved and no key-up goes past the note's notated end or the next key-down,
 so orchestrate.py's integrity check (every note at its notated onset, none past its notated end)
@@ -131,9 +137,12 @@ def articulate(score, plan_path, mid_in, mid_out, report=None):
     mid = mido.MidiFile(mid_in)
     tpq = mid.ticks_per_beat
     tm = TempoMap(mid)
+    breaths = {plan.pos(b["at"]): b["ms"] / 1000 for b in plan.d.get("breaths", [])}
+    breath_ms = []
     rep = {"input": str(mid_in), "rules": {"legato_gap_ms": LEGATO_GAP_S * 1000,
                                             "repeat": "25% of the note, 70-150 ms",
-                                            "third": "10%, 30-60 ms", "leap": "14%, 40-90 ms"},
+                                            "third": "10%, 30-60 ms", "leap": "14%, 40-90 ms",
+                                            "breath": "key-up at the breath position minus the breath"},
            "voices": {}}
     out = mido.MidiFile(type=1, ticks_per_beat=tpq)
     out.tracks.append(mid.tracks[0])
@@ -146,7 +155,7 @@ def articulate(score, plan_path, mid_in, mid_out, report=None):
         score_notes = [n for n in parse_voice(src, name, plan.measure) if n.midi is not None]
         if len(score_notes) != len(notes):
             raise SystemExit(f"{name}: {len(notes)} MIDI notes, {len(score_notes)} score notes")
-        counts = {"step": 0, "repeat": 0, "third": 0, "leap": 0, "rest": 0, "last": 0}
+        counts = {"step": 0, "repeat": 0, "third": 0, "leap": 0, "rest": 0, "last": 0, "breath": 0}
         changed_ms = []
         for i, (x, n) in enumerate(zip(notes, score_notes)):
             if x[2] != n.midi:
@@ -157,6 +166,19 @@ def articulate(score, plan_path, mid_in, mid_out, report=None):
                 counts["last"] += 1
                 continue
             nxt, xn = score_notes[i + 1], notes[i + 1]
+            if n.end in breaths:
+                # the key comes up where the stretched 16th's own length ends, so the breath is silent
+                counts["breath"] += 1
+                limit = min(xn[0], e_tick)
+                off = tm.tick(tm.sec(e_tick) - breaths[n.end])
+                off = max(off, x[0] + MIN_SOUNDING_TICKS)
+                off = min(off, limit, x[1])
+                changed_ms.append((tm.sec(off) - tm.sec(x[1])) * 1000)
+                breath_ms.append({"voice": name, "at": f"{e_tick // (4 * tpq) + 1}:{e_tick % (4 * tpq) / tpq + 1:g}",
+                                  "key": x[2],
+                                  "silence_ms": round((tm.sec(e_tick) - tm.sec(off)) * 1000, 1)})
+                x[1] = off
+                continue
             if nxt.start != n.end:
                 counts["rest"] += 1
                 continue
@@ -179,12 +201,14 @@ def articulate(score, plan_path, mid_in, mid_out, report=None):
                                "release_moved_ms_median": round(changed_ms[len(changed_ms) // 2], 1) if changed_ms else 0,
                                "release_moved_ms_min": round(changed_ms[0], 1) if changed_ms else 0,
                                "release_moved_ms_max": round(changed_ms[-1], 1) if changed_ms else 0}
+    rep["breaths"] = breath_ms
     out.save(mid_out)
     if report:
         Path(report).write_text(json.dumps(rep, indent=1))
     for v, r in rep["voices"].items():
         print(f"{v:8s} {r['notes']:4d} notes: step {r['step']}, repeat {r['repeat']}, third {r['third']}, "
-              f"leap {r['leap']}, before rest {r['rest']}; key-up moved {r['release_moved_ms_min']:+.0f}.."
+              f"leap {r['leap']}, before rest {r['rest']}, into a breath {r['breath']}; key-up moved "
+              f"{r['release_moved_ms_min']:+.0f}.."
               f"{r['release_moved_ms_max']:+.0f} ms (median {r['release_moved_ms_median']:+.0f})")
     return rep
 

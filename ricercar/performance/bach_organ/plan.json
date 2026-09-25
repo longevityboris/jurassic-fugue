@@ -1,5 +1,5 @@
 {
- "about": "Performance plan for the pipe-organ (Bach) version of 'The Neighbour'. Copied from design/final-lab/plan.json (dynamics, roles, keep, pedal unchanged; the organ ignores velocity, its dynamics are the registration in bach_organ.json) with a steadier tempo map: one tempo per section, changed in steps at the joins like the registration, and only cadential broadenings kept (into the Climax I fermata, the A-minor cadence, the V fermata, the hinge, the final chord). The accelerando 35-46 and the long coda ritardando are gone. The general pause at 30 is a little longer, so the church rings out after the fermata chord; humanising is narrower (4 ms).",
+ "about": "Performance plan for the pipe-organ (Bach) version of 'The Neighbour'. Copied from design/final-lab/plan.json (dynamics, roles, keep, pedal unchanged; the organ ignores velocity, its dynamics are the registration in bach_organ.json) with a steadier tempo map: one tempo per section, changed in steps at the joins like the registration, and only cadential broadenings kept (into the Climax I fermata, the A-minor cadence, the V fermata, the hinge, the final chord). The accelerando 35-46 and the long coda ritardando are gone. The general pause at 30 is a little longer, so the church rings out after the fermata chord; humanising is narrower (4 ms). The breath at 46:1 is deleted (score/sections/sec06 notes, finding 5): the E-major chord resolves straight into F under the subito p. Breaths are silent: articulate.py lifts every key that ends on a breath position by the breath's length, so the church rings out in the general pause at 30:1 (1.6 s) and before the inversion at 35:1 (0.4 s).",
  "voices": [
   "soprano",
   "alto",
@@ -84,10 +84,6 @@
   {
    "at": "35:1",
    "ms": 400
-  },
-  {
-   "at": "46:1",
-   "ms": 300
   }
  ],
  "dynamics": [
