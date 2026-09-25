@@ -77,7 +77,10 @@
 %   / +0.2 strings. perform.py applies any role name listed in role_boost/role_level (boost.get(role, 0));
 %   splice_check only compares notes under subject, answer, cf, cs and keep, so a new name costs no check
 %   (a 'cs' role would fail it). plan.json is written by build_sk.py from piece.py (GLOBAL and the
-%   section's roles), so the change belongs there.
+%   section's roles), so the change belongs there. The bass's S2 head (30:2-31:1) has the same problem
+%   (-4 under the soprano's +9, pp una corda) and needs the same treatment. In piece.py: GLOBAL
+%   role_boost 'lament': 2, role_level 'lament': 0.2; sec04 roles ('tenor', '1:4.5', '3:2', 'lament')
+%   (until is exclusive, so 3:2 keeps the G-flat at 32:1) and ('bass', '1:2', '2:1', 'lament').
 soprano = \absolute {
   % 30
   c''4. a'8 f'4 des''8 bes'8 | c''2. f''8 bes'8 | ees''4. des''8 des''4. c''8 | c''1 |
