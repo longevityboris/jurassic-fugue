@@ -50,6 +50,7 @@ import contextlib
 import copy
 import hashlib
 import io
+import itertools
 import json
 import math
 import sys
@@ -561,7 +562,10 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
                                       f"spec={spec_path.name}", time=0))
         mid.tracks.append(tt)
         level_fns = {v: gplan.level_fn(v) for v in plan.voices}
-        ch_iter = iter([c for c in range(16) if c != 9])
+        # the orchestra contract gives channels no meaning (each track is its own
+        # line), so a symphony orchestra may have more than 15 tracks: reuse channels
+        chans = [c for c in range(16) if c != 9]
+        ch_iter = itertools.cycle(chans) if rname == "orchestra" else iter(chans)
         ginfo = {"renderer": rname, "midi": f"{g}.mid", "parts": {}}
         # the piano's sustain pedal: perform.py's CC64 (same on every voice track), kept only
         # where the piano plays, so no pedal noise sounds while it rests
