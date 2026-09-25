@@ -101,7 +101,7 @@
  "section list that disagrees with the score rejected": {
   "pass": true,
   "detail": [
-   "SystemExit: marks from /var/folders/qh/7w8n7nzn5ns_qjyyllhjxnt40000gn/T/tmp797_lwmz/secs.json: the sections add up to 10 bars, the score has 66; the score and the section list disagree"
+   "SystemExit: marks from /var/folders/qh/7w8n7nzn5ns_qjyyllhjxnt40000gn/T/tmptgrwqc2a/secs.json: the sections add up to 10 bars, the score has 66; the score and the section list disagree"
   ]
  },
  "marks resolved from piece.py": {
@@ -164,5 +164,21 @@
  "vn1 and piano soprano 8va share onset ticks where they double (51-58)": {
   "pass": true,
   "detail": "36 shared onsets"
+ },
+ "an orchestra group with 17 parts builds, 17 note tracks, integrity OK": {
+  "pass": true,
+  "detail": "ok True, 17 note tracks, errors []"
+ },
+ "alto on vn2 throughout: notes below the vn2 compass fail the integrity check": {
+  "pass": true,
+  "detail": [
+   "vn2: 3 note(s) outside the vn2 compass 55-96 (lowest 53, highest 77; 9:4.00312 key 53, 12:"
+  ]
+ },
+ "allow_octave_shift turns them into warnings": {
+  "pass": true,
+  "detail": [
+   "vn2: 3 note(s) outside the vn2 compass 55-96 (lowest 53, highest 77; 9:4.00312 key 53, 12:"
+  ]
  }
 }

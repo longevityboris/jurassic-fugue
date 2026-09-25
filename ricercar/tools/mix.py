@@ -5,8 +5,10 @@ usage:
   python3 mix.py MANIFEST.json                 render (cached), align, verify, place, master
   python3 mix.py MANIFEST.json --rerender      render every group again even if its cache is fresh
   python3 mix.py MANIFEST.json --recalibrate   measure the renderer calibration again
-  options: --out PATH (overrides the manifest's "out"), --keep-stems (keep the aligned stems),
-           --max-lag-ms 5 (inter-group alignment tolerance; the mix fails above it)
+  options: --out PATH (overrides the manifest's "out"),
+           --keep-stems (also write each stem as it enters the hall: OUT.stems/<group>_<stem>.wav),
+           --max-lag-ms 5 (tolerance on the renderers' time-base difference; above it the mix is
+           still written but flagged: alignment_ok false, exit code 3)
 
 MANIFEST.json is written by orchestrate.py (OUTDIR/manifest.json) from the spec's "mix" section and
 can be edited; paths in it are relative to its own directory. Format: tools/ORCHESTRATION.md.
@@ -27,13 +29,15 @@ What it does
      gain_db per group.
   4. Verify (before placement; seat delays are physical): onset envelopes (1 ms frames, four
      bands) are cross-correlated with impulse trains at MIDI note-ons. Gate, under --max-lag-ms
-     (5 ms): (a) the renderers' time bases, measured by a timing probe (the calibration chorale
+     (5 ms): the renderers' time bases, measured by a timing probe (the calibration chorale
      with every note short, through the same render / offset / stem path, cached with the
-     calibration), agree; (b) where groups double each other, their onsets coincide (direct
-     cross-correlation of the two groups' envelopes around the shared onsets). Reported too:
-     each group's lag on the attacks in the music, per quarter of the piece (articulation shows
-     there: bowed pre-roll, slurs). "latency_ms" ("auto" = its own probe time base, or ms)
-     shifts a group earlier; default "auto" for the organ (pipe speech), none for the others.
+     calibration), agree. A failed gate flags the mix (alignment_ok false, exit code 3) but
+     still writes it. Information only: where groups double each other, the direct
+     cross-correlation of the two groups' envelopes around the shared onsets (all of them, and
+     those both renderers attack), with its peak prominence; each group's lag on the attacks in
+     the music, per quarter of the piece (articulation shows there: bowed pre-roll, slurs).
+     "latency_ms" ("auto" = its own probe time base, or ms) shifts a group earlier; default
+     "auto" for the organ (pipe speech), none for the others.
   5. Place and reverberate: each stem is panned to its seat (audio/strings/hall.py place_dry:
      azimuth, width, depth delay and -1 dB/m), and each group feeds the same measured Detmold
      Konzerthaus response (hall.Hall, unit energy, tail continued; right-hand sources get the
@@ -76,7 +80,8 @@ import hall as hallmod  # noqa: E402  (audio/strings/hall.py: the shared Detmold
 
 SR = 48000
 CAL_DIR = RICERCAR / "orchestration" / "calibration"
-CAL_VERSION = 2           # bump when the calibration method (seating, loudness measure) changes
+CAL_VERSION = 3           # bump when the calibration method (seating, loudness measure, raw scale) changes
+                          # 3: organ stems taken back to the organ's pre-normalisation scale
 CAL_PARTS = {"piano": ["soprano", "alto", "tenor", "bass"], "quartet": ["vn1", "vn2", "va", "vc"],
              "orchestra": ["vn1", "vn2", "va", "vc"], "organ": ["soprano", "alto", "tenor", "bass"]}
 SCRIPTS = {"piano": AUDIO / "piano" / "render_piano.py", "quartet": AUDIO / "strings" / "render_quartet.py",
@@ -179,14 +184,39 @@ def render_group(renderer: str, midi: Path, rdir: Path, lead_in: float, extra: l
         offset = float(rep.get("offset_s", -lead_in))
     if not stems:
         raise SystemExit(f"{renderer}: no stems in {rdir}")
-    return {"stems": stems, "offset_s": offset, "report": rep}
+    return {"stems": stems, "offset_s": offset, "report": rep, "dir": rdir}
+
+
+def moved_notes(renderer: str, res: dict) -> dict:
+    """Notes the renderer moved by octaves into an instrument's compass (they sound in the wrong
+    octave): {track: [[MIDI s, key in, key played], ...]} for the orchestra, {division: count} for
+    the organ, {job: count} for the quartet (from its log). orchestrate.py's integrity check
+    refuses them for orchestra parts unless the spec lists the part in allow_octave_shift."""
+    rep = res["report"]
+    if renderer == "orchestra":
+        return {t["name"]: [[s, a, b] for s, a, b in t["octave_shifted"]]
+                for t in rep.get("tracks", []) if t.get("octave_shifted")}
+    if renderer == "organ":
+        return {k: v for k, v in (rep.get("folded_notes") or {}).items() if v}
+    if renderer == "quartet":           # render_quartet.py logs "<job>: N notes outside ... octave-shifted"
+        import re
+        log = res["dir"] / "render.log"
+        rx = re.compile(r"^\s*(?:note:\s*)?(.+?): (\d+) notes outside .* octave-shifted")
+        found = [rx.match(ln) for ln in log.read_text().splitlines()] if log.exists() else []
+        return {m.group(1): int(m.group(2)) for m in found if m}
+    return {}
 
 
 def raw_scale_db(renderer: str, rep: dict, stems: dict) -> tuple[float, dict]:
     """Gain (dB) that takes this render's stems back to the renderer's pre-normalisation scale.
-    piano: stems are pre-normalisation already; organ and orchestra: stems are at the pre-normalisation
-    gain by contract; quartet: its stems carry the mix's normalisation, recovered from the report's
-    stem levels (computed before normalisation, on the same signal)."""
+    piano: stems are pre-normalisation already; orchestra: stems are at the pre-normalisation gain
+    by contract; organ: its stems carry the render's normalisation gain (audio/organ/CONTRACT.md,
+    --stems), which its report gives; quartet: its stems carry the mix's normalisation, recovered
+    from the report's stem levels (computed before normalisation, on the same signal)."""
+    if renderer == "organ":
+        if "normalisation_gain_db" not in rep:
+            raise SystemExit("organ report has no normalisation_gain_db: cannot undo its normalisation")
+        return -float(rep["normalisation_gain_db"]), {"normalisation_gain_db": rep["normalisation_gain_db"]}
     if renderer != "quartet":
         return 0.0, {}
     ref = rep.get("stem_rms_db_when_active", {})
@@ -619,7 +649,10 @@ def kw_level(x: np.ndarray) -> float:
 
 def click_scan(x: np.ndarray, onsets_s: list, lead_in: float) -> dict:
     """Clicks: 1 ms blocks whose energy above 12 kHz is more than 15 dB over the median of the
-    surrounding +-20 ms and above -90 dBFS, further than 30 ms from any note onset."""
+    surrounding +-20 ms and above -90 dBFS, isolated (no other such block 3-60 ms away) and further
+    than 30 ms from any note onset. The isolation rule drops periodic trains: a low brass note's
+    lip pulses (bass trombone C2 every 15.3 ms, tuba F1 every 22.9 ms) cross the threshold on
+    every period, while a click from a cut sample or a truncated release is a single event."""
     from scipy.ndimage import median_filter
     mono = x.mean(axis=1)
     hp = sosfilt(butter(4, 12000, "high", fs=SR, output="sos"), mono)
@@ -628,9 +661,11 @@ def click_scan(x: np.ndarray, onsets_s: list, lead_in: float) -> dict:
     e = (hp[: nb * b] ** 2).reshape(nb, b).mean(axis=1)
     bg = median_filter(e, size=41, mode="nearest") + 1e-14
     cand = np.nonzero((e / bg > 10 ** 1.5) & (e > 1e-9))[0]
+    iso = [k for k in cand if not np.any((np.abs(cand - k) > 2) & (np.abs(cand - k) <= 60))]
     ons = np.array(sorted(onsets_s)) + lead_in
-    hits = [round(k / 1000, 3) for k in cand if not (len(ons) and np.min(np.abs(ons - k / 1000)) < 0.03)]
-    return {"clicks_away_from_onsets": len(hits), "click_times_s": hits[:20]}
+    hits = [round(float(k) / 1000, 3) for k in iso if not (len(ons) and np.min(np.abs(ons - k / 1000)) < 0.03)]
+    return {"clicks_away_from_onsets": len(hits), "click_times_s": hits[:20],
+            "periodic_candidates_dropped": int(len(cand) - len(iso))}
 
 
 # ----------------------------------------------------------------------------- main
@@ -692,6 +727,15 @@ def main(argv=None):
                                "offset_s": r["offset_s"], "raw_scale_db": round(raw_db, 3),
                                "raw_scale_estimates": est, "calibration_db": round(cal_db, 3),
                                "gain_db": float(gm.get("gain_db", 0.0)), "total_gain_db": round(gain_db, 3)}
+        mv = moved_notes(gm["renderer"], r)
+        if mv:
+            report["groups"][g]["octave_shifted"] = mv
+            for k, v in mv.items():
+                w = (f"{g}/{k}: {len(v) if isinstance(v, list) else v} note(s) moved by octaves into the compass "
+                     "by the renderer (they sound in the wrong octave)"
+                     + (f": {v[:4]}" if isinstance(v, list) else ""))
+                report.setdefault("warnings", []).append(w)
+                print("  WARNING:", w)
     report["calibration"] = {k: v for k, v in cal.items() if k in rset}
 
     # 4. verify alignment (before placement: the stage's depth delays are physical, not errors)
@@ -804,11 +848,29 @@ def main(argv=None):
                 mask = np.zeros(nframes)
                 for k in shared:
                     mask[max(0, k - 60):k + 60] = 1.0
-                e["direct_xcorr_lag_ms"] = round(xcorr_lag(env_group[g] * mask, env_group[h] * mask)[0], 2)
+                lag_, _, prom_ = xcorr_lag(env_group[g] * mask, env_group[h] * mask)
+                e["direct_xcorr_lag_ms"] = round(lag_, 2)
+                e["direct_xcorr_prominence"] = round(prom_, 3)
+            # the same on the onsets that both renderers attack (piano/organ: every note; strings and
+            # winds: new bow, tongued, short), per stem pair summed: a slurred bowed note enters by
+            # crossfade and its envelope peak measures articulation, not the time base
+            ag = {int(round(t * 1000)) for v in attacks[g].values() for t in v}
+            ah = {int(round(t * 1000)) for v in attacks[h].values() for t in v}
+            both = sorted(k for k in ag if any(k + d in ah for d in range(-3, 4)))
+            e["shared_attacks"] = len(both)
+            if len(both) >= 20:
+                mask = np.zeros(nframes)
+                for k in both:
+                    mask[max(0, k - 60):k + 60] = 1.0
+                lag_, _, prom_ = xcorr_lag(env_group[g] * mask, env_group[h] * mask)
+                e["direct_xcorr_lag_ms_attacks"] = round(lag_, 2)
+                e["direct_xcorr_prominence_attacks"] = round(prom_, 3)
             inter[f"{g}-{h}"] = e
-    # the gate: (1) the renderers' time bases, measured by the timing probe (the calibration chorale
-    # with every note short, through the same render / offset / stem path), agree; (2) where the
-    # groups double each other in this piece, their onsets coincide (direct cross-correlation)
+    # the gate: the renderers' time bases, measured by the timing probe (the calibration chorale
+    # with every note short, through the same render / offset / stem path), agree within
+    # --max-lag-ms. The doubled-onset cross-correlations are information only: on bowed music the
+    # curve is flat over several ms (slurred entries, slow bow attacks), so its peak wanders by
+    # +-5 ms between subsets of the same notes while the stems sit sample-accurately on the clock
     for g, gm in groups.items():
         tb = tbase[g]
         report["groups"][g]["alignment"]["time_base_lag_ms"] = tb
@@ -822,20 +884,23 @@ def main(argv=None):
         if tg is not None and th is not None:
             v["time_base_difference_ms"] = round(tg - th, 2)
             checks.append(abs(tg - th))
-        if "direct_xcorr_lag_ms" in v:
-            checks.append(abs(v["direct_xcorr_lag_ms"]))
     report["inter_group"] = inter
     worst = max(checks, default=0.0)
+    report["alignment_gate"] = ("time base difference between groups (timing probe) under "
+                                f"{a.max_lag_ms} ms; doubled-onset lags are information")
     report["alignment_ok"] = worst < a.max_lag_ms
     report["alignment_worst_ms"] = round(worst, 2)
     for k, v in inter.items():
-        print(f"  {k}: time base difference {v.get('time_base_difference_ms', float('nan')):+.2f} ms (probe)"
-              + (f", doubled onsets {v['direct_xcorr_lag_ms']:+.2f} ms over {v['shared_onsets']}"
+        print(f"  {k}: time base difference {v.get('time_base_difference_ms', float('nan')):+.2f} ms (probe, gated)"
+              + (f"; info: doubled onsets {v['direct_xcorr_lag_ms']:+.2f} ms over {v['shared_onsets']}"
                  if "direct_xcorr_lag_ms" in v else "")
-              + f"; attacks in the music {v['entry_lag_difference_ms']:+.2f} ms")
+              + (f", both attacked {v['direct_xcorr_lag_ms_attacks']:+.2f} ms over {v['shared_attacks']}"
+                 if "direct_xcorr_lag_ms_attacks" in v else "")
+              + f", attacks in the music {v['entry_lag_difference_ms']:+.2f} ms")
     if not report["alignment_ok"]:
-        (out.parent / f"{out.name}.mix.json").write_text(json.dumps(report, indent=1))
-        raise SystemExit(f"alignment error {worst:.2f} ms exceeds {a.max_lag_ms} ms (report written)")
+        # the mix is still written (a render costs far more than a look at the report), flagged
+        print(f"  WARNING: time bases differ by {worst:.2f} ms (limit {a.max_lag_ms} ms): the mix is written "
+              "but flagged (alignment_ok false in the report); a renderer's offset or latency is wrong")
 
     # 5. place and reverberate
     print("  placing and reverberating", flush=True)
@@ -982,4 +1047,4 @@ def encode_m4a(wav: Path, m4a: Path, peak_db: float) -> float:
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(0 if main().get("alignment_ok", True) else 3)

@@ -41,7 +41,9 @@ score with lyparse and the written MIDI files with mido)
     (+ octave), bridging only neighbour notes no longer than the declared bridge;
   * no hanging or overlapping same-key notes, monophonic parts stay monophonic;
   * all group files carry an identical tempo map and ticks per quarter;
-  * notes outside an instrument's compass are reported (warnings).
+  * notes outside an orchestra part's compass are errors (the renderer would play them an
+    octave off) unless the spec lists the part in "allow_octave_shift"; outside the other
+    renderers' compass (quartet, organ), or when allowed, they are warnings.
 """
 from __future__ import annotations
 
@@ -946,11 +948,23 @@ def check(score: Path, plan_path: Path, spec_path: Path, outdir: Path) -> dict:
             if keys:
                 pr["range"] = [min(keys), max(keys)]
                 lo, hi = pt["compass"] or (0, 127)
-                out_of = [k for k in keys if not lo <= k <= hi]
+                out_of = [(on, k) for on, _, k in actual if not lo <= k <= hi]
                 if out_of:
-                    warnings.append(f"{part}: {len(out_of)} note(s) outside the {inst or gd['renderer']} compass "
-                                    f"{lo}-{hi} (lowest {min(keys)}, highest {max(keys)}); the renderer moves "
-                                    "them")
+                    where = ", ".join(f"{fmt_pos(plan, F(on, 4 * TPQ))} key {k}" for on, k in out_of[:5])
+                    msg = (f"{part}: {len(out_of)} note(s) outside the {inst or gd['renderer']} compass "
+                           f"{lo}-{hi} (lowest {min(keys)}, highest {max(keys)}; {where}); the renderer moves "
+                           "them by octaves")
+                    # the orchestra renderer plays such a note an octave off (render.json
+                    # tracks[].octave_shifted): a wrong-octave note, so an error unless the spec
+                    # accepts it for this part ("allow_octave_shift": ["vn2", ...] or true)
+                    allow = spec.d.get("allow_octave_shift", [])
+                    allowed_part = allow is True or part in allow or f"{g}.{part}" in allow
+                    if gd["renderer"] == "orchestra" and not allowed_part:
+                        errors.append(msg + ": they would sound in the wrong octave. Give those bars to a part "
+                                      "whose compass holds them (the alto reaches F3 = 53, below vn2 and ob: va, cl), "
+                                      "split the window, or list the part in \"allow_octave_shift\"")
+                    else:
+                        warnings.append(msg)
             parts_rep[part] = {"track": tname, "expected": pr["expected"], "matched": pr["matched"],
                                "pedal_notes": pr["pedal_notes"], "missing": len(pr["missing"]),
                                "extra": len(pr["extra"]), "shortened": pr["shortened"], "range": pr.get("range")}

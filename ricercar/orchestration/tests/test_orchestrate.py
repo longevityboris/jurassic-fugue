@@ -304,6 +304,34 @@ expect("vn1 and piano soprano 8va share onset ticks where they double (51-58)",
        len([t for t in p_s if 50 * 3840 <= t < 58 * 3840 and t in q_s]) == len([t for t in p_s if 50 * 3840 <= t < 58 * 3840]),
        f"{len(common)} shared onsets")
 
+# a full symphony orchestra: more than 15 tracks in one group (MIDI has 16 channels; the orchestra
+# contract gives channels no meaning, so they are reused; the committed code once raised StopIteration)
+sym_path = R / "audio/orchestra/specs/skeleton_symphonic.json"
+sym = json.loads(sym_path.read_text())
+sym["marks"]["from"] = str((sym_path.parent / sym["marks"]["from"]).resolve())
+sym17 = copy.deepcopy(sym)
+sym17["groups"]["orchestra"]["parts"]["vc.2"] = {}
+sym17["assignments"] += [dict(x, part="vc.2") for x in sym["assignments"] if x["part"] == "vc"]
+d17, rep17 = run(sym17, "sym17")
+m17 = mido.MidiFile(str(d17 / "out" / "orchestra.mid")) if (d17 / "out" / "orchestra.mid").exists() else None
+n17 = len([tr for tr in m17.tracks if any(x.type == "note_on" for x in tr)]) if m17 else 0
+expect("an orchestra group with 17 parts builds, 17 note tracks, integrity OK",
+       rep17["ok"] and n17 == 17, f"ok {rep17['ok']}, {n17} note tracks, errors {rep17['errors'][:2]}")
+# notes outside an orchestra part's compass: the renderer would move them an octave, so they are
+# errors unless the spec accepts the move for that part (allow_octave_shift)
+low = copy.deepcopy(sym)
+low["assignments"] = [x for x in low["assignments"] if not (x["voice"] == "alto" and x["part"] in ("vn2", "va"))]
+low["assignments"].append({"voice": "alto", "part": "vn2"})        # the alto reaches F3, vn2 stops at G3
+_, rep_low = run(low, "compass")
+expect("alto on vn2 throughout: notes below the vn2 compass fail the integrity check",
+       not rep_low["ok"] and any(e.startswith("vn2:") and "compass" in e for e in rep_low["errors"]),
+       [e[:90] for e in rep_low["errors"]][:2])
+low["allow_octave_shift"] = ["vn2"]
+_, rep_allow = run(low, "compass_allowed")
+expect("allow_octave_shift turns them into warnings",
+       rep_allow["ok"] and any(w.startswith("vn2:") and "compass" in w for w in rep_allow["warnings"]),
+       rep_allow["errors"][:2] or [w[:90] for w in rep_allow["warnings"] if "compass" in w])
+
 out_json = HERE / "results" / "orchestrate_tests.json"
 out_json.parent.mkdir(exist_ok=True)
 out_json.write_text(json.dumps(results, indent=1))
