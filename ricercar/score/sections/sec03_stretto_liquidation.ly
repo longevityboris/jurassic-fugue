@@ -80,6 +80,32 @@
 %   piano roll the left hand Gb2-Eb4 at 25:3 and catch the bass in the pedal; the 7-6 at 26:1 then lives
 %   in the pedal (which also sustains its resolution Db4: half-change at 26:1). It is fully idiomatic only
 %   on the quartet (viola over cello).
+%
+% REPORTS for the design owner (whole-piece review round 1; piece.py items this file may not change).
+% R1 (findings 1 and 3): the liquidation is not heard as heads accumulating one chord. The alto KEEP G4
+%   (26:3-27:3) completes E dim7 at 26:3, so no head adds a pitch class, 27:1-27:3 is a hollow E2 G3 G4
+%   (the tenor's head doubles the held G) and the alto's B-flat head is a sounding voice changing pitch.
+%   Tested on copies of the assembled score:
+%   (a) finding 1, alto `aes'2 r2 | r2 bes'2 ~`: 26:3 E2 Bb3 Db5 (the follower's last note still lands on
+%       a diminished sonority), 27:1 E-G, 27:3 E-G-B-flat (the blueprint's own "27 E-G, E-G-B-flat"),
+%       28:1 E dim7 complete; alto and soprano heads enter from silence. check.py 0/0/0/0, strict
+%       unchanged (clash 0, xrel 8, acc 7, acc2 31), suspensions unchanged (21 + 11), every hairpin half
+%       bar attacked; splice_check fails only on the alto keep.
+%   (b) finding 3, alto `aes'2 g'2 | des''2 bes'2 ~`: adds MEL G4-Db5 (dim5) at 27:1, sounds Db5 in the
+%       alto a bar before the soprano's Db5 head (the last entry pre-empted at its own pitch), and the
+%       alto's head is still a sounding voice changing pitch.
+%   Recommended (a): in piece.py section 3 change keep ('alto', '7:3', '8:3') to the rest ("alto silent
+%   until its head: E, E-G, E-G-B-flat, E dim7"), drop "E dim7 complete at 26:3" from the tenor keep's
+%   text, run build_sk.py, then set this file's alto 26-27 to (a); BLUEPRINT 4.3 and the section-3
+%   spec then read 26:3 "E dim (E B-flat D-flat), the first head".
+% R2 (finding 2): the false dawn is as loud as the apotheosis peak. Measured with this file on the
+%   assembled score, bar maxima for bars 24/25/26 against bar 60: piano velocity 86/92/93 vs 93 (soprano
+%   Cb6 92 at 25:1, Ab5 93 at 26:1), strings CC1 105/113/117 vs 113. In piece.py section 3, dynamics
+%   {'at': '1:1', 'until': '7:1', 'to': 'f'} -> 'to': 'mf' gives piano 78/81/79, strings 94/101/108
+%   (bar 26's 108 is the bass head inside the < ff from 26:3; the soprano's maximum is 100). Adding the
+%   optional > (1:1-5:3 < mf, 5:3-6:3 > mp) gives piano 80/77/67, strings 97/92/98, so the dawn fades as
+%   the A-flat fifth turns minor and the crescendo from 26:3 belongs to the crush. Both variants measure
+%   232.1 s. This file cannot fix it: the C-flat 6 and A-flat 5 are the LOCKED follower.
 soprano = \absolute {
   % 20
   f''4 r2. | r1 | ges''2. ges''8 f''8 | ges''2. ges''8 f''8 |
