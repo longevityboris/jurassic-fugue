@@ -112,6 +112,8 @@
   {"voice": "alto", "at": "27:3", "until": "29:1", "role": "head"},
   {"voice": "soprano", "at": "28:1", "until": "29:1", "role": "head"},
   {"voice": "soprano", "at": "30:1", "until": "34:1", "role": "subject"},
+  {"voice": "bass", "at": "30:2", "until": "31:1", "role": "lament"},
+  {"voice": "tenor", "at": "30:4.5", "until": "32:2", "role": "lament"},
   {"voice": "bass", "at": "35:1", "until": "37:1", "role": "subject"},
   {"voice": "bass", "at": "37:1", "until": "39:4", "role": "subject_tail"},
   {"voice": "alto", "at": "35:4", "until": "39:4", "role": "cs"},
@@ -131,7 +133,7 @@
   {"voice": "soprano", "at": "52:1", "until": "52:3", "role": "free"},
   {"voice": "soprano", "at": "52:3", "until": "53:4", "role": "subject"},
   {"voice": "alto", "at": "52:1", "until": "52:3", "role": "subject"},
-  {"voice": "alto", "at": "52:3", "until": "53:1", "role": "free"},
+  {"voice": "alto", "at": "52:3", "until": "53:1", "role": "subject_tail"},
   {"voice": "alto", "at": "53:1", "until": "53:3", "role": "subject"},
   {"voice": "soprano", "at": "55:1", "until": "63:2", "role": "tune"},
   {"voice": "bass", "at": "55:4", "until": "58:4", "role": "cs"},
@@ -170,5 +172,5 @@
   {"at": "66:1", "until": "67:1", "every": "bar"}
  ],
  "humanize": {"ms": 5, "vel": 2},
- "role_boost": {"subject": 12, "answer": 12, "cf": 9, "subject_tail": 3, "melody": 6, "tune": 14, "answer_major": 9, "head": 5, "cs": 3, "free": -5}
+ "role_boost": {"subject": 12, "answer": 12, "cf": 9, "subject_tail": 3, "melody": 6, "tune": 14, "answer_major": 9, "head": 5, "cs": 3, "lament": 2, "free": -5}
 }

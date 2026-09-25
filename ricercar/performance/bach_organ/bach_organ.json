@@ -164,6 +164,26 @@
        "why": "II arioso dolente, subito pp after the general pause: the soprano's S2 as a Krummhorn solo (with Floett 8' and 4', so it stays 3 dB over the alto's pulsing Quintadena on the held C5 of bar 33) on the Rueckpositief over the alto's Quintadena, the tenor's Gedackt and the Gedackter Bass 8' alone in the pedal (16'+8' pulsed as loud as the solo); the bass attacks F2 at 30:1"
       },
       {
+       "at": "30:2",
+       "PED": "pedal_cantus",
+       "why": "the bass's S2 head (C A F, the soprano's head one beat later): the pedal cantus, Gedackt 8' and Cornet 4', on the C at 30:2. The 16' stays off"
+      },
+      {
+       "at": "30:4.5",
+       "HW": "flute8+4",
+       "why": "the tenor's lament (D-flat C B-flat A A-flat G-flat) on its D-flat: the Hauptwerk adds the Spitz flute 4' to the Gedackt, a step brighter than the pulse, under the Krummhorn"
+      },
+      {
+       "at": "31:1",
+       "PED": "pedal8",
+       "why": "the head is over; the E-flat at 31:1 returns to the Gedackter Bass 8' alone"
+      },
+      {
+       "at": "32:2",
+       "HW": "flute8",
+       "why": "the lament's G-flat has spoken; the Hauptwerk Gedackt again on the B-flat at 32:2"
+      },
+      {
        "at": "35:1",
        "HW": "flute8",
        "OW": "flute8",

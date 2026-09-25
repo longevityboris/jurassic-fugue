@@ -306,6 +306,18 @@
   },
   {
    "voice": "bass",
+   "at": "30:2",
+   "until": "31:1",
+   "role": "lament"
+  },
+  {
+   "voice": "tenor",
+   "at": "30:4.5",
+   "until": "32:2",
+   "role": "lament"
+  },
+  {
+   "voice": "bass",
    "at": "35:1",
    "until": "39:4",
    "role": "subject"
@@ -620,6 +632,7 @@
   "answer": 9,
   "cf": 7,
   "cs": 2,
+  "lament": 2,
   "free": -4
  },
  "role_level": {
@@ -627,6 +640,7 @@
   "answer": 0.7,
   "cf": 0.5,
   "cs": 0.2,
+  "lament": 0.2,
   "free": -0.2
  }
 }
