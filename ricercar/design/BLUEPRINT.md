@@ -697,6 +697,11 @@ G-flat/A); the pivot's diminished fourth G-sharp/C (34:1); passing or neighbour 
    will miss the strong-beat quota.
 10. **Checker leniency.** check.py measures semitones and accepts any stepwise dissonance; strict.py and the
     spelled-dissonance list above cover the gaps. Composers keep that standard (rule 4).
+11. **Remaining four-voice sonorities with only two pitch classes** (`verify.py`; revision 1 had 28, nine of them
+    in the apotheosis): 24:3 (the three thematic lines land on A-flat; the bare fifth turns minor on the next
+    beat, by design), 38:1-2 (the two inverted entries meet on B over CS1 inv.'s G-sharp, proven in X4/X5),
+    41:2-3 (the cadential V with the inversion's E tripled), 50:4.75 (a sixteenth) and 66:1 (the seventh's
+    resolution; the chord is completed on beat 3). Composers may fill 38 and 41 where a free voice allows.
 
 ---------------------------------------------------------------------------------------------------
 
