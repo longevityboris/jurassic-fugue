@@ -1,0 +1,153 @@
+{
+ "manifest": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/beethoven_quartet/build/manifest.json",
+ "out": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/beethoven_quartet/ricercar_beethoven_quartet",
+ "lead_in_s": 0.5,
+ "groups": {
+  "quartet": {
+   "renderer": "quartet",
+   "midi": "quartet.mid",
+   "stems": [
+    "va",
+    "vc",
+    "vn1",
+    "vn2"
+   ],
+   "offset_s": -0.5,
+   "raw_scale_db": -15.852,
+   "raw_scale_estimates": {
+    "va": -15.849,
+    "vc": -15.853,
+    "vn1": -15.852,
+    "vn2": -15.851
+   },
+   "calibration_db": 0.0,
+   "gain_db": 0.0,
+   "total_gain_db": -15.852,
+   "alignment": {
+    "attack_rule": "new-bow and short strokes at their note-on (the renderer starts the bow's pre-roll early so that the stroke lands on the note-on); slurred notes, which enter by crossfade, are left out (articulation from its report)",
+    "entry_xcorr_lag_ms": 3.44,
+    "entries": 396,
+    "after_silence_xcorr_lag_ms": -10.49,
+    "after_silence_notes": 16,
+    "entry_lag_ms_by_quarter": [
+     3.38,
+     3.03,
+     3.54,
+     3.68
+    ],
+    "entry_per_note_lag_ms_median": 2.0,
+    "entry_per_note_lag_ms_p10_p90": [
+     -6.0,
+     5.0
+    ],
+    "requested_latency_ms": 0,
+    "all_notes_xcorr_lag_ms": 3.61,
+    "all_notes": 741,
+    "all_notes_per_note_lag_ms_median": 5.0,
+    "compensation_ms": 0.0,
+    "entry_lag_after_ms": 3.44,
+    "time_base_lag_ms": null,
+    "time_base_after_compensation_ms": null
+   },
+   "hall_re_dry_db_program": 1.5,
+   "wet_db": -6.61,
+   "c80_db_impulse": 10.67,
+   "seats": {
+    "va": {
+     "az": -10.0,
+     "depth": 0.4,
+     "width": 0.35
+    },
+    "vc": {
+     "az": -28.0,
+     "depth": 0.0,
+     "width": 0.35
+    },
+    "vn1": {
+     "az": 30.0,
+     "depth": 0.0,
+     "width": 0.35
+    },
+    "vn2": {
+     "az": 10.0,
+     "depth": 0.4,
+     "width": 0.35
+    }
+   },
+   "level_when_playing_lufs": -21.76
+  }
+ },
+ "calibration": {},
+ "inter_group": {},
+ "alignment_gate": "time base difference between groups (timing probe) under 5.0 ms; doubled-onset lags are information",
+ "alignment_ok": true,
+ "alignment_worst_ms": 0.0,
+ "output": {
+  "wav": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/beethoven_quartet/ricercar_beethoven_quartet.wav",
+  "m4a": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/beethoven_quartet/ricercar_beethoven_quartet.m4a",
+  "duration_s": 244.56,
+  "format": "48000 Hz, 2 ch, PCM_24",
+  "true_peak_dbtp_wav": -1.0,
+  "true_peak_dbtp_m4a": -0.94,
+  "normalise_gain_db": 12.1,
+  "integrated_lufs": -17.58,
+  "loudness_range_lu": 15.07,
+  "short_term_max_lufs": -9.82,
+  "stereo_correlation": 0.498,
+  "mono_fold_down_db": -1.27,
+  "hall_re_dry_db": 1.5,
+  "clicks_away_from_onsets": 0,
+  "click_times_s": [],
+  "periodic_candidates_dropped": 0
+ },
+ "loudness_curve_5s_lufs": [
+  -26.0,
+  -28.4,
+  -27.3,
+  -26.6,
+  -25.0,
+  -21.8,
+  -22.8,
+  -22.0,
+  -19.6,
+  -16.1,
+  -20.0,
+  -25.4,
+  -22.0,
+  -17.3,
+  -18.2,
+  -17.2,
+  -11.3,
+  -13.5,
+  -13.5,
+  -27.3,
+  -22.5,
+  -24.5,
+  -24.8,
+  -26.3,
+  -27.9,
+  -25.0,
+  -24.7,
+  -23.4,
+  -20.5,
+  -19.4,
+  -16.8,
+  -18.0,
+  -30.5,
+  -22.2,
+  -17.1,
+  -11.5,
+  -10.5,
+  -12.1,
+  -19.7,
+  -19.5,
+  -18.2,
+  -17.8,
+  -15.1,
+  -14.8,
+  -21.3,
+  -25.6,
+  -24.0,
+  -23.8
+ ]
+}
