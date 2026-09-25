@@ -80,8 +80,9 @@ import hall as hallmod  # noqa: E402  (audio/strings/hall.py: the shared Detmold
 
 SR = 48000
 CAL_DIR = RICERCAR / "orchestration" / "calibration"
-CAL_VERSION = 3           # bump when the calibration method (seating, loudness measure, raw scale) changes
+CAL_VERSION = 4           # bump when the calibration method (seating, loudness measure, raw scale) changes
                           # 3: organ stems taken back to the organ's pre-normalisation scale
+                          # 4: probe peak searched within +-TB_SEARCH_MS
 CAL_PARTS = {"piano": ["soprano", "alto", "tenor", "bass"], "quartet": ["vn1", "vn2", "va", "vc"],
              "orchestra": ["vn1", "vn2", "va", "vc"], "organ": ["soprano", "alto", "tenor", "bass"]}
 SCRIPTS = {"piano": AUDIO / "piano" / "render_piano.py", "quartet": AUDIO / "strings" / "render_quartet.py",
@@ -95,6 +96,70 @@ CREDITS = ("Salamander Grand Piano V3 by Alexander Holm (CC-BY 3.0); University 
 
 def sha(path: Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()[:16] if Path(path).exists() else "-"
+
+
+# ----------------------------------------------------------------------------- engine fingerprint
+# A render (and a renderer's calibration) depends on more than its main script: the local modules
+# it imports (the orchestra imports orch_common and the quartet's render_quartet; the quartet
+# iowa_build and hall; the organ pipe_engine and odf) and the built instruments and data it loads.
+# engine_hash covers the renderer script, every local module it imports (transitively, found by
+# name in the renderer's directory and audio/strings), and its instrument definitions as text
+# (SFZ files, the organ's ODF, pipe model and registrations); samples are not hashed (a rebuild
+# rewrites its SFZ, and the SFZ's mtime is part of the hash).
+ENGINE_SEARCH = {"piano": [AUDIO / "piano"], "quartet": [AUDIO / "strings"],
+                 "orchestra": [AUDIO / "orchestra", AUDIO / "strings"], "organ": [AUDIO / "organ"]}
+_ENGINE = {}
+
+
+def local_modules(script: Path, dirs: list) -> list:
+    import re
+    rx = re.compile(r"^[ \t]*(?:from[ \t]+([\w.]+)[ \t]+import|import[ \t]+([\w., \t]+))", re.M)
+    seen, todo = set(), [script]
+    while todo:
+        f = todo.pop()
+        if f in seen or not f.exists():
+            continue
+        seen.add(f)
+        for m in rx.finditer(f.read_text(errors="replace")):
+            names = [m.group(1)] if m.group(1) else [x.strip().split(" ")[0] for x in m.group(2).split(",")]
+            for nm in names:
+                c = next((d / f"{nm.split('.')[0]}.py" for d in dirs if (d / f"{nm.split('.')[0]}.py").exists()), None)
+                if c is not None:
+                    todo.append(c)
+    return sorted(seen)
+
+
+def instrument_files(renderer: str) -> list:
+    lib = Path(os.environ.get("SAMPLE_LIBRARIES", Path.home() / "Music" / "SampleLibraries"))
+    if renderer == "piano":       # the derived SFZ and make_sfz.py's calibration (velocity map)
+        d = lib / "SalamanderGrandPiano" / "SalamanderGrandPiano-SFZ+FLAC-V3+20200602"
+        return sorted(d.glob("*.sfz")) + sorted(d.glob("*.json"))
+    if renderer == "quartet":     # SFZ, tuning corrections, sample checksums
+        d = Path(os.environ.get("IOWA_QUARTET_DIR", lib / "IowaMIS" / "quartet"))
+        return sorted(d.rglob("*.sfz")) + sorted(d.glob("*.json")) + sorted(d.glob("*.sha256"))
+    if renderer == "orchestra":   # SFZ, tuning corrections, latency table, layer maps
+        d = lib / "Orchestra" / "built"
+        return sorted(d.rglob("*.sfz")) + sorted(d.rglob("*.json"))
+    if renderer == "organ":
+        return [AUDIO / "organ" / "registrations.json", AUDIO / "organ" / "data" / "norrfjarden_pipes.json",
+                lib / "Organ" / "NorrfjardenChurch" / "NorrfjardenChurch.organ"]
+    return []
+
+
+def engine_hash(renderer: str) -> str:
+    """Fingerprint of everything a renderer's output depends on besides its input (see above)."""
+    if renderer not in _ENGINE:
+        h = hashlib.sha256()
+        for f in local_modules(SCRIPTS[renderer], ENGINE_SEARCH[renderer]):
+            h.update(f.name.encode() + b"\0" + f.read_bytes())
+        for f in instrument_files(renderer):
+            if f.exists():
+                st = f.stat()
+                h.update(f"{f}:{st.st_size}:{st.st_mtime_ns}".encode())
+                if st.st_size < 8_000_000:
+                    h.update(f.read_bytes())
+        _ENGINE[renderer] = h.hexdigest()[:16]
+    return _ENGINE[renderer]
 
 
 def db(x: float) -> float:
@@ -146,7 +211,7 @@ def render_group(renderer: str, midi: Path, rdir: Path, lead_in: float, extra: l
         raise SystemExit(f"unknown renderer {renderer!r}")
     cmd += [str(x) for x in extra]
     stamp = {"midi": sha(midi), "sidecar": sha(sidecar) if sidecar else None, "script": sha(script),
-             "cmd": cmd[2:]}
+             "engine": engine_hash(renderer), "cmd": cmd[2:]}
     stamp_path = rdir / "stamp.json"
     have_stems = any(stems_dir.glob("*.wav")) or any(rdir.glob("render_stem_*.wav")) \
         or any((rdir / "render.stems").glob("*.wav"))
@@ -360,9 +425,22 @@ def xcorr_curve(a: np.ndarray, b: np.ndarray, max_lag: int = 80) -> np.ndarray:
                      for L in range(-max_lag, max_lag + 1)]) / n
 
 
-def peak_of(c: np.ndarray) -> float:
+# A time base is the few-ms lag of a note's attack after its note-on (the organ's pipe speech, the
+# slowest, about 11 ms after its anticipation). Peaks are searched within +-TB_SEARCH_MS: a renderer
+# that starts its samples early by their measured onset latency (the orchestra's VPO3 violins, about
+# 80 ms) puts a slow pre-attack rising out of digital silence before every note that follows a rest,
+# and on the log-energy envelope that rise outscores the tone's (probe: -76.7 ms globally, +2.5 ms per
+# note median, +4 ms within the window; doubled onsets with the piano -1.8 ms). A peak on the edge of
+# the window is flagged: that time base is not measured.
+TB_SEARCH_MS = 30
+
+
+def peak_of(c: np.ndarray, lim: int | None = None) -> float:
     max_lag = (len(c) - 1) // 2
-    i = int(np.argmax(c))
+    if lim is not None and lim < max_lag:
+        i = max_lag - lim + int(np.argmax(c[max_lag - lim:max_lag + lim + 1]))
+    else:
+        i = int(np.argmax(c))
     frac = 0.0
     if 0 < i < len(c) - 1:
         den = c[i - 1] - 2 * c[i] + c[i + 1]
@@ -492,7 +570,8 @@ def calibrate(renderers: set, lead_in: float, force: bool) -> dict:
     cal = json.loads(cal_path.read_text()) if cal_path.exists() else {}
     score, plan = CAL_DIR / "chorale.ly", CAL_DIR / "chorale.plan.json"
     for r in sorted(renderers):
-        key = f"v{CAL_VERSION}:{sha(SCRIPTS[r])}:{sha(score)}:{sha(plan)}:{sha(Path(orchestrate.__file__))}"
+        key = (f"v{CAL_VERSION}:{engine_hash(r)}:{sha(score)}:{sha(plan)}:{sha(Path(orchestrate.__file__))}:"
+               f"{sha(Path(hallmod.__file__))}")
         if not force and cal.get(r, {}).get("key") == key:
             continue
         print(f"  calibrating {r} (four-part mf chorale)", flush=True)
@@ -552,7 +631,13 @@ def calibrate(renderers: set, lead_in: float, force: bool) -> dict:
             tot = c if tot is None else tot + c
             pn += list(per_note_lags(env, ts))
             cnt += len(ts)
-        cal[r].update({"time_base_lag_ms": round(peak_of(tot), 2), "time_base_notes": cnt,
+        tb = peak_of(tot, TB_SEARCH_MS)
+        if abs(tb) >= TB_SEARCH_MS - 1:
+            print(f"  WARNING: {r}: the timing probe's peak is on the edge of its +-{TB_SEARCH_MS} ms search: "
+                  "time base not measured")
+        cal[r].update({"time_base_lag_ms": round(tb, 2), "time_base_search_ms": TB_SEARCH_MS,
+                       "time_base_at_search_edge": abs(tb) >= TB_SEARCH_MS - 1,
+                       "time_base_global_peak_ms": round(peak_of(tot), 2), "time_base_notes": cnt,
                        "time_base_per_note_median_ms": float(np.median(pn)),
                        "time_base_per_note_p10_p90_ms": [float(np.percentile(pn, 10)), float(np.percentile(pn, 90))]})
         cal_path.write_text(json.dumps(cal, indent=1))
@@ -779,7 +864,7 @@ def main(argv=None):
             pn += list(per_note_lags(env, ts))
         if tot is None:
             return None, 0, []
-        return peak_of(tot), cnt, pn
+        return peak_of(tot, TB_SEARCH_MS), cnt, pn
 
     lags, report_align = {}, {}
     q_edges = np.linspace(0, nframes, 5)
@@ -787,7 +872,7 @@ def main(argv=None):
         lat = gm.get("latency_ms", 0)
         lag, cnt, pn = entry_lag(g)
         if lag is None:
-            print(f"  warning: {g}: no attacks in the music to measure (the probe and doublings still gate)")
+            print(f"  warning: {g}: no attacks in the music to measure (the probe still gates)")
             lag = 0.0
         lags[g] = lag
         el, ecnt, _ = entry_lag(g, which=entries)
@@ -884,6 +969,11 @@ def main(argv=None):
         if tg is not None and th is not None:
             v["time_base_difference_ms"] = round(tg - th, 2)
             checks.append(abs(tg - th))
+    for g, gm in groups.items():
+        if cal.get(gm["renderer"], {}).get("time_base_at_search_edge"):
+            checks.append(float(TB_SEARCH_MS))
+            report.setdefault("warnings", []).append(f"{g}: its renderer's time base is not measured (probe peak "
+                                                     f"on the edge of the +-{TB_SEARCH_MS} ms search)")
     report["inter_group"] = inter
     worst = max(checks, default=0.0)
     report["alignment_gate"] = ("time base difference between groups (timing probe) under "
@@ -909,6 +999,10 @@ def main(argv=None):
     dry = np.zeros((n + tail, 2))
     wet = np.zeros((n + tail, 2))
     per_group_dry = {}
+    stems_out = out.parent / f"{out.name}.stems" if a.keep_stems else None
+    if stems_out is not None:
+        shutil.rmtree(stems_out, ignore_errors=True)
+        stems_out.mkdir(parents=True)
     for g, gm in groups.items():
         rname = gm["renderer"]
         parts = gm.get("parts", {})
@@ -925,6 +1019,8 @@ def main(argv=None):
             st = stage_for(rname, part, name, inst, gm.get("stage", {}))
             y = place(x, st, rname)
             gdry += y
+            if stems_out is not None:     # as it enters the hall; scaled to the master's gain below
+                sf.write(str(stems_out / f"{g}_{name}.wav"), y.astype(np.float32), SR, subtype="FLOAT")
             feeds[side_of(x, st, rname)] += x.mean(axis=1)
             seats[name] = {k: st.get(k) for k in ("az", "depth", "width")} if rname != "orchestra" else "renderer"
         dry[:n] += gdry
@@ -971,6 +1067,16 @@ def main(argv=None):
         f.comment = CREDITS
         f.write(mix.astype(np.float32))
     m4a_tp = encode_m4a(wav, m4a, peak_db)
+    if stems_out is not None:
+        # dry stems at their level in the master (the master's gain applied, not its 18 Hz high-pass):
+        # stems + the hall (wet) = the mix
+        for p in sorted(stems_out.glob("*.wav")):
+            y = sf.read(str(p), dtype="float64", always_2d=True)[0] * gnorm
+            sf.write(str(p), y.astype(np.float32), SR, subtype="FLOAT")
+        report["stems_dir"] = str(stems_out)
+        report["stems_note"] = ("dry stems as they enter the hall (seated, gains, latency compensation, the "
+                                "master's normalisation gain), 32-bit float, same start as the mix; the hall "
+                                "and the 18 Hz high-pass are not in them")
 
     # 7. measurements
     print("  measuring", flush=True)
