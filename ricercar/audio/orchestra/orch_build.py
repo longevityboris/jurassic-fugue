@@ -773,7 +773,7 @@ def write_sfz(part: str, setname: str, metas: list[dict]) -> Path:
                 elif kind == "short":
                     g.append("loop_mode=one_shot ampeg_attack=0.002")
                 elif kind == "hit":
-                    g.append("loop_mode=one_shot ampeg_attack=0.001")
+                    g.append("loop_mode=no_loop ampeg_attack=0.001")    # damped at the note-off (CONTRACT section 4)
                 elif kind == "roll":
                     g.append("loop_mode=loop_continuous loop_crossfade=0.15 ampeg_attack=0.02")
                 L.append(g[0])

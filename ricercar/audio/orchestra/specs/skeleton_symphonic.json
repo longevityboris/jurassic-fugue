@@ -1,6 +1,6 @@
 {
  "title": "Ricercar (skeleton) - symphony orchestra (renderer test orchestration)",
- "comment": "The orchestra renderer's end-to-end test through orchestrate.py, not the final scoring. Strings carry the four voices throughout (basses double the bass 8vb from the episode to the arioso and from the dominant pedal to the coda); the arioso's lament goes to a solo clarinet while the first violins rest; woodwinds double the entering voices; horns, timpani roll and a horn pedal hold the dominant pedal F; brass (a2 horns, trumpet, trombones, tuba 8vb) only in Climax I, Climax II and the apotheosis peak. Positions are section marks from design/final-lab/piece.py.",
+ "comment": "The orchestra renderer's end-to-end test through orchestrate.py, not the final scoring. Strings carry the four voices throughout (basses double the bass 8vb from the episode to the arioso and from the dominant pedal to the coda); the arioso's lament goes to a solo clarinet while the first violins rest; woodwinds double the entering voices; a horn (F3) and a timpani roll (F2) hold the dominant pedal F in bars 46-49 (pedal_climax .. +4, the bass's f,1 | f,2 f,4 ges,4 pedal); brass (a2 horns, trumpet, trombones, tuba 8vb) only in Climax I, Climax II and the apotheosis peak. Positions are section marks from design/final-lab/piece.py.",
  "marks": {
   "from": "../../../design/final-lab/piece.py"
  },
@@ -141,7 +141,7 @@
   {
    "voice": "tenor",
    "part": "cl",
-   "at": "inversa+3",
+   "at": "inversa+2",
    "until": "pedal_climax",
    "level": -0.5
   },
@@ -220,7 +220,7 @@
   {
    "voice": "tenor",
    "part": "hn.1",
-   "at": "pedal_climax+2",
+   "at": "pedal_climax+4",
    "until": "apotheosis_coda",
    "level": -1
   },
@@ -307,15 +307,16 @@
   {
    "voice": "bass",
    "part": "hn.1",
-   "at": "inversa+7",
-   "until": "pedal_climax",
+   "at": "pedal_climax",
+   "until": "pedal_climax+4",
+   "octave": 12,
    "level": -1
   },
   {
    "voice": "bass",
    "part": "timp",
-   "at": "inversa+7",
-   "until": "pedal_climax",
+   "at": "pedal_climax",
+   "until": "pedal_climax+4",
    "articulation": "roll",
    "level": -1
   }
@@ -325,7 +326,7 @@
   "reference_group": "orchestra",
   "groups": {
    "orchestra": {
-    "wet_db": -5.0
+    "hall_re_dry_db": 3.0
    }
   }
  }
