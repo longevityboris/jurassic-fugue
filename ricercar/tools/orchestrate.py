@@ -80,6 +80,7 @@ ART_CC20 = {"detache": 32, "normal": 32, "legato": 80, "slur": 80, "short": 112,
 ART_ALL = {"auto", "detache", "normal", "legato", "slur", "short", "spiccato", "staccato", "tenuto", "roll", "stroke"}
 ART_CC20.update({"staccato": 112, "tenuto": 32, "roll": 100, "stroke": 20})
 QUARTET_SHORT_S = 0.26       # render_quartet.py --short-ms default (auto articulation, CC20)
+HANDOFF_SAME_KEY_LIFT_S = 0.06   # perform.py's lift before a repeated note, applied across a hand-off
 
 
 # ------------------------------------------------------------------------------ renderers
@@ -635,6 +636,7 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
                         and nxt[4] is w and 0 <= nxt[0] - x[1] < TPQ // 2:
                     x[1] = nxt[0] + 40
             if mono:
+                relift = 0
                 for i in range(len(notes_out) - 1):
                     x, y = notes_out[i], notes_out[i + 1]
                     if y[0] < x[1] and y[4] is x[4]:
@@ -645,8 +647,19 @@ def build(score: Path, plan_path: Path, spec_path: Path, outdir: Path, quiet=Fal
                                              f"({x[4].voice} and {y[4].voice}); a {rname} part is one line")
                         trunc += 1
                         x[1] = y[0] - 1
+                    if y[2] == x[2] and y[4].voice != x[4].voice \
+                            and tmap.sec(y[0]) - tmap.sec(x[1]) < HANDOFF_SAME_KEY_LIFT_S:
+                        # a hand-off onto the same key: lift the earlier note as perform.py does for a
+                        # repeated note inside one voice (which it cannot see across voices), so the
+                        # renderer re-attacks the key instead of meeting a note-off at the new note-on
+                        lift = max(tmap.sec(x[0]) + 0.04, tmap.sec(y[0]) - HANDOFF_SAME_KEY_LIFT_S)
+                        x[1] = max(x[0] + 1, min(x[1], sec_to_tick(tmap, lift)))
+                        relift += 1
                 if trunc:
                     warnings.append(f"{part}: {trunc} note(s) held across a hand-off shortened to the next note")
+                if relift:
+                    warnings.append(f"{part}: {relift} hand-off(s) onto the same key: the earlier note released "
+                                    f"{int(HANDOFF_SAME_KEY_LIFT_S * 1000)} ms before the next")
             # bowed / wind articulation: CC20 per note (once any window gives one, every note needs a
             # value, because the renderers stop inferring as soon as a track carries CC20)
             cc20, cc16 = {}, {}
