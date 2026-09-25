@@ -143,7 +143,9 @@ def render_group(renderer: str, midi: Path, rdir: Path, lead_in: float, extra: l
     stamp = {"midi": sha(midi), "sidecar": sha(sidecar) if sidecar else None, "script": sha(script),
              "cmd": cmd[2:]}
     stamp_path = rdir / "stamp.json"
-    fresh = (not force and stamp_path.exists() and report.exists()
+    have_stems = any(stems_dir.glob("*.wav")) or any(rdir.glob("render_stem_*.wav")) \
+        or any((rdir / "render.stems").glob("*.wav"))
+    fresh = (not force and stamp_path.exists() and report.exists() and have_stems
              and json.loads(stamp_path.read_text()) == stamp)
     if not fresh:
         for p in (stems_dir, rdir / "render.stems"):
