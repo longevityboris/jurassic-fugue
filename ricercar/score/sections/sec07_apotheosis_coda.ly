@@ -33,7 +33,7 @@
 % * 55 (bass and tenor free until CS1/CS2 enter). Alto D4, E-flat4 (passing, weak eighth 55:2.5), F4; tenor
 %   F3 rising a sixth to D4 (55:3). The two exchange D and F (a voice exchange inside I), so 55:1-55:3.5 is
 %   B-flat major with the tune's B-flat as its root, and bar 55 still moves (C1-M1). 55:4 I6/4 (the lament's
-%   F), 55:4.5 vi6 passing, 56:1 I6. The tenor's F-D sixth anticipates the lament's sigh (bass F2-D3,
+%   F), 55:4.5 iii6 passing (D F A over F; the blueprint's "vi6" for the same sonority is a mislabel), 56:1 I6. The tenor's F-D sixth anticipates the lament's sigh (bass F2-D3,
 %   55:4-56:1), an octave above and a beat and a half early, and falls a third into CS2's B-flat against the
 %   bass's rise (not D3: a rising sixth in parallel with the bass's, and 15 semitones under the alto). The
 %   alto holds F4 across 56:1, a consonance on the tune's second downbeat, then G4 at 56:4 (ii7).
@@ -105,6 +105,9 @@
 %   strict clash 0, xrel 1, acc 3, acc2 5, as before); check.py: 0 errors, 0 parallels, 0 beat-par,
 %   0 unjustified.
 % * No new D4?, DIR, MEL, XREL, CLASH, unison or parallel. D4? 54:3 and XREL 60:4.5-61:1 are the skeleton's.
+%   Review 5 asked to watch D-flat4 (tenor, 60:4, one eighth) against the tune's D5 (61:2.5): two and a half
+%   beats apart, with the tenor's C4 and F3 and the tune's E-flat5 between, and D5 is the tune's own locked
+%   note; strict.py (a quarter's window) does not flag it.
 % * strict: ACC2 59:1 (the tenor's E-flat3 over F2) and 61:1 (the tune's E-flat5 over F2 and F3), both V7
 %   sevenths from the skeleton; ACC 65:3 (V7 over the tonic pedal: pedal licence; the alto's note is now C5).
 %   HOL 66:1 as in the skeleton (completed at 66:3).
