@@ -18,11 +18,15 @@
 %          hold; it keeps Db/Eb on the beats so G-flat/B-flat never sounds with two pitch classes only.
 %   24     that Db tied over the bar: 9-8 against the lament's C (7th against the tenor's Eb) at 24:1,
 %          resolving to C; the kept Eb5 at 24:3 is the line's peak, with the soprano's C-flat 6.
+%          Label change: 24:2.5 is now A-flat 6/4 over E-flat (the skeleton's A-flat7 had its seventh in
+%          the alto's Gb4, which is gone); the held C moves to the bare A-flat fifth at 24:3 as before.
 % FREE ALTO 25-26:2 holds the Neapolitan's doubled third (Eb5) under the soprano's C-flat while the tenor
 %   moves, then falls Db Bb Ab into the kept G. Ab (not Db) at 26:1 so that the tenor's 7-6 has no
 %   resolution note sounding above it.
 % FREE TENOR 25-26:2: the mirror sigh Gb Ab Gb, then the line sinks Gb F Eb Db C Bb into the E dim7 (the
 %   lament's descent; "sinks through F"), with a 7-6 over the bass F at 26:1 (Eb held from 25:3).
+%   Keep "26:1 D-flat/F": D-flat/F arrives on the second eighth (26:1.5) as that 7-6's resolution
+%   (26:1 itself is F Eb Ab Ab); 26:2 F minor kept.
 % FREE BASS 24:3-26:3: kept as the skeleton's line on purpose (Eb under the N6, Gb under the soprano's 4-3,
 %   then the chromatic fall Gb F E Eb into Climax I); the only change is the octave drop Eb3-Eb2 at 25:2,
 %   which moves under the held C-flat 6 and reaches Gb2 by a rising third instead of a falling sixth.
