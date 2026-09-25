@@ -12,7 +12,7 @@ soprano = \absolute {
   % ---- sec02_entry4_episode.ly (bars 13-19)
 
   % 13
-  f''4. c''8 c''4. g''8~ | g''8 f''8 ees''2 des''8 c''8~ | c''4 d''4 ees''2 | f''2~ f''8 ges''8 f''4 |
+  f''4. c''8 c''2~ | c''4 ees''2 des''8 c''8~ | c''4 d''4 ees''2 | f''2~ f''8 ges''8 f''4 |
   % 17
   c''2 e''4. d''8 | c''4. des''8 des''4. f''8 | ges''4. f''8 f''4. ees''8 |
   % ---- sec03_stretto_liquidation.ly (bars 20-29)
@@ -40,9 +40,9 @@ soprano = \absolute {
   % ---- sec06_pedal_climax.ly (bars 46-54)
 
   % 46
-  r1 | r1 | r1 | r4 aes''4 g''8 r8 r4 |
+  r1 | r1 | r1 | r1 |
   % 50
-  r4 ges''4 f''4. f''16 ees''16 | ges''4. ges''16 f''16 a''4. a''16 aes''16 | g''2 c'''4. c'''16 bes''16 | bes''2. a''4 |
+  r2 f''4. f''16 ees''16 | ges''4. ges''16 f''16 a''4. a''16 aes''16 | g''2 c'''4. c'''16 bes''16 | bes''2. a''4 |
   % 54
   f''4 ees''4 c''4 a'4 |
   % ---- sec07_apotheosis_coda.ly (bars 55-66)
@@ -73,7 +73,7 @@ alto = \absolute {
   % ---- sec03_stretto_liquidation.ly (bars 20-29)
 
   % 20
-  aes'8 ges'8 f'8 aes'8 bes'4. aes'8 ~ | aes'4. bes'8 aes'8 g'8 ges'4 | bes'2 ~ bes'8 aes'8 ces''4 | des''8 ees''8 des''8 ces''8 des''4 aes'4 ~ |
+  aes'4 f'4 bes'4. aes'8 ~ | aes'2. ges'4 | bes'2 ~ bes'8 aes'8 ces''4 | des''8 ees''8 des''8 ces''8 des''4 aes'4 ~ |
   % 24
   aes'4 c''4 ees''2 | ees''2 ~ ees''8 des''4 ces''8 | aes'2 g'2 ~ | g'2 bes'2 ~ |
   % 28
@@ -81,7 +81,7 @@ alto = \absolute {
   % ---- sec04_arioso.ly (bars 30-34)
 
   % 30
-  a8 a8 a8 c'8 c'8 c'8 f'8 f'8 | ges'8 ges'8 ges'8 ges'8 ges'8 ges'8 f'4 | f'8 f'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 | ees'8 ees'8 ees'8 f'8 ees'8 ees'8 ees'8 ees'8 |
+  a8 a8 a8 c'8 c'8 c'8 des'8 f'8 | ges'8 ges'8 ges'8 ges'8 ges'8 ges'8 f'4 | f'8 f'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 | ees'8 ees'8 ees'8 f'8 ees'8 ees'8 ees'8 ees'8 |
   % 34
   e'8 e'8 e'8 e'8 e'8 e'8 f'8 e'8 |
   % ---- sec05_inversa.ly (bars 35-45)
@@ -103,11 +103,11 @@ alto = \absolute {
   % ---- sec07_apotheosis_coda.ly (bars 55-66)
 
   % 55
-  d'2 ees'2~ | ees'8 d'8 f'2 g'4~ | g'4. f'8~ f'4 f'4~ | f'8 ees'8 bes'4~ bes'8 a'8 bes'8 f'8 |
+  d'4. ees'8 f'2~ | f'2. g'4~ | g'4. f'8~ f'4 f'4~ | f'8 ees'8 bes'4~ bes'8 a'8 bes'8 f'8 |
   % 59
-  a'4. c'8~ c'4 d'8 g'8~ | g'4 f'4 a'4. g'8 | a'4 c''4~ c''8 bes'4 g'8 | e'2. a'4 |
+  a'4. c'8~ c'4 d'8 g'8~ | g'4 f'4 a'4. g'8 | a'4. bes'8 bes'4. g'8 | e'2. a'4 |
   % 63
-  f'2. f'8 g'8 | f'4 f'8 g'8~ g'4 f'4~ | f'2 c'2 | d'2 f'2 |
+  f'2. f'8 g'8 | f'4 f'8 ges'8~ ges'4 f'4~ | f'2 c''2 | bes'2 f'2 |
 }
 
 tenor = \absolute {
@@ -124,7 +124,7 @@ tenor = \absolute {
   % 13
   f2. f8 e8 | f2. f8 e8 | f4. g8 g4. bes8 | bes2. aes8 f8 |
   % 17
-  g4. e8 c4 g4~ | g8 f8 aes4~ aes4 ges8 f8 | ees4. bes8~ bes8 aes8 c'4 |
+  g4. e8 c4 g4~ | g8 f8 aes4~ aes8 ges8 f4~ | f4 ees8 bes8~ bes8 aes8 c'4 |
   % ---- sec03_stretto_liquidation.ly (bars 20-29)
 
   % 20
@@ -144,7 +144,7 @@ tenor = \absolute {
   % 35
   r1 | r1 | b2. b8 c'8 | b2. b8 c'8 |
   % 39
-  b4. a8 a4. fis8 | fis2. g8 b8 | a4. c'8 e'4 c'4 | r1 |
+  b4. a8 a4. fis8 | fis2. g8 b8 | a4. c'8 e'4 c'4 | a2. r4 |
   % 43
   g'2. fis'4 ~ | fis'4 e'4 f'4 e'4 | a4. a8 c'4 b4 |
   % ---- sec06_pedal_climax.ly (bars 46-54)
@@ -158,9 +158,9 @@ tenor = \absolute {
   % ---- sec07_apotheosis_coda.ly (bars 55-66)
 
   % 55
-  f4 g4 c'2 | bes8 a8 bes8 c'8 d'8 c'8 ees'8 g8 | d4 c8 f8 ~ f2 | ees8 f8 ees8 d8 c4 d4 |
+  f2 d'2 | bes8 a8 bes8 c'8 d'8 c'8 ees'8 g8 | d4 c8 f8 ~ f2 | ees8 f8 ees8 d8 c4 d4 |
   % 59
-  ees4 c4 a4 bes8 c'8 | a2 c'4. g8 | f4. e8 e4. c8 | c2. ees4 |
+  ees4. d8 a4 bes8 c'8 | a2 c'4 des'8 c'8 | f4. e8 e4. c8 | c2. ees4 |
   % 63
   d2 f4 d'4~ | d'4 c'8 bes8 f4~ f8 r8 | bes2. bes8 a8 | bes1 |
 }
@@ -191,7 +191,7 @@ bass = \absolute {
   % ---- sec04_arioso.ly (bars 30-34)
 
   % 30
-  f,1 | ees,2. d,4 | ges,2 f,2 | f,1 |
+  f,4 c4. a,8 f,4 | ees,2. d,4 | ges,2 f,2 | f,1 |
   % 34
   e,1 |
   % ---- sec05_inversa.ly (bars 35-45)
@@ -199,7 +199,7 @@ bass = \absolute {
   % 35
   e2. e8 f8 | e2. e8 f8 | e4. d8 d4. b,8 | b,2. c8 e8 |
   % 39
-  d4. f8 a,4 b,4 | b,8 cis8 b,8 ais,8 b,4 e4 ~ | e2. a,4 | c2. d4 |
+  d4. f8 a,4 b,4 | b,8 cis8 b,8 ais,8 b,4 g,4 | e2. a,4 | c2. d4 |
   % 43
   e4 f4 fis2 | gis2. a4 | f4. d8 a,4 e,4 |
   % ---- sec06_pedal_climax.ly (bars 46-54)
@@ -213,7 +213,7 @@ bass = \absolute {
   % ---- sec07_apotheosis_coda.ly (bars 55-66)
 
   % 55
-  bes,2 c4 f,4 | d2. c4 | bes,4 a,4 aes,2 | ges,2. f,4 |
+  bes,2. f,4 | d2. c4 | bes,4 a,4 aes,2 | ges,2. f,4 |
   % 59
   f,2. f,8 e,8 | f,2. f,8 e,8 | f,4. g,8 g,4. bes,8 | bes,2. a,8 f,8 |
   % 63
