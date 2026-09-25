@@ -221,6 +221,8 @@ def cat_vpo3(part: str) -> list[dict]:
             k = _key(r.get("pitch_keycenter", r.get("key")))
             lovel = int(r.get("lovel", 1))
             key = (r["_path"], art)
+            if part == "timp" and (art == "roll") != ("roll" in Path(r["_path"]).name.lower()):
+                continue
             if "/VSCO2-CE/" in r["_path"]:
                 continue                      # the 'vsco' set has these recordings (a stack must not double them)
             if key in seen:
@@ -300,21 +302,41 @@ def measure(x: np.ndarray, art: str, lo: float, hi: float) -> dict:
                 sus_end=sus_end, f0=f0, conf=conf)
 
 
-def timp_pitch(x: np.ndarray, onset: int) -> float:
-    """Principal tone of a timpano (MIDI, fractional): the strongest spectral
-    peak between 65 and 280 Hz, 0.12-0.9 s after the stroke (a harmonic comb
-    would lock onto the virtual fundamental an octave below)."""
+TIMP_PARTIALS = [(1.0, 1.0), (1.5, 0.8), (2.0, 0.6), (2.44, 0.35), (2.9, 0.25)]
+
+
+def timp_pitch(x: np.ndarray, onset: int, nominal: int | None = None) -> float:
+    """Principal tone of a timpano (MIDI, fractional).  A kettledrum's modes sit
+    near 1 : 1.5 : 2 : 2.44 : 2.9 of the principal and the 1.5 mode is often the
+    strongest, so a single peak or a harmonic comb picks the fifth or the
+    octave below.  Instead every candidate principal (5-cent steps) is scored
+    by the log spectrum at all five mode ratios (+-1.5 %), 0.1-1.0 s after the
+    stroke.  Search: nominal +-2 semitones when the file is named by pitch,
+    else D2-C4."""
     mono = x.mean(axis=1)
-    seg = mono[onset + int(0.12 * SR): onset + int(0.9 * SR)]
+    seg = mono[onset + int(0.10 * SR): onset + int(1.0 * SR)]
     n = 1 << 18
     spec = np.abs(np.fft.rfft(seg * np.hanning(len(seg)), n))
-    fr = np.fft.rfftfreq(n, 1 / SR)
-    band = (fr > 65) & (fr < 280)
-    i = int(np.flatnonzero(band)[np.argmax(spec[band])])
-    a, b, c = np.log(spec[i - 1:i + 2] + 1e-12)
-    d = 0.5 * (a - c) / (a - 2 * b + c) if (a - 2 * b + c) != 0 else 0.0
-    f = (i + d) * SR / n
-    return 69 + 12 * np.log2(f / 440.0)
+    ls = np.log(spec / (np.median(spec[: int(2000 * n / SR)]) + 1e-12) + 1e-9)
+    df = SR / n
+    lo, hi = (nominal - 2.0, nominal + 2.0) if nominal else (37.0, 61.0)
+    cands = np.arange(lo, hi, 0.05)
+    best, arg = -1e9, lo
+    for c in cands:
+        f = 440.0 * 2 ** ((c - 69) / 12)
+        sc = 0.0
+        for r, w in TIMP_PARTIALS:
+            i0, i1 = int(f * r * 0.985 / df), int(f * r * 1.015 / df) + 1
+            sc += w * float(ls[i0:i1].max())
+        if sc > best:
+            best, arg = sc, c
+    # refine on the principal's own peak
+    f = 440.0 * 2 ** ((arg - 69) / 12)
+    i0, i1 = int(f * 0.985 / df), int(f * 1.015 / df) + 1
+    i = i0 + int(np.argmax(spec[i0:i1]))
+    a_, b_, c_ = np.log(spec[i - 1:i + 2] + 1e-12)
+    d = 0.5 * (a_ - c_) / (a_ - 2 * b_ + c_) if (a_ - 2 * b_ + c_) != 0 else 0.0
+    return 69 + 12 * np.log2((i + d) * df / 440.0)
 
 
 def pitch_with_octave(x: np.ndarray, art: str, nominal: int) -> dict:
@@ -329,6 +351,74 @@ def pitch_with_octave(x: np.ndarray, art: str, nominal: int) -> dict:
         if best is None or m["conf"] > best["conf"] * 1.15:
             best = m
     return best
+
+
+def segment_run(mono: np.ndarray, lo: int, hi: int) -> list[tuple[int, int, float]]:
+    """Split an Iowa chromatic run (48 kHz mono) into notes -> [(start, end, f0 midi)].
+    Wind and brass runs are often played almost legato (gaps of 20-100 ms, or
+    none), so besides silences it splits at envelope dips (>= 9 dB below the
+    level 0.15 s either side) and where the pitch track steps by >= 0.6 semitone."""
+    hop = int(0.01 * SR)
+    wlen = int(max(0.01, 3.0 / midi_to_hz(lo)) * SR)            # >= 3 periods: no waveform ripple
+    pw = np.convolve(mono.astype(np.float64) ** 2, np.ones(wlen) / wlen, mode="same")
+    db = 10 * np.log10(pw[::hop][: len(mono) // hop] + 1e-20)
+    pk = float(db.max())
+    floor = float(np.percentile(db, 2))
+    act = db > max(floor + 10.0, pk - 45.0)
+    n = len(db)
+    w = 15
+    left = np.array([db[max(0, i - w):i].max() if i > 0 else -200 for i in range(n)])
+    right = np.array([db[i + 1:i + 1 + w].max() if i + 1 < n else -200 for i in range(n)])
+    dip = (db < np.minimum(left, right) - 9.0) & (db < pk - 6)
+    act &= ~dip
+    regions, i = [], 0
+    while i < n:
+        if act[i]:
+            j = i
+            while j < n and act[j]:
+                j += 1
+            if j - i >= 25:
+                regions.append((i, j))
+            i = j
+        else:
+            i += 1
+    out = []
+    step = 5                                            # pitch every 50 ms
+    win = max(4, int(np.ceil(8 / midi_to_hz(lo - 1) / 0.01)))   # at least 8 periods of the lowest note
+    for a, b in regions:
+        times, pitch = [], []
+        for f in range(a + 2, b - win, step):
+            seg = mono[f * hop: (f + win) * hop]
+            p, c = estimate_f0(seg, SR, lo - 1.5, hi + 1.5)
+            times.append(f)
+            pitch.append(p if c > 2.5 else np.nan)
+        pitch = np.array(pitch)
+        cuts = [a]
+        last = None
+        run = []
+        for f, p in zip(times, pitch):
+            if np.isnan(p):
+                continue
+            if last is not None and abs(p - last) >= 0.6:
+                run.append(f)
+                if len(run) >= 2:                        # two frames agree: a new note
+                    cuts.append(run[0])
+                    last = p
+                    run = []
+                continue
+            run = []
+            last = p if last is None else 0.7 * last + 0.3 * p
+        cuts.append(b)
+        for x0, x1 in zip(cuts, cuts[1:]):
+            if x1 - x0 < 35:
+                continue
+            seg = mono[x0 * hop + int(0.1 * SR): min(x1 * hop, x0 * hop + int(1.3 * SR))]
+            if len(seg) < 4096:
+                continue
+            f0, conf = estimate_f0(seg, SR, lo - 1.5, hi + 1.5)
+            if conf >= 3.0:
+                out.append((x0 * hop, x1 * hop, f0))
+    return out
 
 
 # =============================================================== one note
@@ -348,7 +438,7 @@ def process(job: dict) -> dict | None:
         x = hpf(x, 0.7 * midi_to_hz(min(nom, PARTS[part]["lo"]) - 1))
     if part == "timp":
         m = measure(x, art, 36, 61)
-        m["f0"] = timp_pitch(x, m["onset"])
+        m["f0"] = timp_pitch(x, m["onset"], e.get("nominal") if job["set"] == "vpo3" else None)
         m["key"] = int(round(m["f0"]))
     elif "key" in job:
         m = measure(x, art, job["key"] - 1.5, job["key"] + 1.5)
@@ -413,24 +503,14 @@ def jobs_for(part: str, setname: str) -> list[dict]:
             x, sr = load_audio(Path(e["file"]))
             x48 = to48(np.asarray(x, dtype=np.float32), sr)
             mono = hpf(x48, 0.7 * midi_to_hz(e["lo"] - 1)).mean(axis=1)
-            segs, _ = segment(mono, SR)
-            n_exp = e["hi"] - e["lo"] + 1
-            # measure each segment's pitch in the file's range
-            found = []
-            for a, b in segs:
-                seg = mono[a:b]
-                mid = seg[len(seg) // 4: len(seg) // 4 + min(len(seg) // 2, int(1.2 * SR))]
-                if len(mid) < 4096:
-                    continue
-                f0, conf = estimate_f0(mid, SR, e["lo"] - 1.5, e["hi"] + 1.5)
-                if conf < 3.0:
-                    continue
-                found.append((a, b, f0))
+            found = segment_run(mono, e["lo"], e["hi"])
             if not found:
                 continue
-            off = float(np.median([f - round(f) for _, _, f in found]))
+            n_exp = e["hi"] - e["lo"] + 1
+            # the file's tuning offset (circular mean, so -0.45 and +0.55 agree)
+            off = float(np.angle(np.mean(np.exp(2j * np.pi * np.array([f for _, _, f in found])))) / (2 * np.pi))
             used = set()
-            for a, b, f0 in found:
+            for a, b, f0 in sorted(found, key=lambda s_: s_[0] - s_[1]):     # longest first wins a key
                 k = int(round(f0 - off))
                 if k in used or not e["lo"] - 1 <= k <= e["hi"] + 1:
                     continue
@@ -477,6 +557,17 @@ def build_set(part: str, setname: str, jobs_n: int, force: bool) -> list[dict]:
         if k not in best or m["conf"] > best[k]["conf"]:
             best[k] = m
     metas = sorted(best.values(), key=lambda m: (m["art"], m["layer"], m["key"]))
+    if part == "timp":
+        drums = defaultdict(list)
+        for m in metas:
+            if m.get("drum"):
+                drums[m["drum"]].append(m["f0"])
+        for m in metas:
+            if m.get("drum"):
+                f0 = float(np.median(drums[m["drum"]]))
+                m["f0_own"] = m["f0"]
+                m["f0"], m["key"] = round(f0, 3), int(round(f0))
+                m["cents"] = round(100 * (f0 - m["key"]), 1)
     root.mkdir(parents=True, exist_ok=True)
     meta_p.write_text(json.dumps(dict(version=BUILD_VERSION, part=part, set=setname, notes=metas), indent=0))
     return metas

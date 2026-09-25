@@ -65,22 +65,30 @@ free_gb() { df -g "$HOME" | awk 'NR==2 {print $4}'; }
 
 # ------------------------------------------------------------------ VSCO-2-CE
 vsco_ok() {
-  [ -d "$ORCH/VSCO-2-CE/.git" ] || return 1
-  [ "$(git -C "$ORCH/VSCO-2-CE" rev-parse HEAD 2>/dev/null)" = "$VSCO_SHA" ] || return 1
-  for d in "${VSCO_DIRS[@]}"; do
-    [ -n "$(ls "$ORCH/VSCO-2-CE/$d" 2>/dev/null | head -1)" ] || return 1
+  local d="$ORCH/VSCO-2-CE"
+  [ -f "$d/.ricercar_vsco_sha" ] && [ "$(cat "$d/.ricercar_vsco_sha")" = "$VSCO_SHA" ] || return 1
+  [ -f "$d/.ricercar_manifest.sha256" ] || return 1
+  (cd "$d" && shasum -a 256 -c --quiet .ricercar_manifest.sha256) >/dev/null 2>&1 || return 1
+  for x in "${VSCO_DIRS[@]}"; do
+    [ -n "$(ls "$d/$x" 2>/dev/null | head -1)" ] || return 1
   done
-  [ -f "$ORCH/VSCO-2-CE/.ricercar_complete" ] || return 1
 }
 fetch_vsco() {
-  say "VSCO-2-CE: sparse checkout of ${#VSCO_DIRS[@]} directories at ${VSCO_SHA:0:10} (about 1 GB)"
+  # blob-less clone + sparse checkout of the directories we use at the pinned commit
+  # (about 0.9 GB), then a SHA-256 manifest of every file and the git data removed
+  # (it would double the disk use); vsco_ok verifies against the manifest.
+  say "VSCO-2-CE: sparse checkout of ${#VSCO_DIRS[@]} directories at ${VSCO_SHA:0:10} (about 0.9 GB)"
   mkdir -p "$ORCH"
-  if [ ! -d "$ORCH/VSCO-2-CE/.git" ]; then
-    git clone --filter=blob:none --no-checkout --sparse "$VSCO_URL" "$ORCH/VSCO-2-CE"
-  fi
-  git -C "$ORCH/VSCO-2-CE" sparse-checkout set --no-cone "${VSCO_DIRS[@]/#//}" /LICENSE /README.md /Readme.txt
-  git -C "$ORCH/VSCO-2-CE" checkout -q "$VSCO_SHA"
-  touch "$ORCH/VSCO-2-CE/.ricercar_complete"
+  rm -rf "$ORCH/VSCO-2-CE.tmp"
+  git clone --filter=blob:none --no-checkout --sparse "$VSCO_URL" "$ORCH/VSCO-2-CE.tmp"
+  git -C "$ORCH/VSCO-2-CE.tmp" sparse-checkout set --no-cone "${VSCO_DIRS[@]/#//}" /LICENSE /README.md /Readme.txt
+  git -C "$ORCH/VSCO-2-CE.tmp" checkout -q "$VSCO_SHA"
+  git -C "$ORCH/VSCO-2-CE.tmp" rev-parse HEAD > "$ORCH/VSCO-2-CE.tmp/.ricercar_vsco_sha"
+  rm -rf "$ORCH/VSCO-2-CE.tmp/.git"
+  (cd "$ORCH/VSCO-2-CE.tmp" && find . -type f ! -name ".ricercar*" -print | LC_ALL=C sort \
+     | while IFS= read -r f; do shasum -a 256 "$f"; done > .ricercar_manifest.sha256)
+  rm -rf "$ORCH/VSCO-2-CE"
+  mv "$ORCH/VSCO-2-CE.tmp" "$ORCH/VSCO-2-CE"
 }
 
 # ------------------------------------------------------------------ Iowa MIS winds and brass
