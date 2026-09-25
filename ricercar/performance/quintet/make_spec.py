@@ -86,14 +86,22 @@ ASSIGN = [
     ("alto", "alto", "35:1", "46:1", {}),
     ("bass", "bass", "35:1", "46:1", {}),
     # S1 in the tenor (48:1) is the piano's, S2 (alto) violin II's: the tune's two halves in two colours
-    ("tenor", "tenor", "48:1", "end", {}),
+    ("tenor", "tenor", "48:1", "55:1", {}),
     # Climax II: tutti from 50:1, the soprano's diminution heads doubled by the piano
     ("soprano", "soprano", "50:1", "52:1", {}),
     # ... and an octave higher from C major ("the light", 52:1) through the tune in major
     ("soprano", "soprano_8va", "52:1", "63:1", {"octave": 12, "level": -1.0}),
     # the coda: the d'' (63:1), the last V7 and the final chord at pitch
     ("soprano", "soprano", "63:1", "end", {}),
-    ("alto", "alto", "50:1", "end", {}),
+    ("alto", "alto", "50:1", "55:1", {}),
+    # the apotheosis: violin I sings the tune, the others sotto voce (blueprint section 6). At the
+    # plan's level the piano's CS2 (tenor) matched violin I (-36.3 / -36.8 LUFS in 55-58) and the
+    # piano sat 4-5 dB over the tune; its inner voices go one step down (softer hammers), while
+    # violin II and the viola keep them at full level
+    ("alto", "alto", "55:1", "63:1", {"level": -1.0}),
+    ("tenor", "tenor", "55:1", "63:1", {"level": -1.0}),
+    ("alto", "alto", "63:1", "end", {}),
+    ("tenor", "tenor", "63:1", "end", {}),
     ("bass", "bass", "50:1", "end", {}),
     # bass octaves: Climax II and the hinge; the answer in major under the tune's peak (59-62);
     # the tonic pedal re-struck every bar (63-66), tolling

@@ -388,7 +388,7 @@
    "voice": "tenor",
    "part": "tenor",
    "at": "48:1",
-   "until": "end"
+   "until": "55:1"
   },
   {
    "voice": "soprano",
@@ -414,6 +414,32 @@
    "voice": "alto",
    "part": "alto",
    "at": "50:1",
+   "until": "55:1"
+  },
+  {
+   "voice": "alto",
+   "part": "alto",
+   "at": "55:1",
+   "until": "63:1",
+   "level": -1.0
+  },
+  {
+   "voice": "tenor",
+   "part": "tenor",
+   "at": "55:1",
+   "until": "63:1",
+   "level": -1.0
+  },
+  {
+   "voice": "alto",
+   "part": "alto",
+   "at": "63:1",
+   "until": "end"
+  },
+  {
+   "voice": "tenor",
+   "part": "tenor",
+   "at": "63:1",
    "until": "end"
   },
   {
