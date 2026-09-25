@@ -87,6 +87,8 @@ def pitch_cents(x: np.ndarray, key: int) -> tuple:
             continue
         idx = np.nonzero(band)[0]
         k = idx[np.argmax(spec[idx])]
+        if k in (idx[0], idx[-1]):     # the band's edge on the slope of a neighbour (e.g. a note still
+            continue                   # ringing a semitone away): not this note's partial
         # surroundings: a semitone band either side, excluding the partial's own band
         wl, wh = fc * 2 ** (-200 / 1200), fc * 2 ** (200 / 1200)
         around = (freqs >= wl) & (freqs <= wh) & ~band

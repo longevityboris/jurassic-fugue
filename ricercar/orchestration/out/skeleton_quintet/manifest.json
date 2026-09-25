@@ -29,7 +29,7 @@
     }
    },
    "gain_db": 0.0,
-   "wet_db": -4.0,
+   "hall_re_dry_db": 4.0,
    "stage": {
     "vn1": {
      "az": 30,
@@ -83,7 +83,7 @@
     }
    },
    "gain_db": 0.0,
-   "wet_db": -3.0,
+   "hall_re_dry_db": 4.0,
    "stage": {
     "*": {
      "az": 0,

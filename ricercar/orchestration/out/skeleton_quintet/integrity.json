@@ -2,28 +2,29 @@
  "ok": true,
  "errors": [],
  "warnings": [
+  "vn2: 1 note(s) held across a hand-off shortened to the next note",
   "va: 1 note(s) held across a hand-off shortened to the next note"
  ],
  "onset_tolerance_ticks": 60,
- "tempo_changes": 209,
+ "tempo_changes": 285,
  "parts": {
   "vn1": {
    "track": "Violin I",
-   "expected": 137,
-   "matched": 137,
+   "expected": 145,
+   "matched": 145,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
    "shortened": 0,
    "range": [
     65,
-    82
+    84
    ]
   },
   "vn2": {
    "track": "Violin II",
-   "expected": 156,
-   "matched": 156,
+   "expected": 157,
+   "matched": 157,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -35,8 +36,8 @@
   },
   "va": {
    "track": "Viola",
-   "expected": 164,
-   "matched": 164,
+   "expected": 170,
+   "matched": 170,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -61,34 +62,34 @@
   },
   "soprano": {
    "track": "soprano",
-   "expected": 30,
-   "matched": 30,
+   "expected": 51,
+   "matched": 51,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
    "shortened": 0,
    "range": [
     69,
-    79
+    81
    ]
   },
   "alto": {
    "track": "alto",
-   "expected": 59,
-   "matched": 59,
+   "expected": 88,
+   "matched": 88,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
    "shortened": 0,
    "range": [
-    60,
-    76
+    57,
+    77
    ]
   },
   "tenor": {
    "track": "tenor",
-   "expected": 52,
-   "matched": 52,
+   "expected": 55,
+   "matched": 55,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -100,8 +101,8 @@
   },
   "bass": {
    "track": "bass",
-   "expected": 58,
-   "matched": 58,
+   "expected": 68,
+   "matched": 68,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -113,15 +114,15 @@
   },
   "soprano_8va": {
    "track": "soprano_8va",
-   "expected": 31,
-   "matched": 31,
+   "expected": 36,
+   "matched": 36,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
    "shortened": 0,
    "range": [
     77,
-    94
+    96
    ]
   },
   "bass_8vb": {
@@ -153,26 +154,26 @@
  },
  "coverage": {
   "soprano": {
-   "notes": 161,
-   "covered": 161,
+   "notes": 183,
+   "covered": 183,
    "allowed_gaps": 0,
    "uncovered": []
   },
   "alto": {
-   "notes": 180,
-   "covered": 180,
+   "notes": 204,
+   "covered": 204,
    "allowed_gaps": 0,
    "uncovered": []
   },
   "tenor": {
-   "notes": 162,
-   "covered": 162,
+   "notes": 168,
+   "covered": 168,
    "allowed_gaps": 0,
    "uncovered": []
   },
   "bass": {
-   "notes": 128,
-   "covered": 128,
+   "notes": 138,
+   "covered": 138,
    "allowed_gaps": 0,
    "uncovered": []
   }

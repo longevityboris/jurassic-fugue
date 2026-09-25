@@ -1,0 +1,265 @@
+{
+ "manifest": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/orchestration/out/skeleton_quintet/manifest.json",
+ "out": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/orchestration/out/skeleton_quintet",
+ "lead_in_s": 0.5,
+ "groups": {
+  "quartet": {
+   "renderer": "quartet",
+   "midi": "quartet.mid",
+   "stems": [
+    "va",
+    "vc",
+    "vn1",
+    "vn2"
+   ],
+   "offset_s": -0.5,
+   "raw_scale_db": -13.86,
+   "raw_scale_estimates": {
+    "va": -13.86,
+    "vc": -13.861,
+    "vn1": -13.856,
+    "vn2": -13.859
+   },
+   "calibration_db": 0.0,
+   "gain_db": 0.0,
+   "total_gain_db": -13.86,
+   "alignment": {
+    "attack_rule": "new-bow and short strokes at their note-on (the renderer starts the bow's pre-roll early so that the stroke lands on the note-on); slurred notes, which enter by crossfade, are left out (articulation from its report)",
+    "entry_xcorr_lag_ms": 2.57,
+    "entries": 192,
+    "after_silence_xcorr_lag_ms": -11.91,
+    "after_silence_notes": 16,
+    "entry_lag_ms_by_quarter": [
+     -10.57,
+     -0.7,
+     3.52,
+     3.88
+    ],
+    "entry_per_note_lag_ms_median": -1.0,
+    "entry_per_note_lag_ms_p10_p90": [
+     -9.0,
+     9.0
+    ],
+    "requested_latency_ms": 0,
+    "all_notes_xcorr_lag_ms": -0.98,
+    "all_notes": 579,
+    "all_notes_per_note_lag_ms_median": 8.0,
+    "compensation_ms": 0.0,
+    "entry_lag_after_ms": 2.57
+   },
+   "hall_re_dry_db_program": 4.0,
+   "wet_db": -4.12,
+   "c80_db_impulse": 8.53,
+   "seats": {
+    "va": {
+     "az": -10,
+     "depth": 0.4,
+     "width": 0.35
+    },
+    "vc": {
+     "az": -28,
+     "depth": 0.0,
+     "width": 0.35
+    },
+    "vn1": {
+     "az": 30,
+     "depth": 0.0,
+     "width": 0.35
+    },
+    "vn2": {
+     "az": 10,
+     "depth": 0.4,
+     "width": 0.35
+    }
+   },
+   "level_when_playing_lufs": -31.18
+  },
+  "piano": {
+   "renderer": "piano",
+   "midi": "piano.mid",
+   "stems": [
+    "alto",
+    "bass",
+    "bass_8vb",
+    "pedal_8vb",
+    "soprano",
+    "soprano_8va",
+    "tenor"
+   ],
+   "offset_s": -0.5,
+   "raw_scale_db": 0.0,
+   "raw_scale_estimates": {},
+   "calibration_db": 0.302,
+   "gain_db": 0.0,
+   "total_gain_db": 0.302,
+   "alignment": {
+    "attack_rule": "every note-on (the samples are onset-aligned to 0.2 ms)",
+    "entry_xcorr_lag_ms": 1.43,
+    "entries": 321,
+    "after_silence_xcorr_lag_ms": 0.83,
+    "after_silence_notes": 7,
+    "entry_lag_ms_by_quarter": [
+     null,
+     null,
+     1.39,
+     1.49
+    ],
+    "entry_per_note_lag_ms_median": 1.0,
+    "entry_per_note_lag_ms_p10_p90": [
+     0.0,
+     3.0
+    ],
+    "requested_latency_ms": 0,
+    "all_notes_xcorr_lag_ms": 1.57,
+    "all_notes": 322,
+    "all_notes_per_note_lag_ms_median": 1.0,
+    "compensation_ms": 0.0,
+    "entry_lag_after_ms": 1.43
+   },
+   "hall_re_dry_db_program": 4.0,
+   "wet_db": -5.61,
+   "c80_db_impulse": 9.79,
+   "seats": {
+    "alto": {
+     "az": 0,
+     "depth": 1.2,
+     "width": 0.7
+    },
+    "bass": {
+     "az": 0,
+     "depth": 1.2,
+     "width": 0.7
+    },
+    "bass_8vb": {
+     "az": 0,
+     "depth": 1.2,
+     "width": 0.7
+    },
+    "pedal_8vb": {
+     "az": 0,
+     "depth": 1.2,
+     "width": 0.7
+    },
+    "soprano": {
+     "az": 0,
+     "depth": 1.2,
+     "width": 0.7
+    },
+    "soprano_8va": {
+     "az": 0,
+     "depth": 1.2,
+     "width": 0.7
+    },
+    "tenor": {
+     "az": 0,
+     "depth": 1.2,
+     "width": 0.7
+    }
+   },
+   "level_when_playing_lufs": -29.35
+  }
+ },
+ "calibration": {
+  "piano": {
+   "key": "v1:44ac2ef08382403e:b8ead12081fd2b83:aa447cbe4d28dc3f:631b2534636930b8",
+   "lufs_raw": -33.673,
+   "raw_scale_db": 0.0,
+   "stems": 4,
+   "note": "four-part mf chorale, placed dry sum, pre-normalisation scale"
+  },
+  "quartet": {
+   "key": "v1:b32c34e0dd47ed48:b8ead12081fd2b83:aa447cbe4d28dc3f:631b2534636930b8",
+   "lufs_raw": -33.371,
+   "raw_scale_db": -22.294,
+   "stems": 4,
+   "note": "four-part mf chorale, placed dry sum, pre-normalisation scale"
+  }
+ },
+ "inter_group": {
+  "quartet-piano": {
+   "entry_lag_difference_ms": 1.14,
+   "entry_lag_difference_ms_by_quarter": [
+    null,
+    null,
+    2.13,
+    2.39
+   ],
+   "shared_onsets": 193,
+   "direct_xcorr_lag_ms": -2.86
+  }
+ },
+ "alignment_ok": true,
+ "alignment_worst_ms": 1.14,
+ "output": {
+  "wav": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/orchestration/out/skeleton_quintet.wav",
+  "m4a": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/orchestration/out/skeleton_quintet.m4a",
+  "duration_s": 241.89,
+  "format": "48000 Hz, 2 ch, PCM_24",
+  "true_peak_dbtp_wav": -1.0,
+  "true_peak_dbtp_m4a": -1.09,
+  "normalise_gain_db": 2.35,
+  "integrated_lufs": -22.27,
+  "loudness_range_lu": 19.51,
+  "short_term_max_lufs": -12.76,
+  "stereo_correlation": 0.533,
+  "mono_fold_down_db": -1.15,
+  "hall_re_dry_db": 4.08,
+  "clicks_away_from_onsets": 0,
+  "click_times_s": []
+ },
+ "balance_where_all_play": {
+  "seconds": 69.3,
+  "quartet": -30.31,
+  "piano": -28.54
+ },
+ "loudness_curve_5s_lufs": [
+  -37.5,
+  -38.4,
+  -38.6,
+  -36.9,
+  -35.6,
+  -32.7,
+  -31.5,
+  -31.1,
+  -29.9,
+  -27.8,
+  -26.2,
+  -30.9,
+  -30.9,
+  -27.7,
+  -25.4,
+  -25.6,
+  -20.7,
+  -18.6,
+  -18.8,
+  -20.3,
+  -38.8,
+  -36.1,
+  -36.9,
+  -37.6,
+  -38.6,
+  -36.9,
+  -32.5,
+  -32.1,
+  -32.7,
+  -29.8,
+  -26.9,
+  -25.7,
+  -29.1,
+  -35.1,
+  -28.5,
+  -20.0,
+  -15.2,
+  -14.0,
+  -24.7,
+  -29.6,
+  -25.7,
+  -22.9,
+  -18.3,
+  -19.2,
+  -27.1,
+  -32.4,
+  -34.1,
+  -35.8
+ ]
+}
