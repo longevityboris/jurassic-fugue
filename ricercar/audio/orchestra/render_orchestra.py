@@ -36,6 +36,7 @@ OPTIONS
   --only PARTS          render only these part IDs, e.g. "vn1,vc"
   --jobs N              parallel sfizz renders (default 8)
   --keep-temp           keep the per-job MIDI / WAV files
+  --force-set P=S,...   testing: play part P with recording set S only (compare_sets.py)
 
 HOW IT SOUNDS THE WAY IT DOES (details and measurements in README.md)
   * Samples: per part the best free recordings found by measurement (orch_build.py
@@ -95,18 +96,19 @@ MASTER_DB = 0.0
 # ------------------------------------------------------------ instruments
 # winds / brass: the recording each player uses (a2 = first two, a4 = all; a
 # "section" entry is a recording of a whole section and stands for the rest)
-PLAYERS = {
-    "fl": ["iowa", "vsco"], "ob": ["iowa", "vsco"], "cl": ["iowa", "vsco"], "bn": ["iowa", "vsco"],
-    "hn": ["iowa", "vsco", "vpo3"], "tpt": ["iowa", "vsco"], "tbn": ["iowa", "vsco"],
-    "btbn": ["iowa", "vpo3"], "tba": ["iowa", "vsco"], "timp": ["vpo3"],
+PLAYERS = {        # chosen by compare_sets.py (evidence/compare.json): best set first, runner-up for a2
+    "fl": ["vsco", "iowa"], "ob": ["iowa", "vpo3"], "cl": ["iowa", "vsco"], "bn": ["iowa", "vpo3"],
+    "hn": ["vsco", "iowa", "vpo3"], "tpt": ["vsco", "iowa"], "tbn": ["iowa", "vsco"],
+    "btbn": ["iowa", "vpo3"], "tba": ["iowa", "vpo3"], "timp": ["vsco", "vpo3"],
 }
 SECTION_SETS = {("hn", "vpo3")}            # a recording of four horns: plays for horns 3-4 at -2 dB
-# strings: every note is played by each recording of the stack (gain dB, detune cents)
+# strings: every note is played by each recording of the stack (gain dB, detune cents);
+# a stack only where it measured better than its parts (Violins I, basses)
 STACK = {
     "vn1": [("vsco", -3.0, 0.0), ("vpo3", -3.0, 0.0)],
-    "vn2": [("vpo3", -2.0, 0.0), ("vsco", -4.5, 4.0)],
-    "va": [("vsco", -3.0, 0.0), ("vpo3", -3.0, 0.0)],
-    "vc": [("vsco", -3.0, 0.0), ("vpo3", -3.0, 0.0)],
+    "vn2": [("vsco", 0.0, 0.0), ("vpo3", -6.0, 3.0)],
+    "va": [("vpo3", 0.0, 0.0), ("vsco", -6.0, 0.0)],
+    "vc": [("vpo3", 0.0, 0.0), ("vsco", -6.0, 0.0)],
     "cb": [("vpo3", -2.0, 0.0), ("vsco", -4.5, 0.0)],
 }
 PLAYER_DETUNE = [0.0, 4.0, -5.0, 7.0]
@@ -459,7 +461,14 @@ def job_midi(job: Job, T: np.ndarray, c_true: np.ndarray, t_end: float) -> tuple
         ev.append((0, 0, mido.Message("pitchwheel", pitch=int(np.clip(8192 * job.detune / 200, -8192, 8191)))))
     for n in job.notes:
         d = job.delay + (rng.uniform(0, job.jitter_ms) / 1000 if job.jitter_ms else 0.0)
-        ton = sec2tick(n.on - n.pre + d + SHIFT)
+        # measured onset latency of this recording (tune_orchestra.py), except for a
+        # slurred note (it already enters in the sustain, render_quartet's timing)
+        spec = layers[art_of(n, layers)]
+        lat_ms = spec.get("latency_ms") or 0.0
+        if (n.art or 0) >= 96 and spec.get("latency_short_ms") is not None:
+            lat_ms = spec["latency_short_ms"]              # a short note cut from the sustain speaks sooner
+        lat = 0.0 if 64 <= (n.art or 0) < 96 else min(0.10, max(0.0, lat_ms / 1000 - 0.012))
+        ton = sec2tick(n.on - n.pre - lat + d + SHIFT)
         toff = sec2tick(n.off + d + SHIFT)
         ev.append((ton, 2, mido.Message("control_change", control=20, value=int(n.art or 0))))
         ev.append((ton, 2, mido.Message("control_change", control=21, value=int(n.rel if n.rel is not None else 30))))
@@ -585,7 +594,13 @@ def main(argv=None):
     ap.add_argument("--only", default="")
     ap.add_argument("--jobs", type=int, default=8)
     ap.add_argument("--keep-temp", action="store_true")
+    ap.add_argument("--force-set", default="")
     a = ap.parse_args(argv)
+    for spec in [x for x in a.force_set.split(",") if x]:
+        p_, s_ = spec.split("=")
+        PLAYERS[p_] = [s_]
+        if p_ in STACK:
+            STACK[p_] = [(s_, 0.0, 0.0)]
     out = a.out or a.midi.with_suffix("")
     side_p = a.sidecar or a.midi.with_name(a.midi.stem + ".orchestra.json")
     side = json.loads(side_p.read_text()) if side_p.exists() else {}

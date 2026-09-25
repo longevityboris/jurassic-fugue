@@ -454,7 +454,7 @@ def process(job: dict) -> dict | None:
     cents = round(100.0 * (m["f0"] - m["key"]), 1)
     meta = dict(part=part, set=job["set"], art=art, layer=job["layer"], key=int(m["key"]), cents=cents,
                 f0=round(m["f0"], 3), conf=round(m["conf"], 2), t20=round(m["t20"], 4), t3=round(m["t3"], 4),
-                src=Path(e["file"]).name, rr=e.get("rr", 1), ch=int(y.shape[1]))
+                src=Path(e["file"]).name, rr=e.get("rr", 1), ch=int(y.shape[1]), nominal=e.get("nominal"))
     if "drum" in e:
         meta["drum"] = e["drum"]
     s0 = s1 = None
@@ -550,6 +550,19 @@ def build_set(part: str, setname: str, jobs_n: int, force: bool) -> list[dict]:
         return []
     with ProcessPoolExecutor(jobs_n) as ex:
         metas = [m for m in ex.map(process, jobs, chunksize=2) if m]
+        # one octave convention per library (VSCO names sound an octave higher than
+        # C4 = 60 would say): a file measured in another octave (a clarinet's weak
+        # even harmonics fool the octave check) is re-measured at the consensus pitch
+        offs = [m["key"] - m["nominal"] for m in metas if m.get("nominal") is not None and part != "timp"]
+        if offs:
+            octs = [12 * round(o / 12) for o in offs]
+            mode = max(set(octs), key=octs.count)
+            redo = [dict(j, key=j["entry"]["nominal"] + mode) for j, m in zip(jobs, metas)
+                    if m.get("nominal") is not None and 12 * round((m["key"] - m["nominal"]) / 12) != mode]
+            if redo:
+                print(f"  {part}/{setname}: {len(redo)} files re-measured at the library's octave ({mode:+d})")
+                fixed = {j["out"]: m for j, m in zip(redo, ex.map(process, redo)) if m}
+                metas = [fixed.get(str(BUILT / m["path"]), m) for m in metas]
     # Iowa: drop duplicate keys per layer (keep the more confident)
     best = {}
     for m in metas:
@@ -638,9 +651,51 @@ def xf_zones(anchors: list[int]):
     return zones, home
 
 
+def sparse_layers(metas: list[dict]) -> set:
+    """(art, layer) pairs sampled on fewer than 40 % of the keys of the art's
+    fullest layer (VSCO horn v4: 2 notes) are left out of the SFZ; holes in
+    the other layers are filled from the neighbouring layer (fill_layers)."""
+    out = set()
+    for art in {m["art"] for m in metas}:
+        cnt = {}
+        for m in metas:
+            if m["art"] == art:
+                cnt.setdefault(m["layer"], set()).add(m["key"])
+        full = max(len(v) for v in cnt.values())
+        out |= {(art, k) for k, v in cnt.items() if len(v) < 0.4 * full}
+    return out
+
+
+def fill_layers(metas: list[dict]) -> list[dict]:
+    """A layer that lacks a key the articulation's other layers have borrows
+    that key's sample from the nearest layer (Iowa horn pp has no C2-B3: the mf
+    notes stand in, a little brighter).  Borrowed entries carry 'borrowed'."""
+    out = list(metas)
+    for art in {m["art"] for m in metas}:
+        names = layer_order(metas, art)
+        by = {n: {} for n in names}
+        for m in metas:
+            if m["art"] == art:
+                by[m["layer"]].setdefault(m["key"], []).append(m)
+        keys = sorted({k for d in by.values() for k in d})
+        for i, n in enumerate(names):
+            own = np.array(sorted(by[n])) if by[n] else np.array([999])
+            for k in keys:
+                if k in by[n] or np.min(np.abs(own - k)) <= 3:
+                    continue
+                for j in sorted(range(len(names)), key=lambda j: (abs(j - i), -j if i == 0 else j)):
+                    if k in by[names[j]]:
+                        for m in by[names[j]][k]:
+                            out.append(dict(m, layer=n, borrowed=names[j]))
+                        break
+    return out
+
+
 def sfz_layers(metas: list[dict]) -> dict:
     """art -> [(layer name, anchor)] soft to loud."""
     out = {}
+    drop = sparse_layers(metas)
+    metas = [m for m in metas if (m["art"], m["layer"]) not in drop]
     for art in sorted({m["art"] for m in metas}):
         names = layer_order(metas, art)
         anchors = ANCHORS.get(len(names)) or list(np.linspace(49, 114, len(names)).round().astype(int))
@@ -653,8 +708,11 @@ VEL_CURVE = "amp_veltrack=100 amp_velcurve_1=0.605 amp_velcurve_64=0.708 amp_vel
 
 def write_sfz(part: str, setname: str, metas: list[dict]) -> Path:
     fam = PARTS[part]["family"]
+    drop = sparse_layers(metas)
+    metas = [m for m in metas if (m["art"], m["layer"]) not in drop]
     corr = load_corrections()
     cal = smooth_cal(metas)
+    metas = fill_layers(metas)          # after calibration: a borrowed sample keeps its own volume
     lay = sfz_layers(metas)
     depth = EQ_DEPTH[fam]
     lo_all, hi_all = PARTS[part]["lo"], PARTS[part]["hi"]
@@ -734,10 +792,15 @@ def write_sfz(part: str, setname: str, metas: list[dict]) -> Path:
                         L.append(reg)
     out = BUILT / part / f"{setname}.sfz"
     out.write_text("\n".join(L) + "\n")
-    # the layer table the renderer's layer plan needs
+    # the layer table the renderer's layer plan needs, with the measured onset
+    # latency per articulation (tune_orchestra.py: note-on -> 6 dB below the peak)
+    lat_p = BUILT / "latency.json"
+    lat = json.loads(lat_p.read_text()).get(f"{part}/{setname}", {}) if lat_p.exists() else {}
     (BUILT / part / f"{setname}.layers.json").write_text(json.dumps(
         {art: dict(cc=LAYER_CC[art], anchors=[a for _, a in v], home=xf_zones([a for _, a in v])[1],
-                   names=[n for n, _ in v]) for art, v in lay.items()}, indent=1))
+                   names=[n for n, _ in v], latency_ms=lat.get(art, {}).get("_median"),
+                   latency_short_ms=lat.get("sus_short", {}).get("_median") if art == "sus" else None)
+         for art, v in lay.items()}, indent=1))
     return out
 
 
