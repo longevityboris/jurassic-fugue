@@ -16,15 +16,27 @@
 %   octaves while it sounds (49:4.5-50:1), accenting it, and its 9-8 only decorates octaves Gb2/Gb5 -> F2/F5 in the
 %   outer voices; it enters the instant S2 leaves its peak F5, so F5-G-flat 5 is heard as one line and S2's leap
 %   F5-B-flat 4 is lost; and its F5 at 50:2 states the head's pitch a beat before the head. (b) B-flat 5 from 49:4
-%   tied into 50:1 (4-3 over F2) sits a fourth above S2's peak F5, doubles S2's B-flat 4 at the octave at 49:4.5,
-%   resolves at 50:2 onto A-flat 5 (a seventh over the tenor's held B-flat 3), then leaps to F5, and takes the
-%   Climax-II register (B-flat 5 is the fff note of 53:1) four bars early.
+%   tied into 50:1 (4-3 over F2): at 50:2 its resolution, A5 (or A-flat 5), is a seventh against S1's B-flat 3,
+%   which is still held until 50:2.5, and A5 is also a tritone over S2's E-flat 5. The line also sits a fourth
+%   above S2's peak F5, doubles S2's B-flat 4 at 49:4.5 and takes the Climax-II register early (B-flat 5 is the
+%   fff note of 53:1).
 % * 50:2, soprano g-flat''4 (the only new note): the pedal's upper neighbour (the inversion's G-flat, bass 49:4)
 %   taken up by the soprano and resolved onto the first diminution head: G-flat F | F E-flat = the mirror's
 %   upper neighbour and the subject's lower neighbour around one F, as Climax II begins. It moves in the one
-%   rhythmic gap of bar 50 (alto and tenor hold 50:1-50:2.5) and holds while they move. 50:2: B-flat 3, E-flat 5,
-%   G-flat 5 = E-flat minor (iv) over the F pedal (pedal licence); 50:2.5: the held G-flat over S1's C and S2's
-%   D-flat, resolving by step to F at 50:3 (b9-8 over the pedal). Soprano stays a third or more above S2.
+%   rhythmic gap of bar 50 (alto and tenor hold 50:1-50:2.5) and holds while they move. 50:2: the G-flat enters
+%   from rest as a struck minor ninth over F2 (check.py S:APP); with B-flat 3 and E-flat 5 it makes E-flat minor
+%   (iv) over the F pedal (pedal licence). 50:2.5: F2 C4 Db5 Gb5 = the 50:3 chord (V with b6), anticipated by S1
+%   and S2 under the held G-flat; the G-flat is a d5 over S1's C and a b9 over the pedal, and resolves to F at
+%   50:3 (an upper-neighbour appoggiatura licensed by the pedal, not a counted suspension). Soprano stays a third
+%   or more above S2.
+%   Judgement call, kept: the G-flat sounds head 2's first pitch (51:1) a bar early, the head at 50:3 is heard as a
+%   resolution rather than an attack out of silence, and S2's E-flat 5-D-flat 5 step (50:2.5) is covered from
+%   above for one beat. No other upbeat pitch fits: against F2, B-flat 3 and E-flat 5 (50:1-50:2.5) no pitch class
+%   is consonant with all three; those dissonant with the pedal alone are G-flat, G and B-flat (a fourth over the
+%   bass), and G would bring the bright raised sixth (E-flat major) and a cross relation with the pedal's G-flat 2,
+%   B-flat 5 the Climax-II register. The only alternative is the starter's r2 at 50:1-50:3. Performance: 50:2 lies
+%   outside the soprano's subject role (from 50:3), so perform.py plays it at free level (-4, the head +9); no
+%   accent.
 % New flags against the skeleton: none (no new D4?, DIR, MEL, XREL, ACC, ACC2, HOL, unison or crossing).
 % Pre-existing, unchanged: D4? 54:3 (V4/2 tritone), XREL 47:3-47:4 and 53:2.75-53:3 (non-simultaneous).
 % suspensions.py: 0 strong-beat (the free window cannot hold one without the faults above), 1 weak (50:4, skeleton).
