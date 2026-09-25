@@ -9,6 +9,7 @@
 #   out/demo/fugue_quartet_iowa.{wav,m4a,json} the demo (report: --report), stems *_stem_*.wav
 #   out/demo/fugue_quartet_iowa_bassdouble.*   --bass-double auto (contrabass 8vb in the ff climax)
 #   out/demo/fugue_quartet_vpo3.*              the same MIDI on VPO3 solo strings (comparison)
+#   out/demo/sk_final_quartet.{wav,m4a,json}   the final renders' test music (design/final-lab SK_final + plan)
 #   out/demo/qa_*.json                         qa_render.py: balance, clicks, onsets, legato dips
 #   out/verify/dynamics_{iowa,vpo3}.json       verify_dynamics.py: CC1 ladder, timbre ratio (library choice)
 #   out/test/dyn_quartet.*                     pp / mf / ff phrase + held-note swell per instrument
@@ -50,4 +51,12 @@ for name, r in out.items():
     s = {x["segment"]: x for x in r["segments"]}
     print(f"{name:10s} " + "  ".join(f"{k}: {s[k]['rms_db']:+.1f} dB {s[k]['centroid_hz']:.0f} Hz" for k in ("pp", "mf", "ff")))
 PY
+# the final renders' test music (66 bars), when the design lab is checked out
+FL="$ROOT/ricercar/design/final-lab"
+if [[ -f "$FL/SK_final.ly" && -f "$FL/plan.json" ]]; then
+  python3 ../../tools/perform.py "$FL/SK_final.ly" "$FL/plan.json" out/demo/sk_final_strings.mid --target strings
+  python3 render_quartet.py out/demo/sk_final_strings.mid -o out/demo/sk_final_quartet --stems \
+    --report out/demo/sk_final_quartet.json
+  python3 qa_render.py out/demo/sk_final_quartet --json out/demo/qa_sk_final.json
+fi
 echo "demos rendered into $HERE/out"
