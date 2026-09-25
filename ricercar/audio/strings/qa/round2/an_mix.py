@@ -323,7 +323,9 @@ def main():
         az, dep = rq.INSTR[inst]["az"], rq.INSTR[inst]["depth"]
         dry_ = hall.place_dry(st, az, depth=dep)
         h = H.ir if az >= 0 else H.mirror
-        g = 10 ** (rep["wet_db"] / 20)
+        # the IR gain the renderer applied: since the round-2 fix --wet is hall re dry on the music and
+        # the report's hall_stats.ir_scale_db is the impulse-referenced gain (before: wet_db itself)
+        g = 10 ** ((rep.get("hall_stats") or {}).get("ir_scale_db", rep["wet_db"]) / 20)
         mono_ = st.mean(axis=1)
         from scipy.signal import fftconvolve
         early = g * np.stack([fftconvolve(mono_, h[:n80, c])[: len(mono_)] for c in range(2)], axis=1)

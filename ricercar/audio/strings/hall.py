@@ -19,9 +19,14 @@ on the right of the stage use the mirrored response, so every player gets
 the stronger early reflections from its own side.
 
 Levels: the IR is normalised to unit energy summed over both channels, and
-place_dry() keeps the stem's energy (constant-power pan), so --wet W dB means
-exactly what it says: reverb energy W dB relative to the dry sound, and c80()
-is the clarity of that mix for an impulse.
+place_dry() keeps the stem's energy (constant-power pan).  That makes the hall
+0 dB re dry only for white noise: string music puts its energy at 125 Hz-2 kHz,
+where this hall rings longest, so the same IR is about 5 dB louder on the
+ricercar (round-2 QA).  render_quartet.py therefore convolves at unit gain,
+measures the hall's energy re the dry sound on the music it renders, and scales
+it so that --wet is that ratio; program_c80() is the clarity measured on the
+render (dry plus the first 80 ms of the hall against the rest).  c80() is the
+clarity for an impulse, kept for comparison.
 
 Tail: the measured Detmold response is 1.44 s long and faded out from 1.3 s
 (at about -50 dB), although the hall decays for 1.2-2.1 s per octave.  At load
@@ -211,6 +216,9 @@ class Hall:
             ir = synthetic_ir(sr)
         self.ir = ir / np.sqrt(np.sum(ir ** 2))          # unit energy, both channels together
         self.mirror = self.ir[:, ::-1].copy()
+        # end of the early (clarity) window: make_ir.py starts the Detmold IR 1 ms before the
+        # removed direct sound; the synthetic IR starts at the direct sound
+        self.n80 = int(0.080 * sr) + (48 if name == "detmold" else 0)
 
     def c80(self, g: float) -> float:
         """Clarity (dB) of a placed dry impulse (energy 1 over both channels) plus
@@ -218,6 +226,19 @@ class Hall:
         e = np.sum(self.ir ** 2, axis=1)
         n80 = int(0.080 * self.sr)
         return float(10 * np.log10((1.0 + g * g * e[:n80].sum()) / (g * g * e[n80:].sum())))
+
+    def early(self, mono: np.ndarray, az: float) -> np.ndarray:
+        """The first 80 ms of source()'s response at unit gain (for program_c80)."""
+        h = self.ir if az >= 0 else self.mirror
+        return np.stack([fftconvolve(mono, h[: self.n80, c])[: len(mono)] for c in range(2)], axis=1)
+
+    @staticmethod
+    def program_c80(dry: np.ndarray, wet: np.ndarray, early: np.ndarray, g: float) -> float:
+        """Clarity (dB) measured on a render: dry plus g * early hall against g * (wet - early),
+        wet and early summed at unit gain over all sources (the piano's hall_program_stats)."""
+        e_early = float(np.sum((dry + g * early) ** 2))
+        e_late = g * g * float(np.sum((wet - early) ** 2))
+        return float(10 * np.log10(e_early / max(e_late, 1e-30)))
 
     def source(self, mono: np.ndarray, az: float, wet_db: float) -> np.ndarray:
         """Hall response (reflections + tail, no direct sound) of one mono source at azimuth az."""

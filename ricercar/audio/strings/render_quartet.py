@@ -28,8 +28,12 @@ OPTIONS
   --bass-threshold LVL   dynamic level for auto doubling, ppp..fff or 1-8 (default ff)
   --hall NAME            detmold (default: Konzerthaus Detmold, measured, CC BY 4.0, same
                          hall as the piano renders, tail continued to 3.5 s) | synthetic | none
-  --wet DB               reverb energy relative to the dry sound, both summed over the two
-                         channels (default -4 dB: C80 about +8.4 dB)
+  --wet DB               the hall's energy relative to the dry sound, both summed over the
+                         two channels, measured on the music being rendered (the reverb is
+                         convolved at unit gain, measured, and scaled to this).  Default 0 dB,
+                         the piano renderer's --wet-db default: C80 +4.6 dB on the
+                         ricercar.  The report and the console give the hall re dry and C80
+                         measured on the render
   --short-ms MS          notes shorter than this get the short (detache) stroke (default 260)
   --legato-pre-ms MS     a slurred note starts this early (default 25)
   --legato-xfade-ms MS   the note before a slur is held this long past the beat (default 5)
@@ -515,7 +519,7 @@ def rel_cc(seconds: float) -> int:
 
 SHORT_REL = float(os.environ.get("QUARTET_SHORT_REL", "0.09"))   # release of a short note into the next
 NORMAL_PRE_MS = 15.0
-WET_DEFAULT = -4.0
+WET_DEFAULT = 0.0     # hall energy = dry energy on this music, as render_piano.py's --wet-db 0
 
 
 def shape_articulation(notes: list[Note], short_s: float, xfade_s: float, art_events=None, rel_events=None,
@@ -827,7 +831,8 @@ def main(argv=None):
     ap.add_argument("--bass-level", type=float, default=-5.0, help="doubling bass trim in dB (default -5)")
     ap.add_argument("--hall", choices=["detmold", "synthetic", "none"], default="detmold")
     ap.add_argument("--wet", type=float, default=WET_DEFAULT,
-                    help=f"reverb energy relative to the dry sound (both channels), dB (default {WET_DEFAULT:g})")
+                    help=f"hall energy relative to the dry sound, measured on this music (both channels), dB "
+                         f"(default {WET_DEFAULT:g})")
     ap.add_argument("--short-ms", type=float, default=260.0)
     ap.add_argument("--legato-xfade-ms", type=float, default=5.0,
                     help="a slurred note's predecessor is held this long past the new note's beat (default 5)")
@@ -923,7 +928,8 @@ def main(argv=None):
     n = max(len(s) for s in stems) + int(4.0 * SR)
     reverb = None if a.hall == "none" else hall.Hall(a.hall, SR)
     dry = np.zeros((n, 2))
-    wet = np.zeros((n, 2))
+    wet = np.zeros((n, 2))                     # the hall at unit gain (IR at unit energy), scaled below
+    early = np.zeros((n, 2)) if reverb is not None else None
     stem_out = {}
     level_report = {}
     thr_cc1 = level_to_cc1(parse_level(a.bass_threshold))
@@ -953,9 +959,26 @@ def main(argv=None):
         az = INSTR[j.inst]["az"] + (-8.0 * j.desk if INSTR[j.inst]["az"] >= 0 else 8.0 * j.desk)
         dry += hall.place_dry(y, az, depth=INSTR[j.inst]["depth"] + 0.5 * j.desk)
         if reverb is not None:
-            wet += reverb.source(y.mean(axis=1), az, a.wet)
+            mono = y.mean(axis=1)
+            wet += reverb.source(mono, az, 0.0)
+            early += reverb.early(mono, az)
+    hall_rep = None
+    c80 = None
+    if reverb is not None:
+        # --wet is the hall's energy re the dry sound on THIS music: the unit-energy IR is 0 dB
+        # re dry only for white noise (round-2 QA: +5.0 dB on the ricercar, whose energy sits
+        # where the hall rings longest), so measure the unit-gain hall here and scale it
+        e_dry = float(np.sum(dry ** 2))
+        unit_db = 10 * math.log10(max(float(np.sum(wet ** 2)), 1e-30) / max(e_dry, 1e-30))
+        ir_scale_db = a.wet - unit_db
+        g_wet = 10 ** (ir_scale_db / 20)
+        c80 = reverb.program_c80(dry, wet, early, g_wet)
+        wet *= g_wet
+        hall_rep = dict(wet_db=a.wet, ir_gain_on_this_music_db=round(unit_db, 2), ir_scale_db=round(ir_scale_db, 2),
+                        hall_re_dry_db=round(10 * math.log10(float(np.sum(wet ** 2)) / e_dry), 2) + 0.0,   # no "-0.0"
+                        c80_db=round(c80, 2), c80_impulse_db=round(reverb.c80(g_wet), 2))
+        del early
     mix = dry + wet
-    c80 = reverb.c80(10 ** (a.wet / 20)) if reverb is not None else None
     for inst, y in stem_out.items():
         mono = y.mean(axis=1)
         act = np.abs(mono) > 1e-5
@@ -975,7 +998,8 @@ def main(argv=None):
     mix[-fade:] *= np.linspace(1, 0, fade)[:, None] ** 2
     wav, m4a, tp_pre, tp_post = export(mix, out, a.peak)
     offset_s = (first - sh) / SR                       # MIDI time of the output's first sample
-    print(f"hall={a.hall} wet={a.wet:+.1f} dB" + (f" (C80 {c80:+.1f} dB)" if c80 is not None else "")
+    print(f"hall={a.hall}" + (f" {hall_rep['hall_re_dry_db'] + 0.0:+.1f} dB re dry on this music (IR {hall_rep['ir_scale_db']:+.1f} dB), "
+                              f"C80 {c80:+.1f} dB" if hall_rep else "")
           + f"  true peak {tp_post:+.2f} dBTP  -> {wav}, {m4a.name}  ({len(mix) / SR:.1f} s)")
     if a.stems:
         norm = 10 ** (a.peak / 20) / 10 ** (tp_pre / 20)
@@ -988,7 +1012,8 @@ def main(argv=None):
             if j.plan is not None:
                 lay = [_layer_of(v) for v in j.plan[2]]
                 switches[j.label] = sum(1 for x, y in zip(lay, lay[1:]) if x != y)
-        rep = dict(midi=str(a.midi), lib=a.lib, hall=a.hall, wet_db=a.wet, c80_db=c80, duration_s=len(mix) / SR,
+        rep = dict(midi=str(a.midi), lib=a.lib, hall=a.hall, wet_db=a.wet if hall_rep else None,
+                   c80_db=round(c80, 2) if c80 is not None else None, hall_stats=hall_rep, duration_s=len(mix) / SR,
                    true_peak_dbtp=tp_post, offset_s=offset_s, lead_in_s=0.0 if a.keep_start else a.lead_in,
                    layer_switches=switches,
                    jobs=[dict(label=j.label, inst=j.inst, kind=j.kind, desk=j.desk, notes=len(j.notes),
