@@ -91,8 +91,8 @@ ORCH_GM = {"fl": 73, "ob": 68, "cl": 71, "bn": 70, "hn": 60, "tpt": 56, "tbn": 5
            "timp": 47, "vn1": 40, "vn2": 40, "va": 41, "vc": 42, "cb": 43}
 ORCH_SIDECAR_KEYS = ("gain_db", "players", "pan", "depth_m", "width", "part")
 PLAYERS_CC16 = {"solo": 20, "a2": 64, "a4": 110}
-# organ: audio/organ/CONTRACT.md section 2 (divisions and key compass)
-ORGAN_DIVISIONS = {"HW": (36, 89), "POS": (36, 89), "PED": (36, 65)}
+# organ: audio/organ/CONTRACT.md section 2 (divisions and key compass: manuals 36-85, pedal 36-64)
+ORGAN_DIVISIONS = {"HW": (36, 85), "POS": (36, 85), "OW": (36, 85), "PED": (36, 64)}
 ORGAN_DEFAULT_DIV = {"soprano": "HW", "alto": "HW", "tenor": "POS", "bass": "PED", "pedal": "PED"}
 
 

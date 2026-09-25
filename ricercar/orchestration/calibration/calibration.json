@@ -1,6 +1,6 @@
 {
  "piano": {
-  "key": "v2:44ac2ef08382403e:b8ead12081fd2b83:aa447cbe4d28dc3f:631b2534636930b8",
+  "key": "v2:44ac2ef08382403e:b8ead12081fd2b83:aa447cbe4d28dc3f:a168f551556ad5c4",
   "lufs_raw": -33.673,
   "raw_scale_db": 0.0,
   "stems": 4,
@@ -14,7 +14,7 @@
   ]
  },
  "quartet": {
-  "key": "v2:b32c34e0dd47ed48:b8ead12081fd2b83:aa447cbe4d28dc3f:631b2534636930b8",
+  "key": "v2:b32c34e0dd47ed48:b8ead12081fd2b83:aa447cbe4d28dc3f:809b4d96200bf776",
   "lufs_raw": -33.371,
   "raw_scale_db": -22.294,
   "stems": 4,
@@ -39,6 +39,20 @@
   "time_base_per_note_p10_p90_ms": [
    0.0,
    3.0
+  ]
+ },
+ "organ": {
+  "key": "v2:1053457c3881415e:b8ead12081fd2b83:aa447cbe4d28dc3f:809b4d96200bf776",
+  "lufs_raw": -15.235,
+  "raw_scale_db": 0.0,
+  "stems": 4,
+  "note": "four-part mf chorale, placed dry sum, pre-normalisation scale",
+  "time_base_lag_ms": 20.75,
+  "time_base_notes": 56,
+  "time_base_per_note_median_ms": 20.5,
+  "time_base_per_note_p10_p90_ms": [
+   -9.0,
+   46.0
   ]
  }
 }

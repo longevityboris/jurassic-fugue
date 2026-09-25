@@ -100,7 +100,7 @@ Part options and group options by renderer:
 | `piano` | the track (voice) name the piano renders as a stem; `track`, `program` | `pedal`: `"plan"` (default: the plan's pedal), `"none"`, or a list of perform.py pedal spans `{"at", "until", "every": "bar" \| "half"}`. Pedal changes where the piano rests are dropped (no pedal noise while it is silent) |
 | `quartet` | an instrument id `vn1 vn2 va vc cb`, or `{"instrument": id}`; tracks are named "Violin I", "Violin II", "Viola", "Cello", "Contrabass" | |
 | `orchestra` | the track name: a part id with an optional tag (`fl`, `hn.1`, `vc.div`, `fl:oct`); `{"part": id}` for other names; `divisi: true` allows chords; `gain_db`, `players` (`solo`, `a2`, `a4`), `pan`, `depth_m`, `width` go into the sidecar | `sidecar`: the base of `<group>.orchestra.json` (`hall`, `seating`, `tracks`) |
-| `organ` | the track name (lower-cased); `division` `HW`, `POS` or `PED` (default by name: soprano, alto: HW, tenor: POS, bass: PED) | `registration`: the sidecar of `audio/organ/CONTRACT.md` section 3 (`changes`, `manual_changes`, `custom`, `enclosed`, `gain_db`); `manuals` and `measure` are filled in. `swell: true`: the plan's dynamic envelope drives the swell box (CC11; `enclosed` defaults to `["POS"]`) |
+| `organ` | the track name (lower-cased); `division` `HW`, `POS`, `OW` or `PED` (manuals MIDI 36-85, pedal 36-64) (default by name: soprano, alto: HW, tenor: POS, bass: PED) | `registration`: the sidecar of `audio/organ/CONTRACT.md` section 3 (`changes`, `manual_changes`, `custom`, `enclosed`, `gain_db`); `manuals` and `measure` are filled in. `swell: true`: the plan's dynamic envelope drives the swell box (CC11; `enclosed` defaults to `["POS"]`) |
 
 ### assignments (lines)
 
@@ -198,7 +198,7 @@ orchestrate.py writes `OUTDIR/manifest.json` from the spec's `mix` section:
 | `groups.<g>.wet_db` | used when `hall_re_dry_db` is absent: hall energy re the dry sound for an impulse (`hall.py` convention, default -4) |
 | `groups.<g>.stage` | per stem seat: keys part, track, instrument or `"*"`; `az` (degrees, + = left), `depth` (m behind the front; adds 1/343 s per m and -1 dB/m), `width` (share of the stem's own stereo width). Quartet defaults: its renderer's seats; piano: centre, 1.2 m back. Orchestra stems come seated by their renderer |
 | `groups.<g>.render_args` | extra arguments for that renderer |
-| `groups.<g>.latency_ms` | shift the group earlier by this many ms, or `"auto"` (its measured lag re the reference group). Default 0: nothing is shifted |
+| `groups.<g>.latency_ms` | shift the group earlier by this many ms, or `"auto"`: by its own time base from the timing probe, so its attacks land on the MIDI clock. Default `"auto"` for the organ (its pipes speak about 20 ms after the key, and an organist playing with others anticipates), 0 for the others |
 
 **Rendering.** One group at a time, dry stems and no reverb, into `OUTDIR/render/<group>/`; a
 render is reused while its MIDI, sidecar, renderer script and arguments are unchanged
@@ -240,12 +240,14 @@ from the renderers' own reports). What is verified by cross-correlation, with an
    noise 15 ms early and is caught there (-12 ms), a repeated note re-articulates out of a dip, a
    cello slur peaks up to 17 ms late. They are reported, not gated.
 
-`--max-lag-ms` sets the tolerance. `latency_ms` (per group, ms or `"auto"`) shifts a group if a
-perceptual adjustment is wanted; by default nothing is shifted. Numbers: `groups.<g>.alignment`
+`--max-lag-ms` sets the tolerance. `latency_ms` (per group, ms or `"auto"`) shifts a group earlier;
+by default only the organ is shifted, by its measured pipe speech; the gate compares the time
+bases after that shift. Numbers: `groups.<g>.alignment`
 (`time_base_lag_ms`, `entry_xcorr_lag_ms` ...), `inter_group`, `alignment_worst_ms`.
 
 Measured time bases (`orchestration/calibration/calibration.json`, 56 probe notes each): piano
-+0.4 ms (per note -1..+1), quartet +2.3 ms (0..+4), orchestra +1.5 ms (0..+3).
++0.4 ms (per note -1..+1), quartet +2.3 ms (0..+4), orchestra +1.5 ms (0..+3), organ +20.8 ms
+(-9..+46: pipe speech, slower in the bass; compensated by default).
 
 **Hall.** `audio/strings/hall.py` (shared with the quartet renderer): `place_dry` seats each stem
 (constant-power pan, width, depth delay and attenuation) and `Hall("detmold")` is the measured
@@ -291,11 +293,14 @@ section marks, did not have to change:
 piano; 29 s): rendered, aligned and mixed end to end; time bases orchestra - piano +1.1 ms,
 32 doubled onsets +0.1 ms.
 
+**Organ adapter** (`tests/spec_chorale_organ_quartet.json`: four voices on HW/POS/PED with a
+registration change and the swell, violin and cello doubling from bar 5; 30 s): rendered with its
+registration sidecar, the organ shifted by its 20.8 ms pipe speech, time bases then organ - quartet
+-2.3 ms; -1.0 dBTP (m4a -0.98), no clicks.
+
 ## 7. Limits
 
-* The organ renderer (`audio/organ/render_organ.py`) had not landed when these tools were
-  finished: orchestrate.py writes its MIDI and registration sidecar per its CONTRACT.md, mix.py
-  has its adapter, neither has been run against it.
+* The organ and orchestra adapters were tested on the 30 s chorale only, not on a whole piece.
 * The calibration equates the renderers at mf on a four-part chorale. It does not know that a
   concert grand at mf may be louder than a string quartet at mf; `gain_db` is the balance control.
 * A piano quintet in one hall: the groups share one measured response (source position S1, one

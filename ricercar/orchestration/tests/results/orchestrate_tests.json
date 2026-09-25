@@ -7,7 +7,7 @@
   "pass": true,
   "detail": [
    "va: 1 assigned note(s) missing: ['alto 9:4 F3+0']",
-   "va: 1 note(s) that no assignment accounts for: ['key 54 at 9:3.99479']",
+   "va: 1 note(s) that no assignment accounts for: ['key 54 at 9:4.00312']",
    "alto: 1 score note(s) played by no part: ['9:4 F3']"
   ]
  },
@@ -15,7 +15,7 @@
   "pass": true,
   "detail": [
    "bass: 1 assigned note(s) missing: ['bass 35:1 E3+0']",
-   "bass: 1 note(s) that no assignment accounts for: ['key 64 at 34:4.99479']",
+   "bass: 1 note(s) that no assignment accounts for: ['key 64 at 34:4.99688']",
    "bass: 1 score note(s) played by no part: ['35:1 E3']"
   ]
  },
@@ -36,7 +36,7 @@
   "pass": true,
   "detail": [
    "alto: 1 note-on(s) without note-off",
-   "alto: 6 note-on(s) on a key that is still sounding",
+   "alto: 8 note-on(s) on a key that is still sounding",
    "alto: alto 35:4 A4 lasts past its notated end"
   ]
  },
@@ -89,7 +89,7 @@
  "pedal note held past the pedal caught": {
   "pass": true,
   "detail": [
-   "pedal_8vb: pedal note 29 at 45:4.99375 is not a pitch bass holds (bridge 1 beats)"
+   "pedal_8vb: pedal note 29 at 45:4.99479 is not a pitch bass holds (bridge 1 beats)"
   ]
  },
  "unknown mark rejected": {
@@ -101,7 +101,7 @@
  "section list that disagrees with the score rejected": {
   "pass": true,
   "detail": [
-   "SystemExit: marks from /var/folders/qh/7w8n7nzn5ns_qjyyllhjxnt40000gn/T/tmp5t4qr7lf/secs.json: the sections add up to 10 bars, the score has 66; the score and the section list disagree"
+   "SystemExit: marks from /var/folders/qh/7w8n7nzn5ns_qjyyllhjxnt40000gn/T/tmp797_lwmz/secs.json: the sections add up to 10 bars, the score has 66; the score and the section list disagree"
   ]
  },
  "marks resolved from piece.py": {
@@ -145,7 +145,7 @@
  },
  "CC20 before every vn2 note": {
   "pass": true,
-  "detail": "157/157"
+  "detail": "160/160"
  },
  "detache window = 32": {
   "pass": true,

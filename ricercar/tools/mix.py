@@ -32,7 +32,8 @@ What it does
      calibration), agree; (b) where groups double each other, their onsets coincide (direct
      cross-correlation of the two groups' envelopes around the shared onsets). Reported too:
      each group's lag on the attacks in the music, per quarter of the piece (articulation shows
-     there: bowed pre-roll, slurs). "latency_ms" ("auto" or ms) shifts a group; default none.
+     there: bowed pre-roll, slurs). "latency_ms" ("auto" = its own probe time base, or ms)
+     shifts a group earlier; default "auto" for the organ (pipe speech), none for the others.
   5. Place and reverberate: each stem is panned to its seat (audio/strings/hall.py place_dry:
      azimuth, width, depth delay and -1 dB/m), and each group feeds the same measured Detmold
      Konzerthaus response (hall.Hall, unit energy, tail continued; right-hand sources get the
@@ -133,7 +134,7 @@ def render_group(renderer: str, midi: Path, rdir: Path, lead_in: float, extra: l
     elif renderer == "organ":
         report = rdir / "render.json"
         cmd = [sys.executable, str(script), str(midi), "-o", str(base), "--stems", str(stems_dir),
-               "--no-reverb", "--lead-in", f"{lead_in}", "--json", str(report)]
+               "--no-reverb", "--no-m4a", "--lead-in", f"{lead_in}", "--json", str(report)]
         if sidecar is not None and sidecar.exists():
             cmd += ["--registration", str(sidecar)]
     else:
@@ -378,6 +379,8 @@ ATTACK_RULE = {
     "orchestra": "new-bow / tongued and short notes at their note-on plus the seat's depth delay (the "
                  "renderer's stems arrive seated; articulation and seats from its report); slurred notes are "
                  "left out",
+    "organ": "every note-on (each key press is a pipe attack; the pipe's speech time is part of the "
+             "instrument)",
     "default": "notes after at least 100 ms of silence in their part",
 }
 
@@ -385,7 +388,7 @@ ATTACK_RULE = {
 def attack_starts(renderer: str, rep: dict, by_track: dict, track_of: dict) -> dict:
     """{stem name: [MIDI seconds]} at which the renderer starts a note's attack."""
     stem_of = {t: s for s, t in track_of.items()}
-    if renderer == "piano":
+    if renderer in ("piano", "organ"):
         return {stem_of[t]: [on for on, *_ in v] for t, v in by_track.items() if t in stem_of}
     if renderer == "quartet":
         out = {}
@@ -738,7 +741,8 @@ def main(argv=None):
         lat = gm.get("latency_ms", 0)
         lag, cnt, pn = entry_lag(g)
         if lag is None:
-            raise SystemExit(f"{g}: no attacks to verify its alignment")
+            print(f"  warning: {g}: no attacks in the music to measure (the probe and doublings still gate)")
+            lag = 0.0
         lags[g] = lag
         el, ecnt, _ = entry_lag(g, which=entries)
         report_align[g] = {
@@ -756,11 +760,16 @@ def main(argv=None):
         pa = per_note_lags(env_group[g], times)
         report_align[g].update({"all_notes_xcorr_lag_ms": round(all_lag, 2), "all_notes": len(times),
                                 "all_notes_per_note_lag_ms_median": float(np.median(pa)) if len(pa) else None})
-    # optional latency compensation (default none): shift a group earlier by latency_ms, or by its
-    # measured entry lag re the reference group ("auto")
+    # latency compensation: shift a group earlier by latency_ms, or with "auto" by its own time base
+    # (the timing probe's lag re MIDI), so its attacks land on the MIDI clock. Default: "auto" for the
+    # organ (its pipes speak about 20 ms after the key, and an organist anticipates), none for others
+    tbase = {g: cal.get(gm["renderer"], {}).get("time_base_lag_ms") for g, gm in groups.items()}
     for g, gm in groups.items():
-        lat = gm.get("latency_ms", 0)
-        comp = (lags[g] - lags[ref_group]) if lat == "auto" else float(lat)
+        lat = gm.get("latency_ms", "auto" if gm["renderer"] == "organ" else 0)
+        if lat == "auto":
+            comp = tbase[g] if tbase[g] is not None else lags[g]
+        else:
+            comp = float(lat)
         report_align[g]["compensation_ms"] = round(comp, 2)
         if comp:
             k = int(round(comp / 1000 * SR))
@@ -772,7 +781,8 @@ def main(argv=None):
                     aligned[g][s_][:-k] = 0
             for name in env_stem[g]:          # measured again on the shifted stems
                 env_stem[g][name] = fit(onset_envelope(aligned[g][name]), nframes)
-            lags[g] = entry_lag(g)[0]
+            env_group[g] = fit(onset_envelope(sum(aligned[g].values())), nframes)
+            lags[g] = entry_lag(g)[0] or 0.0
         report_align[g]["entry_lag_after_ms"] = round(lags[g], 2)
         report["groups"][g]["alignment"] = report_align[g]
     inter = {}
@@ -798,13 +808,15 @@ def main(argv=None):
     # with every note short, through the same render / offset / stem path), agree; (2) where the
     # groups double each other in this piece, their onsets coincide (direct cross-correlation)
     for g, gm in groups.items():
-        tb = cal.get(gm["renderer"], {}).get("time_base_lag_ms")
+        tb = tbase[g]
         report["groups"][g]["alignment"]["time_base_lag_ms"] = tb
+        report["groups"][g]["alignment"]["time_base_after_compensation_ms"] = \
+            None if tb is None else round(tb - report["groups"][g]["alignment"]["compensation_ms"], 2)
     checks = []
     for key_, v in inter.items():
         g, h = key_.split("-", 1)
-        tg = report["groups"][g]["alignment"]["time_base_lag_ms"]
-        th = report["groups"][h]["alignment"]["time_base_lag_ms"]
+        tg = report["groups"][g]["alignment"]["time_base_after_compensation_ms"]
+        th = report["groups"][h]["alignment"]["time_base_after_compensation_ms"]
         if tg is not None and th is not None:
             v["time_base_difference_ms"] = round(tg - th, 2)
             checks.append(abs(tg - th))
@@ -918,14 +930,16 @@ def main(argv=None):
         for t in ts:
             a0 = int((t + lead_in) * SR)
             m[a0:a0 + int(1.0 * SR)] = True
-        act[g] = m
         x = per_group_dry[g][: len(mix)] * gnorm
+        m = m[: len(x)]                      # the mix may run longer than the dry buffers (hall tail)
+        act[g] = m
         report["groups"][g]["level_when_playing_lufs"] = round(kw_level(x[m]), 2) if m.any() else None
     if len(groups) > 1:
-        both = np.all(np.stack([act[g] for g in groups]), axis=0)
+        L = min(len(m) for m in act.values())
+        both = np.all(np.stack([act[g][:L] for g in groups]), axis=0)
         report["balance_where_all_play"] = {
             "seconds": round(float(both.sum()) / SR, 1),
-            **{g: round(kw_level(per_group_dry[g][: len(mix)][both] * gnorm), 2) for g in groups}} \
+            **{g: round(kw_level(per_group_dry[g][:L][both] * gnorm), 2) for g in groups}} \
             if both.any() else None
     curve = []
     for k in range(0, len(wav_x) - 5 * SR, 5 * SR):
