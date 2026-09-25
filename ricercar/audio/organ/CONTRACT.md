@@ -158,6 +158,8 @@ organ: tenor->POS                           voice to division
   exactly the dry (pre-reverb) part of `OUT.wav`. "Dry" means without the added church; the
   samples themselves carry the Norrfjärden church's own sound.
 * `--json PATH`: report (voices and their divisions, registration timeline in seconds, pipe
-  events, borrowed/shared/folded keys, release-join statistics, per-voice levels, added-hall
-  level and C80, decay of the final chord, loudness, true peak, warnings).
+  events, borrowed/shared/folded keys, release-join statistics, per-voice levels and
+  stereo correlation / mono fold-down (`voices.<v>.stereo`, `stereo_mix`, `stereo_dry_sum`),
+  added-hall level and C80, decay of the final chord, loudness, true peak, the normalisation gain
+  applied to mix and stems (`normalisation_gain_db`), warnings).
 * Nothing is played through the speakers.
