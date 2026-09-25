@@ -47,6 +47,9 @@
 %   F E-flat D struck with the tune's F and resolved to D at 59:3.5. Chord seventh.
 % * Skeleton ACC2 59:1 (tenor E-flat, the V7 seventh) and 61:1 (the tune's E-flat, the V7 seventh); ACC 65:3
 %   (V7 over the tonic pedal: pedal licence). HOL 66:1 as in the skeleton (completed at 66:3).
+% * Parallel imperfect consonances: alto/tenor sixths 60:2-60:4.5 (F/A, A/C, G/B-flat) and alto/bass tenths
+%   60:4-61:1, two moves each, fixed by the KEEP A-G, the tenor's A (the third) and the answer; the skeleton
+%   had the same sixths from 60:1 and three tenth moves; the alto's C at 61:2 now breaks the tenths.
 % * No dynamics, tempo or articulation in the voices (plan.json).
 soprano = \absolute {
   % 55
