@@ -21,7 +21,7 @@ There are two pieces.
 | Piece | Form | Key | Length | Status |
 |---|---|---|---|---|
 | **Fugue on the Theme from Jurassic Park** | four-voice organ fugue | B-flat major | 37 bars, about 2¼ min | finished |
-| **The Neighbour**, ricercar a 4 | double fugue with a Beethoven-style arc (Op. 110) | B-flat minor to B-flat major | about 62 bars, about 3¾ min | being composed |
+| **The Neighbour**, ricercar a 4 | fugue, inverted fugue and the tune's two halves combined, in a Beethoven-style arc (Op. 110) | B-flat minor to B-flat major | 66 bars, about 4 min | finished |
 
 <div align="center">
 <img src="preview/fugue-page1.png" alt="First page of the organ fugue score" width="620">
@@ -32,14 +32,21 @@ There are two pieces.
 
 The ricercar is written once, as four independent voices, and then performed four ways:
 
-| Version | Instruments | Model |
-|---|---|---|
-| Bach | pipe organ, manuals and pedal, dynamics by registration | the organ fugues |
-| Beethoven | solo concert grand (a string-quartet reading as a bonus) | Op. 110 finale, Grosse Fuge |
-| Symphonic | romantic orchestra, colours handed between instruments | Webern's orchestration of the Ricercar a 6 |
-| Ensemble | piano and string quartet together | Shostakovich, Piano Quintet Op. 57, fugue |
+| Version | Instruments | Model | Render script | Length |
+|---|---|---|---|---|
+| Bach | pipe organ, manuals and pedal, dynamics by registration | the organ fugues | [`performance/bach_organ/render.sh`](ricercar/performance/bach_organ/render.sh) | 4:02 |
+| Beethoven | solo concert grand | Op. 110 finale | [`performance/beethoven_piano/render.sh`](ricercar/performance/beethoven_piano/render.sh) | 4:04 |
+| Beethoven (bonus) | string quartet, same reading as the piano | Grosse Fuge, Op. 131 | [`performance/beethoven_quartet/render.sh`](ricercar/performance/beethoven_quartet/render.sh) | 4:05 |
+| Symphonic | romantic orchestra, colours handed between instruments | Webern's orchestration of the Ricercar a 6 | [`performance/symphonic/render.sh`](ricercar/performance/symphonic/render.sh) | 3:54 |
+| Ensemble | piano and string quartet together | Shostakovich, Piano Quintet Op. 57, fugue | [`performance/quintet/make_spec.py`](ricercar/performance/quintet/make_spec.py), then `orchestrate.py` and `mix.py` | 3:54 |
 
-Its plan, in brief: the tune opens alone at its own pitch; a chromatic lament answers it; the subject is overlapped with itself until the harmony collapses into diminished sevenths; a slow arioso sings the second half of the tune; the fugue returns upside down; both subjects sound together over a long pedal; and only at the end is the whole tune heard complete, in B-flat major, over its own mirror image. The full design, with every proof, is in [`ricercar/design/BLUEPRINT.md`](ricercar/design/BLUEPRINT.md).
+Lengths include the lead-in and the hall's (or church's) decay. The audio is not in the repository: each script renders its version locally from the score, into `ricercar/performance/<version>/` (WAV and AAC), once the sample libraries are installed (see Quick start).
+
+Its plan, in brief: the tune opens alone at its own pitch; a chromatic lament joins the answer; the subject is overlapped with itself until the harmony collapses into diminished sevenths; a slow arioso sings the second half of the tune; the fugue returns upside down; both halves of the tune sound together over a long pedal; and only at the end is the whole tune heard complete, in B-flat major, over the fugue's own countersubjects turned major.
+
+- **Listener's guide**: [`ricercar/NOTES.md`](ricercar/NOTES.md), the idea, a form table with timings, what to listen for in each version, every learned device by bar number, and the tune tweaks.
+- **Printed scores**: [`ricercar/score/out/piano.pdf`](ricercar/score/out/piano.pdf) and [`ricercar/score/out/quartet.pdf`](ricercar/score/out/quartet.pdf). PDFs are not committed; engrave them with `lilypond -o ricercar/score/out ricercar/score/piano.ly ricercar/score/quartet.ly`.
+- **Design**: [`ricercar/design/BLUEPRINT.md`](ricercar/design/BLUEPRINT.md), the full design with every proof.
 
 ## How it is made
 
@@ -54,10 +61,11 @@ flowchart LR
     K --> P[perform.py: expressive MIDI]
     P --> R1[Piano: Salamander grand via sfizz]
     P --> R2[Quartet: Iowa MIS solo strings]
-    P --> R3[Organ]
-    P --> R4[Orchestra]
-    R1 & R2 & R3 & R4 --> H[Detmold concert hall convolution]
-    H --> A[WAV / AAC]
+    P --> R3[Organ: Norrfjärden Church samples]
+    P --> R4[Orchestra: VSCO 2, Iowa MIS, VPO3]
+    R1 & R2 & R4 --> H[Detmold concert hall convolution]
+    R3 --> CH[Church impulse response]
+    H & CH --> A[WAV / AAC]
 ```
 
 - **Counterpoint checker** (`ricercar/tools/check.py`): parallel and hidden fifths and octaves, fifths on successive beats, voice crossing, ranges, bar lengths, and every dissonance with its justification (passing note, suspension, neighbour). Nothing is kept until it reports zero faults.
@@ -73,15 +81,28 @@ flowchart LR
    lilypond fugue.ly
    python3 check.py
    ```
-3. Fetch the samples and build the piano and quartet (large downloads, kept outside the repo):
+3. Engrave and check the ricercar:
+   ```bash
+   lilypond -o ricercar/score/out ricercar/score/piano.ly ricercar/score/quartet.ly
+   sh ricercar/design/final-lab/ck.sh ricercar/score/music-voices.ly
+   ```
+4. Fetch the samples and build the instruments (large downloads, kept outside the repo):
    ```bash
    ricercar/audio/piano/setup_piano.sh
    ricercar/audio/strings/setup_strings.sh
+   ricercar/audio/organ/setup_organ.sh
+   ricercar/audio/orchestra/setup_orchestra.sh
    ```
-4. Perform and render the ricercar skeleton on the piano:
+5. Render the versions (nothing is played through the speakers; each writes a WAV and an m4a next to its script):
    ```bash
-   python3 ricercar/tools/perform.py ricercar/design/final-lab/SK_final.ly ricercar/design/final-lab/plan.json /tmp/sk.mid --target piano
-   python3 ricercar/audio/piano/render_piano.py /tmp/sk.mid -o /tmp/sk_piano
+   sh ricercar/performance/beethoven_piano/render.sh
+   sh ricercar/performance/beethoven_quartet/render.sh
+   bash ricercar/performance/bach_organ/render.sh
+   sh ricercar/performance/symphonic/render.sh
+   cd ricercar && python3 performance/quintet/make_spec.py \
+     && python3 tools/orchestrate.py score/music-voices.ly design/final-lab/plan.json \
+          performance/quintet/ricercar_quintet.json performance/quintet/ricercar_quintet \
+     && python3 tools/mix.py performance/quintet/ricercar_quintet/manifest.json
    ```
 
 ## Repository layout
@@ -90,21 +111,24 @@ flowchart LR
 fugue.ly, NOTES.md, check.py     the finished organ fugue, its analysis, its checker
 preview/                         score page images
 ricercar/
+  NOTES.md                       listener's guide to the finished ricercar
   design/THEME.md                the reference melody
   design/proposal-1..4/          four independent designs and their proof labs
   design/BLUEPRINT.md            the chosen design, section by section
   design/final-lab/              verified skeleton, materials, proof labs, lab tools
-  score/                         composed sections and the piano / quartet scores
-  tools/                         checker, harmony x-ray, assembler, performance engine
+  score/                         the assembled score, its seven sections, the piano / quartet scores
+  score/out/                     engraved PDFs (built locally, not committed)
+  tools/                         checker, harmony x-ray, assembler, performance and orchestration engines
   audio/piano|strings|organ|orchestra/   renderers, setup scripts, QA harnesses
-  orchestration/                 who plays which voice when, for the ensemble versions
+  orchestration/                 ensemble calibration and QA tests
+  performance/                   the five versions: plans, scorings, render scripts, QA reports
 ```
 
 ## Credits and licences
 
 - The **Theme from Jurassic Park** is by John Williams (1993) and remains under copyright. This repository is a non-commercial study of fugal technique on that theme.
 - Code and original text in this repository: [MIT](LICENSE).
-- **Salamander Grand Piano V3** by Alexander Holm, CC BY 3.0. **University of Iowa Musical Instrument Samples** (solo strings, winds, brass). **Virtual Playing Orchestra 3** and **VSCO 2 Community Edition**. **Detmold concert hall impulse responses**, CC BY 4.0 ([Zenodo](https://zenodo.org/records/4116247)). Samples are downloaded by the setup scripts and are not stored here; each renderer's README lists exact sources and terms.
+- **Salamander Grand Piano V3** by Alexander Holm, CC BY 3.0. **University of Iowa Musical Instrument Samples** (solo strings, winds, brass). **Virtual Playing Orchestra 3** and **VSCO 2 Community Edition**. **Norrfjärden Church organ** sample set by Lars Palo, CC BY-SA 4.0 (the licence carries over to the organ recordings). **Detmold concert hall impulse responses**, CC BY 4.0 ([Zenodo](https://zenodo.org/records/4116247)); **OpenAIR** Lady Chapel, St Albans Cathedral impulse response (University of York), CC BY 4.0. Samples are downloaded by the setup scripts and are not stored here; each renderer's README lists exact sources and terms.
 
 ---
 
