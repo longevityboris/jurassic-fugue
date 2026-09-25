@@ -78,6 +78,9 @@
 % 11 strong; all seven score sections spliced as of this revision 21 strong, 11 weak.
 %
 % FLAGS (splice_check.py, strict.py -v, check.py on bars 54-66, plus a scan of every voice pair):
+% * Counts: splice_check PASS (also with all seven score sections spliced as base; with joins strict
+%   clash 0, xrel 1, acc 3, acc2 5); strict.py -v on the section: clash 0, xrel 1 (the skeleton's), acc 2,
+%   acc2 3; check.py: 0 errors, 0 parallels, 0 beat-par, 0 unjustified; suspensions.py: 8 strong, 2 weak.
 % * No new D4?, DIR, MEL, XREL, CLASH, unison or parallel. D4? 54:3 and XREL 60:4.5-61:1 are the skeleton's.
 % * strict: ACC2 59:1 (the tenor's E-flat3 over F2) and 61:1 (the tune's E-flat5 over F2 and F3), both V7
 %   sevenths from the skeleton; ACC 65:3 (V7 over the tonic pedal: pedal licence). HOL 66:1 as in the
