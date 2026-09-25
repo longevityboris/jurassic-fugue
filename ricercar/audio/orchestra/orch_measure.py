@@ -7,7 +7,7 @@ from scipy.signal import butter, sosfilt
 
 from orch_common import SR, midi_to_hz
 from iowa_build import k_level_db          # noqa: F401  (re-exported)
-from verify_tuning import yin              # the strings' YIN (read-only import)
+from verify_tuning import yin              # noqa: F401  the strings' YIN (read-only import)
 
 
 def mono(x: np.ndarray) -> np.ndarray:

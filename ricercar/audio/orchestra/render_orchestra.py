@@ -459,6 +459,7 @@ def job_midi(job: Job, T: np.ndarray, c_true: np.ndarray, t_end: float) -> tuple
         ev.append((sec2tick(t + SHIFT), 1, mido.Message("control_change", control=2, value=int(v))))
     if job.detune:
         ev.append((0, 0, mido.Message("pitchwheel", pitch=int(np.clip(8192 * job.detune / 200, -8192, 8191)))))
+    timed = []
     for n in job.notes:
         d = job.delay + (rng.uniform(0, job.jitter_ms) / 1000 if job.jitter_ms else 0.0)
         # measured onset latency of this recording (tune_orchestra.py), except for a
@@ -469,11 +470,23 @@ def job_midi(job: Job, T: np.ndarray, c_true: np.ndarray, t_end: float) -> tuple
             lat_ms = spec["latency_short_ms"]              # a short note cut from the sustain speaks sooner
         lat = 0.0 if 64 <= (n.art or 0) < 96 else min(0.10, max(0.0, lat_ms / 1000 - 0.012))
         ton = sec2tick(n.on - n.pre - lat + d + SHIFT)
-        toff = sec2tick(n.off + d + SHIFT)
+        toff = max(sec2tick(n.off + d + SHIFT), ton + 1)
+        timed.append([ton, toff, n])
+    # a note-off of a key releases every voice of that key in sfizz: a repeated
+    # note whose (pre-rolled) note-on comes before the previous note-off of the
+    # same key would be killed, so that previous note-off moves to just before it
+    last_of_key: dict = {}
+    for item in sorted(timed, key=lambda z: z[0]):
+        k = item[2].key
+        if k in last_of_key and last_of_key[k][1] >= item[0]:
+            prev = last_of_key[k]
+            prev[1] = max(prev[0] + 1, item[0] - 1)
+        last_of_key[k] = item
+    for ton, toff, n in timed:
         ev.append((ton, 2, mido.Message("control_change", control=20, value=int(n.art or 0))))
         ev.append((ton, 2, mido.Message("control_change", control=21, value=int(n.rel if n.rel is not None else 30))))
         ev.append((ton, 4, mido.Message("note_on", note=int(n.key), velocity=int(np.clip(n.vel, 1, 127)))))
-        ev.append((max(toff, ton + 1), 3, mido.Message("note_off", note=int(n.key), velocity=0)))
+        ev.append((toff, 3, mido.Message("note_off", note=int(n.key), velocity=0)))
     ev.sort(key=lambda e: (e[0], e[1]))
     mid = mido.MidiFile(type=0, ticks_per_beat=TPB_OUT)
     tr = mido.MidiTrack()

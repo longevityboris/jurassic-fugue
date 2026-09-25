@@ -1,0 +1,820 @@
+{
+ "midi": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_crescendo.mid",
+ "out": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/audio/orchestra/out/demo_crescendo.wav",
+ "duration_s": 13.36,
+ "offset_s": 0.2,
+ "lead_in_s": 0.3,
+ "norm_gain_db": 3.619,
+ "true_peak_dbtp": -1.0,
+ "hall": "detmold",
+ "wet_db": -5.0,
+ "c80_db": 9.26,
+ "seating": "american",
+ "sidecar": null,
+ "tracks": [
+  {
+   "name": "fl",
+   "part": "fl",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     3.5,
+     11.0,
+     82,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "ob",
+   "part": "ob",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     3.5,
+     11.0,
+     77,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "cl",
+   "part": "cl",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     2.0,
+     11.0,
+     73,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "bn",
+   "part": "bn",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     2.0,
+     11.0,
+     58,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "hn.1",
+   "part": "hn",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     4.5,
+     11.0,
+     65,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "hn.2",
+   "part": "hn",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     4.5,
+     11.0,
+     61,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "tpt",
+   "part": "tpt",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     7.5,
+     11.0,
+     70,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "tbn",
+   "part": "tbn",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     6.5,
+     11.0,
+     53,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "btbn",
+   "part": "btbn",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     6.5,
+     11.0,
+     46,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "tba",
+   "part": "tba",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     6.5,
+     11.0,
+     34,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "timp",
+   "part": "timp",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "stroke": 0,
+    "roll": 1
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     5.5,
+     11.0,
+     46,
+     64,
+     100
+    ]
+   ]
+  },
+  {
+   "name": "vn1",
+   "part": "vn1",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     0.5,
+     11.0,
+     82,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "vn2",
+   "part": "vn2",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     0.5,
+     11.0,
+     77,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "va",
+   "part": "va",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     0.5,
+     11.0,
+     70,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "vc",
+   "part": "vc",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     0.5,
+     11.0,
+     53,
+     64,
+     0
+    ]
+   ]
+  },
+  {
+   "name": "cb",
+   "part": "cb",
+   "identified_by": "part id",
+   "notes": 1,
+   "articulation": {
+    "normal": 1,
+    "legato": 0,
+    "short": 0
+   },
+   "octave_shifted": [],
+   "note_list": [
+    [
+     0.5,
+     11.0,
+     34,
+     64,
+     0
+    ]
+   ]
+  }
+ ],
+ "jobs": [
+  {
+   "label": "bn/p1/iowa",
+   "part": "bn",
+   "set": "iowa",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -4.0,
+   "seat_depth_m": 8.0,
+   "layers": {
+    "sus": {
+     "switches": 2,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -41.55
+  },
+  {
+   "label": "btbn/p1/iowa",
+   "part": "btbn",
+   "set": "iowa",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -20.0,
+   "seat_depth_m": 10.5,
+   "layers": {
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -32.86
+  },
+  {
+   "label": "cb/vpo3",
+   "part": "cb",
+   "set": "vpo3",
+   "notes": 1,
+   "gain_db": -2.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -39.0,
+   "seat_depth_m": 5.0,
+   "layers": {
+    "stac": {
+     "switches": 0,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 0,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -42.06
+  },
+  {
+   "label": "cb/vsco",
+   "part": "cb",
+   "set": "vsco",
+   "notes": 1,
+   "gain_db": -4.5,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -35.0,
+   "seat_depth_m": 5.3,
+   "layers": {
+    "stac": {
+     "switches": 1,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -43.61
+  },
+  {
+   "label": "cl/p1/iowa",
+   "part": "cl",
+   "set": "iowa",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": 8.0,
+   "seat_depth_m": 8.0,
+   "layers": {
+    "sus": {
+     "switches": 2,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -41.0
+  },
+  {
+   "label": "fl/p1/vsco",
+   "part": "fl",
+   "set": "vsco",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": 7.0,
+   "seat_depth_m": 6.5,
+   "layers": {
+    "stac": {
+     "switches": 2,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 0,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -40.9
+  },
+  {
+   "label": "hn.1/p1/vsco",
+   "part": "hn",
+   "set": "vsco",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": 24.0,
+   "seat_depth_m": 9.0,
+   "layers": {
+    "stac": {
+     "switches": 1,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -33.92
+  },
+  {
+   "label": "hn.1/p2/iowa",
+   "part": "hn",
+   "set": "iowa",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 12.0,
+   "seat_az": 21.0,
+   "seat_depth_m": 9.4,
+   "layers": {
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -34.05
+  },
+  {
+   "label": "hn.2/p1/vsco",
+   "part": "hn",
+   "set": "vsco",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": 24.0,
+   "seat_depth_m": 9.0,
+   "layers": {
+    "stac": {
+     "switches": 1,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -34.0
+  },
+  {
+   "label": "hn.2/p2/iowa",
+   "part": "hn",
+   "set": "iowa",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 12.0,
+   "seat_az": 21.0,
+   "seat_depth_m": 9.4,
+   "layers": {
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -34.42
+  },
+  {
+   "label": "ob/p1/iowa",
+   "part": "ob",
+   "set": "iowa",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -3.0,
+   "seat_depth_m": 6.5,
+   "layers": {
+    "sus": {
+     "switches": 2,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -42.06
+  },
+  {
+   "label": "tba/p1/iowa",
+   "part": "tba",
+   "set": "iowa",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -25.0,
+   "seat_depth_m": 10.5,
+   "layers": {
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -36.16
+  },
+  {
+   "label": "tbn/p1/iowa",
+   "part": "tbn",
+   "set": "iowa",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -15.0,
+   "seat_depth_m": 10.5,
+   "layers": {
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -34.41
+  },
+  {
+   "label": "timp/p1/vsco",
+   "part": "timp",
+   "set": "vsco",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": 10.0,
+   "seat_depth_m": 12.0,
+   "layers": {
+    "hit": {
+     "switches": 1,
+     "notes": 0
+    },
+    "roll": {
+     "switches": 0,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -32.72
+  },
+  {
+   "label": "tpt/p1/vsco",
+   "part": "tpt",
+   "set": "vsco",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -5.0,
+   "seat_depth_m": 10.5,
+   "layers": {
+    "stac": {
+     "switches": 1,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 0,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -32.93
+  },
+  {
+   "label": "va/vpo3",
+   "part": "va",
+   "set": "vpo3",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -11.0,
+   "seat_depth_m": 3.2,
+   "layers": {
+    "sus": {
+     "switches": 0,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -41.32
+  },
+  {
+   "label": "va/vsco",
+   "part": "va",
+   "set": "vsco",
+   "notes": 1,
+   "gain_db": -6.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -7.0,
+   "seat_depth_m": 3.5,
+   "layers": {
+    "stac": {
+     "switches": 1,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -46.46
+  },
+  {
+   "label": "vc/vpo3",
+   "part": "vc",
+   "set": "vpo3",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -29.0,
+   "seat_depth_m": 1.5,
+   "layers": {
+    "sus": {
+     "switches": 0,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -38.87
+  },
+  {
+   "label": "vc/vsco",
+   "part": "vc",
+   "set": "vsco",
+   "notes": 1,
+   "gain_db": -6.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": -25.0,
+   "seat_depth_m": 1.8,
+   "layers": {
+    "stac": {
+     "switches": 1,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -44.98
+  },
+  {
+   "label": "vn1/vpo3",
+   "part": "vn1",
+   "set": "vpo3",
+   "notes": 1,
+   "gain_db": -3.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": 32.0,
+   "seat_depth_m": 1.3,
+   "layers": {
+    "stac": {
+     "switches": 0,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 0,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -42.68
+  },
+  {
+   "label": "vn1/vsco",
+   "part": "vn1",
+   "set": "vsco",
+   "notes": 1,
+   "gain_db": -3.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": 28.0,
+   "seat_depth_m": 1.0,
+   "layers": {
+    "stac": {
+     "switches": 1,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -43.46
+  },
+  {
+   "label": "vn2/vpo3",
+   "part": "vn2",
+   "set": "vpo3",
+   "notes": 1,
+   "gain_db": -6.0,
+   "detune_c": 3.0,
+   "delay_ms": 0.0,
+   "seat_az": 15.0,
+   "seat_depth_m": 3.5,
+   "layers": {
+    "stac": {
+     "switches": 0,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 0,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -45.68
+  },
+  {
+   "label": "vn2/vsco",
+   "part": "vn2",
+   "set": "vsco",
+   "notes": 1,
+   "gain_db": 0.0,
+   "detune_c": 0.0,
+   "delay_ms": 0.0,
+   "seat_az": 11.0,
+   "seat_depth_m": 3.2,
+   "layers": {
+    "stac": {
+     "switches": 1,
+     "notes": 0
+    },
+    "sus": {
+     "switches": 1,
+     "notes": 1
+    }
+   },
+   "rms_db_active": -41.68
+  }
+ ],
+ "warnings": []
+}

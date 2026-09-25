@@ -5,3 +5,5 @@
 *.stems/
 __pycache__/
 out/test/
+out/qa/
+out/compare/
