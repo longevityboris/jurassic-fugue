@@ -18,5 +18,8 @@
    "long_notes": 52,
    "max_cc_added": 10
   }
- }
+ },
+ "no_extra": [
+  "61:3-63:1"
+ ]
 }
