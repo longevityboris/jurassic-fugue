@@ -25,7 +25,8 @@
 %   F5 A2 F3 = V6 of b-flat (three voices, fifth omitted, root doubled), so the bar reads
 %   V4/2 of V -> V6 -> i (10:1) under the subject's opening neighbour B-flat A B-flat.
 % * E-F is the inversion's own neighbour (the E-to-F hinge at 45:4-46:1 that returns the piece to
-%   B-flat); it is heard first here, at the top, as the first cadence of the fugue.
+%   B-flat). The answer already sings it as its leading-tone neighbour (5:4.5-6:1, 6:4.5-7:1); here it
+%   moves to the top voice and becomes the fugue's first cadential resolution.
 % * ARTICULATION (intent only; nothing in the voices, rule 8). The skeleton breathed on 9:4 (quarter
 %   rest). Here the soprano ends its long CS1 phrase on F, the note on which the answer entered at 5:1,
 %   and CS2 starts a fifth lower on B-flat, the subject's note: the leap and the change from quarter
