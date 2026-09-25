@@ -267,6 +267,119 @@ def extend_sustain(x: np.ndarray, sr: int, f0: float, s0: int, s1: int, total: i
     return (y * g[:, None]).astype(np.float32)
 
 
+# ------------------------------------------------------- sustain flattening
+# Pitch: players drift 5-17 c for a few tenths of a second inside the steady part (violin I Db5 mf
+# sits 7-14 c flat from 0.4 to 1.0 s, viola C6 ff 10-17 c flat at 0.55-0.85 s), and the grains of the
+# spliced sustain inherit that, so a note is in tune over 2 s but off over the half second a quarter
+# note plays.  flatten_pitch() removes the slow trend (Hann PITCH_TREND_S: vibrato at >= 3.5 Hz is
+# >= 17 dB down, drifts below ~1.5 Hz are removed) from the recorded note before the sustain is
+# spliced, by time-varying resampling (attack_tune's method); attack_tune.correct_attack() still
+# handles the faster drift of the attack itself.
+PITCH_TREND_S = 0.4
+PITCH_FROM_T20_S = 0.15        # the flattening ramps in over 0.1 s from t20 + this
+# Level: 69 of 1094 regions sat 3 dB low, then dipped 5.5-17 dB and jumped back within their first
+# second (violin I Eb5 mf: -6 dB at 0.5-0.65 s, then +5.7 dB): recording content before the stable
+# window, where extend_sustain's slow normalisation does not act.  flatten_level() pulls the level
+# (LEVEL_WIN_S RMS) toward the sustain's median level wherever it strays more than LEVEL_DEADZONE_DB,
+# from the end of the recorded rise on (max(t20 + 0.1 s, t3)), so the bow attack stays as recorded and
+# the recording's own amplitude vibrato (+-1 dB) is untouched.
+LEVEL_WIN_S = 0.1
+LEVEL_DEADZONE_DB = 1.5
+LEVEL_CLIP_DB = (-6.0, 12.0)
+FLATTEN_VERSION = 1
+
+
+def _sinc_read_chunked(x: np.ndarray, pos: np.ndarray, chunk: int = 1 << 15) -> np.ndarray:
+    """attack_tune._sinc_read in chunks (bounded memory for 10 s samples)."""
+    return np.concatenate([attack_tune._sinc_read(x, pos[i: i + chunk]) for i in range(0, len(pos), chunk)]
+                          or [np.zeros((0, x.shape[1]))], axis=0)
+
+
+def _hann_avg(v: np.ndarray, w: np.ndarray, n: int):
+    """Weighted moving average of v (weights w) with a Hann window of n frames -> (avg, weight sum)."""
+    k = np.hanning(max(3, n | 1))
+    num = np.convolve(v * w, k, mode="same")
+    den = np.convolve(w, k, mode="same")
+    return num / np.maximum(den, 1e-12), den / k.sum()
+
+
+def flatten_pitch(x: np.ndarray, sr: int, f_exp: float, start: int, ref: tuple[int, int],
+                  win_s: float = PITCH_TREND_S, max_c: float = 60.0):
+    """Remove the slow pitch trend of the recorded note x (frames, ch) from sample `start` on, relative to
+    the median trend over ref = (a, b).  -> (y, remap, info); remap(i) = where sample i of x is in y."""
+    mono = x.mean(axis=1).astype(np.float64)
+    hop = int(0.01 * sr)
+    info = dict(pitch_flat=False)
+    if start >= len(mono) - int(0.5 * sr):
+        return x, (lambda i: i), info
+    f0, conf, W = attack_tune.yin_track(mono[start:], sr, f_exp, hop)
+    if len(f0) < 10:
+        return x, (lambda i: i), info
+    centres = start + np.arange(len(f0)) * hop + W // 2
+    ok = (conf < attack_tune.CONF_MAX) & np.isfinite(f0) & (f0 > 0)
+    c = 1200 * np.log2(np.where(ok, f0, f_exp) / f_exp)
+    tr, wsum = _hann_avg(c, ok.astype(float), int(win_s * sr / hop))
+    valid = wsum > 0.3
+    sel = valid & (centres >= ref[0]) & (centres < ref[1])
+    if sel.sum() < 5 or valid.sum() < 10:
+        return x, (lambda i: i), info
+    r = float(np.median(tr[sel]))
+    good = np.flatnonzero(valid)
+    dev = np.interp(np.arange(len(tr)), good, tr[good] - r)
+    corr = np.clip(-dev, -max_c, max_c) * np.clip((centres - start) / (0.1 * sr), 0, 1)
+    n = np.arange(start, len(mono))
+    c_s = np.interp(n, centres, corr, left=0.0, right=float(corr[-1]))
+    rate = 2 ** (c_s / 1200.0)
+    phi = start + np.concatenate([[0.0], np.cumsum(rate)[:-1]])
+    phi = phi[phi < len(mono) - 17]
+    y = np.concatenate([x[:start].astype(np.float64), _sinc_read_chunked(x.astype(np.float64), phi)], axis=0)
+    phi_full = np.concatenate([np.arange(start, dtype=float), phi])
+
+    def remap(i, phi_full=phi_full):
+        return int(min(len(phi_full) - 1, np.searchsorted(phi_full, i)))
+    m = centres >= start + 0.1 * sr
+    info.update(pitch_flat=True, pitch_ref_c=round(r, 1),
+                pitch_trend_p2_p98_c=round(float(np.percentile(dev[m], 98) - np.percentile(dev[m], 2)), 1)
+                if m.sum() > 5 else 0.0)
+    return y.astype(np.float32), remap, info
+
+
+def level_track(mono: np.ndarray, sr: int, win_s: float = LEVEL_WIN_S, hop_s: float = 0.01):
+    """RMS level (dB) over win_s windows centred on a hop_s grid -> (centres [samples], dB)."""
+    W, H = int(win_s * sr), int(hop_s * sr)
+    c = np.concatenate([[0.0], np.cumsum(mono.astype(np.float64) ** 2)])
+    idx = np.arange(0, max(1, len(mono) - W), H)
+    return idx + W // 2, 10 * np.log10((c[idx + W] - c[idx]) / W + 1e-20)
+
+
+def flatten_level(y: np.ndarray, sr: int, t_from: int, ref_from: int, passes: int = 2) -> tuple[np.ndarray, dict]:
+    """Pull the level of y (frames, ch) from sample t_from on toward the median level after ref_from,
+    wherever it strays more than LEVEL_DEADZONE_DB (the excess is removed, clipped to LEVEL_CLIP_DB),
+    ramped in over 50 ms.  Two passes (the second catches what the 100 ms window smeared)."""
+    y = y.astype(np.float64)
+    info = {}
+    for p in range(passes):
+        cen, lv = level_track(y.mean(axis=1), sr)
+        tail = (cen >= ref_from) & (cen < len(y) - int(0.5 * sr))
+        if tail.sum() < 10:
+            return y.astype(np.float32), info
+        target = float(np.median(lv[tail]))
+        dev = lv - target
+        corr = -np.sign(dev) * np.maximum(np.abs(dev) - LEVEL_DEADZONE_DB, 0.0)
+        corr = np.clip(corr, *LEVEL_CLIP_DB)
+        corr *= np.clip((cen - t_from) / (0.05 * sr), 0, 1)
+        k = np.hanning(7)
+        corr = np.convolve(corr, k / k.sum(), mode="same")
+        g = np.interp(np.arange(len(y)), cen, corr, left=0.0, right=float(corr[-1]))
+        if p == 0:
+            early = (cen >= t_from) & (cen < t_from + int(1.2 * sr))
+            info = dict(level_flat=True, level_max_boost_db=round(float(corr.max()), 1),
+                        level_max_cut_db=round(float(-corr.min()), 1),
+                        level_dev_p2_early_db=round(float(np.percentile(dev[early], 2)), 1) if early.any() else 0.0)
+        y *= 10 ** (g / 20)[:, None]
+    return y.astype(np.float32), info
+
+
 def stable_window(x: np.ndarray, sr: int, att_s: float, sus_end_s: float):
     """Most stable stretch of the sustained note (flat envelope, early preferred)
     -> (start, end) in samples.  Protects against notes that were recorded with
@@ -381,6 +494,10 @@ def process_one(job):
     att = c["attack_s"]
     sus_end = min(c["sus_end_s"] - c["onset"] / sr - 0.06, len(seg) / fs - 0.1)
     s0, s1 = stable_window(seg, fs, att, max(sus_end, att + 0.4))
+    # flatten the slow pitch trend of the recorded note (the grain source) before splicing
+    t20_src = rise_times(seg, fs, s0, s1)["rise20_s"]
+    seg, premap, flat_info = flatten_pitch(seg, fs, f0, int((t20_src + PITCH_FROM_T20_S) * fs), (s0, s1))
+    s0, s1 = premap(s0), premap(s1)
     cut = s0 + int(min(0.3 * fs, (s1 - s0) / 2))
     total = int(sustain_s * fs)
     y = extend_sustain(seg, fs, f0, s0, s1, total, seed=midi * 7 + DYNAMICS.index(dyn), cut=cut)
@@ -391,7 +508,11 @@ def process_one(job):
     y, shift, att_info = attack_tune.correct_attack(y, fs, f0, end, t20)
     remap = att_info.pop("remap", None)
     if remap is not None:
-        s0, s1 = int(remap(s0)), int(remap(s1))
+        s0, s1, cut = int(remap(s0)), int(remap(s1)), int(remap(cut))
+    # flatten the level from the end of the recorded rise on (dips before the stable window)
+    rt = rise_times(y, fs, s0, s1)
+    y, lev_info = flatten_level(y, fs, int(max(rt["rise20_s"] + 0.1, rt["rise3_s"]) * fs), cut + int(0.1 * fs))
+    flat_info.update(lev_info)
     # fade the last 20 ms (the loop region never reaches it)
     fl = int(0.02 * fs)
     y[-fl:] *= np.linspace(1, 0, fl)[:, None]
@@ -410,7 +531,8 @@ def process_one(job):
     m = dict(inst=inst, dyn=dyn, midi=midi, file=c["file"], string=c["string"], cents=c["cents"],
              path=str(out_path.relative_to(QUARTET_DIR)), level_db=level, klevel_db=klevel,
              norm_gain_db=20 * np.log10(gain), attack_s=att, loop_start=int(loop_start), loop_end=int(loop_end),
-             s0=s0, s1=s1, frames=len(y), attack=att_info, settle_s=att_info["settle_s"])
+             s0=s0, s1=s1, frames=len(y), attack=att_info, settle_s=att_info["settle_s"],
+             flatten=flat_info, flat_v=FLATTEN_VERSION)
     m.update(rise_times(y, fs, s0, s1))
     return m
 
@@ -552,10 +674,15 @@ def load_corrections() -> dict:
     return json.loads(CORR_PATH.read_text()) if CORR_PATH.exists() else {}
 
 
-def retune(verify_json: Path, only: set):
-    """Closed-loop tuning: fold the pitch errors measured by verify_tuning.py
-    (YIN through sfizz, per layer and sample key) into tuning_corrections.json."""
+RETUNE_MIN_C = 1.0      # errors below this are measurement noise and left alone (no churn between passes)
+
+
+def retune(verify_json: Path, only: set, min_c: float = RETUNE_MIN_C):
+    """Closed-loop tuning: fold the pitch errors measured by verify_tuning.py (through sfizz, per
+    layer and key: the mean of YIN and harmonic-peak estimates over 0.45-1.05 s and 1.05-1.9 s)
+    into tuning_corrections.json.  Keys are the SFZ region keys (every key of a chromatic set)."""
     rep = json.loads(Path(verify_json).read_text())
+    rep = rep.get("steady", rep)
     corr = load_corrections()
     meta = json.loads((QUARTET_DIR / "samples" / "meta.json").read_text())
     n = 0
@@ -565,7 +692,7 @@ def retune(verify_json: Path, only: set):
         centres = {(m["dyn"], m["midi"]) for m in meta.get(inst, [])}
         for dyn, rows in layers.items():
             for r in rows:
-                if (dyn, r["key"]) in centres and r["cents"] is not None and abs(r["cents"]) < 60:
+                if (dyn, r["key"]) in centres and r["cents"] is not None and min_c <= abs(r["cents"]) < 60:
                     key = f"{inst}/{dyn}/{r['key']}"
                     corr[key] = round(corr.get(key, 0.0) - r["cents"], 1)
                     n += 1

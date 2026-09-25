@@ -19,7 +19,9 @@ import numpy as np
 LIB_ROOT = Path(os.environ.get("SAMPLE_LIBRARIES", Path.home() / "Music" / "SampleLibraries"))
 IOWA_ROOT = LIB_ROOT / "IowaMIS"
 RAW_DIR = IOWA_ROOT / "raw"
-QUARTET_DIR = IOWA_ROOT / "quartet"          # generated samples + SFZ live here
+# generated samples + SFZ live here; IOWA_QUARTET_DIR builds into a staging copy (render_quartet.py
+# --sfz-dir plays it), so a rebuild never leaves the live instruments half-written
+QUARTET_DIR = Path(os.environ.get("IOWA_QUARTET_DIR", IOWA_ROOT / "quartet"))
 # the same pinned, float-output sfizz_render the piano renderer builds (setup_piano.sh / setup_strings.sh)
 SFIZZ_RENDER = Path(os.environ.get("SFIZZ_RENDER", LIB_ROOT / "tools" / "sfizz" / "build" / "library" / "bin" / "sfizz_render"))
 IR_ROOT = LIB_ROOT / "IR"

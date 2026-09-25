@@ -4,11 +4,16 @@ playback chain (SFZ -> sfizz -> WAV).
 
 For every key of the instrument's range and for every dynamic layer
 (pp / mf / ff, selected with the CC1 value at which that layer plays alone)
-a 2 s note is rendered with sfizz; the sounding pitch is measured with a YIN
-estimator (a different algorithm from the harmonic-comb estimator that
-iowa_analyze.py used to derive the tune= corrections) as the median over the
-steady part of the note, so vibrato averages out.  Reports every note whose
-pitch error exceeds --tol cents (default 15) or that sounds a wrong note.
+a 2 s note is rendered with sfizz; the sounding pitch is measured in two
+windows, 0.45-1.05 s (what a quarter or half note hears) and 1.05-1.9 s (the
+spliced sustain), each by two estimators: YIN (median over frames, a wide lag
+search that also catches wrong notes and octave slips) and the harmonic peaks
+of partials 1-3 (40 ms / 6-period Hann frames, 10 % trimmed mean).  A key fails
+if any of the four figures exceeds --tol cents (default 5) or the note is
+unvoiced; 'cents' (their mean) is what iowa_build.py --retune folds into the
+tuning corrections.  Both windows are needed: a note can be in tune over 2 s
+and 10 c off over its first second (the players drift; iowa_build.py flattens
+that drift, this check proves it).
 
 --attack adds the pitch a short note hears: every key x layer x stroke (CC20
 short 112 and normal 0, as render_quartet.py sets them) as a 0.25 s note, the
@@ -18,7 +23,7 @@ but this attack).  A note fails if it is more than --attack-tol cents off
 counts notes over 15 c).
 
 Usage:
-  python3 verify_tuning.py violin viola cello [--lib iowa|vpo3] [--json OUT] [--attack]
+  python3 verify_tuning.py violin viola cello [--lib iowa|vpo3] [--tol 5] [--json OUT] [--attack]
   exit status 1 if any note fails.
 """
 from __future__ import annotations
@@ -116,6 +121,43 @@ def make_midi(keys, cc1: int, path: Path):
     mid.save(str(path))
 
 
+WINDOWS = ((0.45, 1.05), (1.05, NOTE_S - 0.1))       # s after the note-on
+
+
+def harmonic_f0(seg: np.ndarray, sr: int, f0: float, nh: int = 3, hop_s: float = 0.01, span_c: float = 80.0):
+    """Time-mean f0 (Hz) from the peaks near k*f0 (k = 1..nh, +-span_c) of Hann frames of max(40 ms, 6 periods),
+    zero-padded x8, log-parabolic interpolation, magnitude-weighted mean of f_k/k per frame, 10 % trimmed
+    mean of the frames' cents.  None if fewer than 3 frames."""
+    W = int(max(0.04, 6.0 / f0) * sr)
+    H = int(hop_s * sr)
+    nfft = 1 << int(np.ceil(np.log2(W * 8)))
+    df = sr / nfft
+    win = np.hanning(W)
+    fr = []
+    for s in range(0, len(seg) - W + 1, H):
+        X = np.abs(np.fft.rfft(seg[s: s + W] * win, nfft))
+        est, wt = [], []
+        for k in range(1, nh + 1):
+            fk = k * f0
+            lo, hi = int(fk * 2 ** (-span_c / 1200) / df), int(fk * 2 ** (span_c / 1200) / df) + 1
+            if hi >= len(X) - 1:
+                break
+            i = lo + int(np.argmax(X[lo:hi]))
+            if lo < i < hi - 1:
+                a, b, c = np.log(X[i - 1] + 1e-12), np.log(X[i] + 1e-12), np.log(X[i + 1] + 1e-12)
+                den = a - 2 * b + c
+                est.append((i + (0.5 * (a - c) / den if den != 0 else 0.0)) * df / k)
+                wt.append(X[i])
+        if est:
+            fr.append(float(np.average(est, weights=wt)))
+    if len(fr) < 3:
+        return None
+    c = np.sort(1200 * np.log2(np.array(fr) / f0))
+    k = len(c) // 10
+    c = c[k: len(c) - k] if len(c) > 10 else c
+    return float(f0 * 2 ** (np.mean(c) / 1200))
+
+
 def check(sfz: Path, keys: list[int], cc1: int, tmp: Path, tag: str):
     mp, wp = tmp / f"{tag}.mid", tmp / f"{tag}.wav"
     make_midi(keys, cc1, mp)
@@ -127,22 +169,34 @@ def check(sfz: Path, keys: list[int], cc1: int, tmp: Path, tag: str):
     m = x.mean(axis=1)
     rows = []
     for i, k in enumerate(keys):
-        a = int((0.2 + i * STEP_S + 0.45) * SR)
-        b = int((0.2 + i * STEP_S + NOTE_S - 0.1) * SR)
-        seg = m[a:b]
-        lvl = 20 * np.log10(np.sqrt(np.mean(seg ** 2)) + 1e-12)
+        t0 = 0.2 + i * STEP_S
+        a, b = int((t0 + WINDOWS[0][0]) * SR), int((t0 + WINDOWS[-1][1]) * SR)
+        lvl = 20 * np.log10(np.sqrt(np.mean(m[a:b] ** 2)) + 1e-12)
         f = midi_to_hz(k)
-        # wide search: one octave down to a fifth up, catches wrong notes / octave slips
-        f0 = yin(seg, SR, f / 2.05, f * 1.55)
-        f0 = f0[np.isfinite(f0)]
-        if len(f0) < 5:
-            rows.append(dict(key=k, name=midi_name(k), cents=None, level_db=round(lvl, 1), voiced=len(f0)))
+        est, spread, voiced = {}, None, 0
+        for wi, (w0, w1) in enumerate(WINDOWS):
+            seg = m[int((t0 + w0) * SR): int((t0 + w1) * SR)]
+            # wide search: one octave down to a fifth up, catches wrong notes / octave slips
+            f0 = yin(seg, SR, f / 2.05, f * 1.55)
+            f0 = f0[np.isfinite(f0)]
+            voiced += len(f0)
+            if len(f0) >= 3:
+                cy = 1200 * np.log2(f0 / f)
+                est[f"yin{wi}"] = float(np.median(cy))
+                if wi == len(WINDOWS) - 1:
+                    spread = round(float(np.percentile(cy, 75) - np.percentile(cy, 25)), 1)
+                # the harmonic estimator only near the right note (a wrong note shows in YIN)
+                if abs(est[f"yin{wi}"]) < 60:
+                    fh = harmonic_f0(seg, SR, f)
+                    if fh is not None:
+                        est[f"fft{wi}"] = float(1200 * np.log2(fh / f))
+        if len(est) < 2 or not any(k_.startswith("yin") for k_ in est):
+            rows.append(dict(key=k, name=midi_name(k), cents=None, level_db=round(lvl, 1), voiced=voiced))
             continue
-        cents = 1200 * np.log2(f0 / f)
-        med = float(np.median(cents))
-        rows.append(dict(key=k, name=midi_name(k), cents=round(med, 1),
-                         spread=round(float(np.percentile(cents, 75) - np.percentile(cents, 25)), 1),
-                         level_db=round(lvl, 1), voiced=int(len(f0))))
+        rows.append(dict(key=k, name=midi_name(k), cents=round(float(np.mean(list(est.values()))), 1),
+                         worst=round(max(est.values(), key=abs), 1),
+                         **{k_: round(v, 1) for k_, v in est.items()},
+                         spread=spread, level_db=round(lvl, 1), voiced=int(voiced)))
     return rows
 
 
@@ -200,7 +254,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("inst", nargs="+")
     ap.add_argument("--lib", default="iowa", choices=["iowa", "vpo3"])
-    ap.add_argument("--tol", type=float, default=15.0)
+    ap.add_argument("--tol", type=float, default=5.0,
+                    help="steady pitch tolerance in cents, every window and estimator (default 5)")
     ap.add_argument("--json", type=Path)
     ap.add_argument("--attack", action="store_true", help="also check the pitch of short notes (see above)")
     ap.add_argument("--attack-tol", type=float, default=30.0)
@@ -220,13 +275,13 @@ def main():
         for layer, cc in layer_cc1(a.lib).items():
             rows = check(sfz, keys, cc, tmp, f"{inst}_{layer}")
             report[inst][layer] = rows
-            bad = [r for r in rows if r["cents"] is None or abs(r["cents"]) > a.tol]
+            bad = [r for r in rows if r["cents"] is None or abs(r["worst"]) > a.tol]
             fails += len(bad)
-            c = np.array([r["cents"] for r in rows if r["cents"] is not None])
-            print(f"{inst:7s} {layer:6s} keys {midi_name(lo)}-{midi_name(hi)}: median |err| "
+            c = np.array([r["worst"] for r in rows if r["cents"] is not None])
+            print(f"{inst:7s} {layer:6s} keys {midi_name(lo)}-{midi_name(hi)}: worst window/estimator median |err| "
                   f"{np.median(np.abs(c)):.1f} c, max |err| {np.max(np.abs(c)):.1f} c, "
                   f"{len(bad)} over {a.tol:g} c" + ("" if not bad else ": " + ", ".join(
-                      f"{r['name']}({r['cents']})" for r in bad)))
+                      f"{r['name']}({r['cents'] if r['cents'] is None else r['worst']})" for r in bad)))
     if a.attack:
         attack = {}
         for inst in a.inst:
