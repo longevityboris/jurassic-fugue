@@ -56,13 +56,12 @@ Sources: four research reports in this folder, written 2026-09-25 from the finis
 | Tier | Stages |
 |---|---|
 | **Opus, high effort** | brief shaping, picking materials, dramaturgy and design, the outer-voice frame, episodes and pivotal bars, the Bach / arc / theme critics, coordination |
-| **Opus, medium effort** (flag D1) | routine inner-voice filling against a frame, local fixes from findings, integrator, editing derived performance plans |
-| **Sonnet 5** (flag D3) | listener's guide and README drafts, engine and tool maintenance code, reading audio-QA reports, idiom review |
-| **Haiku 4.5** | none; the mechanical jobs go to code instead |
+| **Opus, medium effort** (approved) | routine inner-voice filling against a frame, local fixes from findings, integrator, editing derived performance plans, listener's guide and README, engine and tool maintenance, reading audio-QA reports, idiom review |
+| **Sonnet / Haiku** | not used (decided 2026-09-25: stay within Opus; mechanical jobs go to code) |
 | **Jev** | route each finding to notes or performance; park findings it calls minor; tie a finding to a section when the bar-number regex fails (confidence ≥ 0.9); drop a clear loser before the design judges |
 | **Code** | every correctness and quality check (check, strict, splice, suspensions, T2-T8), the counterpoint-reviewer role (B: replaces a whole agent), searches, renders, audio measurement, plan derivation, status and resume |
 
-Your CLAUDE.md says "never downgrade a lane". D1 (same Opus, lower effort) and D3 (Sonnet for docs, code and report reading) break that rule and need your approval. A roughly $25 side-by-side test on two sections should confirm them before they become defaults. Replacing the counterpoint reviewers with code (D2) doesn't break it.
+Decided: every agent runs Opus 5.5. Effort is the only dial: high for the creative and critical stages, medium for routine ones. Replacing the counterpoint-reviewer agents with code (D2) stands.
 
 ## 4. Build phases and estimates
 
@@ -81,7 +80,7 @@ Units: cost-weighted tokens as in the run report (about $3.5 per million at list
 
 ## 5. Decisions for you
 
-1. Approve the model-tier exceptions D1 (Opus at medium effort) and D3 (Sonnet for docs, code and report reading), or keep full Opus everywhere.
+1. ~~Model tiers~~ decided: Opus only, high or medium effort.
 2. The kit's name (`kapell`) and home (a new repo under `longevityboris`, public or private).
 3. Pilot choice: revise *The Neighbour* first (recommended: it tests every new check on known flaws), or go straight to a new piece.
 4. MCP: not now, unless you want the kit from Claude Desktop or a remote session.
