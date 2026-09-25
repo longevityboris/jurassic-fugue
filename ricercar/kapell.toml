@@ -1,0 +1,34 @@
+# kapell project file for "The Neighbour" (first kapell project and regression fixture)
+[kapell]
+kit = "0.1"
+
+[piece]
+name = "The Neighbour"
+subtitle = "Ricercar a 4 on the Theme from Jurassic Park"
+form = "double-fugue"          # a claim: the role-coverage check verifies it
+key = "bes minor"
+measure = "4/4"
+voices = ["soprano", "alto", "tenor", "bass"]
+
+[ranges]                       # MIDI note numbers
+soprano = [60, 84]
+alto = [53, 77]
+tenor = [48, 72]
+bass = [36, 62]
+
+[paths]
+score = "score/music-voices.ly"
+sections = "score/sections"
+piece_model = "design/final-lab/piece.py"
+skeleton = "design/final-lab/SK_final.ly"
+plan = "design/final-lab/plan.json"
+materials = "design/final-lab/materials.ly"
+blueprint = "design/BLUEPRINT.md"
+performance = "performance"
+scores_out = "score/out"
+
+[quotas]
+strong_suspensions = 20
+
+[versions]
+render = ["bach_organ", "beethoven_piano", "beethoven_quartet", "symphonic", "quintet"]
