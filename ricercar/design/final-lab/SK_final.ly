@@ -52,7 +52,7 @@ alto = \absolute {
   % 25
   ees''2. des''4 ~ | des''4 aes'4 g'2 ~ | g'2 bes'2 ~ | bes'2. bes'8 a'8 |
   % 29
-  a'1 | c'8 c'8 c'8 c'8 c'8 c'8 des'8 des'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 f'8 f'8 | ges'8 ges'8 ges'8 ges'8 ees'8 ees'8 ees'8 ees'8 |
+  a'1 | a8 a8 c'8 c'8 c'8 c'8 des'8 des'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 f'4 | f'8 f'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 |
   % 33
   ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 | e'8 e'8 e'8 e'8 e'8 e'8 e'8 e'8 | r2. a'4 | c'2. d'4 |
   % 37
@@ -88,9 +88,9 @@ tenor = \absolute {
   % 25
   ges'2. ees'4 | f'4 c'4 bes2 | g1 ~ | g2. g8 ges8 |
   % 29
-  ges1 | f8 f8 f8 f8 a8 a8 bes8 bes8 | ges8 ges8 ges8 ges8 ges8 ges8 f8 f8 | bes8 bes8 bes8 bes8 a8 a8 a8 a8 |
+  ges1 | f8 f8 a8 a8 a8 a8 bes8 bes8 | ges8 ges8 ges8 ges8 ges8 ges8 aes4 | ges8 ges8 bes8 bes8 bes8 bes8 bes8 bes8 |
   % 33
-  a8 a8 a8 a8 a8 a8 a8 a8 | gis8 gis8 gis8 gis8 gis8 gis8 gis8 gis8 | r1 | r1 |
+  bes8 bes8 bes8 bes8 a8 a8 a8 a8 | gis8 gis8 a8 a8 gis8 gis8 gis8 gis8 | r1 | r1 |
   % 37
   b2. b8 c'8 | b2. b8 c'8 | b4. a8 a4. fis8 | fis2. g8 b8 |
   % 41

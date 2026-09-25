@@ -80,12 +80,12 @@ SECTIONS = [
     dict(id='sec04_arioso', title='Arioso dolente and the German-sixth pivot', bars=5,
          soprano='''c''4. a'8 f'4 des''8 bes'8 | c''2. f''8 bes'8 | ees''4. des''8 des''4. c''8 | c''1 |
             c''2 b'2''',
-         alto='''c'8 c'8 c'8 c'8 c'8 c'8 des'8 des'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 f'8 f'8 | ges'8 ges'8 ges'8 ges'8 ees'8 ees'8 ees'8 ees'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 |
-            e'8 e'8 e'8 e'8 e'8 e'8 e'8 e'8''',
-         tenor='''f8 f8 f8 f8 a8 a8 bes8 bes8 | ges8 ges8 ges8 ges8 ges8 ges8 f8 f8 | bes8 bes8 bes8 bes8 a8 a8 a8 a8 | a8 a8 a8 a8 a8 a8 a8 a8 |
-            gis8 gis8 gis8 gis8 gis8 gis8 gis8 gis8''',
-         bass='''f,1 | ees,2. d,4 | ges,2 f,2 | f,1 |
-            e,1''',
+         alto="""a8 a8 c'8 c'8 c'8 c'8 des'8 des'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 f'4 | f'8 f'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 | ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 ees'8 |
+            e'8 e'8 e'8 e'8 e'8 e'8 e'8 e'8""",
+         tenor="""f8 f8 a8 a8 a8 a8 bes8 bes8 | ges8 ges8 ges8 ges8 ges8 ges8 aes4 | ges8 ges8 bes8 bes8 bes8 bes8 bes8 bes8 | bes8 bes8 bes8 bes8 a8 a8 a8 a8 |
+            gis8 gis8 a8 a8 gis8 gis8 gis8 gis8""",
+         bass="""f,1 | ees,2. d,4 | ges,2 f,2 | f,1 |
+            e,1""",
          roles=[('soprano', '1:1', '6:1', 'subject')],
          tempo=[{'at': '1:1', 'bpm': 52}],
          dynamics=[{'at': '1:1', 'level': 'pp'}, {'at': '2:1', 'until': '3:1', 'to': 'p'}, {'at': '3:1', 'until': '5:1', 'to': 'pp'}],

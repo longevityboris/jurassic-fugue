@@ -9,7 +9,7 @@ A suspension is counted at a strong beat t (beat 1 or 3) when
   AGENT        another voice attacks at t, and N against the agent forms a suspension interval:
                N above the agent: 7th (7-6), 9th (9-8, compound only) or 4th (4-3, agent = lowest voice);
                N below the agent: 2nd or 9th (2-3, the bass suspension) or 4th (4-5, N = lowest voice);
-  RESOLUTION   N's next note is a step down (1-2 semitones), comes while the agent's note still
+  RESOLUTION   N's next different note (same-pitch re-strikes are skipped) is a step down (1-2 semitones), comes while the agent's note still
                sounds, and is consonant with it (3rd, 6th, 8ve, 5th or unison class);
   DISSONANCE   N is actually dissonant at t (not a chord tone merely held under a moving voice).
 Held chord tones (a bass root under a new seventh above it, a seventh held while the bass moves to
@@ -52,7 +52,7 @@ def main():
                 return False
         return True
 
-    out, weak, count = [], [], 0
+    out, weak, count, seen = [], [], 0, set()
     times = sorted({n.start for v in V for n in data[v]})
     for t in times:
         beat = (t % 1) * 4
@@ -73,9 +73,17 @@ def main():
                 prep = data[v][i - 1]  # re-struck suspension
             if prep is None:
                 continue
-            nx = data[v][i + 1] if i + 1 < len(data[v]) else None
+            # skip same-pitch re-strikes (pulsing accompaniments re-articulate a suspension)
+            j = i + 1
+            while j < len(data[v]) and data[v][j].midi == n.midi and data[v][j].start == data[v][j - 1].end:
+                j += 1
+            nx = data[v][j] if j < len(data[v]) else None
             if nx is None or not (1 <= n.midi - nx.midi <= 2):
                 continue
+            k = data[v].index(prep)
+            while k > 0 and data[v][k - 1].midi == n.midi and data[v][k - 1].end == data[v][k].start:
+                k -= 1
+            prep = data[v][k]
             if not consonant_at(prep, prep.start):
                 continue
             found = None
@@ -111,7 +119,10 @@ def main():
                     continue
                 found = (w, ag, kind)
                 break
+            if found and (v, nx.start) in seen:
+                continue  # one suspension, re-articulated: count it once
             if found:
+                seen.add((v, nx.start))
                 b = int(t) + 1
                 w, ag, kind = found
                 line = f"{b}:{float((t - b + 1) * 4 + 1):g} {v} {n.name}->{nx.name} ({kind} against {w} {ag.name})"
