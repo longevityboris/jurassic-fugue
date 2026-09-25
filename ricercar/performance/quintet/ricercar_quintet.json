@@ -242,12 +242,12 @@
    "voice": "soprano",
    "part": "vn1",
    "at": "46:1",
-   "until": "63:1"
+   "until": "59:1"
   },
   {
    "voice": "soprano",
    "part": "vn1",
-   "at": "63:1",
+   "at": "59:1",
    "until": "65:1",
    "level": 0.5
   },
@@ -446,6 +446,19 @@
    "voice": "bass",
    "part": "bass",
    "at": "50:1",
+   "until": "59:1"
+  },
+  {
+   "voice": "bass",
+   "part": "bass",
+   "at": "59:1",
+   "until": "63:1",
+   "level": -1.0
+  },
+  {
+   "voice": "bass",
+   "part": "bass",
+   "at": "63:1",
    "until": "end"
   },
   {
@@ -462,7 +475,7 @@
    "at": "59:1",
    "until": "63:1",
    "octave": -12,
-   "level": -0.5
+   "level": -2.0
   },
   {
    "voice": "bass",
@@ -478,12 +491,23 @@
    "voice": "bass",
    "part": "pedal_8vb",
    "at": "46:1",
-   "until": "50:1",
+   "until": "48:1",
    "octave": -12,
    "mode": "sustain",
    "bridge": 1,
    "min_beats": 4,
    "level": -0.5
+  },
+  {
+   "voice": "bass",
+   "part": "pedal_8vb",
+   "at": "48:1",
+   "until": "50:1",
+   "octave": -12,
+   "mode": "sustain",
+   "bridge": 1,
+   "min_beats": 4,
+   "level": -1.0
   }
  ],
  "mix": {

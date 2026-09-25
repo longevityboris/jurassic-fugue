@@ -47,9 +47,11 @@ ASSIGN = [
     ("soprano", "vn1", "9:1", "10:1", {"level": -0.25}),
     ("soprano", "vn1", "10:1", "35:1", {}),
     # the soprano rests 46-50:2; violin I returns with the first diminution head (50:3)
-    ("soprano", "vn1", "46:1", "63:1", {}),
-    # c'' rises to d'' (63:1), the note that makes the tune major: violin I sings it over the others
-    ("soprano", "vn1", "63:1", "65:1", {"level": 0.5}),
+    ("soprano", "vn1", "46:1", "59:1", {}),
+    # the tune's second half and its peak (f'' at 60:4) over the bass's answer, which the plan brings
+    # out as much as the tune (answer and subject both +0.7): violin I sings out from 59:1, through
+    # c'' rising to d'' (63:1), the note that makes the tune major
+    ("soprano", "vn1", "59:1", "65:1", {"level": 0.5}),
     ("soprano", "vn1", "65:1", "end", {}),
     # violin II: the answer and CS1; the viola takes the alto 9:4-12:4 (F3, F#3 below the violin's G3)
     ("alto", "vn2", "1:1", "9:4", {}),
@@ -73,7 +75,11 @@ ASSIGN = [
     # piano has S1 (48:1), and rejoins it for the climb to Climax II (50:1)
     ("tenor", "va", "45:1", "48:1", {}),
     ("tenor", "va", "50:1", "end", {}),
-    # cello: the bass from its entry (9:1)
+    # cello: the bass from its entry (9:1). The exposition's p < mp hairpin rises 5.2 dB at this entry
+    # in the master (the dry quartet +1.7 dB: the hall answers the cello's register), which is the
+    # texture growing by its third voice; a -0.3 trim on 9:1-11:1 took only 0.5 dB off it and put
+    # the subject's head B-flat under violin II's answer tail (-40.5 vs -39.1 LUFS in 9:1-9:4), so the
+    # entry keeps the plan's level
     ("bass", "vc", "1:1", "30:2", {}),
     # sec04 header: the bass's S2 head 30:2-31:1 (+0.4, like the tenor's lament)
     ("bass", "vc", "30:2", "31:1", {"level": 0.4}),
@@ -102,19 +108,30 @@ ASSIGN = [
     ("tenor", "tenor", "55:1", "63:1", {"level": -1.0}),
     ("alto", "alto", "63:1", "end", {}),
     ("tenor", "tenor", "63:1", "end", {}),
-    ("bass", "bass", "50:1", "end", {}),
+    ("bass", "bass", "50:1", "59:1", {}),
+    # the bass's answer in major (59-62) under the tune's peak (f'' at 60:4): violin I leads. With
+    # the piano's bass and its octave at the plan's level (answer role), cello + piano bass sat
+    # 2-4.6 dB over the soprano (violin I + piano 8va) in 59-62 on the dry stems; the piano's two
+    # bass lines go one step down, the cello keeps the answer
+    ("bass", "bass", "59:1", "63:1", {"level": -1.0}),
+    ("bass", "bass", "63:1", "end", {}),
     # bass octaves: Climax II and the hinge; the answer in major under the tune's peak (59-62);
     # the tonic pedal re-struck every bar (63-66), tolling
     ("bass", "bass_8vb", "50:1", "55:1", {"octave": -12, "level": -0.5}),
-    ("bass", "bass_8vb", "59:1", "63:1", {"octave": -12, "level": -0.5}),
+    # (at -1.0 the octave below was still the loudest bass line in bar 61: two steps down, a shadow)
+    ("bass", "bass_8vb", "59:1", "63:1", {"octave": -12, "level": -2.0}),
     ("bass", "bass_8vb", "63:1", "end", {"octave": -12, "level": -1.0}),
 ]
 
 # the dominant pedal: the piano holds the bass's F an octave down under the cello's augmented
-# inversion and its G-flat neighbours (the blueprint's "sostenuto on F2 in 46-50")
+# inversion and its G-flat neighbours (the blueprint's "sostenuto on F2 in 46-50"). One F1 struck
+# at 46:1 decayed to 20-28 dB under the cello by bar 48, so the pedal is re-struck, a notch softer,
+# at 48:1 with the piano's S1 entry (the key is let go under the cello's G-flat at 47:4)
 PEDAL_POINTS = [
-    {"voice": "bass", "part": "pedal_8vb", "at": "46:1", "until": "50:1", "octave": -12,
+    {"voice": "bass", "part": "pedal_8vb", "at": "46:1", "until": "48:1", "octave": -12,
      "mode": "sustain", "bridge": 1, "min_beats": 4, "level": -0.5},
+    {"voice": "bass", "part": "pedal_8vb", "at": "48:1", "until": "50:1", "octave": -12,
+     "mode": "sustain", "bridge": 1, "min_beats": 4, "level": -1.0},
 ]
 
 # where the piano uses the damper: Climax II and the hinge (sec06 finding 8), the apotheosis and

@@ -150,22 +150,22 @@
        "kind": "line",
        "voice": "soprano",
        "at": "46:1",
-       "until": "63:1",
+       "until": "59:1",
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
        "t0_s": 155.617,
-       "t1_s": 213.585
+       "t1_s": 200.252
       },
       {
        "kind": "line",
        "voice": "soprano",
-       "at": "63:1",
+       "at": "59:1",
        "until": "65:1",
        "octave": 0,
        "level": 0.5,
        "articulation": "auto",
-       "t0_s": 213.585,
+       "t0_s": 200.252,
        "t1_s": 220.699
       },
       {
@@ -588,11 +588,33 @@
        "kind": "line",
        "voice": "bass",
        "at": "50:1",
-       "until": "67:1",
+       "until": "59:1",
        "octave": 0,
        "level": 0.0,
        "articulation": "auto",
        "t0_s": 168.248,
+       "t1_s": 200.252
+      },
+      {
+       "kind": "line",
+       "voice": "bass",
+       "at": "59:1",
+       "until": "63:1",
+       "octave": 0,
+       "level": -1.0,
+       "articulation": "auto",
+       "t0_s": 200.252,
+       "t1_s": 213.585
+      },
+      {
+       "kind": "line",
+       "voice": "bass",
+       "at": "63:1",
+       "until": "67:1",
+       "octave": 0,
+       "level": 0.0,
+       "articulation": "auto",
+       "t0_s": 213.585,
        "t1_s": 232.106
       }
      ]
@@ -649,7 +671,7 @@
        "at": "59:1",
        "until": "63:1",
        "octave": -12,
-       "level": -0.5,
+       "level": -2.0,
        "articulation": "auto",
        "t0_s": 200.252,
        "t1_s": 213.585
@@ -672,7 +694,7 @@
      "channel": 6,
      "program": 0,
      "instrument": null,
-     "notes": 1,
+     "notes": 2,
      "range": [
       29,
       29
@@ -682,11 +704,22 @@
        "kind": "pedal",
        "voice": "bass",
        "at": "46:1",
-       "until": "50:1",
+       "until": "48:1",
        "octave": -12,
        "level": -0.5,
        "articulation": "auto",
        "t0_s": 155.617,
+       "t1_s": 161.932
+      },
+      {
+       "kind": "pedal",
+       "voice": "bass",
+       "at": "48:1",
+       "until": "50:1",
+       "octave": -12,
+       "level": -1.0,
+       "articulation": "auto",
+       "t0_s": 161.932,
        "t1_s": 168.248
       }
      ]

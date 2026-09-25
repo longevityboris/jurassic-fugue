@@ -2,9 +2,9 @@
  "ok": true,
  "errors": [],
  "warnings": [
-  "vn1: 4 note(s) held across a hand-off shortened to the next note",
-  "vn2: 1 note(s) held across a hand-off shortened to the next note",
+  "vn1: 3 note(s) held across a hand-off shortened to the next note",
   "va: 1 note(s) held across a hand-off shortened to the next note",
+  "va: 1 hand-off(s) onto the same key: the earlier note released 60 ms before the next",
   "vc: 1 note(s) held across a hand-off shortened to the next note"
  ],
  "onset_tolerance_ticks": 60,
@@ -144,7 +144,7 @@
    "track": "pedal_8vb",
    "expected": 0,
    "matched": 0,
-   "pedal_notes": 1,
+   "pedal_notes": 2,
    "missing": 0,
    "extra": 0,
    "shortened": 0,
