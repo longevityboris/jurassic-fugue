@@ -56,6 +56,23 @@ def main():
             hol.append(grid.pos(t))
     print('  unisons at:', ' '.join(uni) or 'none')
     print('  hollow 4-voice sonorities (<=2 pitch classes) at:', ' '.join(hol) or 'none')
+    # plan audit: a hairpin needs attacks to be heard on the piano (loudness is set at note-on)
+    import json
+    from fractions import Fraction as F
+    plan = json.load(open(os.path.join(HERE, 'plan.json')))
+    pp = lambda x: F(int(x.split(':')[0]) - 1) + (F(x.split(':')[1]) - 1) / 4
+    attacks = sorted({n.start for v in data for n in data[v] if n.midi is not None})
+    gaps = []
+    for d in plan['dynamics']:
+        if 'until' not in d:
+            continue
+        a0, a1 = pp(d['at']), pp(d['until'])
+        t = a0
+        while t < a1:
+            if not any(t <= x < min(t + F(1, 2), a1) for x in attacks):
+                gaps.append(f"{grid.pos(t)}")
+            t += F(1, 2)
+    print('  hairpin half-bars without any attack:', ' '.join(gaps) or 'none')
     su = run([sys.executable, 'suspensions.py', sk])
     print('  ' + ' / '.join(su.stdout.strip().splitlines()))
     for tgt in ('piano', 'strings'):

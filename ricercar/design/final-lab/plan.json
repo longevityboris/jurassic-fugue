@@ -9,7 +9,7 @@
  "tempo": [
   {
    "at": "1:1",
-   "bpm": 74
+   "bpm": 78
   },
   {
    "at": "28:1",
@@ -22,7 +22,7 @@
   },
   {
    "at": "35:1",
-   "bpm": 60
+   "bpm": 64
   },
   {
    "at": "35:1",
@@ -40,16 +40,16 @@
   },
   {
    "at": "54:1",
-   "bpm": 60
+   "bpm": 62
   },
   {
    "at": "54:1",
    "until": "55:1",
-   "to_bpm": 54
+   "to_bpm": 56
   },
   {
    "at": "55:1",
-   "bpm": 69
+   "bpm": 72
   },
   {
    "at": "63:1",
@@ -83,10 +83,6 @@
   {
    "at": "46:1",
    "ms": 250
-  },
-  {
-   "at": "55:1",
-   "ms": 400
   }
  ],
  "dynamics": [
@@ -115,8 +111,12 @@
   },
   {
    "at": "26:3",
-   "until": "28:4",
+   "until": "28:1",
    "to": "ff"
+  },
+  {
+   "at": "28:1",
+   "level": "ff"
   },
   {
    "at": "29:1",
@@ -127,9 +127,9 @@
    "level": "pp"
   },
   {
-   "at": "31:1",
+   "at": "30:1",
    "until": "32:1",
-   "to": "p"
+   "to": "mp"
   },
   {
    "at": "32:1",
@@ -184,7 +184,7 @@
   },
   {
    "at": "59:1",
-   "until": "61:1",
+   "until": "60:4",
    "to": "f"
   },
   {
@@ -215,7 +215,8 @@
    "voice": "soprano",
    "at": "5:4",
    "until": "9:4",
-   "role": "cs"
+   "role": "cs",
+   "landing_from": "9:3"
   },
   {
    "voice": "bass",
@@ -227,7 +228,8 @@
    "voice": "alto",
    "at": "9:4",
    "until": "13:4",
-   "role": "cs"
+   "role": "cs",
+   "landing_from": "13:3"
   },
   {
    "voice": "soprano",
@@ -244,7 +246,7 @@
   {
    "voice": "bass",
    "at": "13:4",
-   "until": "17:4",
+   "until": "17:3",
    "role": "cs"
   },
   {
@@ -298,7 +300,7 @@
   {
    "voice": "soprano",
    "at": "30:1",
-   "until": "35:1",
+   "until": "34:1",
    "role": "subject"
   },
   {
@@ -383,21 +385,217 @@
   },
   {
    "voice": "bass",
-   "at": "55:1",
-   "until": "63:1",
+   "at": "55:4",
+   "until": "58:4",
    "role": "cs"
   },
   {
    "voice": "tenor",
+   "at": "56:1",
+   "until": "59:1",
+   "role": "cs",
+   "landing_from": "58:4"
+  },
+  {
+   "voice": "bass",
    "at": "59:1",
    "until": "63:1",
-   "role": "cs"
+   "role": "answer"
+  },
+  {
+   "voice": "tenor",
+   "at": "61:1",
+   "until": "63:1",
+   "role": "cs",
+   "landing_from": "62:4"
   },
   {
    "voice": "tenor",
    "at": "65:1",
    "until": "66:4",
    "role": "subject"
+  }
+ ],
+ "keep": [
+  {
+   "voice": "bass",
+   "at": "18:1",
+   "until": "20:1",
+   "what": "the episode bass falls in fifths F-B-flat-E-flat-A-flat into D-flat"
+  },
+  {
+   "voice": "alto",
+   "at": "24:3",
+   "until": "25:1",
+   "what": "E-flat over the three A-flats: the bare fifth that turns minor"
+  },
+  {
+   "voice": "tenor",
+   "at": "24:4",
+   "until": "25:1",
+   "what": "C-flat: A-flat minor, the false dawn darkening"
+  },
+  {
+   "voice": "alto",
+   "at": "26:3",
+   "until": "27:3",
+   "what": "G under the first head: E dim7 complete at 26:3"
+  },
+  {
+   "voice": "tenor",
+   "at": "26:3",
+   "until": "27:1",
+   "what": "B-flat under the first head: E dim7 complete at 26:3"
+  },
+  {
+   "voice": "soprano",
+   "at": "29:1",
+   "until": "30:1",
+   "what": "fermata chord re-struck"
+  },
+  {
+   "voice": "alto",
+   "at": "29:1",
+   "until": "30:1",
+   "what": "fermata chord re-struck"
+  },
+  {
+   "voice": "tenor",
+   "at": "29:1",
+   "until": "30:1",
+   "what": "fermata chord re-struck"
+  },
+  {
+   "voice": "bass",
+   "at": "29:1",
+   "until": "30:1",
+   "what": "fermata chord re-struck"
+  },
+  {
+   "voice": "soprano",
+   "at": "34:1",
+   "until": "35:1",
+   "what": "the pivot: C held over E, then B (b6-5)"
+  },
+  {
+   "voice": "alto",
+   "at": "31:4",
+   "until": "32:2",
+   "what": "F held over the G-flat bass: the 7-6 at the arioso peak"
+  },
+  {
+   "voice": "tenor",
+   "at": "32:1",
+   "until": "33:4",
+   "what": "B-flat held (cadential 6/4) resolving to A at 33:3"
+  },
+  {
+   "voice": "tenor",
+   "at": "34:1",
+   "until": "35:1",
+   "what": "G-sharp, A (the A-minor 6/4 over E), G-sharp"
+  },
+  {
+   "voice": "bass",
+   "at": "31:1",
+   "until": "33:1",
+   "what": "E-flat D, the diminished-fourth fall D-G-flat, F"
+  },
+  {
+   "voice": "soprano",
+   "at": "39:3",
+   "until": "41:1",
+   "what": "E over the root-position A minor, then D, D-sharp into the third entry"
+  },
+  {
+   "voice": "alto",
+   "at": "39:3",
+   "until": "41:1",
+   "what": "C (A minor complete at 39:3), B, F-sharp (B major), E"
+  },
+  {
+   "voice": "bass",
+   "at": "45:1",
+   "until": "46:1",
+   "what": "the cadence bass F-D-A and the E that resolves deceptively to F"
+  },
+  {
+   "voice": "alto",
+   "at": "45:1",
+   "until": "46:1",
+   "what": "cadence and G-sharp of the E7 link"
+  },
+  {
+   "voice": "tenor",
+   "at": "45:1",
+   "until": "46:1",
+   "what": "cadence and B of the E7 link"
+  },
+  {
+   "voice": "tenor",
+   "at": "46:1",
+   "until": "48:1",
+   "what": "lament lead-in B-flat A A-flat G, then C into the S1 entry"
+  },
+  {
+   "voice": "tenor",
+   "at": "52:3",
+   "until": "54:1",
+   "what": "B-flat, G (C7 and E dim7 complete), C"
+  },
+  {
+   "voice": "alto",
+   "at": "53:3",
+   "until": "55:1",
+   "what": "E, F (root doubled at the V fermata), then the hinge C A C"
+  },
+  {
+   "voice": "soprano",
+   "at": "53:4",
+   "until": "55:1",
+   "what": "A at the fermata, then F E-flat C A into the tune"
+  },
+  {
+   "voice": "tenor",
+   "at": "54:1",
+   "until": "55:1",
+   "what": "hinge: A C E-flat"
+  },
+  {
+   "voice": "alto",
+   "at": "59:1",
+   "until": "59:2.5",
+   "what": "A, the third of V7 (never F)"
+  },
+  {
+   "voice": "alto",
+   "at": "60:3",
+   "until": "61:1",
+   "what": "A under the tune peak f, then G (C7/E)"
+  },
+  {
+   "voice": "alto",
+   "at": "62:1",
+   "until": "63:1",
+   "what": "E (C7/B-flat complete), A"
+  },
+  {
+   "voice": "tenor",
+   "at": "62:4",
+   "until": "63:1",
+   "what": "E-flat: V7 complete before the cadence"
+  },
+  {
+   "voice": "soprano",
+   "at": "63:1",
+   "until": "65:1",
+   "what": "the tune open c rises to d, held"
+  },
+  {
+   "voice": "bass",
+   "at": "63:1",
+   "until": "67:1",
+   "what": "tonic pedal re-struck every bar"
   }
  ],
  "pedal": [
