@@ -3,8 +3,8 @@
  "score": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/score/music-voices.ly",
  "plan": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/bach_organ/plan.json",
  "score_sha256": "0132d043358cbcb9",
- "plan_sha256": "b8fe421ae51a95a6",
- "duration_s": 235.815,
+ "plan_sha256": "751f07bdd7ee4b53",
+ "duration_s": 235.515,
  "bars": 66.0,
  "marks": {
   "sec01_expo": {
@@ -49,19 +49,19 @@
   },
   "sec06_pedal_climax": {
    "at": "46:1",
-   "t_s": 156.353
+   "t_s": 156.053
   },
   "pedal_climax": {
    "at": "46:1",
-   "t_s": 156.353
+   "t_s": 156.053
   },
   "sec07_apotheosis_coda": {
    "at": "55:1",
-   "t_s": 189.13
+   "t_s": 188.83
   },
   "apotheosis_coda": {
    "at": "55:1",
-   "t_s": 189.13
+   "t_s": 188.83
   }
  },
  "groups": {
@@ -89,7 +89,7 @@
        "level": 0.0,
        "articulation": "auto",
        "t0_s": 0.0,
-       "t1_s": 235.815
+       "t1_s": 235.515
       }
      ]
     },
@@ -113,7 +113,7 @@
        "level": 0.0,
        "articulation": "auto",
        "t0_s": 0.0,
-       "t1_s": 235.815
+       "t1_s": 235.515
       }
      ]
     },
@@ -137,7 +137,7 @@
        "level": 0.0,
        "articulation": "auto",
        "t0_s": 0.0,
-       "t1_s": 235.815
+       "t1_s": 235.515
       }
      ]
     },
@@ -161,7 +161,7 @@
        "level": 0.0,
        "articulation": "auto",
        "t0_s": 0.0,
-       "t1_s": 235.815
+       "t1_s": 235.515
       }
      ]
     }
