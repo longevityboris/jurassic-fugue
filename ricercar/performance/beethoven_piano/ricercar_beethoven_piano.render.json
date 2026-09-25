@@ -13,52 +13,52 @@
  "voices": {
   "soprano": {
    "notes": 191,
-   "velocity_in_mean": 65.5,
+   "velocity_in_mean": 65.4,
    "velocity_in_range": [
     33,
     124
    ],
-   "velocity_eff_mean": 75.7,
+   "velocity_eff_mean": 75.6,
    "velocity_eff_range": [
     31,
     127
    ],
    "cc_dynamics_db_mean": 0.0,
-   "rms_dbfs_prenorm": -38.12,
+   "rms_dbfs_prenorm": -38.26,
    "transpose": 0,
    "zero_length_notes": 0,
    "unterminated_notes": 0,
    "folded_notes": 0,
    "stereo": {
-    "lr_correlation": 0.688,
-    "mono_fold_db": -1.02,
+    "lr_correlation": 0.68,
+    "mono_fold_db": -1.05,
     "mono_fold_worst_1s_db": -6.11,
-    "balance_r_minus_l_db": 5.22
+    "balance_r_minus_l_db": 5.25
    }
   },
   "alto": {
    "notes": 217,
-   "velocity_in_mean": 58.7,
+   "velocity_in_mean": 58.5,
    "velocity_in_range": [
     23,
     124
    ],
-   "velocity_eff_mean": 66.8,
+   "velocity_eff_mean": 66.7,
    "velocity_eff_range": [
     15,
     127
    ],
    "cc_dynamics_db_mean": 0.0,
-   "rms_dbfs_prenorm": -38.7,
+   "rms_dbfs_prenorm": -38.79,
    "transpose": 0,
    "zero_length_notes": 0,
    "unterminated_notes": 0,
    "folded_notes": 0,
    "stereo": {
     "lr_correlation": 0.6,
-    "mono_fold_db": -1.29,
+    "mono_fold_db": -1.28,
     "mono_fold_worst_1s_db": -3.4,
-    "balance_r_minus_l_db": 5.81
+    "balance_r_minus_l_db": 5.78
    }
   },
   "bass": {
@@ -68,46 +68,46 @@
     28,
     124
    ],
-   "velocity_eff_mean": 74.6,
+   "velocity_eff_mean": 74.5,
    "velocity_eff_range": [
     23,
     127
    ],
    "cc_dynamics_db_mean": 0.0,
-   "rms_dbfs_prenorm": -37.18,
+   "rms_dbfs_prenorm": -37.22,
    "transpose": 0,
    "zero_length_notes": 0,
    "unterminated_notes": 0,
    "folded_notes": 0,
    "stereo": {
-    "lr_correlation": 0.54,
+    "lr_correlation": 0.541,
     "mono_fold_db": -1.18,
     "mono_fold_worst_1s_db": -3.26,
-    "balance_r_minus_l_db": -2.08
+    "balance_r_minus_l_db": -2.1
    }
   },
   "tenor": {
    "notes": 192,
-   "velocity_in_mean": 60.4,
+   "velocity_in_mean": 60.2,
    "velocity_in_range": [
     24,
     112
    ],
-   "velocity_eff_mean": 70.0,
+   "velocity_eff_mean": 69.8,
    "velocity_eff_range": [
     16,
     127
    ],
    "cc_dynamics_db_mean": 0.0,
-   "rms_dbfs_prenorm": -37.54,
+   "rms_dbfs_prenorm": -37.67,
    "transpose": 0,
    "zero_length_notes": 0,
    "unterminated_notes": 0,
    "folded_notes": 0,
    "stereo": {
-    "lr_correlation": 0.556,
-    "mono_fold_db": -1.1,
-    "mono_fold_worst_1s_db": -3.38,
+    "lr_correlation": 0.558,
+    "mono_fold_db": -1.09,
+    "mono_fold_worst_1s_db": -3.54,
     "balance_r_minus_l_db": 0.89
    }
   }
@@ -132,32 +132,32 @@
   "hall_re_dry_db": -1.5,
   "c80_db": 5.0
  },
- "normalise_gain_db": 3.14,
+ "normalise_gain_db": 3.15,
  "true_peak_dbfs": -1.0,
- "rms_dbfs": -26.55,
+ "rms_dbfs": -26.66,
  "stereo": {
   "dry": {
-   "lr_correlation": 0.547,
-   "mono_fold_db": -1.15,
-   "mono_fold_worst_1s_db": -2.74,
-   "balance_r_minus_l_db": 1.83
+   "lr_correlation": 0.542,
+   "mono_fold_db": -1.16,
+   "mono_fold_worst_1s_db": -3.37,
+   "balance_r_minus_l_db": 1.84
   },
   "mix": {
-   "lr_correlation": 0.478,
-   "mono_fold_db": -1.33,
+   "lr_correlation": 0.476,
+   "mono_fold_db": -1.34,
    "mono_fold_worst_1s_db": -3.42,
    "balance_r_minus_l_db": 1.5
   }
  },
  "measured": {
   "wav": {
-   "integrated_lufs": -22.6,
-   "lra_lu": 18.9,
+   "integrated_lufs": -22.7,
+   "lra_lu": 18.8,
    "true_peak_dbtp": -1.0
   },
   "m4a": {
-   "integrated_lufs": -22.6,
-   "lra_lu": 18.9,
+   "integrated_lufs": -22.7,
+   "lra_lu": 18.8,
    "true_peak_dbtp": -1.0
   }
  },
