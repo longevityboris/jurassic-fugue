@@ -11,3 +11,5 @@ ricercar/audio/organ/out/stems/
 ricercar/audio/*/out/*.mid
 !ricercar/score/out/*.pdf
 .kapell-build/
+ricercar/score/out/*.log
+ricercar/score/out/*.ly
