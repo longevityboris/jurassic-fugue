@@ -924,6 +924,10 @@ def check(score: Path, plan_path: Path, spec_path: Path, outdir: Path) -> dict:
                     first = first or [n for n in vn if n.start <= x0 < n.end and n.midi == P]
                     if not first:
                         continue
+                    # a pedal whose onset was humanised or led a few ms early is measured from its
+                    # notated start, so the note before it is not counted as bridged under the pedal
+                    if abs(tick_of(first[0].start) - on) <= tol:
+                        x0 = first[0].start
                     inside = sorted([n for n in vn if n.end > x0 and n.start < x1], key=lambda n: n.start)
                     # every stretch of other notes under the pedal must fit the bridge
                     bad, stretch = False, F(0)
