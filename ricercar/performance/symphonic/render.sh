@@ -1,5 +1,5 @@
 #!/bin/sh
-# The Neighbour, symphony orchestra: score + plan + scoring -> WAV + m4a, the reports, the preview copy.
+# The Neighbour, symphony orchestra: score + plan + scoring -> WAV + m4a, the reports, the copy in final/.
 #   design/final-lab/plan.json  the performance (tempo, breaths, fermatas, dynamics, roles)
 #   symphonic.json              the scoring (who plays what, octave doublings, pedal points, levels),
 #                               its dynamics override (Climax I under Climax II, the quiet floor), hall
@@ -18,9 +18,9 @@ rm -f "$D/build.mix.json"
 if [ "${QA:-}" = failed ]; then echo "qa_mix.py FAILED: see ricercar_symphonic.qa.json"; fi
 cp "$D/build/integrity.json" "$D/ricercar_symphonic.integrity.json"
 cp "$D/build/orchestration.json" "$D/ricercar_symphonic.orchestration.json"
-cp "$D/ricercar_symphonic.m4a" "$R/preview/final_symphonic.m4a"
+sh "$R/tools/publish.sh" orchestra   # clean-named, tagged copy in the top-level final/ folder
 if [ "$1" != "--keep-build" ]; then
   # keep the reports, drop the dry stems and the intermediate MIDI (disk)
   rm -rf "$D/build/render" "$D/build/perform"
 fi
-echo "done: $D/ricercar_symphonic.wav, .m4a; preview/final_symphonic.m4a"
+echo "done: $D/ricercar_symphonic.wav, .m4a (published to final/)"

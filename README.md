@@ -20,17 +20,36 @@ There are two pieces.
 
 | Piece | Form | Key | Length | Status |
 |---|---|---|---|---|
-| **Fugue on the Theme from Jurassic Park** | four-voice organ fugue | B-flat major | 37 bars, about 2¼ min | finished |
+| **Fugue on the Theme from Jurassic Park** | four-voice organ fugue | B-flat major | 37 bars, about 2¼ min | first attempt, archived |
 | **The Neighbour**, ricercar a 4 | fugue, inverted fugue and the tune's two halves combined, in a Beethoven-style arc (Op. 110) | B-flat minor to B-flat major | 66 bars, about 4 min | finished |
 
 <div align="center">
-<img src="preview/fugue-page1.png" alt="First page of the organ fugue score" width="620">
-<br><sub>Page 1 of the finished organ fugue (<code>fugue.ly</code>)</sub>
+<img src="archive/first-attempt-organ-fugue/score-images/fugue-page1.png" alt="First page of the organ fugue score" width="620">
+<br><sub>Page 1 of the first attempt, the organ fugue (<code>archive/first-attempt-organ-fugue/fugue.ly</code>)</sub>
 </div>
 
-## The Neighbour: one score, four performances
+## Where the finished files are
 
-The ricercar is written once, as four independent voices, and then performed four ways:
+Everything to listen to, read and share is in one folder, **`final/`**, built by
+`sh ricercar/tools/publish.sh` (every render script also publishes its own recording there):
+
+| File | What it is |
+|---|---|
+| `The-Neighbour-Piano.m4a` | solo concert grand (the main reading) |
+| `The-Neighbour-String-Quartet.m4a` | two violins, viola, cello |
+| `The-Neighbour-Organ.m4a` | pipe organ, manuals and pedal |
+| `The-Neighbour-Orchestra.m4a` | full symphony orchestra |
+| `The-Neighbour-Piano-Quintet.m4a` | piano and string quartet together |
+| `The-Neighbour-Score-*.pdf` | the printed score of each version (the orchestra's is a full score, one staff per instrument) |
+| `The-Neighbour-Listening-Guide.pdf` | what to listen for, with timings |
+| `The-Neighbour-v1.1.zip` | all of the above in one file, for sharing |
+
+The recordings are rendered locally and are not committed (see Credits for the sample licences).
+Drafts, the version 1.0 renders and the first organ fugue are in `archive/`.
+
+## The Neighbour: one score, five performances
+
+The ricercar is written once, as four independent voices, and then performed five ways:
 
 | Version | Instruments | Model | Render script | Length |
 |---|---|---|---|---|
@@ -45,7 +64,7 @@ Lengths include the lead-in and the hall's (or church's) decay. The audio is not
 Its plan, in brief: the tune opens alone at its own pitch; a chromatic lament joins the answer; the subject is overlapped with itself until the harmony collapses into diminished sevenths; a slow arioso sings the second half of the tune; the fugue returns upside down; both halves of the tune sound together over a long pedal; and only at the end is the whole tune heard complete, in B-flat major, over the fugue's own countersubjects turned major.
 
 - **Listener's guide**: [`ricercar/NOTES.md`](ricercar/NOTES.md), the idea, a form table with timings, what to listen for in each version, every learned device by bar number, and the tune tweaks.
-- **Printed scores** in [`ricercar/score/out/`](ricercar/score/out/): piano, string quartet, organ, piano + quartet, and a condensed orchestral score. To re-engrave, run `kapell engrave --layout all` in `ricercar/` ([kapell](https://github.com/longevityboris/kapell)).
+- **Printed scores** in [`ricercar/score/out/`](ricercar/score/out/): piano, string quartet, organ, piano + quartet, and a condensed orchestral score; the full orchestral score is built by `ricercar/tools/full_score.py`. To re-engrave, run `kapell engrave --layout all` in `ricercar/` ([kapell](https://github.com/longevityboris/kapell)), then `python3 tools/full_score.py && lilypond -o score/out/orchestra-full score/out/orchestra-full.ly` there.
 - **Design**: [`ricercar/design/BLUEPRINT.md`](ricercar/design/BLUEPRINT.md), the full design with every proof.
 
 ## How it is made
@@ -76,10 +95,9 @@ flowchart LR
 ## Quick start
 
 1. Install [LilyPond](https://lilypond.org) 2.24 or later and Python 3.12 with `numpy scipy mido soundfile music21`.
-2. Engrave and check the organ fugue:
+2. Engrave and check the first attempt, the organ fugue:
    ```bash
-   lilypond fugue.ly
-   python3 check.py
+   cd archive/first-attempt-organ-fugue && lilypond fugue.ly && python3 check.py && cd ../..
    ```
 3. Engrave and check the ricercar:
    ```bash
@@ -108,16 +126,18 @@ flowchart LR
 ## Repository layout
 
 ```
-fugue.ly, NOTES.md, check.py     the finished organ fugue, its analysis, its checker
-preview/                         score page images
-ricercar/
+final/                           the finished recordings, scores and guide, clean names (built locally)
+archive/
+  first-attempt-organ-fugue/     the 37-bar organ fugue: score, analysis, checker, page images
+  the-neighbour-drafts/          checkpoint renders and version 1.0 (local media)
+ricercar/                        The Neighbour's source: design, score, tools, instruments
   NOTES.md                       listener's guide to the finished ricercar
   design/THEME.md                the reference melody
   design/proposal-1..4/          four independent designs and their proof labs
   design/BLUEPRINT.md            the chosen design, section by section
   design/final-lab/              verified skeleton, materials, proof labs, lab tools
   score/                         the assembled score, its seven sections, the piano / quartet scores
-  score/out/                     engraved PDFs (built locally, not committed)
+  score/out/                     engraved PDFs (committed) and their generated .ly sources
   tools/                         checker, harmony x-ray, assembler, performance and orchestration engines
   audio/piano|strings|organ|orchestra/   renderers, setup scripts, QA harnesses
   orchestration/                 ensemble calibration and QA tests

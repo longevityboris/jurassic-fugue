@@ -13,3 +13,5 @@ ricercar/audio/*/out/*.mid
 .kapell-build/
 ricercar/score/out/*.log
 ricercar/score/out/*.ly
+final/
+archive/the-neighbour-drafts/

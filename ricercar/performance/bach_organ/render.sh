@@ -8,7 +8,7 @@
 #     -> qa_organ.py        measured on the audio: pitch, dropped and stuck notes, clicks, terraces
 #     -> presence.py        every MIDI note on its stem (partials over their surroundings), ffmpeg loudness
 #     -> levels.py          the shape on the audio: silent breaths, climax order, arioso solo, hinge, coda, entries
-#     -> preview/final_bach_organ.m4a
+#     -> final/The-Neighbour-Organ.m4a
 #
 # Stems go to a scratch folder (default /tmp) and are deleted after the QA. Nothing is played.
 # usage: performance/bach_organ/render.sh [SCRATCH_DIR]
@@ -37,7 +37,7 @@ python3 "$HERE/presence.py" "$B/organ.mid" "$SCRATCH/stems" "$OUT.wav" "$OUT.m4a
 python3 "$HERE/levels.py" "$B/organ.mid" "$PLAN" "$SCRATCH/stems" "$OUT.wav" \
   -o "$HERE/ricercar_bach_organ.levels.json"
 
-cp "$OUT.m4a" "$R/preview/final_bach_organ.m4a"
+sh "$R/tools/publish.sh" organ   # clean-named, tagged copy in the top-level final/ folder
 rm -rf "$SCRATCH/stems" "$SCRATCH/organ_perform.mid"
 rmdir "$SCRATCH" 2>/dev/null || true
-echo "done: $OUT.wav, $OUT.m4a, $R/preview/final_bach_organ.m4a"
+echo "done: $OUT.wav, $OUT.m4a (published to final/)"

@@ -1,7 +1,7 @@
 #!/bin/sh
 # Beethoven piano version of "The Neighbour": score + plan.json -> MIDI -> concert grand.
 # Usage: ./render.sh [STEMS_DIR]     (STEMS_DIR: optional, dry per-voice stems for balance checks)
-# Writes ricercar_beethoven_piano.{wav,m4a,render.json} here and copies the m4a to preview/.
+# Writes ricercar_beethoven_piano.{wav,m4a,render.json} here and publishes the m4a to final/.
 # Plays nothing through the speakers.
 set -eu
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -18,6 +18,6 @@ if [ $# -ge 1 ]; then STEMS="--stems $1"; fi
 (cd "$R/audio/piano" && python3 render_piano.py "$MID" -o "$OUT" --wet-db -1 \
     --json "$OUT.render.json" $STEMS)
 
-cp "$OUT.m4a" "$R/preview/final_beethoven_piano.m4a"
+sh "$R/tools/publish.sh" piano   # clean-named, tagged copy in the top-level final/ folder
 rm -f "$MID"
-echo "done: $OUT.wav, $OUT.m4a, $R/preview/final_beethoven_piano.m4a"
+echo "done: $OUT.wav, $OUT.m4a (published to final/)"
