@@ -3,72 +3,72 @@
  "wav": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/bach_organ/ricercar_bach_organ.wav",
  "lead_in_s": 0.5,
  "bars_lufs": {
-  "1": -24.6,
-  "2": -24.7,
-  "3": -23.5,
-  "4": -23.6,
-  "5": -20.6,
-  "6": -21.6,
-  "7": -21.4,
-  "8": -20.1,
-  "9": -20.2,
-  "10": -20.3,
-  "11": -20.9,
-  "12": -21.1,
-  "13": -19.3,
-  "14": -19.0,
-  "15": -18.2,
-  "16": -18.2,
-  "17": -18.1,
-  "18": -18.7,
-  "19": -19.6,
-  "20": -19.9,
-  "21": -18.8,
-  "22": -18.8,
-  "23": -18.3,
-  "24": -16.3,
-  "25": -14.9,
-  "26": -15.4,
-  "27": -17.0,
-  "28": -14.7,
-  "29": -14.8,
-  "30": -22.2,
-  "31": -22.9,
-  "32": -20.9,
-  "33": -23.5,
-  "34": -22.5,
-  "35": -24.8,
-  "36": -22.7,
-  "37": -22.4,
-  "38": -22.5,
-  "39": -18.8,
-  "40": -18.5,
-  "41": -20.4,
-  "42": -20.7,
-  "43": -16.4,
-  "44": -16.1,
-  "45": -18.4,
-  "46": -20.5,
-  "47": -19.8,
-  "48": -18.2,
-  "49": -18.0,
-  "50": -17.4,
-  "51": -17.9,
-  "52": -12.0,
-  "53": -12.2,
-  "54": -17.0,
-  "55": -20.8,
-  "56": -19.6,
-  "57": -19.8,
-  "58": -19.9,
-  "59": -13.7,
-  "60": -13.7,
-  "61": -15.0,
-  "62": -16.6,
-  "63": -19.8,
-  "64": -19.9,
-  "65": -20.5,
-  "66": -24.3
+  "1": -23.0,
+  "2": -23.0,
+  "3": -21.8,
+  "4": -21.9,
+  "5": -18.9,
+  "6": -19.9,
+  "7": -19.7,
+  "8": -18.5,
+  "9": -18.5,
+  "10": -18.7,
+  "11": -19.2,
+  "12": -19.4,
+  "13": -17.8,
+  "14": -17.4,
+  "15": -16.6,
+  "16": -16.6,
+  "17": -16.4,
+  "18": -17.5,
+  "19": -17.9,
+  "20": -18.2,
+  "21": -17.2,
+  "22": -17.1,
+  "23": -16.8,
+  "24": -14.1,
+  "25": -13.3,
+  "26": -13.8,
+  "27": -15.4,
+  "28": -13.0,
+  "29": -13.1,
+  "30": -19.4,
+  "31": -20.5,
+  "32": -19.0,
+  "33": -21.8,
+  "34": -20.9,
+  "35": -23.0,
+  "36": -21.0,
+  "37": -20.8,
+  "38": -21.1,
+  "39": -17.1,
+  "40": -16.8,
+  "41": -18.6,
+  "42": -19.0,
+  "43": -14.7,
+  "44": -14.4,
+  "45": -16.7,
+  "46": -18.8,
+  "47": -18.0,
+  "48": -16.5,
+  "49": -16.4,
+  "50": -15.8,
+  "51": -16.2,
+  "52": -10.4,
+  "53": -10.6,
+  "54": -15.3,
+  "55": -18.0,
+  "56": -18.2,
+  "57": -18.0,
+  "58": -18.2,
+  "59": -12.1,
+  "60": -12.0,
+  "61": -13.4,
+  "62": -15.1,
+  "63": -17.9,
+  "64": -17.7,
+  "65": -18.8,
+  "66": -22.6
  },
  "section_starts_s": {
   "I exposition 1:1": 0.5,
@@ -92,84 +92,84 @@
    "last_key_up_s": 95.249,
    "next_attack_s": 96.857,
    "silence_s": 1.608,
-   "dry_dbfs_1s_before_key_up": -18.2,
-   "dry_dbfs_last_0.5s_before_attack_max": -46.7,
-   "mix_dbfs_last_0.5s_before_attack_max": -44.6,
+   "dry_dbfs_1s_before_key_up": -16.5,
+   "dry_dbfs_last_0.5s_before_attack_max": -45.0,
+   "mix_dbfs_last_0.5s_before_attack_max": -42.9,
    "dry_steps_100ms": [
     {
      "t_s": 95.25,
-     "dry_dbfs": -20.4,
-     "mix_dbfs": -18.8
+     "dry_dbfs": -18.8,
+     "mix_dbfs": -17.4
     },
     {
      "t_s": 95.35,
-     "dry_dbfs": -27.3,
-     "mix_dbfs": -24.4
+     "dry_dbfs": -25.5,
+     "mix_dbfs": -22.5
     },
     {
      "t_s": 95.45,
-     "dry_dbfs": -29.6,
-     "mix_dbfs": -27.0
+     "dry_dbfs": -28.2,
+     "mix_dbfs": -25.5
     },
     {
      "t_s": 95.55,
-     "dry_dbfs": -31.9,
-     "mix_dbfs": -29.8
+     "dry_dbfs": -30.4,
+     "mix_dbfs": -28.1
     },
     {
      "t_s": 95.65,
-     "dry_dbfs": -34.0,
-     "mix_dbfs": -32.1
+     "dry_dbfs": -32.3,
+     "mix_dbfs": -30.4
     },
     {
      "t_s": 95.75,
-     "dry_dbfs": -35.9,
-     "mix_dbfs": -34.6
+     "dry_dbfs": -34.1,
+     "mix_dbfs": -32.8
     },
     {
      "t_s": 95.85,
-     "dry_dbfs": -37.5,
-     "mix_dbfs": -36.1
+     "dry_dbfs": -35.8,
+     "mix_dbfs": -34.7
     },
     {
      "t_s": 95.95,
-     "dry_dbfs": -39.3,
-     "mix_dbfs": -38.6
+     "dry_dbfs": -37.9,
+     "mix_dbfs": -37.0
     },
     {
      "t_s": 96.05,
-     "dry_dbfs": -41.9,
-     "mix_dbfs": -40.7
+     "dry_dbfs": -40.3,
+     "mix_dbfs": -39.0
     },
     {
      "t_s": 96.15,
-     "dry_dbfs": -44.6,
-     "mix_dbfs": -42.3
+     "dry_dbfs": -42.8,
+     "mix_dbfs": -40.8
     },
     {
      "t_s": 96.25,
-     "dry_dbfs": -46.7,
-     "mix_dbfs": -44.6
+     "dry_dbfs": -45.0,
+     "mix_dbfs": -42.9
     },
     {
      "t_s": 96.35,
-     "dry_dbfs": -49.2,
-     "mix_dbfs": -47.2
+     "dry_dbfs": -47.8,
+     "mix_dbfs": -45.7
     },
     {
      "t_s": 96.45,
-     "dry_dbfs": -51.7,
-     "mix_dbfs": -49.6
+     "dry_dbfs": -50.1,
+     "mix_dbfs": -48.1
     },
     {
      "t_s": 96.55,
-     "dry_dbfs": -54.0,
-     "mix_dbfs": -51.6
+     "dry_dbfs": -52.2,
+     "mix_dbfs": -49.9
     },
     {
      "t_s": 96.65,
-     "dry_dbfs": -55.3,
-     "mix_dbfs": -52.8
+     "dry_dbfs": -53.6,
+     "mix_dbfs": -51.1
     }
    ]
   },
@@ -179,211 +179,211 @@
    "last_key_up_s": 118.281,
    "next_attack_s": 118.682,
    "silence_s": 0.401,
-   "dry_dbfs_1s_before_key_up": -24.5,
-   "dry_dbfs_last_0.5s_before_attack_max": -30.1,
-   "mix_dbfs_last_0.5s_before_attack_max": -28.0,
+   "dry_dbfs_1s_before_key_up": -22.8,
+   "dry_dbfs_last_0.5s_before_attack_max": -28.5,
+   "mix_dbfs_last_0.5s_before_attack_max": -26.3,
    "dry_steps_100ms": [
     {
      "t_s": 118.28,
-     "dry_dbfs": -30.1,
-     "mix_dbfs": -28.0
+     "dry_dbfs": -28.5,
+     "mix_dbfs": -26.3
     },
     {
      "t_s": 118.38,
-     "dry_dbfs": -41.0,
-     "mix_dbfs": -33.1
+     "dry_dbfs": -39.4,
+     "mix_dbfs": -31.5
     },
     {
      "t_s": 118.48,
-     "dry_dbfs": -45.2,
-     "mix_dbfs": -35.6
+     "dry_dbfs": -43.6,
+     "mix_dbfs": -33.8
     }
    ]
   }
  ],
  "climaxes": {
   "Climax I 26:3-30:1": {
-   "short_term_max_lufs": -13.5,
+   "short_term_max_lufs": -11.7,
    "window_s": [
-    88.2,
-    91.2
+    88.3,
+    91.3
    ],
-   "momentary_max_lufs": -12.7,
-   "momentary_at_s": 88.8,
+   "momentary_max_lufs": -10.7,
+   "momentary_at_s": 89.3,
    "stems_in_window_lufs": {
-    "soprano": -20.7,
-    "alto": -24.0,
-    "tenor": -19.1,
-    "bass": -21.5
+    "soprano": -19.0,
+    "alto": -22.4,
+    "tenor": -17.3,
+    "bass": -19.7
    }
   },
   "Climax II 52:1-54:1": {
-   "short_term_max_lufs": -11.7,
+   "short_term_max_lufs": -10.2,
    "window_s": [
-    179.9,
-    182.9
+    179.6,
+    182.6
    ],
-   "momentary_max_lufs": -10.5,
-   "momentary_at_s": 180.2,
+   "momentary_max_lufs": -9.1,
+   "momentary_at_s": 177.1,
    "stems_in_window_lufs": {
-    "soprano": -17.5,
-    "alto": -21.0,
-    "tenor": -22.0,
-    "bass": -19.6
+    "soprano": -15.7,
+    "alto": -19.6,
+    "tenor": -20.8,
+    "bass": -18.2
    }
   },
   "apotheosis 59:1-61:3": {
-   "short_term_max_lufs": -13.4,
+   "short_term_max_lufs": -11.7,
    "window_s": [
-    205.6,
-    208.6
+    205.4,
+    208.4
    ],
-   "momentary_max_lufs": -11.3,
+   "momentary_max_lufs": -9.6,
    "momentary_at_s": 206.3,
    "stems_in_window_lufs": {
-    "soprano": -17.9,
-    "alto": -25.1,
-    "tenor": -24.2,
-    "bass": -18.9
+    "soprano": -16.2,
+    "alto": -23.3,
+    "tenor": -22.8,
+    "bass": -17.3
    }
   },
   "whole_piece": {
-   "short_term_max_lufs": -11.7,
+   "short_term_max_lufs": -10.2,
    "window_s": [
-    179.9,
-    182.9
+    179.6,
+    182.6
    ]
   },
-  "climax_II_over_I_db": 1.8,
-  "climax_II_over_apotheosis_db": 1.7,
+  "climax_II_over_I_db": 1.5,
+  "climax_II_over_apotheosis_db": 1.5,
   "pass": true
  },
  "arioso": {
   "bars": {
    "30": {
-    "soprano": -24.3,
-    "alto": -30.9,
-    "tenor": -35.3,
-    "bass": -34.6,
-    "solo_lead_db": 6.6,
-    "mix_lufs": -22.2
+    "soprano": -22.6,
+    "alto": -29.2,
+    "tenor": -31.5,
+    "bass": -26.5,
+    "solo_lead_db": 3.9,
+    "mix_lufs": -19.4
    },
    "31": {
-    "soprano": -26.4,
-    "alto": -33.8,
-    "tenor": -31.3,
-    "bass": -34.7,
-    "solo_lead_db": 4.9,
-    "mix_lufs": -22.9
+    "soprano": -24.7,
+    "alto": -32.1,
+    "tenor": -26.9,
+    "bass": -32.7,
+    "solo_lead_db": 2.2,
+    "mix_lufs": -20.5
    },
    "32": {
-    "soprano": -25.0,
-    "alto": -31.1,
-    "tenor": -31.3,
-    "bass": -31.6,
-    "solo_lead_db": 6.1,
-    "mix_lufs": -20.9
+    "soprano": -23.3,
+    "alto": -29.4,
+    "tenor": -28.2,
+    "bass": -29.9,
+    "solo_lead_db": 4.9,
+    "mix_lufs": -19.0
    },
    "33": {
-    "soprano": -27.4,
-    "alto": -30.8,
-    "tenor": -32.5,
-    "bass": -39.3,
+    "soprano": -25.7,
+    "alto": -29.1,
+    "tenor": -30.8,
+    "bass": -37.6,
     "solo_lead_db": 3.4,
-    "mix_lufs": -23.5
+    "mix_lufs": -21.8
    },
    "34": {
-    "soprano": -25.3,
-    "alto": -31.9,
-    "tenor": -34.2,
-    "bass": -36.9,
+    "soprano": -23.6,
+    "alto": -30.2,
+    "tenor": -32.5,
+    "bass": -35.1,
     "solo_lead_db": 6.6,
-    "mix_lufs": -22.5
+    "mix_lufs": -20.9
    }
   },
   "30:1-34:1": {
-   "soprano": -25.6,
-   "alto": -31.5,
-   "tenor": -32.3,
-   "bass": -34.3,
-   "solo_lead_db": 5.9
+   "soprano": -23.9,
+   "alto": -29.8,
+   "tenor": -28.9,
+   "bass": -30.0,
+   "solo_lead_db": 5.0
   },
-  "exposition_1-12_lufs": -21.6,
-  "arioso_30-34_lufs": -22.3,
-  "opening_1-4_lufs": -24.1,
-  "inversa_35_lufs": -24.8,
-  "pass": true
+  "exposition_1-12_lufs": -19.9,
+  "arioso_30-34_lufs": -20.2,
+  "opening_1-4_lufs": -22.4,
+  "inversa_35_lufs": -23.0,
+  "pass": false
  },
  "hinge": {
   "bars_lufs": {
-   "52": -12.0,
-   "53": -12.2,
-   "54": -17.0,
-   "55": -20.8,
-   "56": -19.6
+   "52": -10.4,
+   "53": -10.6,
+   "54": -15.3,
+   "55": -18.0,
+   "56": -18.2
   },
-  "54:1-54:3": -15.8,
-  "54:3-55:1": -18.6,
-  "momentary_max_53:4": -12.3,
+  "54:1-54:3": -14.0,
+  "54:3-55:1": -17.2,
+  "momentary_max_53:4": -10.7,
   "momentary_after_54:1 (s after, LUFS)": [
    [
     0.06,
-    -13.8
+    -13.0
    ],
    [
     0.56,
-    -16.9
+    -14.9
    ],
    [
     1.06,
-    -16.9
+    -14.5
    ],
    [
     1.56,
-    -15.4
+    -13.2
    ]
   ],
   "reference_f_bars_24_25_61": [
-   -16.3,
-   -14.9,
-   -15.0
+   -14.1,
+   -13.3,
+   -13.4
   ]
  },
  "coda": {
   "momentary_at": {
-   "63:1": -17.2,
-   "64:1": -19.2,
-   "65:1": -20.9,
-   "65:3": -19.7,
-   "66:1": -22.2,
-   "66:3": -24.3
+   "63:1": -15.7,
+   "64:1": -17.8,
+   "65:1": -19.3,
+   "65:3": -18.0,
+   "66:1": -20.6,
+   "66:3": -22.6
   },
   "bars_lufs": {
-   "62": -16.6,
-   "63": -19.8,
-   "64": -19.9,
-   "65": -20.5,
-   "66": -24.3
+   "62": -15.1,
+   "63": -17.9,
+   "64": -17.7,
+   "65": -18.8,
+   "66": -22.6
   },
-  "final_chord_66:1_to_key_up_lufs": -24.3,
-  "opening_1-4_lufs": -24.1,
+  "final_chord_66:1_to_key_up_lufs": -22.6,
+  "opening_1-4_lufs": -22.4,
   "bars_1-4_lufs": [
-   -24.6,
-   -24.7,
-   -23.5,
-   -23.6
+   -23.0,
+   -23.0,
+   -21.8,
+   -21.9
   ],
   "tenor_head_65:1-66:4_stems": {
-   "soprano": -31.8,
-   "alto": -30.0,
-   "tenor": -27.2,
-   "bass": -33.1
+   "soprano": -30.2,
+   "alto": -28.3,
+   "tenor": -25.5,
+   "bass": -31.4
   },
   "final_chord_stems": {
-   "soprano": -34.1,
-   "alto": -31.2,
-   "tenor": -29.1,
-   "bass": -33.1
+   "soprano": -32.5,
+   "alto": -29.5,
+   "tenor": -27.4,
+   "bass": -31.4
   },
   "tenor_head_lead_db": 2.8,
   "pass": true
@@ -395,8 +395,8 @@
    "until": "7:1",
    "what": "answer",
    "stems_lufs": {
-    "soprano": -24.6,
-    "alto": -25.1,
+    "soprano": -22.9,
+    "alto": -23.4,
     "tenor": -138.3,
     "bass": -138.3
    },
@@ -409,10 +409,10 @@
    "until": "11:1",
    "what": "subject",
    "stems_lufs": {
-    "soprano": -26.0,
-    "alto": -26.5,
+    "soprano": -24.3,
+    "alto": -24.8,
     "tenor": -138.3,
-    "bass": -26.8
+    "bass": -25.1
    },
    "loudest_other": "soprano",
    "lead_db": -0.8
@@ -423,13 +423,13 @@
    "until": "15:1",
    "what": "answer",
    "stems_lufs": {
-    "soprano": -24.5,
-    "alto": -26.7,
-    "tenor": -25.9,
-    "bass": -27.1
+    "soprano": -22.8,
+    "alto": -25.0,
+    "tenor": -24.1,
+    "bass": -25.4
    },
    "loudest_other": "soprano",
-   "lead_db": -1.4
+   "lead_db": -1.3
   },
   {
    "voice": "tenor",
@@ -437,10 +437,10 @@
    "until": "22:1",
    "what": "subject",
    "stems_lufs": {
-    "soprano": -33.7,
-    "alto": -26.4,
-    "tenor": -25.8,
-    "bass": -25.6
+    "soprano": -32.0,
+    "alto": -24.7,
+    "tenor": -24.1,
+    "bass": -23.9
    },
    "loudest_other": "bass",
    "lead_db": -0.2
@@ -451,10 +451,10 @@
    "until": "24:1",
    "what": "subject",
    "stems_lufs": {
-    "soprano": -25.2,
-    "alto": -25.2,
-    "tenor": -25.0,
-    "bass": -24.2
+    "soprano": -23.5,
+    "alto": -23.5,
+    "tenor": -23.3,
+    "bass": -22.5
    },
    "loudest_other": "bass",
    "lead_db": -1.0
@@ -465,10 +465,10 @@
    "until": "27:1",
    "what": "subject, stretto",
    "stems_lufs": {
-    "soprano": -23.1,
-    "alto": -25.3,
-    "tenor": -22.8,
-    "bass": -21.6
+    "soprano": -21.4,
+    "alto": -23.6,
+    "tenor": -21.1,
+    "bass": -19.9
    },
    "loudest_other": "tenor",
    "lead_db": 1.2
@@ -479,10 +479,10 @@
    "until": "27:3",
    "what": "subject, stretto",
    "stems_lufs": {
-    "soprano": -73.5,
-    "alto": -25.4,
-    "tenor": -22.7,
-    "bass": -22.2
+    "soprano": -71.8,
+    "alto": -23.7,
+    "tenor": -21.0,
+    "bass": -20.5
    },
    "loudest_other": "bass",
    "lead_db": -0.5
@@ -493,10 +493,10 @@
    "until": "28:1",
    "what": "subject, stretto",
    "stems_lufs": {
-    "soprano": -49.6,
-    "alto": -21.8,
-    "tenor": -22.7,
-    "bass": -22.3
+    "soprano": -48.0,
+    "alto": -20.1,
+    "tenor": -21.0,
+    "bass": -20.6
    },
    "loudest_other": "bass",
    "lead_db": 0.5
@@ -507,10 +507,10 @@
    "until": "28:4",
    "what": "subject, stretto",
    "stems_lufs": {
-    "soprano": -20.4,
-    "alto": -22.1,
-    "tenor": -22.9,
-    "bass": -22.5
+    "soprano": -18.7,
+    "alto": -20.4,
+    "tenor": -21.3,
+    "bass": -20.8
    },
    "loudest_other": "alto",
    "lead_db": 1.7
@@ -521,10 +521,10 @@
    "until": "37:1",
    "what": "inversion",
    "stems_lufs": {
-    "soprano": -34.1,
-    "alto": -31.2,
-    "tenor": -67.9,
-    "bass": -27.2
+    "soprano": -32.4,
+    "alto": -29.5,
+    "tenor": -67.1,
+    "bass": -25.5
    },
    "loudest_other": "alto",
    "lead_db": 4.0
@@ -535,13 +535,13 @@
    "until": "39:1",
    "what": "inversion, answer",
    "stems_lufs": {
-    "soprano": -29.3,
-    "alto": -31.3,
-    "tenor": -26.1,
-    "bass": -26.9
+    "soprano": -27.6,
+    "alto": -29.6,
+    "tenor": -24.4,
+    "bass": -25.5
    },
    "loudest_other": "bass",
-   "lead_db": 0.8
+   "lead_db": 1.1
   },
   {
    "voice": "soprano",
@@ -549,10 +549,10 @@
    "until": "43:1",
    "what": "inversion",
    "stems_lufs": {
-    "soprano": -25.1,
-    "alto": -27.9,
-    "tenor": -27.7,
-    "bass": -28.2
+    "soprano": -23.4,
+    "alto": -26.3,
+    "tenor": -26.0,
+    "bass": -26.5
    },
    "loudest_other": "tenor",
    "lead_db": 2.6
@@ -563,13 +563,13 @@
    "until": "48:1",
    "what": "augmented inversion",
    "stems_lufs": {
-    "soprano": -84.6,
-    "alto": -49.7,
-    "tenor": -27.3,
-    "bass": -25.2
+    "soprano": -82.9,
+    "alto": -48.0,
+    "tenor": -25.7,
+    "bass": -23.5
    },
    "loudest_other": "tenor",
-   "lead_db": 2.1
+   "lead_db": 2.2
   },
   {
    "voice": "alto",
@@ -578,9 +578,9 @@
    "what": "S2",
    "stems_lufs": {
     "soprano": -200.7,
-    "alto": -25.3,
-    "tenor": -25.0,
-    "bass": -25.2
+    "alto": -23.7,
+    "tenor": -23.4,
+    "bass": -23.5
    },
    "loudest_other": "tenor",
    "lead_db": -0.3
@@ -592,12 +592,12 @@
    "what": "S1",
    "stems_lufs": {
     "soprano": -200.7,
-    "alto": -25.3,
-    "tenor": -25.0,
-    "bass": -25.2
+    "alto": -23.7,
+    "tenor": -23.4,
+    "bass": -23.5
    },
    "loudest_other": "bass",
-   "lead_db": 0.2
+   "lead_db": 0.1
   },
   {
    "voice": "soprano",
@@ -605,13 +605,13 @@
    "until": "52:1",
    "what": "diminution",
    "stems_lufs": {
-    "soprano": -24.7,
-    "alto": -25.5,
-    "tenor": -25.0,
-    "bass": -25.2
+    "soprano": -23.1,
+    "alto": -23.8,
+    "tenor": -23.3,
+    "bass": -23.5
    },
    "loudest_other": "tenor",
-   "lead_db": 0.3
+   "lead_db": 0.2
   },
   {
    "voice": "soprano",
@@ -619,10 +619,10 @@
    "until": "57:1",
    "what": "the tune",
    "stems_lufs": {
-    "soprano": -25.7,
-    "alto": -29.8,
-    "tenor": -27.9,
-    "bass": -27.9
+    "soprano": -24.0,
+    "alto": -28.1,
+    "tenor": -26.2,
+    "bass": -26.3
    },
    "loudest_other": "tenor",
    "lead_db": 2.2
@@ -633,10 +633,10 @@
    "until": "61:1",
    "what": "the tune, peak",
    "stems_lufs": {
-    "soprano": -18.1,
-    "alto": -24.6,
-    "tenor": -24.6,
-    "bass": -19.0
+    "soprano": -16.4,
+    "alto": -22.9,
+    "tenor": -22.9,
+    "bass": -17.3
    },
    "loudest_other": "bass",
    "lead_db": 0.9
@@ -647,10 +647,10 @@
    "until": "66:4",
    "what": "last head",
    "stems_lufs": {
-    "soprano": -31.8,
-    "alto": -30.0,
-    "tenor": -27.2,
-    "bass": -33.1
+    "soprano": -30.2,
+    "alto": -28.3,
+    "tenor": -25.5,
+    "bass": -31.4
    },
    "loudest_other": "alto",
    "lead_db": 2.8
@@ -658,68 +658,68 @@
  ],
  "alto_diminution_head": {
   "52:1": {
-   "soprano": -16.9,
-   "alto": -20.9,
-   "tenor": -18.6,
-   "bass": -19.6
+   "soprano": -15.3,
+   "alto": -19.2,
+   "tenor": -16.9,
+   "bass": -17.9
   },
   "52:2": {
-   "soprano": -17.5,
-   "alto": -22.1,
-   "tenor": -20.0,
-   "bass": -20.2
+   "soprano": -15.9,
+   "alto": -20.4,
+   "tenor": -18.3,
+   "bass": -18.5
   },
   "52:3": {
-   "soprano": -18.5,
-   "alto": -21.5,
-   "tenor": -20.7,
-   "bass": -20.2
+   "soprano": -16.8,
+   "alto": -19.8,
+   "tenor": -19.0,
+   "bass": -18.6
   },
   "53:1": {
-   "soprano": -17.2,
-   "alto": -20.9,
-   "tenor": -22.6,
-   "bass": -19.4
+   "soprano": -15.5,
+   "alto": -19.2,
+   "tenor": -21.0,
+   "bass": -17.9
   },
   "53:2": {
-   "soprano": -17.4,
-   "alto": -21.4,
-   "tenor": -23.0,
-   "bass": -20.2
+   "soprano": -15.8,
+   "alto": -19.7,
+   "tenor": -21.3,
+   "bass": -18.5
   }
  },
  "tutti_balance": {
   "27:1-30:1": {
-   "soprano": -22.3,
-   "alto": -24.0,
-   "tenor": -20.8,
-   "bass": -22.6
+   "soprano": -20.6,
+   "alto": -22.3,
+   "tenor": -19.1,
+   "bass": -20.9
   },
   "52:1-54:1": {
-   "soprano": -18.2,
-   "alto": -21.5,
-   "tenor": -19.9,
-   "bass": -19.5
+   "soprano": -16.5,
+   "alto": -19.8,
+   "tenor": -18.2,
+   "bass": -17.9
   },
   "59:1-61:1": {
-   "soprano": -18.1,
-   "alto": -24.6,
-   "tenor": -24.6,
-   "bass": -19.0
+   "soprano": -16.4,
+   "alto": -22.9,
+   "tenor": -22.9,
+   "bass": -17.3
   }
  },
  "pedal_cf_46_47": {
   "46": {
-   "bass": -25.6,
-   "tenor": -27.9
+   "bass": -23.9,
+   "tenor": -26.2
   },
   "47": {
-   "bass": -24.9,
-   "tenor": -26.8
+   "bass": -23.3,
+   "tenor": -25.2
   },
   "48": {
-   "bass": -25.5,
-   "tenor": -25.0
+   "bass": -23.9,
+   "tenor": -23.3
   }
  }
 }

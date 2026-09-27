@@ -2,35 +2,35 @@
  "input": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/bach_organ/build/organ.mid",
  "voices": {
   "alto": {
-   "notes": 217,
+   "notes": 218,
    "divisions": [
     [
      0.0,
      "OW"
     ]
    ],
-   "rms_dbfs_when_sounding": -29.68,
-   "peak_dbfs": -13.23,
+   "rms_dbfs_when_sounding": -28.01,
+   "peak_dbfs": -11.55,
    "stereo": {
-    "lr_correlation": 0.768,
+    "lr_correlation": 0.766,
     "mono_folddown_db": -0.54,
     "mono_folddown_worst_1s_db": -2.77
    }
   },
   "bass": {
-   "notes": 141,
+   "notes": 140,
    "divisions": [
     [
      0.0,
      "PED"
     ]
    ],
-   "rms_dbfs_when_sounding": -26.07,
-   "peak_dbfs": -9.03,
+   "rms_dbfs_when_sounding": -24.43,
+   "peak_dbfs": -7.52,
    "stereo": {
-    "lr_correlation": 0.86,
-    "mono_folddown_db": -0.33,
-    "mono_folddown_worst_1s_db": -1.98
+    "lr_correlation": 0.855,
+    "mono_folddown_db": -0.34,
+    "mono_folddown_worst_1s_db": -2.03
    }
   },
   "soprano": {
@@ -49,8 +49,8 @@
      "HW"
     ]
    ],
-   "rms_dbfs_when_sounding": -27.65,
-   "peak_dbfs": -8.82,
+   "rms_dbfs_when_sounding": -25.97,
+   "peak_dbfs": -7.13,
    "stereo": {
     "lr_correlation": 0.757,
     "mono_folddown_db": -0.57,
@@ -77,12 +77,12 @@
      "HW"
     ]
    ],
-   "rms_dbfs_when_sounding": -28.09,
-   "peak_dbfs": -11.71,
+   "rms_dbfs_when_sounding": -26.38,
+   "peak_dbfs": -9.92,
    "stereo": {
-    "lr_correlation": 0.816,
+    "lr_correlation": 0.815,
     "mono_folddown_db": -0.43,
-    "mono_folddown_worst_1s_db": -1.56
+    "mono_folddown_worst_1s_db": -1.61
    }
   }
  },
@@ -112,6 +112,19 @@
    },
    {
     "t": 96.365,
+    "stops": [
+     "Gedackt flött 8'"
+    ]
+   },
+   {
+    "t": 100.115,
+    "stops": [
+     "Gedackt flött 8'",
+     "Spitz flött 4'"
+    ]
+   },
+   {
+    "t": 106.008,
     "stops": [
      "Gedackt flött 8'"
     ]
@@ -565,6 +578,19 @@
     ]
    },
    {
+    "t": 97.436,
+    "stops": [
+     "Corneten Bass 4'",
+     "Gedackter Bass 8'"
+    ]
+   },
+   {
+    "t": 100.65,
+    "stops": [
+     "Gedackter Bass 8'"
+    ]
+   },
+   {
     "t": 118.193,
     "stops": [
      "Gedackter Bass 8'",
@@ -642,15 +668,15 @@
   "m4a_tagged": true,
   "m4a": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/bach_organ/ricercar_bach_organ.m4a"
  },
- "duration_s": 241.688,
+ "duration_s": 241.794,
  "lead_in_s": 0.5,
  "temperament": "equal",
  "a4": 440.0,
- "pipe_events": 1631,
+ "pipe_events": 1645,
  "notes_in": 741,
  "key_presses": 741,
  "key_presses_without_pipes": 0,
- "pipes_used": 337,
+ "pipes_used": 347,
  "shared_keys": 0,
  "handover_restrikes": 0,
  "folded_notes": {},
@@ -677,39 +703,39 @@
  },
  "missing": {},
  "release_join": {
-  "corr_median": 0.9984,
-  "corr_p5": 0.889,
-  "keyup_shift_ms_max_abs": 15.23,
+  "corr_median": 0.9985,
+  "corr_p5": 0.8927,
+  "keyup_shift_ms_max_abs": 13.62,
   "level_match_db_range": [
-   -3.74,
+   -3.91,
    6.0
   ]
  },
  "hall": {
   "ir": "/Users/biobook/Music/SampleLibraries/IR/OpenAIR/lady_chapel_st_albans_cathedral__stereo__stalbans_a_ortf.wav",
   "wet_db": -4.0,
-  "gain": 0.3119322380005886,
+  "gain": 0.31001994156767015,
   "hall_re_dry_db": -4.0,
-  "c80_added_db": 8.04
+  "c80_added_db": 8.03
  },
- "final_decay_T20_s": 3.66,
+ "final_decay_T20_s": 3.65,
  "stereo_mix": {
-  "lr_correlation": 0.702,
-  "mono_folddown_db": -0.71,
-  "mono_folddown_worst_1s_db": -1.79
+  "lr_correlation": 0.696,
+  "mono_folddown_db": -0.72,
+  "mono_folddown_worst_1s_db": -1.91
  },
  "stereo_dry_sum": {
-  "lr_correlation": 0.804,
+  "lr_correlation": 0.803,
   "mono_folddown_db": -0.45,
-  "mono_folddown_worst_1s_db": -1.2
+  "mono_folddown_worst_1s_db": -1.26
  },
- "normalisation_gain_db": -13.72,
+ "normalisation_gain_db": -12.04,
  "true_peak_dbtp": -1.0,
  "loudness": {
-  "integrated_lufs": -18.1,
+  "integrated_lufs": -16.4,
   "lra_lu": 9.9,
   "true_peak_dbtp": -1.0
  },
- "render_seconds": 17.4,
- "pipe_render_seconds": 8.7
+ "render_seconds": 41.5,
+ "pipe_render_seconds": 23.7
 }

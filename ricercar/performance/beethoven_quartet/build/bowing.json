@@ -175,7 +175,7 @@
    "at": "35:1",
    "track": "Viola",
    "key": 56,
-   "on_s": 117.984,
+   "on_s": 117.983,
    "off_s": 118.702,
    "breath_s": 0.7
   },
@@ -203,7 +203,7 @@
    "at": "46:1",
    "track": "Viola",
    "key": 59,
-   "on_s": 157.148,
+   "on_s": 157.149,
    "off_s": 158.044,
    "breath_s": 0.35
   },
@@ -231,7 +231,7 @@
    "at": "30:1",
    "track": "Cello",
    "key": 39,
-   "on_s": 85.752,
+   "on_s": 85.748,
    "off_s": 92.312,
    "breath_s": 1.5
   },
@@ -259,7 +259,7 @@
    "at": "35:1",
    "track": "Cello",
    "key": 40,
-   "on_s": 113.09,
+   "on_s": 113.085,
    "off_s": 118.72,
    "breath_s": 0.7
   },
@@ -287,7 +287,7 @@
    "at": "46:1",
    "track": "Cello",
    "key": 40,
-   "on_s": 157.148,
+   "on_s": 157.151,
    "off_s": 158.044,
    "breath_s": 0.35
   },
@@ -314,11 +314,11 @@
  ],
  "articulation": {
   "Violin II": {
-   "notes": 209,
+   "notes": 210,
    "explicit": 39,
-   "inferred": 170,
+   "inferred": 171,
    "normal": 57,
-   "legato": 81,
+   "legato": 82,
    "short": 71,
    "changed_from_orchestrate": 67
   },
@@ -326,17 +326,17 @@
    "notes": 200,
    "explicit": 40,
    "inferred": 160,
-   "normal": 60,
-   "legato": 72,
+   "normal": 61,
+   "legato": 71,
    "short": 68,
    "changed_from_orchestrate": 68
   },
   "Cello": {
-   "notes": 141,
+   "notes": 140,
    "explicit": 2,
-   "inferred": 139,
-   "normal": 25,
-   "legato": 80,
+   "inferred": 138,
+   "normal": 26,
+   "legato": 78,
    "short": 36,
    "changed_from_orchestrate": 34
   }

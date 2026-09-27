@@ -2,8 +2,8 @@
  "spec": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/symphonic/symphonic.json",
  "score": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/score/music-voices.ly",
  "plan": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/design/final-lab/plan.json",
- "score_sha256": "0132d043358cbcb9",
- "plan_sha256": "7804a26d6d18e0d7",
+ "score_sha256": "a23e64300fcfd9d3",
+ "plan_sha256": "1da81eb13465270e",
  "duration_s": 232.106,
  "bars": 66.0,
  "marks": {
@@ -321,11 +321,33 @@
        "kind": "line",
        "voice": "tenor",
        "at": "30:1",
-       "until": "34:1",
+       "until": "30:4.5",
        "octave": 0,
        "level": 0.5,
        "articulation": "auto",
        "t0_s": 94.164,
+       "t1_s": 98.203
+      },
+      {
+       "kind": "line",
+       "voice": "tenor",
+       "at": "30:4.5",
+       "until": "32:2",
+       "octave": 0,
+       "level": 1.0,
+       "articulation": "auto",
+       "t0_s": 98.203,
+       "t1_s": 104.549
+      },
+      {
+       "kind": "line",
+       "voice": "tenor",
+       "at": "32:2",
+       "until": "34:1",
+       "octave": 0,
+       "level": 0.5,
+       "articulation": "auto",
+       "t0_s": 104.549,
        "t1_s": 112.626
       }
      ]
@@ -905,7 +927,7 @@
      "channel": 15,
      "program": 40,
      "instrument": "vn2",
-     "notes": 156,
+     "notes": 157,
      "range": [
       57,
       77
@@ -1085,7 +1107,7 @@
      "channel": 1,
      "program": 42,
      "instrument": "vc",
-     "notes": 104,
+     "notes": 103,
      "range": [
       36,
       53

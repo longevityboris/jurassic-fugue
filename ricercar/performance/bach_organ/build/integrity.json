@@ -20,8 +20,8 @@
   },
   "alto": {
    "track": "alto",
-   "expected": 217,
-   "matched": 217,
+   "expected": 218,
+   "matched": 218,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -46,8 +46,8 @@
   },
   "bass": {
    "track": "bass",
-   "expected": 141,
-   "matched": 141,
+   "expected": 140,
+   "matched": 140,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -66,8 +66,8 @@
    "uncovered": []
   },
   "alto": {
-   "notes": 217,
-   "covered": 217,
+   "notes": 218,
+   "covered": 218,
    "allowed_gaps": 0,
    "uncovered": []
   },
@@ -78,8 +78,8 @@
    "uncovered": []
   },
   "bass": {
-   "notes": 141,
-   "covered": 141,
+   "notes": 140,
+   "covered": 140,
    "allowed_gaps": 0,
    "uncovered": []
   }

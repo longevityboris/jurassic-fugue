@@ -4,9 +4,9 @@
  "warnings": [
   "timp: 1 note(s) held across a hand-off shortened to the next note",
   "vn1: 1 note(s) held across a hand-off shortened to the next note",
-  "vn2: 2 note(s) held across a hand-off shortened to the next note",
-  "va: 2 note(s) held across a hand-off shortened to the next note",
-  "vc: 3 note(s) held across a hand-off shortened to the next note"
+  "vn2: 1 note(s) held across a hand-off shortened to the next note",
+  "va: 1 note(s) held across a hand-off shortened to the next note",
+  "vc: 2 note(s) held across a hand-off shortened to the next note"
  ],
  "onset_tolerance_ticks": 60,
  "tempo_changes": 285,
@@ -195,8 +195,8 @@
   },
   "vn2": {
    "track": "vn2",
-   "expected": 156,
-   "matched": 156,
+   "expected": 157,
+   "matched": 157,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -221,8 +221,8 @@
   },
   "vc": {
    "track": "vc",
-   "expected": 104,
-   "matched": 104,
+   "expected": 103,
+   "matched": 103,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -254,8 +254,8 @@
    "uncovered": []
   },
   "alto": {
-   "notes": 217,
-   "covered": 217,
+   "notes": 218,
+   "covered": 218,
    "allowed_gaps": 0,
    "uncovered": []
   },
@@ -266,8 +266,8 @@
    "uncovered": []
   },
   "bass": {
-   "notes": 141,
-   "covered": 141,
+   "notes": 140,
+   "covered": 140,
    "allowed_gaps": 0,
    "uncovered": []
   }

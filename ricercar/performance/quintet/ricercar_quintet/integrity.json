@@ -25,8 +25,8 @@
   },
   "vn2": {
    "track": "Violin II",
-   "expected": 168,
-   "matched": 168,
+   "expected": 169,
+   "matched": 169,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -51,8 +51,8 @@
   },
   "vc": {
    "track": "Cello",
-   "expected": 105,
-   "matched": 105,
+   "expected": 104,
+   "matched": 104,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -77,8 +77,8 @@
   },
   "alto": {
    "track": "alto",
-   "expected": 92,
-   "matched": 92,
+   "expected": 93,
+   "matched": 93,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -103,8 +103,8 @@
   },
   "bass": {
    "track": "bass",
-   "expected": 72,
-   "matched": 72,
+   "expected": 71,
+   "matched": 71,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -129,8 +129,8 @@
   },
   "bass_8vb": {
    "track": "bass_8vb",
-   "expected": 27,
-   "matched": 27,
+   "expected": 26,
+   "matched": 26,
    "pedal_notes": 0,
    "missing": 0,
    "extra": 0,
@@ -162,8 +162,8 @@
    "uncovered": []
   },
   "alto": {
-   "notes": 217,
-   "covered": 217,
+   "notes": 218,
+   "covered": 218,
    "allowed_gaps": 0,
    "uncovered": []
   },
@@ -174,8 +174,8 @@
    "uncovered": []
   },
   "bass": {
-   "notes": 141,
-   "covered": 141,
+   "notes": 140,
+   "covered": 140,
    "allowed_gaps": 0,
    "uncovered": []
   }

@@ -2,8 +2,8 @@
  "spec": "performance/quintet/ricercar_quintet.json",
  "score": "score/music-voices.ly",
  "plan": "design/final-lab/plan.json",
- "score_sha256": "0132d043358cbcb9",
- "plan_sha256": "7804a26d6d18e0d7",
+ "score_sha256": "a23e64300fcfd9d3",
+ "plan_sha256": "1da81eb13465270e",
  "duration_s": 232.106,
  "bars": 66.0,
  "marks": {
@@ -186,7 +186,7 @@
      "channel": 1,
      "program": 40,
      "instrument": "vn2",
-     "notes": 168,
+     "notes": 169,
      "range": [
       57,
       77
@@ -355,7 +355,7 @@
      "channel": 3,
      "program": 42,
      "instrument": "vc",
-     "notes": 105,
+     "notes": 104,
      "range": [
       36,
       53
@@ -464,7 +464,7 @@
      "channel": 1,
      "program": 0,
      "instrument": null,
-     "notes": 92,
+     "notes": 93,
      "range": [
       57,
       77
@@ -567,7 +567,7 @@
      "channel": 3,
      "program": 0,
      "instrument": null,
-     "notes": 72,
+     "notes": 71,
      "range": [
       36,
       57
@@ -648,7 +648,7 @@
      "channel": 5,
      "program": 0,
      "instrument": null,
-     "notes": 27,
+     "notes": 26,
      "range": [
       24,
       34

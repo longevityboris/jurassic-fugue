@@ -2,8 +2,8 @@
  "spec": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/beethoven_quartet/quartet.json",
  "score": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/score/music-voices.ly",
  "plan": "/Users/biobook/Music/llm-music/fugue-jp/ricercar/performance/beethoven_quartet/plan.json",
- "score_sha256": "0132d043358cbcb9",
- "plan_sha256": "e7b71826999282c5",
+ "score_sha256": "a23e64300fcfd9d3",
+ "plan_sha256": "6122e65d32e54e99",
  "duration_s": 242.346,
  "bars": 66.0,
  "marks": {
@@ -164,7 +164,7 @@
      "channel": 1,
      "program": 40,
      "instrument": "vn2",
-     "notes": 209,
+     "notes": 210,
      "range": [
       57,
       77
@@ -443,7 +443,7 @@
      "channel": 3,
      "program": 42,
      "instrument": "vc",
-     "notes": 141,
+     "notes": 140,
      "range": [
       36,
       57
