@@ -182,7 +182,7 @@ def snd(v, t):
     return at(data[v][0], data[v][1], t)
 
 # parallels
-pairs = [(VOICES[i], VOICES[j]) for i in range(4) for j in range(i + 1, 4)]
+pairs = [(VOICES[i], VOICES[j]) for i in range(len(VOICES)) for j in range(i + 1, len(VOICES))]
 for x, y in pairs:
     tl = sorted({n.start for n in data[x][0]} | {n.start for n in data[y][0]})
     for t1, t2 in zip(tl, tl[1:]):
