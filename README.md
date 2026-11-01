@@ -156,6 +156,6 @@ ricercar/                        The Neighbour's source: design, score, tools, i
 
 If this made you hear a dinosaur theme as a ricercar, [star the repo](https://github.com/longevityboris/jurassic-fugue/stargazers) and [follow @longevityboris](https://x.com/longevityboris).
 
-Built by [Boris Djordjevic](https://github.com/longevityboris) at [Paperfoot AI](https://paperfoot.com)
+Built by [Boris Djordjevic](https://github.com/longevityboris) at [Paperfoot AI](https://paperfoot.si)
 
 </div>
